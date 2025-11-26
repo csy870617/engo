@@ -1,21 +1,14 @@
 // ==========================================
-// 🚨 카카오톡 인앱 브라우저 처리 스크립트
+// 🚨 카카오톡 인앱 브라우저 탈출 및 초기 설정
 // ==========================================
 (function() {
-  const userAgent = navigator.userAgent.toLowerCase();
-  const targetUrl = location.href;
-
-  // 카카오톡 인앱 브라우저인지 확인
-  if (userAgent.indexOf('kakaotalk') > -1) {
-    
-    // 1. 안드로이드: 저장소 보호를 위해 '기본 브라우저'로 강제 전환
-    if (userAgent.indexOf('android') > -1) {
-      location.href = 'intent://' + targetUrl.replace(/https?:\/\//i, '') + '#Intent;scheme=https;end';
-    } 
-    
-    // 2. 아이폰(iOS): 별도 처리 없음 (else if 제거)
-    // -> 안내 화면 없이 카카오톡 내부에서 즉시 실행됩니다.
-    // -> 주의: 아이폰 사용자는 [동기화]를 안 하면 데이터가 사라질 수 있습니다.
+  const ua = navigator.userAgent.toLowerCase();
+  const url = location.href;
+  if (ua.indexOf('kakaotalk') > -1) {
+    if (ua.indexOf('android') > -1) {
+      location.href = 'intent://' + url.replace(/https?:\/\//i, '') + '#Intent;scheme=https;end';
+    }
+    // 아이폰은 인앱 유지 (안내 불필요)
   }
 })();
 
@@ -57,10 +50,33 @@ let idiomStudyingOnly = false;
 let memorizedPatterns = new Set();
 let patternStudyingOnly = false;
 
+// 🔽 [추가] 뒤로 가기 감지용 플래그
+let isBackAction = false; 
+
 // ==========================================
-// 2. 네비게이션
+// 2. 네비게이션 (히스토리 API 적용)
 // ==========================================
+
+// 🔽 [추가] 브라우저 뒤로 가기 버튼 감지 (popstate 이벤트)
+window.onpopstate = function(event) {
+  // 히스토리 상태가 있으면 그 페이지로, 없으면 홈으로
+  const page = (event.state && event.state.page) ? event.state.page : 'home';
+  
+  isBackAction = true; // goTo 함수에서 history.pushState 중복 방지
+  goTo(page);
+  isBackAction = false; // 플래그 초기화
+};
+
 function goTo(page) {
+  // 🔽 [추가] 히스토리 스택 쌓기 (뒤로 가기가 아닐 때만)
+  if (!isBackAction) {
+    // 현재 페이지와 같지 않을 때만 기록 추가
+    if (!history.state || history.state.page !== page) {
+      history.pushState({ page: page }, "", "#" + page);
+    }
+  }
+
+  // 화면 전환 로직
   pages.forEach((p) => {
     const el = document.getElementById("page-" + p);
     if (!el) return;
@@ -113,7 +129,7 @@ function saveData(type) {
 }
 
 // ==========================================
-// 4. 패턴 (Patterns) 로직 (복구됨)
+// 4. 패턴 (Patterns) 로직
 // ==========================================
 function renderPatternList() {
   const container = document.getElementById("pattern-list");
@@ -547,6 +563,7 @@ function nextPuzzle() {
   if (pool.length === 0) return document.getElementById("puzzle-question").textContent = "데이터 부족";
   const target = pool[Math.floor(Math.random() * pool.length)];
   currentPuzzleAnswer = target.en.trim();
+  // 🔽 [수정] 출처 숨기고 한글 문제만 표시
   document.getElementById("puzzle-question").textContent = target.kr;
 
   puzzleTargetTokens = [];
@@ -730,15 +747,14 @@ function saveSettings() {
   closeSettingsModal();
 }
 
-// ⚠️ YOUR_API_KEY 부분을 본인 Firebase 키로 바꾸세요!
+// ⚠️ [중요] 아래 YOUR_API_KEY 부분을 본인의 Firebase 설정값으로 꼭 수정하세요!
 const firebaseConfig = {
-  apiKey: "AIzaSyCdr88Bomc9SQzZBj03iih3epxivhPL63I",
-  authDomain: "engo-9c8e3.firebaseapp.com",
-  projectId: "engo-9c8e3",
-  storageBucket: "engo-9c8e3.firebasestorage.app",
-  messagingSenderId: "252712209702",
-  appId: "1:252712209702:web:5ed2ccb9f07230824d45e7",
-  measurementId: "G-KHE07H3HKR"
+  apiKey: "YOUR_API_KEY",
+  authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
+  projectId: "YOUR_PROJECT_ID",
+  storageBucket: "YOUR_PROJECT_ID.appspot.com",
+  messagingSenderId: "YOUR_SENDER_ID",
+  appId: "YOUR_APP_ID"
 };
 
 let db;
@@ -811,13 +827,15 @@ async function downloadData() {
   } catch(e) { alert("오류: " + e.message); }
 }
 
-// --------------------------
+// ==========================================
 // 10. 초기화 (Initialization)
-// --------------------------
+// ==========================================
+// 🔽 [추가] 첫 진입 시 초기 히스토리 설정 (뒤로 가기 방지)
+history.replaceState({ page: 'home' }, "", "#home");
+
 loadMemorizedData();
 loadVoices();
 if (typeof patternData !== "undefined") updatePatternProgress();
 if (typeof wordData !== "undefined") updateWordProgress();
 if (typeof idiomData !== "undefined") updateIdiomProgress();
 goTo("home");
-
