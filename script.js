@@ -732,12 +732,13 @@ function saveSettings() {
 
 // ⚠️ YOUR_API_KEY 부분을 본인 Firebase 키로 바꾸세요!
 const firebaseConfig = {
-  apiKey: "YOUR_API_KEY",
-  authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
-  projectId: "YOUR_PROJECT_ID",
-  storageBucket: "YOUR_PROJECT_ID.appspot.com",
-  messagingSenderId: "YOUR_SENDER_ID",
-  appId: "YOUR_APP_ID"
+  apiKey: "AIzaSyCdr88Bomc9SQzZBj03iih3epxivhPL63I",
+  authDomain: "engo-9c8e3.firebaseapp.com",
+  projectId: "engo-9c8e3",
+  storageBucket: "engo-9c8e3.firebasestorage.app",
+  messagingSenderId: "252712209702",
+  appId: "1:252712209702:web:5ed2ccb9f07230824d45e7",
+  measurementId: "G-KHE07H3HKR"
 };
 
 let db;
@@ -819,3 +820,4 @@ if (typeof patternData !== "undefined") updatePatternProgress();
 if (typeof wordData !== "undefined") updateWordProgress();
 if (typeof idiomData !== "undefined") updateIdiomProgress();
 goTo("home");
+
