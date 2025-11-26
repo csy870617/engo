@@ -684,14 +684,25 @@ function updateMicUI() {
 }
 function nextSpeaking() {
   if (speakingData.length === 0) return;
+  
+  // 랜덤으로 질문 선택
   currentSpeaking = speakingData[Math.floor(Math.random() * speakingData.length)];
+  
+  // 화면에 질문/답변 텍스트 업데이트
   document.getElementById("speaking-q-en").textContent = currentSpeaking.q.en;
   document.getElementById("speaking-q-kr").textContent = currentSpeaking.q.kr;
   document.getElementById("speaking-a-en").textContent = currentSpeaking.a.en;
   document.getElementById("speaking-a-kr").textContent = currentSpeaking.a.kr;
+  
+  // 정답 가리기 및 초기화
   document.getElementById("speaking-answer-toggle").checked = false;
   toggleSpeakingAnswer();
   document.getElementById("user-speech-result").classList.add("hidden");
+
+  // 🔊 [추가] 질문 자동 재생 (설정이 켜져 있을 때만)
+  if (autoPlayEnabled) {
+    playSpeakingQuestion();
+  }
 }
 function toggleSpeakingAnswer() {
   const chk = document.getElementById("speaking-answer-toggle");
