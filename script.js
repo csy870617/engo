@@ -1,4 +1,25 @@
 // ==========================================
+// 🚨 카카오톡 인앱 브라우저 처리 스크립트
+// ==========================================
+(function() {
+  const userAgent = navigator.userAgent.toLowerCase();
+  const targetUrl = location.href;
+
+  // 카카오톡 인앱 브라우저인지 확인
+  if (userAgent.indexOf('kakaotalk') > -1) {
+    
+    // 1. 안드로이드: 저장소 보호를 위해 '기본 브라우저'로 강제 전환
+    if (userAgent.indexOf('android') > -1) {
+      location.href = 'intent://' + targetUrl.replace(/https?:\/\//i, '') + '#Intent;scheme=https;end';
+    } 
+    
+    // 2. 아이폰(iOS): 별도 처리 없음 (else if 제거)
+    // -> 안내 화면 없이 카카오톡 내부에서 즉시 실행됩니다.
+    // -> 주의: 아이폰 사용자는 [동기화]를 안 하면 데이터가 사라질 수 있습니다.
+  }
+})();
+
+// ==========================================
 // 1. 전역 변수 및 데이터 준비
 // ==========================================
 const pages = [
@@ -799,3 +820,4 @@ if (typeof patternData !== "undefined") updatePatternProgress();
 if (typeof wordData !== "undefined") updateWordProgress();
 if (typeof idiomData !== "undefined") updateIdiomProgress();
 goTo("home");
+
