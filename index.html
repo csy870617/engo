@@ -2,26 +2,23 @@
 <html lang="ko">
 <head>
   <meta charset="UTF-8" />
-  <title>ENGO - 영어회화 학습 프로그램</title>
+  <title>ENGO - 영어회화 학습</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <!-- 외부 CSS -->
   <link rel="stylesheet" href="style.css" />
-  <link rel="stylesheet" href="style.css" />
-
   <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
   <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
 </head>
 <body>
-<header>
-    <div class="logo">ENGLISH & GO</div>
+  <header>
+    <div class="logo">ENGO</div>
     <div style="display: flex; gap: 8px; align-items: center;">
       <button class="btn small secondary" onclick="openSyncModal()">☁ 동기화</button>
       <button class="btn small secondary" onclick="openSettingsModal()">⚙ 설정</button>
     </div>
   </header>
-<main>
+
+  <main>
     <section id="page-home">
-      
       <section id="home-hero">
         <div class="card">
           <h1>“영어 회화의 시작, ENGO”</h1>
@@ -34,546 +31,286 @@
 
       <div class="home-grid">
         <div class="home-tile" onclick="goTo('patterns')">
-            <span class="label">패턴 학습</span>
-            <span class="desc">핵심 표현을 덩어리로 익히기</span>
+          <span class="label">패턴 학습</span>
+          <span class="desc">핵심 표현을 덩어리로 익히기</span>
         </div>
-        
         <div class="home-tile" onclick="goTo('conversations')">
-            <span class="label">대화 학습</span>
-            <span class="desc">실제 대화 속 표현 연습</span>
+          <span class="label">대화 학습</span>
+          <span class="desc">실제 대화 속 표현 연습</span>
         </div>
-        
         <div class="home-tile" onclick="goTo('puzzle')">
-            <span class="label">문장 퍼즐</span>
-            <span class="desc">한글 보고 영어 재조립</span>
+          <span class="label">문장 퍼즐</span>
+          <span class="desc">한글 보고 영어 재조립</span>
         </div>
-        
         <div class="home-tile" onclick="goTo('speaking')">
-            <span class="label">말하기 연습</span>
-            <span class="desc">직접 말해보는 스피킹 훈련</span>
+          <span class="label">말하기 연습</span>
+          <span class="desc">직접 말해보는 스피킹 훈련</span>
         </div>
-
         <div class="home-tile" onclick="goTo('words')">
-            <span class="label">단어 학습</span>
-            <span class="desc">필수 단어 빠른 암기</span>
+          <span class="label">단어 학습</span>
+          <span class="desc">필수 단어 빠른 암기</span>
         </div>
-
         <div class="home-tile" onclick="goTo('idioms')">
-            <span class="label">숙어/구동사 학습</span>
-            <span class="desc">자연스러운 표현 익히기</span>
+          <span class="label">숙어/구동사 학습</span>
+          <span class="desc">자연스러운 표현 익히기</span>
         </div>
       </div>
+    </section>
 
-
-    <!-- PATTERN LIST PAGE -->
     <section id="page-patterns" class="hidden">
+      <div class="page-title-row">
+        <span class="back-link" onclick="goTo('home')">← 홈으로</span>
+      </div>
+
       <div class="card">
         <h2>패턴 학습</h2>
-        <p class="subtext">
-          실제로 많이 쓰이는 표현부터 차근차근 익혀보세요.
-        </p>
-
+        <p class="subtext">실제로 많이 쓰이는 표현부터 차근차근 익혀보세요.</p>
         <div class="section-header">패턴 암기 진행률</div>
-        <p id="pattern-progress" class="progress-label">
-          패턴 암기 0 / 0개 (0%)
-        </p>
-        <div class="progress-bar">
-          <div id="pattern-progress-bar" class="progress-inner"></div>
-        </div>
+        <p id="pattern-progress" class="progress-label">패턴 암기 0 / 0개 (0%)</p>
+        <div class="progress-bar"><div id="pattern-progress-bar" class="progress-inner"></div></div>
       </div>
-
       <div class="card">
         <div class="level-button-row">
-          <button
-            id="pattern-studying-btn"
-            class="btn tiny secondary"
-            onclick="togglePatternStudying()"
-          >
-            암기중만 보기
-          </button>
+          <button id="pattern-studying-btn" class="btn tiny secondary" onclick="togglePatternStudying()">암기중만 보기</button>
         </div>
-
-        <input
-          id="pattern-search"
-          type="text"
-          placeholder="패턴 검색… (예: want to)"
-          class="input"
-          oninput="renderPatternList()"
-        />
+        <input id="pattern-search" type="text" placeholder="패턴 검색… (예: want to)" class="input" oninput="renderPatternList()" />
       </div>
-
       <div id="pattern-list" class="list"></div>
     </section>
 
-    <!-- PATTERN DETAIL PAGE -->
     <section id="page-pattern-detail" class="hidden">
       <div class="page-title-row">
         <span class="back-link" onclick="goTo('patterns')">← 패턴 목록</span>
       </div>
-
-        <div class="card">
-        <h2 id="pattern-title">Pattern 제목</h2>
-        <p id="pattern-desc" class="subtext">
-            패턴 설명이 들어갑니다.
-        </p>
-
-        <!-- 🔽 패턴 암기 완료 체크 (상세 화면) -->
+      <div class="card">
+        <h2 id="pattern-title">Pattern</h2>
+        <p id="pattern-desc" class="subtext">설명</p>
         <div class="toggle-row" style="margin-bottom: 8px;">
-            <label>
-            <input
-                type="checkbox"
-                id="pattern-memorized-checkbox"
-                onchange="togglePatternMemorizedDetail()"
-            />
-            이 패턴 암기 완료
-            </label>
+          <label><input type="checkbox" id="pattern-memorized-checkbox" onchange="togglePatternMemorizedDetail()" /> 이 패턴 암기 완료</label>
         </div>
-
-        <button class="btn small" onclick="playPatternExamples()">
-            ▶ 예문 전체 읽어주기
-        </button>
-            <div class="button-row" style="justify-content: space-between; margin-top: 16px; padding-top: 12px; border-top: 1px solid #eee;">
+        <button class="btn small" onclick="playPatternExamples()">▶ 예문 전체 읽어주기</button>
+        <div class="button-row" style="justify-content: space-between; margin-top: 16px; padding-top: 12px; border-top: 1px solid #eee;">
           <button class="btn small secondary" onclick="movePattern(-1)">← 이전 패턴</button>
           <button class="btn small secondary" onclick="movePattern(1)">다음 패턴 →</button>
         </div>
       </div>
-
-
       <div class="card">
         <div class="section-header">예문</div>
         <div class="toggle-row">
-          <label>
-            <input type="checkbox" id="pattern-toggle-kr" checked onchange="renderPatternExamples()" />
-            번역 보기
-          </label>
-          <span class="hint">실제 서비스에서는 오디오 파일 연결 가능</span>
+          <label><input type="checkbox" id="pattern-toggle-kr" checked onchange="renderPatternExamples()" /> 번역 보기</label>
         </div>
         <div id="pattern-examples"></div>
-
       </div>
     </section>
 
-<section id="page-words" class="hidden">
+    <section id="page-words" class="hidden">
+      <div class="page-title-row">
+        <span class="back-link" onclick="goTo('home')">← 홈으로</span>
+      </div>
 
-  <div class="card">
-    <h2>단어 학습</h2>
-    <p class="subtext">
-      자주 쓰이는 필수 단어를 레벨별로 암기해보세요.
-    </p>
+      <div class="card">
+        <h2>단어 학습</h2>
+        <p class="subtext">자주 쓰이는 필수 단어를 레벨별로 암기해보세요.</p>
+        <div class="section-header">단어 암기 진행률</div>
+        <p id="word-progress" class="progress-label">현재 레벨 기준 암기 0 / 0개 (0%)</p>
+        <div class="progress-bar"><div id="word-progress-bar" class="progress-inner"></div></div>
+      </div>
+      <div class="card">
+        <div class="level-button-row">
+          <button class="btn tiny active" data-word-level-btn="0" onclick="setWordLevel(0)">전체</button>
+          <button class="btn tiny" data-word-level-btn="1" onclick="setWordLevel(1)">L1</button>
+          <button class="btn tiny" data-word-level-btn="2" onclick="setWordLevel(2)">L2</button>
+          <button class="btn tiny" data-word-level-btn="3" onclick="setWordLevel(3)">L3</button>
+          <button class="btn tiny" data-word-level-btn="4" onclick="setWordLevel(4)">L4</button>
+          <button class="btn tiny" data-word-level-btn="5" onclick="setWordLevel(5)">L5</button>
+          <button id="word-studying-btn" class="btn tiny secondary" onclick="toggleWordStudying()">암기중만 보기</button>
+        </div>
+        <input id="word-search" type="text" placeholder="단어 검색… (예: plan)" class="input" oninput="renderWordList()" />
+      </div>
+      <div id="word-list" class="list"></div>
+    </section>
 
-    <!-- 🔽 진행도 영역 -->
-    <div class="section-header">단어 암기 진행률</div>
-    <p id="word-progress" class="progress-label">
-      현재 레벨 기준 암기 0 / 0개 (0%)
-    </p>
-    <div class="progress-bar">
-      <div id="word-progress-bar" class="progress-bar-fill"></div>
-    </div>
-  </div>
-
-  <div class="card">
-    <!-- 🔽 레벨 버튼 -->
-    <div class="level-button-row">
-      <button
-        class="btn tiny active"
-        data-word-level-btn="0"
-        onclick="setWordLevel(0)"
-      >
-        전체
-      </button>
-      <button
-        class="btn tiny"
-        data-word-level-btn="1"
-        onclick="setWordLevel(1)"
-      >
-        L1
-      </button>
-      <button
-        class="btn tiny"
-        data-word-level-btn="2"
-        onclick="setWordLevel(2)"
-      >
-        L2
-      </button>
-      <button
-        class="btn tiny"
-        data-word-level-btn="3"
-        onclick="setWordLevel(3)"
-      >
-        L3
-      </button>
-      <button
-        class="btn tiny"
-        data-word-level-btn="4"
-        onclick="setWordLevel(4)"
-      >
-        L4
-      </button>
-      <button
-        class="btn tiny"
-        data-word-level-btn="5"
-        onclick="setWordLevel(5)"
-      >
-        L5
-      </button>
-
-
-      <!-- 🔽 미암기(암기중)만 보기 -->
-      <button
-        id="word-studying-btn"
-        class="btn tiny secondary"
-        onclick="toggleWordStudying()"
-      >
-        암기중만 보기
-      </button>
-    </div>
-
-    <!-- 검색창 -->
-    <input
-      id="word-search"
-      type="text"
-      placeholder="단어 검색… (예: plan)"
-      class="input"
-      oninput="renderWordList()"
-    />
-  </div>
-
-  <div id="word-list" class="list"></div>
-</section>
-
-<section id="page-word-detail" class="hidden">
-  <div class="page-title-row">
-    <span class="back-link" onclick="goTo('words')">← 단어 목록</span>
-  </div>
-
-  <div class="card">
-    <h2 id="word-title">단어</h2>
-    <p id="word-desc" class="subtext">
-      단어 설명이 들어갑니다.
-    </p>
-    
-
-    <div class="toggle-row">
-      <label>
-        <input
-          type="checkbox"
-          id="word-memorized-checkbox"
-          onchange="toggleWordMemorizedDetail()"
-        />
-        암기 완료
-      </label>
-      
-    </div>
-
-    <button class="btn small" onclick="playWordExamples()">
-      ▶ 예문 전체 읽어주기
-    </button>
-<div class="button-row" style="justify-content: space-between; margin-top: 16px; padding-top: 12px; border-top: 1px solid #eee;">
+    <section id="page-word-detail" class="hidden">
+      <div class="page-title-row">
+        <span class="back-link" onclick="goTo('words')">← 단어 목록</span>
+      </div>
+      <div class="card">
+        <h2 id="word-title">단어</h2>
+        <p id="word-desc" class="subtext">설명</p>
+        <div class="toggle-row"><label><input type="checkbox" id="word-memorized-checkbox" onchange="toggleWordMemorizedDetail()" /> 암기 완료</label></div>
+        <button class="btn small" onclick="playWordExamples()">▶ 예문 전체 읽어주기</button>
+        <div class="button-row" style="justify-content: space-between; margin-top: 16px; padding-top: 12px; border-top: 1px solid #eee;">
           <button class="btn small secondary" onclick="moveWord(-1)">← 이전 단어</button>
           <button class="btn small secondary" onclick="moveWord(1)">다음 단어 →</button>
         </div>
       </div>
+      <div class="card">
+        <div class="section-header">예문</div>
+        <div class="toggle-row"><label><input type="checkbox" id="word-toggle-kr" checked onchange="renderWordExamples()" /> 번역 보기</label></div>
+        <div id="word-examples"></div>
+      </div>
+    </section>
 
-  <div class="card">
-    <div class="section-header">예문</div>
-    <div class="toggle-row">
-      <label>
-        <input
-          type="checkbox"
-          id="word-toggle-kr"
-          checked
-          onchange="renderWordExamples()"
-        />
-        번역 보기
-      </label>
-    </div>
-    <div id="word-examples"></div>
-  </div>
-</section>
+    <section id="page-idioms" class="hidden">
+      <div class="page-title-row">
+        <span class="back-link" onclick="goTo('home')">← 홈으로</span>
+      </div>
 
-<!-- IDIOM LIST PAGE -->
-<section id="page-idioms" class="hidden">
-  <div class="card">
-    <h2>숙어/구동사 학습</h2>
-    <p class="subtext">
-      자주 쓰이는 관용 표현, 구동사를 상황과 함께 외워보세요.
-    </p>
+      <div class="card">
+        <h2>숙어/구동사 학습</h2>
+        <p class="subtext">자주 쓰이는 관용 표현을 익혀보세요.</p>
+        <div class="section-header">숙어 암기 진행률</div>
+        <p id="idiom-progress" class="progress-label">암기 0 / 0개 (0%)</p>
+        <div class="progress-bar"><div id="idiom-progress-bar" class="progress-inner"></div></div>
+      </div>
+      <div class="card">
+        <div class="level-button-row">
+          <button class="btn tiny active" data-idiom-level-btn="0" onclick="setIdiomLevel(0)">전체</button>
+          <button class="btn tiny" data-idiom-level-btn="1" onclick="setIdiomLevel(1)">L1</button>
+          <button class="btn tiny" data-idiom-level-btn="2" onclick="setIdiomLevel(2)">L2</button>
+          <button class="btn tiny" data-idiom-level-btn="3" onclick="setIdiomLevel(3)">L3</button>
+          <button class="btn tiny" data-idiom-level-btn="4" onclick="setIdiomLevel(4)">L4</button>
+          <button class="btn tiny" data-idiom-level-btn="5" onclick="setIdiomLevel(5)">L5</button>
+          <button id="idiom-studying-btn" class="btn tiny secondary" onclick="toggleIdiomStudying()">암기중만 보기</button>
+        </div>
+        <input id="idiom-search" type="text" placeholder="숙어 검색… (예: get up)" class="input" oninput="renderIdiomList()" />
+      </div>
+      <div id="idiom-list" class="list"></div>
+    </section>
 
-    <div class="section-header">숙어 암기 진행률</div>
-    <p id="idiom-progress" class="progress-label">
-      현재 레벨 기준 암기 0 / 0개 (0%)
-    </p>
-    <div class="progress-bar">
-      <div id="idiom-progress-bar" class="progress-inner"></div>
-    </div>
-  </div>
-
-  <div class="card">
-    <div class="level-button-row">
-      <button class="btn tiny active" data-idiom-level-btn="0" onclick="setIdiomLevel(0)">
-        전체
-      </button>
-      <button class="btn tiny" data-idiom-level-btn="1" onclick="setIdiomLevel(1)">
-        L1
-      </button>
-      <button class="btn tiny" data-idiom-level-btn="2" onclick="setIdiomLevel(2)">
-        L2
-      </button>
-      <button class="btn tiny" data-idiom-level-btn="3" onclick="setIdiomLevel(3)">
-        L3
-      </button>
-      <button class="btn tiny" data-idiom-level-btn="4" onclick="setIdiomLevel(4)">
-        L4
-      </button>
-      <button class="btn tiny" data-idiom-level-btn="5" onclick="setIdiomLevel(5)">
-        L5
-      </button>
-
-      <button
-        id="idiom-studying-btn"
-        class="btn tiny secondary"
-        onclick="toggleIdiomStudying()"
-      >
-        암기중만 보기
-      </button>
-    </div>
-
-    <input
-      id="idiom-search"
-      type="text"
-      placeholder="숙어 검색… (예: get up)"
-      class="input"
-      oninput="renderIdiomList()"
-    />
-  </div>
-
-  <div id="idiom-list" class="list"></div>
-</section>
-
-    <!-- IDIOM DETAIL PAGE -->
     <section id="page-idiom-detail" class="hidden">
       <div class="page-title-row">
         <span class="back-link" onclick="goTo('idioms')">← 숙어 목록</span>
       </div>
-
-        <div class="card">
+      <div class="card">
         <h2 id="idiom-title">숙어</h2>
-        <p id="idiom-desc" class="subtext">
-            숙어 설명이 들어갑니다.
-        </p>
-
-        <!-- 🔽 암기 완료 체크(상세 화면) -->
-        <div class="toggle-row" style="margin-bottom: 8px;">
-            <label>
-            <input
-                type="checkbox"
-                id="idiom-memorized-checkbox"
-                onchange="toggleIdiomMemorizedDetail()"
-            />
-            이 숙어 암기 완료
-            </label>
-        </div>
-
-        <button class="btn small" onclick="playIdiomExamples()">
-            ▶ 예문 전체 읽어주기
-        </button>
+        <p id="idiom-desc" class="subtext">설명</p>
+        <div class="toggle-row"><label><input type="checkbox" id="idiom-memorized-checkbox" onchange="toggleIdiomMemorizedDetail()" /> 암기 완료</label></div>
+        <button class="btn small" onclick="playIdiomExamples()">▶ 예문 전체 읽어주기</button>
         <div class="button-row" style="justify-content: space-between; margin-top: 16px; padding-top: 12px; border-top: 1px solid #eee;">
           <button class="btn small secondary" onclick="moveIdiom(-1)">← 이전 숙어</button>
           <button class="btn small secondary" onclick="moveIdiom(1)">다음 숙어 →</button>
         </div>
       </div>
-
       <div class="card">
         <div class="section-header">예문</div>
-        <div class="toggle-row">
-          <label>
-            <input type="checkbox" id="idiom-toggle-kr" checked onchange="renderIdiomExamples()" />
-            번역 보기
-          </label>
-        </div>
+        <div class="toggle-row"><label><input type="checkbox" id="idiom-toggle-kr" checked onchange="renderIdiomExamples()" /> 번역 보기</label></div>
         <div id="idiom-examples"></div>
       </div>
     </section>
 
-    <!-- CONVERSATION LIST PAGE -->
-<section id="page-conversations" class="hidden">
-  <div class="card">
-    <h2>대화 학습</h2>
-    <p class="subtext">
-      짧고 자주 쓰이는 실제 대화를 통째로 익히는 영역입니다.
-    </p>
-  </div>
+    <section id="page-conversations" class="hidden">
+      <div class="page-title-row">
+        <span class="back-link" onclick="goTo('home')">← 홈으로</span>
+      </div>
 
-  <div class="card">
-    <input
-      id="conv-search"
-      type="text"
-      placeholder="상황 / 키워드 검색… (예: 일정)"
-      class="input"
-      oninput="renderConversationList()"
-    />
-  </div>
+      <div class="card">
+        <h2>대화 학습</h2>
+        <p class="subtext">짧고 자주 쓰이는 실제 대화를 통째로 익히세요.</p>
+      </div>
+      <div class="card">
+        <input id="conv-search" type="text" placeholder="상황 / 키워드 검색…" class="input" oninput="renderConversationList()" />
+      </div>
+      <div id="conv-list" class="list"></div>
+    </section>
 
-  <div id="conv-list" class="list"></div>
-</section>
-
-    <!-- CONVERSATION DETAIL PAGE -->
     <section id="page-conv-detail" class="hidden">
       <div class="page-title-row">
         <span class="back-link" onclick="goTo('conversations')">← 대화 목록</span>
       </div>
-
       <div class="card">
-<h2 id="conv-title">대화 제목</h2>
-        <button class="btn small" onclick="playConversationAll()">
-          ▶ 대화 전체 읽어주기
-        </button>
-        
+        <h2 id="conv-title">대화 제목</h2>
+        <button class="btn small" onclick="playConversationAll()">▶ 대화 전체 읽어주기</button>
         <div class="button-row" style="justify-content: space-between; margin-top: 16px; padding-top: 12px; border-top: 1px solid #eee;">
           <button class="btn small secondary" onclick="moveConv(-1)">← 이전 대화</button>
           <button class="btn small secondary" onclick="moveConv(1)">다음 대화 →</button>
         </div>
       </div>
-
       <div class="card">
-        <div class="toggle-row">
-          <label>
-            <input type="checkbox" id="conv-toggle-kr" checked onchange="renderConversationDetail()" />
-            번역 보기
-          </label>
-        </div>
-
+        <div class="toggle-row"><label><input type="checkbox" id="conv-toggle-kr" checked onchange="renderConversationDetail()" /> 번역 보기</label></div>
         <div id="conv-lines"></div>
-
+        <div class="button-row">
+          <button class="btn small secondary" onclick="goTo('shadowing')">따라 말하기 (Shadowing)</button>
+          <button class="btn small secondary" onclick="goTo('puzzle')">이 대화로 퍼즐 풀기</button>
         </div>
       </div>
     </section>
 
-      <section id="page-shadowing" class="hidden">
+    <section id="page-shadowing" class="hidden">
       <div class="page-title-row">
         <span class="back-link" onclick="goTo('conv-detail')">← 대화로 돌아가기</span>
       </div>
-
       <div class="card">
         <h2>따라 말하기 (Shadowing)</h2>
-        <p class="subtext">
-          문장을 듣고, 잠시 멈춘 뒤 그대로 따라 말하는 훈련입니다.
-        </p>
+        <p class="subtext">문장을 듣고, 잠시 멈춘 뒤 그대로 따라 말하세요.</p>
       </div>
-
       <div class="card">
         <div class="section-header">현재 문장</div>
-        <p id="shadowing-text" class="shadowing-text">
-          문장을 선택해주세요.
-        </p>
-
+        <p id="shadowing-text" class="shadowing-text">문장을 선택해주세요.</p>
         <div class="button-row">
-          <button class="btn small" onclick="playShadowingCurrent()">
-            ▶ 현재 문장 재생
-          </button>
-          <button class="btn small secondary" onclick="nextShadowing()">
-            다음 문장
-          </button>
+          <button class="btn small" onclick="playShadowingCurrent()">▶ 현재 문장 재생</button>
+          <button class="btn small secondary" onclick="nextShadowing()">다음 문장</button>
         </div>
       </div>
     </section>
-      
 
-
-    <!-- PUZZLE PAGE -->
-<section id="page-puzzle" class="hidden">
-
-      <div class="card">
-        <h2>문장 퍼즐</h2>
-        <p class="subtext">
-          한글 문장을 보고, 영어 단어 조각을 순서대로 배열해 문장을 완성해보세요.
-        </p>
+    <section id="page-puzzle" class="hidden">
+      <div class="page-title-row">
+        <span class="back-link" onclick="goTo('home')">← 홈으로</span>
       </div>
 
       <div class="card">
+        <h2>문장 퍼즐</h2>
+        <p class="subtext">한글 문장을 보고 영어 단어를 순서대로 배열하세요.</p>
+      </div>
+      <div class="card">
         <div class="section-header">문제</div>
-        <p id="puzzle-question" class="puzzle-question">
-          문제를 불러오는 중...
-        </p>
-
+        <p id="puzzle-question" class="puzzle-question">문제를 불러오는 중...</p>
         <div id="puzzle-bank" class="puzzle-bank"></div>
-
         <div id="puzzle-target" class="puzzle-target"></div>
-
         <div class="button-row">
           <button class="btn small" onclick="checkPuzzle()">정답 확인</button>
           <button class="btn small secondary" onclick="resetPuzzle()">다시 하기</button>
-          
           <button class="btn small secondary" onclick="nextPuzzle()">다음 문제 →</button>
         </div>
-
         <div id="puzzle-feedback" class="feedback"></div>
       </div>
     </section>
 
-    <!-- SPEAKING PAGE -->
-<section id="page-speaking" class="hidden">
+    <section id="page-speaking" class="hidden">
+      <div class="page-title-row">
+        <span class="back-link" onclick="goTo('home')">← 홈으로</span>
+      </div>
 
       <div class="card">
         <h2>말하기 연습 (Speaking)</h2>
-        <p class="subtext">
-          질문을 듣고 마이크 버튼을 눌러 직접 대답해보세요.<br>
-          (크롬 브라우저에서 무료 음성 인식이 지원됩니다)
-        </p>
+        <p class="subtext">질문을 듣고 마이크 버튼을 눌러 대답해보세요.</p>
       </div>
-
       <div class="card">
         <div class="section-header">Q. 질문</div>
-        
-        <p id="speaking-q-en" class="speaking-question" style="font-size: 18px; margin-bottom: 4px;">
-          Question text...
-        </p>
-        <p id="speaking-q-kr" class="subtext" style="margin-bottom: 16px;">
-          해석...
-        </p>
-
-        <button class="btn small" onclick="playSpeakingQuestion()">
-          🔊 질문 다시 듣기
-        </button>
+        <p id="speaking-q-en" class="speaking-question" style="font-size: 18px; margin-bottom: 4px;">Question...</p>
+        <p id="speaking-q-kr" class="subtext" style="margin-bottom: 16px;">해석...</p>
+        <button class="btn small" onclick="playSpeakingQuestion()">🔊 질문 다시 듣기</button>
       </div>
-
       <div class="card" style="text-align: center; padding: 30px 20px;">
         <div class="section-header" style="text-align: left;">나의 답변</div>
-        
-        <div id="mic-btn" class="mic-button" onclick="toggleRecording()">
-          🎤
-        </div>
-        <p id="mic-status" class="subtext" style="margin-top: 10px;">
-          버튼을 누르고 영어로 대답하세요.
-        </p>
-
+        <div id="mic-btn" class="mic-button" onclick="toggleRecording()">🎤</div>
+        <p id="mic-status" class="subtext" style="margin-top: 10px;">버튼을 누르고 말하세요.</p>
         <div id="user-speech-result" class="speech-result-box hidden"></div>
       </div>
-
       <div class="card">
         <div class="toggle-row">
           <label class="section-header" style="cursor: pointer; font-size: 16px;">
-            <input type="checkbox" id="speaking-answer-toggle" onchange="toggleSpeakingAnswer()">
-            ✅ 예시 답안 확인
+            <input type="checkbox" id="speaking-answer-toggle" onchange="toggleSpeakingAnswer()"> ✅ 예시 답안 확인
           </label>
         </div>
-
         <div id="speaking-answer-area" class="hidden" style="margin-top: 10px; padding: 15px; background: #f3f4ff; border-radius: 12px; border: 1px solid #e0e7ff;">
-          <p id="speaking-a-en" style="font-weight: 600; font-size: 18px; margin: 4px 0 4px; color: #4c1d95;">
-            Answer text...
-          </p>
-          <p id="speaking-a-kr" class="subtext">
-            답변 해석...
-          </p>
-          <button class="btn small secondary" style="margin-top: 12px;" onclick="playSpeakingAnswer()">
-            🔊 답안 들어보기
-          </button>
+          <p id="speaking-a-en" style="font-weight: 600; font-size: 18px; margin: 4px 0 4px; color: #4c1d95;">Answer...</p>
+          <p id="speaking-a-kr" class="subtext">해석...</p>
+          <button class="btn small secondary" style="margin-top: 12px;" onclick="playSpeakingAnswer()">🔊 답안 듣기</button>
         </div>
-
         <div class="button-row" style="margin-top: 20px; border-top: 1px solid #eee; padding-top: 16px;">
-          <button class="btn block" onclick="nextSpeaking()">
-            다음 질문 도전하기 →
-          </button>
+          <button class="btn block" onclick="nextSpeaking()">다음 질문 도전하기 →</button>
         </div>
       </div>
     </section>
@@ -582,34 +319,19 @@
   <div id="settings-modal" class="modal-overlay hidden">
     <div class="modal-content card">
       <h2>⚙ 학습 환경 설정</h2>
-      
       <div style="margin-top: 16px;">
-        <label class="section-header">목소리 선택 (Voice)</label>
+        <label class="section-header">목소리 선택</label>
         <select id="tts-voice-select" class="input" onchange="previewVoiceSettings()">
-          <option value="">기본 목소리 (Default)</option>
+          <option value="">기본 목소리</option>
         </select>
-        <p class="hint">브라우저/기기마다 지원하는 목소리가 다릅니다.</p>
       </div>
-
       <div style="margin-top: 20px;">
         <div style="display: flex; justify-content: space-between;">
-          <label class="section-header">말하기 속도 (Speed)</label>
+          <label class="section-header">속도</label>
           <span id="tts-rate-label" style="font-weight:bold; color:var(--accent);">1.0x</span>
         </div>
-        <input 
-          type="range" 
-          id="tts-rate-range" 
-          min="0.5" max="2.0" step="0.1" value="1.0" 
-          style="width: 100%; margin-top: 8px;"
-          oninput="updateRateLabel()"
-          onchange="previewVoiceSettings()" 
-        />
-        <div style="display: flex; justify-content: space-between; font-size: 11px; color: #999;">
-          <span>느림(0.5)</span>
-          <span>빠름(2.0)</span>
-        </div>
+        <input type="range" id="tts-rate-range" min="0.5" max="2.0" step="0.1" value="1.0" style="width: 100%; margin-top: 8px;" oninput="updateRateLabel()" onchange="previewVoiceSettings()" />
       </div>
-
       <div class="button-row" style="margin-top: 24px; border-top: 1px solid #eee; padding-top: 16px;">
         <button class="btn" onclick="saveSettings()">저장하고 닫기</button>
         <button class="btn secondary" onclick="closeSettingsModal()">취소</button>
@@ -620,37 +342,27 @@
   <div id="sync-modal" class="modal-overlay hidden">
     <div class="modal-content card">
       <h2>☁ 데이터 백업/복구</h2>
-      <p class="subtext">
-        아이디와 비밀번호를 꼭 기억해주세요.<br>
-        가입 절차 없이 데이터 저장/불러오기가 가능합니다.
-      </p>
-      
+      <p class="subtext">아이디/비번으로 데이터를 저장하고 불러오세요.</p>
       <div style="margin: 16px 0;">
-        <label class="section-header">나만의 ID</label>
-        <input type="text" id="sync-id" class="input" placeholder="예: hero1234" />
-        
+        <label class="section-header">ID</label>
+        <input type="text" id="sync-id" class="input" placeholder="예: hero123" />
         <label class="section-header" style="display:block; margin-top:12px;">비밀번호</label>
-        <input type="password" id="sync-pw" class="input" placeholder="비밀번호 (숫자 4자리 추천)" />
+        <input type="password" id="sync-pw" class="input" placeholder="비밀번호 4자리" />
       </div>
-
       <div class="button-row">
-        <button class="btn" onclick="uploadData()">⬆ 서버에 저장 (업로드)</button>
+        <button class="btn" onclick="uploadData()">⬆ 서버에 저장</button>
         <button class="btn secondary" onclick="downloadData()">⬇ 서버에서 불러오기</button>
       </div>
-      
       <div style="margin-top: 12px; text-align: right;">
         <button class="btn small secondary" onclick="closeSyncModal()">닫기</button>
       </div>
     </div>
   </div>
 
-  <!-- 외부 JS -->
   <script src="pattern.js"></script>
   <script src="conversation.js"></script>
   <script src="idiom.js"></script>
   <script src="word.js"></script>
-  <script src="script.js" defer></script>
+  <script src="script.js"></script>
 </body>
 </html>
-
-
