@@ -1,0 +1,21 @@
+{
+  "name": "ENGO 영어회화",
+  "short_name": "ENGO",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#8b5cf6",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "https://github.com/csy870617/ENGO/blob/main/3.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "https://github.com/csy870617/ENGO/blob/main/2.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
