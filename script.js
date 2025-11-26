@@ -1016,56 +1016,73 @@ async function uploadData() {
 }
 
 // ⬇ 데이터 다운로드 (불러오기)
+// ⬇ 데이터 다운로드 (진단 모드)
 async function downloadData() {
   const id = document.getElementById("sync-id").value.trim();
   const pw = document.getElementById("sync-pw").value.trim();
 
   if (!id || !pw) return alert("ID와 비밀번호를 입력해주세요.");
-  if (!db) return alert("데이터베이스 연결 실패");
+  if (!db) return alert("데이터베이스 연결 객체(db)가 없습니다.");
 
   try {
+    alert("1단계: 서버에서 ID 검색을 시작합니다...");
     const docRef = db.collection("users").doc(id);
     const doc = await docRef.get();
 
-    if (!doc.exists) return alert("존재하지 않는 ID입니다.");
+    if (!doc.exists) {
+      return alert("❌ 실패: 서버에 해당 ID(" + id + ")가 존재하지 않습니다. 저장이 제대로 안 되었을 수 있습니다.");
+    }
 
+    alert("2단계: ID를 찾았습니다! 비밀번호를 확인합니다...");
     const data = doc.data();
-    if (data.password !== pw) return alert("비밀번호가 틀렸습니다.");
+    
+    // 디버깅을 위해 서버에 저장된 비밀번호를 콘솔에 출력 (F12 눌러서 확인 가능)
+    console.log("서버 비번:", data.password, "입력 비번:", pw);
+
+    if (String(data.password) !== String(pw)) {
+      return alert("❌ 실패: 비밀번호가 일치하지 않습니다.");
+    }
+
+    alert("3단계: 비밀번호 일치! 데이터를 내 기기로 가져옵니다...");
 
     if (!confirm("현재 기기의 데이터를 삭제하고, 서버 데이터로 복구하시겠습니까?")) return;
 
-    // 1. 학습 데이터 복구
+    // 데이터 복구 시도
     if (data.patterns) memorizedPatterns = new Set(data.patterns);
     if (data.words) memorizedWords = new Set(data.words);
     if (data.idioms) memorizedIdioms = new Set(data.idioms);
     
-    // 2. 설정 데이터 복구
     if (data.settings) {
       userVoiceIndex = data.settings.voiceIndex;
       userRate = data.settings.rate;
     }
 
-    // 3. 로컬 스토리지 업데이트
+    alert("4단계: 데이터 로드 완료. 화면을 갱신합니다...");
+
+    // 로컬 스토리지 저장 함수가 존재하는지 확인
+    if (typeof saveData !== "function") throw new Error("'saveData' 함수가 없습니다.");
+
     saveData('pattern');
     saveData('word');
     saveData('idiom');
     localStorage.setItem("ttsSettings", JSON.stringify({ voiceIndex: userVoiceIndex, rate: userRate }));
     localStorage.setItem("lastSyncId", id);
 
-    // 4. 화면 갱신
-    updatePatternProgress();
-    updateWordProgress();
-    updateIdiomProgress();
+    // 화면 갱신 함수들이 존재하는지 확인
+    if (typeof updatePatternProgress === "function") updatePatternProgress();
+    if (typeof updateWordProgress === "function") updateWordProgress();
+    if (typeof updateIdiomProgress === "function") updateIdiomProgress();
     
     // 현재 보고 있는 화면 리프레시
     const currentPage = pages.find(p => !document.getElementById("page-" + p).classList.contains("hidden"));
     if (currentPage) goTo(currentPage);
 
-    alert("✅ 복구 완료! (서버 데이터를 불러왔습니다)");
+    alert("✅ 성공: 모든 데이터를 정상적으로 불러왔습니다!");
     closeSyncModal();
 
   } catch (e) {
-    console.error(e);
-    alert("불러오기 실패: " + e.message);
+    console.error(e); // F12 콘솔에서 자세한 에러 확인 가능
+    alert("❌ 에러 발생: " + e.message);
   }
 }
+
