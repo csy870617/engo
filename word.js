@@ -7226,11 +7226,10841 @@ const wordsLevel2_Part4 = [
 ];
 
 
+const wordsLevel3_Part1 = [
+  {
+    id: "L3-001",
+    word: "advocate",
+    meaning: "옹호하다, 지지자",
+    examples: [
+      { en: "She advocates for stricter environmental laws.", kr: "그녀는 더 엄격한 환경법을 옹호합니다." },
+      { en: "He is a strong advocate of free education.", kr: "그는 무상 교육의 강력한 지지자입니다." }
+    ]
+  },
+  {
+    id: "L3-002",
+    word: "allocate",
+    meaning: "할당하다, 배분하다",
+    examples: [
+      { en: "We decided to allocate more resources to the research team.", kr: "우리는 연구팀에 더 많은 자원을 할당하기로 결정했습니다." },
+      { en: "Time was allocated for a Q&A session.", kr: "질의응답 세션을 위해 시간이 배분되었습니다." }
+    ]
+  },
+  {
+    id: "L3-003",
+    word: "amend",
+    meaning: "개정하다, 수정하다",
+    examples: [
+      { en: "The committee voted to amend the school policy.", kr: "위원회는 학교 정책을 개정하기 위해 투표했습니다." },
+      { en: "The lawyer asked me to amend the contract slightly.", kr: "변호사는 나에게 계약을 약간 수정해 달라고 요청했습니다." }
+    ]
+  },
+  {
+    id: "L3-004",
+    word: "analogy",
+    meaning: "비유, 유사점",
+    examples: [
+      { en: "He used an analogy of a clock to explain the universe.", kr: "그는 우주를 설명하기 위해 시계의 비유를 사용했습니다." },
+      { en: "The theory draws a close analogy between human and animal behavior.", kr: "그 이론은 인간과 동물 행동 사이에 밀접한 유사점을 이끌어냅니다." }
+    ]
+  },
+  {
+    id: "L3-005",
+    word: "anticipate",
+    meaning: "예상하다, 기대하다",
+    examples: [
+      { en: "We anticipate a heavy turnout for the concert.", kr: "우리는 콘서트에 많은 인파가 모일 것을 예상합니다." },
+      { en: "I am anticipating a positive response from the client.", kr: "저는 고객으로부터 긍정적인 응답을 기대하고 있습니다." }
+    ]
+  },
+  {
+    id: "L3-006",
+    word: "arbitrary",
+    meaning: "임의적인, 독단적인",
+    examples: [
+      { en: "The selection process seemed entirely arbitrary.", kr: "선발 과정은 전적으로 임의적인 것처럼 보였습니다." },
+      { en: "We cannot accept such an arbitrary decision.", kr: "우리는 그러한 독단적인 결정을 받아들일 수 없습니다." }
+    ]
+  },
+  {
+    id: "L3-007",
+    word: "assert",
+    meaning: "주장하다, 단언하다",
+    examples: [
+      { en: "He asserted his innocence despite the evidence.", kr: "그는 증거에도 불구하고 자신의 무죄를 주장했습니다." },
+      { en: "You need to assert yourself in negotiations.", kr: "당신은 협상에서 자신을 단언해야 합니다." }
+    ]
+  },
+  {
+    id: "L3-008",
+    word: "assess",
+    meaning: "평가하다, 사정하다",
+    examples: [
+      { en: "We need to assess the damage after the storm.", kr: "우리는 폭풍 후 피해를 평가해야 합니다." },
+      { en: "The teacher will assess the students' progress.", kr: "선생님은 학생들의 진도를 사정할 것입니다." }
+    ]
+  },
+  {
+    id: "L3-009",
+    word: "assume",
+    meaning: "추정하다, (책임을) 맡다",
+    examples: [
+      { en: "I assume you have read the documents.", kr: "당신이 문서들을 읽었다고 추정합니다." },
+      { en: "She will assume the role of team leader next month.", kr: "그녀는 다음 달에 팀 리더 역할을 맡을 것입니다." }
+    ]
+  },
+  {
+    id: "L3-010",
+    word: "attribute",
+    meaning: "(~의) 탓으로 돌리다",
+    examples: [
+      { en: "He attributes his success to hard work and luck.", kr: "그는 자신의 성공을 근면과 운의 탓으로 돌립니다." },
+      { en: "Patience is an important attribute of a good teacher.", kr: "인내는 좋은 선생님의 중요한 속성입니다." }
+    ]
+  },
+  {
+    id: "L3-011",
+    word: "bias",
+    meaning: "편견, 편향",
+    examples: [
+      { en: "The research findings showed evidence of experimental bias.", kr: "그 연구 결과는 실험 편향의 증거를 보여주었습니다." },
+      { en: "We must eliminate personal bias from the review process.", kr: "우리는 검토 과정에서 개인적인 편견을 제거해야 합니다." }
+    ]
+  },
+  {
+    id: "L3-012",
+    word: "cease",
+    meaning: "중단하다, 멈추다",
+    examples: [
+      { en: "The company will cease operations in the region.", kr: "그 회사는 그 지역에서 운영을 중단할 것입니다." },
+      { en: "The rain ceased shortly after we arrived.", kr: "우리가 도착한 직후 비가 멈췄습니다." }
+    ]
+  },
+  {
+    id: "L3-013",
+    word: "clarify",
+    meaning: "명확히 하다",
+    examples: [
+      { en: "Could you please clarify your last point?", kr: "마지막 요점을 명확히 해 주시겠어요?" },
+      { en: "The new guidelines clarify the rules for remote work.", kr: "새로운 지침은 원격 근무 규칙을 명확히 합니다." }
+    ]
+  },
+  {
+    id: "L3-014",
+    word: "compatible",
+    meaning: "호환되는, 양립할 수 있는",
+    examples: [
+      { en: "Is this new software compatible with my old computer?", kr: "이 새 소프트웨어가 제 오래된 컴퓨터와 호환되나요?" },
+      { en: "Their personalities are not compatible.", kr: "그들의 성격은 양립할 수 없습니다." }
+    ]
+  },
+  {
+    id: "L3-015",
+    word: "concede",
+    meaning: "인정하다, 양보하다",
+    examples: [
+      { en: "He finally conceded that the opposing argument was stronger.", kr: "그는 마침내 반대 주장이 더 강력하다는 것을 인정했습니다." },
+      { en: "The government conceded to the protesters' demands.", kr: "정부는 시위대의 요구에 양보했습니다." }
+    ]
+  },
+  {
+    id: "L3-016",
+    word: "concise",
+    meaning: "간결한",
+    examples: [
+      { en: "Please provide a concise summary of the findings.", kr: "조사 결과에 대한 간결한 요약을 제공해 주세요." },
+      { en: "The best articles are often clear and concise.", kr: "최고의 기사들은 종종 명확하고 간결합니다." }
+    ]
+  },
+  {
+    id: "L3-017",
+    word: "consensus",
+    meaning: "합의, 의견 일치",
+    examples: [
+      { en: "The committee reached a consensus after hours of discussion.", kr: "위원회는 몇 시간의 토론 끝에 합의에 도달했습니다." },
+      { en: "There is no scientific consensus on the topic yet.", kr: "그 주제에 대한 과학적 의견 일치는 아직 없습니다." }
+    ]
+  },
+  {
+    id: "L3-018",
+    word: "constrain",
+    meaning: "제약하다, 강요하다",
+    examples: [
+      { en: "The lack of funds severely constrained the project.", kr: "자금 부족이 프로젝트를 심각하게 제약했습니다." },
+      { en: "She felt constrained by her own high expectations.", kr: "그녀는 자신의 높은 기대치에 의해 강요받는다고 느꼈습니다." }
+    ]
+  },
+  {
+    id: "L3-019",
+    word: "contrast",
+    meaning: "대조, 대비",
+    examples: [
+      { en: "In contrast to last year, sales are up by 20%.", kr: "작년과 대조적으로, 매출이 20% 증가했습니다." },
+      { en: "The photo shows a sharp contrast between light and shadow.", kr: "그 사진은 빛과 그림자 사이의 뚜렷한 대비를 보여줍니다." }
+    ]
+  },
+  {
+    id: "L3-020",
+    word: "convert",
+    meaning: "전환하다, 변환하다",
+    examples: [
+      { en: "Can you convert this file to a PDF format?", kr: "이 파일을 PDF 형식으로 변환할 수 있습니까?" },
+      { en: "The old warehouse was converted into a modern loft.", kr: "그 오래된 창고는 현대적인 로프트로 개조되었습니다." }
+    ]
+  },
+  {
+    id: "L3-021",
+    word: "correlation",
+    meaning: "상관관계",
+    examples: [
+      { en: "The study found a strong correlation between exercise and health.", kr: "그 연구는 운동과 건강 사이에 강한 상관관계를 발견했습니다." },
+      { en: "Correlation does not always imply causation.", kr: "상관관계가 항상 인과 관계를 의미하는 것은 아닙니다." }
+    ]
+  },
+  {
+    id: "L3-022",
+    word: "crucial",
+    meaning: "결정적인, 중대한",
+    examples: [
+      { en: "This piece of evidence is crucial to the case.", kr: "이 증거는 사건에 결정적입니다." },
+      { en: "It is crucial that we act immediately.", kr: "우리가 즉시 행동하는 것이 중대합니다." }
+    ]
+  },
+  {
+    id: "L3-023",
+    word: "decline",
+    meaning: "감소하다, 거절하다",
+    examples: [
+      { en: "The population has been in steady decline since the 1990s.", kr: "인구는 1990년대 이후 꾸준히 감소하고 있습니다." },
+      { en: "She politely declined the invitation to the formal event.", kr: "그녀는 공식 행사에 대한 초대를 정중하게 거절했습니다." }
+    ]
+  },
+  {
+    id: "L3-024",
+    word: "deduce",
+    meaning: "추론하다, 연역하다",
+    examples: [
+      { en: "We can deduce the answer from the facts provided.", kr: "제공된 사실들로부터 답을 추론할 수 있습니다." },
+      { en: "The scientist managed to deduce the hidden pattern.", kr: "그 과학자는 숨겨진 패턴을 연역해내는 데 성공했습니다." }
+    ]
+  },
+  {
+    id: "L3-025",
+    word: "define",
+    meaning: "정의하다",
+    examples: [
+      { en: "How would you define the concept of justice?", kr: "당신은 정의의 개념을 어떻게 정의하겠습니까?" },
+      { en: "The boundaries of the park are clearly defined.", kr: "공원의 경계가 명확하게 규정되어 있습니다." }
+    ]
+  },
+  {
+    id: "L3-026",
+    word: "demonstrate",
+    meaning: "입증하다, 보여주다",
+    examples: [
+      { en: "The data clearly demonstrates the success of the program.", kr: "그 자료는 프로그램의 성공을 명확하게 입증합니다." },
+      { en: "He demonstrated the new software's capabilities.", kr: "그는 새 소프트웨어의 기능을 시연했습니다." }
+    ]
+  },
+  {
+    id: "L3-027",
+    word: "denote",
+    meaning: "나타내다, 표시하다",
+    examples: [
+      { en: "The color red often denotes danger or warning.", kr: "빨간색은 종종 위험이나 경고를 나타냅니다." },
+      { en: "The symbol 'R' is used to denote electrical resistance.", kr: "기호 'R'은 전기 저항을 표시하는 데 사용됩니다." }
+    ]
+  },
+  {
+    id: "L3-028",
+    word: "deprive",
+    meaning: "빼앗다, 박탈하다",
+    examples: [
+      { en: "Lack of sleep can deprive you of your energy.", kr: "수면 부족은 당신의 에너지를 빼앗을 수 있습니다." },
+      { en: "The court deprived the parent of custody.", kr: "법원은 그 부모에게 양육권을 박탈했습니다." }
+    ]
+  },
+  {
+    id: "L3-029",
+    word: "derive",
+    meaning: "얻다, 유래하다",
+    examples: [
+      { en: "She derives great satisfaction from her work.", kr: "그녀는 자신의 일에서 큰 만족감을 얻습니다." },
+      { en: "Many customs derive from ancient traditions.", kr: "많은 관습이 고대 전통에서 유래합니다." }
+    ]
+  },
+  {
+    id: "L3-030",
+    word: "dimension",
+    meaning: "차원, 측면",
+    examples: [
+      { en: "We need to analyze the social dimension of the problem.", kr: "우리는 그 문제의 사회적 측면을 분석해야 합니다." },
+      { en: "The room's dimensions are 5 meters by 4 meters.", kr: "그 방의 치수는 가로 5미터, 세로 4미터입니다." }
+    ]
+  },
+  {
+    id: "L3-031",
+    word: "disclose",
+    meaning: "폭로하다, 드러내다",
+    examples: [
+      { en: "The company refused to disclose its financial records.", kr: "그 회사는 재정 기록을 폭로하는 것을 거부했습니다." },
+      { en: "The journalist promised not to disclose her source.", kr: "그 기자는 자신의 출처를 드러내지 않겠다고 약속했습니다." }
+    ]
+  },
+  {
+    id: "L3-032",
+    word: "discriminate",
+    meaning: "차별하다, 구별하다",
+    examples: [
+      { en: "It is illegal to discriminate based on age or gender.", kr: "나이나 성별을 근거로 차별하는 것은 불법입니다." },
+      { en: "She can easily discriminate between good and bad wine.", kr: "그녀는 좋은 와인과 나쁜 와인을 쉽게 구별할 수 있습니다." }
+    ]
+  },
+  {
+    id: "L3-033",
+    word: "dispose",
+    meaning: "처리하다, 처분하다",
+    examples: [
+      { en: "You must dispose of hazardous waste properly.", kr: "당신은 유해 폐기물을 적절하게 처리해야 합니다." },
+      { en: "The unwanted items were disposed of yesterday.", kr: "원치 않는 물건들은 어제 처분되었습니다." }
+    ]
+  },
+  {
+    id: "L3-034",
+    word: "distort",
+    meaning: "왜곡하다",
+    examples: [
+      { en: "The newspaper was accused of distorting the facts.", kr: "그 신문은 사실을 왜곡했다는 비난을 받았습니다." },
+      { en: "The funhouse mirror distorts your reflection.", kr: "그 놀이 공원 거울은 당신의 모습을 왜곡합니다." }
+    ]
+  },
+  {
+    id: "L3-035",
+    word: "diverse",
+    meaning: "다양한",
+    examples: [
+      { en: "The class consists of students from diverse backgrounds.", kr: "그 수업은 다양한 배경을 가진 학생들로 구성되어 있습니다." },
+      { en: "The store sells a diverse range of products.", kr: "그 가게는 다양한 범위의 제품을 판매합니다." }
+    ]
+  },
+  {
+    id: "L3-036",
+    word: "domain",
+    meaning: "영역, 분야",
+    examples: [
+      { en: "That subject is outside my domain of expertise.", kr: "그 주제는 제 전문 지식 영역 밖에 있습니다." },
+      { en: "The park is public domain and open to everyone.", kr: "그 공원은 공공 영역이며 모두에게 개방되어 있습니다." }
+    ]
+  },
+  {
+    id: "L3-037",
+    word: "draft",
+    meaning: "초안, 초안을 작성하다",
+    examples: [
+      { en: "I finished the first draft of my essay last night.", kr: "저는 어젯밤에 에세이의 첫 초안을 마쳤습니다." },
+      { en: "The lawyer will draft the new contract by Monday.", kr: "변호사가 월요일까지 새 계약서 초안을 작성할 것입니다." }
+    ]
+  },
+  {
+    id: "L3-038",
+    word: "dynamic",
+    meaning: "역동적인",
+    examples: [
+      { en: "The city's rapid growth creates a dynamic environment.", kr: "그 도시의 빠른 성장은 역동적인 환경을 만듭니다." },
+      { en: "He is a dynamic leader who motivates the team.", kr: "그는 팀에게 동기를 부여하는 역동적인 리더입니다." }
+    ]
+  },
+  {
+    id: "L3-039",
+    word: "elevate",
+    meaning: "높이다, 향상시키다",
+    examples: [
+      { en: "The goal is to elevate the quality of public education.", kr: "목표는 공교육의 질을 높이는 것입니다." },
+      { en: "The stage was slightly elevated above the audience.", kr: "무대는 청중보다 약간 높여져 있었습니다." }
+    ]
+  },
+  {
+    id: "L3-040",
+    word: "eliminate",
+    meaning: "제거하다, 없애다",
+    examples: [
+      { en: "We must eliminate all possibilities of error.", kr: "우리는 모든 오류 가능성을 제거해야 합니다." },
+      { en: "The team was eliminated in the first round.", kr: "그 팀은 1라운드에서 탈락했습니다." }
+    ]
+  },
+  {
+    id: "L3-041",
+    word: "embed",
+    meaning: "깊숙이 박다, 내장하다",
+    examples: [
+      { en: "The stone was firmly embedded in the concrete.", kr: "그 돌은 콘크리트에 단단히 박혀 있었습니다." },
+      { en: "The media often embeds video clips in their articles.", kr: "언론은 종종 그들의 기사에 비디오 클립을 내장합니다." }
+    ]
+  },
+  {
+    id: "L3-042",
+    word: "embrace",
+    meaning: "포용하다, 받아들이다",
+    examples: [
+      { en: "We must embrace technological change to survive.", kr: "우리는 생존을 위해 기술적 변화를 받아들여야 합니다." },
+      { en: "She embraced her friend warmly at the airport.", kr: "그녀는 공항에서 친구를 따뜻하게 포옹했습니다." }
+    ]
+  },
+  {
+    id: "L3-043",
+    word: "emerge",
+    meaning: "나타나다, 출현하다",
+    examples: [
+      { en: "The sun emerged from behind the clouds.", kr: "태양이 구름 뒤에서 나타났습니다." },
+      { en: "New scientific findings constantly emerge.", kr: "새로운 과학적 발견들이 끊임없이 출현합니다." }
+    ]
+  },
+  {
+    id: "L3-044",
+    word: "empirical",
+    meaning: "경험적인, 실증적인",
+    examples: [
+      { en: "The conclusion is based on strong empirical evidence.", kr: "그 결론은 강력한 경험적 증거에 기반하고 있습니다." },
+      { en: "We need an empirical test to verify the theory.", kr: "우리는 그 이론을 검증하기 위해 실증적인 테스트가 필요합니다." }
+    ]
+  },
+  {
+    id: "L3-045",
+    word: "endeavor",
+    meaning: "노력, 시도하다",
+    examples: [
+      { en: "Success requires constant endeavor and dedication.", kr: "성공은 끊임없는 노력과 헌신을 필요로 합니다." },
+      { en: "He endeavored to finish the project on time.", kr: "그는 프로젝트를 제시간에 끝내려고 시도했습니다." }
+    ]
+  },
+  {
+    id: "L3-046",
+    word: "endorse",
+    meaning: "지지하다, 보증하다",
+    examples: [
+      { en: "The organization publicly endorsed the candidate.", kr: "그 조직은 공개적으로 그 후보를 지지했습니다." },
+      { en: "Many athletes endorse sports brands.", kr: "많은 운동선수들이 스포츠 브랜드를 보증합니다." }
+    ]
+  },
+  {
+    id: "L3-047",
+    word: "enforce",
+    meaning: "집행하다, 강요하다",
+    examples: [
+      { en: "The city police strictly enforce traffic laws.", kr: "시 경찰은 교통 법규를 엄격하게 집행합니다." },
+      { en: "It is difficult to enforce this rule without constant supervision.", kr: "지속적인 감독 없이는 이 규칙을 강요하기 어렵습니다." }
+    ]
+  },
+  {
+    id: "L3-048",
+    word: "enhance",
+    meaning: "향상시키다",
+    examples: [
+      { en: "Good lighting can enhance the atmosphere of the room.", kr: "좋은 조명은 방의 분위기를 향상시킬 수 있습니다." },
+      { en: "The software update enhances the security features.", kr: "그 소프트웨어 업데이트는 보안 기능을 향상시킵니다." }
+    ]
+  },
+  {
+    id: "L3-049",
+    word: "entity",
+    meaning: "실체, 독립체",
+    examples: [
+      { en: "The company is a separate legal entity.", kr: "그 회사는 별도의 법적 실체입니다." },
+      { en: "The organization functions as an independent entity.", kr: "그 조직은 독립적인 실체로 기능합니다." }
+    ]
+  },
+  {
+    id: "L3-050",
+    word: "equivalent",
+    meaning: "동등한, 상응하는",
+    examples: [
+      { en: "One euro is roughly equivalent to 1.1 US dollars.", kr: "1유로는 대략 1.1달러와 동등합니다." },
+      { en: "She has an equivalent level of experience.", kr: "그녀는 동등한 수준의 경험을 가지고 있습니다." }
+    ]
+  },
+  {
+    id: "L3-051",
+    word: "erode",
+    meaning: "침식하다, 약화시키다",
+    examples: [
+      { en: "Wind and rain slowly erode the rock formations.", kr: "바람과 비는 암석층을 서서히 침식시킵니다." },
+      { en: "Lack of trust can erode a relationship over time.", kr: "신뢰 부족은 시간이 지남에 따라 관계를 약화시킬 수 있습니다." }
+    ]
+  },
+  {
+    id: "L3-052",
+    word: "ethical",
+    meaning: "윤리적인",
+    examples: [
+      { en: "The decision raises several ethical questions.", kr: "그 결정은 여러 윤리적인 질문을 제기합니다." },
+      { en: "We must adhere to the highest ethical standards.", kr: "우리는 최고의 윤리적 기준을 준수해야 합니다." }
+    ]
+  },
+  {
+    id: "L3-053",
+    word: "evoke",
+    meaning: "불러일으키다",
+    examples: [
+      { en: "The old photographs evoked happy memories.", kr: "오래된 사진들은 행복한 기억들을 불러일으켰습니다." },
+      { en: "The speech was meant to evoke a sense of national pride.", kr: "그 연설은 국가적 자부심을 불러일으키기 위해 의도되었습니다." }
+    ]
+  },
+  {
+    id: "L3-054",
+    word: "evolve",
+    meaning: "진화하다, 발전하다",
+    examples: [
+      { en: "The species evolved to survive in the cold climate.", kr: "그 종은 추운 기후에서 생존하도록 진화했습니다." },
+      { en: "The project's scope is expected to evolve over the next few months.", kr: "프로젝트의 범위는 다음 몇 달 동안 발전할 것으로 예상됩니다." }
+    ]
+  },
+  {
+    id: "L3-055",
+    word: "exceed",
+    meaning: "초과하다",
+    examples: [
+      { en: "Do not exceed the luggage weight limit.", kr: "수하물 무게 제한을 초과하지 마세요." },
+      { en: "The company's performance exceeded all expectations.", kr: "그 회사의 성과는 모든 기대를 초과했습니다." }
+    ]
+  },
+  {
+    id: "L3-056",
+    word: "exclude",
+    meaning: "제외하다, 배제하다",
+    examples: [
+      { en: "The price excludes tax and service charges.", kr: "가격은 세금과 봉사료를 제외합니다." },
+      { en: "We must exclude the possibility of a mistake.", kr: "우리는 실수의 가능성을 배제해야 합니다." }
+    ]
+  },
+  {
+    id: "L3-057",
+    word: "exert",
+    meaning: "행사하다, 발휘하다",
+    examples: [
+      { en: "He had to exert all his strength to lift the rock.", kr: "그는 바위를 들기 위해 자신의 모든 힘을 발휘해야 했습니다." },
+      { en: "The new rules exert pressure on small businesses.", kr: "새 규칙들은 소기업에 압력을 행사합니다." }
+    ]
+  },
+  {
+    id: "L3-058",
+    word: "exhibit",
+    meaning: "전시하다, 나타내다",
+    examples: [
+      { en: "The museum will exhibit the new collection next month.", kr: "그 박물관은 다음 달에 새로운 소장품을 전시할 것입니다." },
+      { en: "She did not exhibit any signs of distress.", kr: "그녀는 어떤 고통의 징후도 나타내지 않았습니다." }
+    ]
+  },
+  {
+    id: "L3-059",
+    word: "exploit",
+    meaning: "착취하다, 활용하다",
+    examples: [
+      { en: "The company was criticized for exploiting cheap labor.", kr: "그 회사는 저렴한 노동력을 착취했다는 비판을 받았습니다." },
+      { en: "We should exploit this opportunity to expand our market.", kr: "우리는 시장을 확장하기 위해 이 기회를 활용해야 합니다." }
+    ]
+  },
+  {
+    id: "L3-060",
+    word: "expose",
+    meaning: "노출시키다, 폭로하다",
+    examples: [
+      { en: "Do not expose the skin to direct sunlight for too long.", kr: "피부를 직사광선에 너무 오래 노출시키지 마세요." },
+      { en: "The investigative reporter exposed the truth about the scandal.", kr: "그 탐사 보도 기자는 스캔들에 대한 진실을 폭로했습니다." }
+    ]
+  },
+  {
+    id: "L3-061",
+    word: "extract",
+    meaning: "추출하다, 뽑아내다",
+    examples: [
+      { en: "It is difficult to extract the oil from the seed.", kr: "그 씨앗에서 기름을 추출하는 것은 어렵습니다." },
+      { en: "The dentist had to extract a painful tooth.", kr: "치과 의사는 고통스러운 이를 뽑아내야 했습니다." }
+    ]
+  },
+  {
+    id: "L3-062",
+    word: "feasible",
+    meaning: "실행 가능한",
+    examples: [
+      { en: "We need a feasible plan that can be implemented quickly.", kr: "우리는 빠르게 실행될 수 있는 실행 가능한 계획이 필요합니다." },
+      { en: "Is it technically feasible to build the bridge here?", kr: "여기에 다리를 건설하는 것이 기술적으로 실행 가능합니까?" }
+    ]
+  },
+  {
+    id: "L3-063",
+    word: "fluctuate",
+    meaning: "변동하다, 오르내리다",
+    examples: [
+      { en: "Oil prices fluctuate daily based on global events.", kr: "유가는 세계적인 사건에 따라 매일 변동합니다." },
+      { en: "The temperature fluctuated between 20 and 25 degrees.", kr: "온도는 20도와 25도 사이를 오르내렸습니다." }
+    ]
+  },
+  {
+    id: "L3-064",
+    word: "fund",
+    meaning: "자금, 자금을 대다",
+    examples: [
+      { en: "The charity needs more funds to continue its work.", kr: "그 자선단체는 작업을 계속하기 위해 더 많은 자금이 필요합니다." },
+      { en: "The project was fully funded by a private investor.", kr: "그 프로젝트는 개인 투자자에 의해 완전히 자금을 지원받았습니다." }
+    ]
+  },
+  {
+    id: "L3-065",
+    word: "fundamental",
+    meaning: "근본적인, 기본적인",
+    examples: [
+      { en: "Honesty is a fundamental principle of our business.", kr: "정직은 우리 사업의 근본적인 원칙입니다." },
+      { en: "The report describes the fundamental issues facing the company.", kr: "그 보고서는 회사가 직면한 기본적인 문제들을 설명합니다." }
+    ]
+  },
+  {
+    id: "L3-066",
+    word: "generalize",
+    meaning: "일반화하다",
+    examples: [
+      { en: "It is wrong to generalize about an entire group of people.", kr: "사람들의 전체 그룹에 대해 일반화하는 것은 잘못입니다." },
+      { en: "The theory attempts to generalize the results to all living things.", kr: "그 이론은 결과를 모든 생명체에 일반화하려고 시도합니다." }
+    ]
+  },
+  {
+    id: "L3-067",
+    word: "generate",
+    meaning: "생성하다, 발생시키다",
+    examples: [
+      { en: "The power plant generates electricity using coal.", kr: "그 발전소는 석탄을 사용하여 전기를 생성합니다." },
+      { en: "The advertisement was designed to generate excitement.", kr: "그 광고는 흥미를 발생시키도록 고안되었습니다." }
+    ]
+  },
+  {
+    id: "L3-068",
+    word: "govern",
+    meaning: "통치하다, 지배하다",
+    examples: [
+      { en: "The laws that govern the nation are based on democracy.", kr: "그 나라를 통치하는 법률은 민주주의에 기반합니다." },
+      { en: "Logic should govern your decision-making process.", kr: "논리가 당신의 의사 결정 과정을 지배해야 합니다." }
+    ]
+  },
+  {
+    id: "L3-069",
+    word: "hypothesis",
+    meaning: "가설",
+    examples: [
+      { en: "The experiment tested the scientist's main hypothesis.", kr: "그 실험은 과학자의 주요 가설을 시험했습니다." },
+      { en: "We formed a hypothesis about the cause of the disease.", kr: "우리는 그 질병의 원인에 대한 가설을 세웠습니다." }
+    ]
+  },
+  {
+    id: "L3-070",
+    word: "identical",
+    meaning: "동일한",
+    examples: [
+      { en: "The two houses are virtually identical in appearance.", kr: "그 두 집은 외관상 사실상 동일합니다." },
+      { en: "The witness described an event identical to the one in the police report.", kr: "그 증인은 경찰 보고서의 내용과 동일한 사건을 묘사했습니다." }
+    ]
+  },
+  {
+    id: "L3-071",
+    word: "illustrate",
+    meaning: "설명하다, 삽화",
+    examples: [
+      { en: "The data illustrates the need for more funding.", kr: "그 자료는 더 많은 자금의 필요성을 설명합니다." },
+      { en: "The children's book is fully illustrated with colorful drawings.", kr: "그 동화책은 다채로운 그림으로 완전히 삽화되어 있습니다." }
+    ]
+  },
+  {
+    id: "L3-072",
+    word: "immigrant",
+    meaning: "이민자",
+    examples: [
+      { en: "Many immigrants come here seeking a better life.", kr: "많은 이민자들이 더 나은 삶을 찾아 이곳으로 옵니다." },
+      { en: "The city has a large population of first-generation immigrants.", kr: "그 도시는 많은 1세대 이민자 인구를 가지고 있습니다." }
+    ]
+  },
+  {
+    id: "L3-073",
+    word: "imply",
+    meaning: "암시하다",
+    examples: [
+      { en: "His hesitation seemed to imply some doubt.", kr: "그의 망설임은 약간의 의심을 암시하는 것처럼 보였습니다." },
+      { en: "The article implies a connection between the two events.", kr: "그 기사는 두 사건 사이에 연관성이 있음을 암시합니다." }
+    ]
+  },
+  {
+    id: "L3-074",
+    word: "impose",
+    meaning: "부과하다, 강요하다",
+    examples: [
+      { en: "The government imposed a ban on smoking in all public parks.", kr: "정부는 모든 공공 공원에서 흡연 금지를 부과했습니다." },
+      { en: "Do not impose your views on others.", kr: "당신의 견해를 다른 사람에게 강요하지 마세요." }
+    ]
+  },
+  {
+    id: "L3-075",
+    word: "incentive",
+    meaning: "장려책, 동기",
+    examples: [
+      { en: "The company offers a financial incentive for early retirement.", kr: "그 회사는 조기 퇴직에 대한 금전적 장려책을 제공합니다." },
+      { en: "What is your main incentive for working so hard?", kr: "그렇게 열심히 일하는 당신의 주된 동기는 무엇입니까?" }
+    ]
+  },
+  {
+    id: "L3-076",
+    word: "incidence",
+    meaning: "발생률",
+    examples: [
+      { en: "The incidence of the disease is higher among the elderly.", kr: "그 질병의 발생률은 노인들 사이에서 더 높습니다." },
+      { en: "We are trying to reduce the incidence of traffic accidents.", kr: "우리는 교통사고 발생률을 줄이려고 노력하고 있습니다." }
+    ]
+  },
+  {
+    id: "L3-077",
+    word: "incorporate",
+    meaning: "통합하다, 포함하다",
+    examples: [
+      { en: "We should incorporate the new features into the next version.", kr: "우리는 새로운 기능들을 다음 버전에 통합해야 합니다." },
+      { en: "The new company incorporated the assets of the old one.", kr: "새 회사는 이전 회사의 자산들을 포함했습니다." }
+    ]
+  },
+  {
+    id: "L3-078",
+    word: "indigenous",
+    meaning: "토착의, 고유의",
+    examples: [
+      { en: "The indigenous people of the island have a unique culture.", kr: "그 섬의 토착민들은 독특한 문화를 가지고 있습니다." },
+      { en: "This plant is indigenous to the mountainous region.", kr: "이 식물은 산악 지역 고유의 것입니다." }
+    ]
+  },
+  {
+    id: "L3-079",
+    word: "induce",
+    meaning: "유도하다, 유발하다",
+    examples: [
+      { en: "The advertisement was designed to induce consumers to buy the product.", kr: "그 광고는 소비자들이 제품을 구매하도록 유도하기 위해 고안되었습니다." },
+      { en: "Loud noises can induce stress and headaches.", kr: "큰 소음은 스트레스와 두통을 유발할 수 있습니다." }
+    ]
+  },
+  {
+    id: "L3-080",
+    word: "infer",
+    meaning: "추론하다",
+    examples: [
+      { en: "What can you infer from the speaker's tone of voice?", kr: "연사의 목소리 톤에서 무엇을 추론할 수 있습니까?" },
+      { en: "We infer meaning based on the context.", kr: "우리는 맥락에 기반하여 의미를 추론합니다." }
+    ]
+  },
+  {
+    id: "L3-081",
+    word: "infrastructure",
+    meaning: "기반 시설",
+    examples: [
+      { en: "The city plans to improve its public transport infrastructure.", kr: "그 도시는 대중교통 기반 시설을 개선할 계획입니다." },
+      { en: "Damaged infrastructure is slowing down aid efforts.", kr: "손상된 기반 시설이 구호 노력을 지연시키고 있습니다." }
+    ]
+  },
+  {
+    id: "L3-082",
+    word: "inhibit",
+    meaning: "억제하다, 저해하다",
+    examples: [
+      { en: "Fear of failure can inhibit creativity.", kr: "실패에 대한 두려움은 창의성을 저해할 수 있습니다." },
+      { en: "The drug is designed to inhibit the growth of bacteria.", kr: "그 약은 박테리아의 성장을 억제하도록 고안되었습니다." }
+    ]
+  },
+  {
+    id: "L3-083",
+    word: "initial",
+    meaning: "초기의",
+    examples: [
+      { en: "The initial reaction to the news was shock.", kr: "그 소식에 대한 초기 반응은 충격이었습니다." },
+      { en: "The project is still in its initial planning stages.", kr: "그 프로젝트는 여전히 초기 계획 단계에 있습니다." }
+    ]
+  },
+  {
+    id: "L3-084",
+    word: "insight",
+    meaning: "통찰력",
+    examples: [
+      { en: "Her deep insight helped solve the complex problem.", kr: "그녀의 깊은 통찰력이 복잡한 문제를 해결하는 데 도움이 되었습니다." },
+      { en: "The book provides great insight into the culture.", kr: "그 책은 그 문화에 대한 훌륭한 통찰력을 제공합니다." }
+    ]
+  },
+  {
+    id: "L3-085",
+    word: "instance",
+    meaning: "사례, 경우",
+    examples: [
+      { en: "For instance, look at the graph on page 7.", kr: "예를 들어, 7페이지의 그래프를 보세요." },
+      { en: "The crime was a rare instance of violence in the town.", kr: "그 범죄는 그 마을에서 드문 폭력 사례였습니다." }
+    ]
+  },
+  {
+    id: "L3-086",
+    word: "integrate",
+    meaning: "통합하다",
+    examples: [
+      { en: "We need to integrate the new software with the old database.", kr: "우리는 새 소프트웨어를 기존 데이터베이스와 통합해야 합니다." },
+      { en: "She found it easy to integrate into the new team.", kr: "그녀는 새 팀에 쉽게 통합되는 것을 알았습니다." }
+    ]
+  },
+  {
+    id: "L3-087",
+    word: "integral",
+    meaning: "필수적인, 통합적인",
+    examples: [
+      { en: "Teamwork is an integral part of the company's success.", kr: "팀워크는 회사 성공의 필수적인 부분입니다." },
+      { en: "The kitchen is an integral element of the modern home design.", kr: "부엌은 현대 주택 디자인의 통합적인 요소입니다." }
+    ]
+  },
+  {
+    id: "L3-088",
+    word: "intense",
+    meaning: "강렬한, 집중적인",
+    examples: [
+      { en: "The workout requires intense physical effort.", kr: "그 운동은 강렬한 육체적 노력을 요구합니다." },
+      { en: "There was intense pressure to finish the project on time.", kr: "프로젝트를 제시간에 끝내야 한다는 집중적인 압력이 있었습니다." }
+    ]
+  },
+  {
+    id: "L3-089",
+    word: "interact",
+    meaning: "상호 작용하다",
+    examples: [
+      { en: "The two leaders rarely interact outside of formal meetings.", kr: "두 지도자는 공식 회의 외에서는 거의 상호 작용하지 않습니다." },
+      { en: "The chemicals interact to produce a harmless gas.", kr: "그 화학 물질들은 상호 작용하여 무해한 가스를 생성합니다." }
+    ]
+  },
+  {
+    id: "L3-090",
+    word: "interpret",
+    meaning: "해석하다, 통역하다",
+    examples: [
+      { en: "How do you interpret the meaning of this ancient poem?", kr: "당신은 이 고대 시의 의미를 어떻게 해석합니까?" },
+      { en: "She was asked to interpret the speech for the foreign delegates.", kr: "그녀는 외국 대표들을 위해 연설을 통역해 달라고 요청받았습니다." }
+    ]
+  },
+  {
+    id: "L3-091",
+    word: "intervene",
+    meaning: "개입하다, 중재하다",
+    examples: [
+      { en: "The government refused to intervene in the private market dispute.", kr: "정부는 사적 시장 분쟁에 개입하기를 거부했습니다." },
+      { en: "The doctor had to intervene immediately to save the patient's life.", kr: "의사는 환자의 생명을 구하기 위해 즉시 개입해야 했습니다." }
+    ]
+  },
+  {
+    id: "L3-092",
+    word: "intrinsic",
+    meaning: "고유한, 본질적인",
+    examples: [
+      { en: "The painting has immense intrinsic value.", kr: "그 그림은 엄청난 고유한 가치를 가지고 있습니다." },
+      { en: "The ability to learn is an intrinsic human trait.", kr: "학습 능력은 인간의 본질적인 특성입니다." }
+    ]
+  },
+  {
+    id: "L3-093",
+    word: "invest",
+    meaning: "투자하다",
+    examples: [
+      { en: "It is wise to invest in real estate.", kr: "부동산에 투자하는 것은 현명합니다." },
+      { en: "We need to invest more time in planning.", kr: "우리는 계획에 더 많은 시간을 투자해야 합니다." }
+    ]
+  },
+  {
+    id: "L3-094",
+    word: "isolate",
+    meaning: "고립시키다, 분리하다",
+    examples: [
+      { en: "The patient was isolated to prevent the spread of the virus.", kr: "그 환자는 바이러스 확산을 막기 위해 고립되었습니다." },
+      { en: "We need to isolate the variable causing the error.", kr: "우리는 오류를 유발하는 변수를 분리해야 합니다." }
+    ]
+  },
+  {
+    id: "L3-095",
+    word: "justify",
+    meaning: "정당화하다, 해명하다",
+    examples: [
+      { en: "How can you justify such reckless spending?", kr: "어떻게 그런 무모한 지출을 정당화할 수 있습니까?" },
+      { en: "You don't need to justify your decision to me.", kr: "당신은 나에게 당신의 결정을 해명할 필요가 없습니다." }
+    ]
+  },
+  {
+    id: "L3-096",
+    word: "label",
+    meaning: "표를 붙이다, 상표",
+    examples: [
+      { en: "Make sure to label all the moving boxes.", kr: "모든 이삿짐 상자에 표를 붙이는 것을 확실히 하세요." },
+      { en: "The product's label provides allergy warnings.", kr: "그 제품의 상표는 알레르기 경고를 제공합니다." }
+    ]
+  },
+  {
+    id: "L3-097",
+    word: "layer",
+    meaning: "층, 겹",
+    examples: [
+      { en: "The cake consists of three layers of cream and sponge.", kr: "그 케이크는 세 겹의 크림과 스폰지로 구성되어 있습니다." },
+      { en: "The archaeological dig revealed several layers of ancient civilization.", kr: "그 고고학 발굴은 고대 문명의 여러 층들을 드러냈습니다." }
+    ]
+  },
+  {
+    id: "L3-098",
+    word: "liberal",
+    meaning: "진보적인, 자유로운",
+    examples: [
+      { en: "She has very liberal views on social reforms.", kr: "그녀는 사회 개혁에 대해 매우 진보적인 견해를 가지고 있습니다." },
+      { en: "The politician is known for his liberal spending on public works.", kr: "그 정치인은 공공 사업에 대한 자유로운(많은) 지출로 알려져 있습니다." }
+    ]
+  },
+  {
+    id: "L3-099",
+    word: "license",
+    meaning: "면허, 허가",
+    examples: [
+      { en: "You need a license to drive a motorcycle.", kr: "오토바이를 운전하려면 면허가 필요합니다." },
+      { en: "The company obtained a license to sell software overseas.", kr: "그 회사는 해외에서 소프트웨어를 판매할 허가를 얻었습니다." }
+    ]
+  },
+  {
+    id: "L3-100",
+    word: "logic",
+    meaning: "논리",
+    examples: [
+      { en: "There is a flaw in your argument's logic.", kr: "당신 주장의 논리에 결함이 있습니다." },
+      { en: "We used simple logic to solve the puzzle.", kr: "우리는 퍼즐을 풀기 위해 단순한 논리를 사용했습니다." }
+    ]
+  }
+];
+
+const wordsLevel3_Part2 = [
+  {
+    id: "L3-101",
+    word: "magnitude",
+    meaning: "규모, 크기",
+    examples: [
+      { en: "The earthquake was of a high magnitude.", kr: "그 지진은 규모가 매우 컸습니다." },
+      { en: "We underestimated the magnitude of the problem.", kr: "우리는 문제의 크기를 과소평가했습니다." }
+    ]
+  },
+  {
+    id: "L3-102",
+    word: "marginal",
+    meaning: "미미한, 한계의",
+    examples: [
+      { en: "The change in temperature was only marginal.", kr: "온도 변화는 단지 미미했습니다." },
+      { en: "They live on the marginal land near the coast.", kr: "그들은 해안 근처의 한계적인 땅에서 살고 있습니다." }
+    ]
+  },
+  {
+    id: "L3-103",
+    word: "mechanism",
+    meaning: "메커니즘, 장치",
+    examples: [
+      { en: "The old clock has a complex internal mechanism.", kr: "그 오래된 시계는 복잡한 내부 장치를 가지고 있습니다." },
+      { en: "We need a mechanism to resolve disputes.", kr: "우리는 분쟁을 해결할 메커니즘이 필요합니다." }
+    ]
+  },
+  {
+    id: "L3-104",
+    word: "minimal",
+    meaning: "최소한의",
+    examples: [
+      { en: "The accident caused only minimal damage.", kr: "그 사고는 최소한의 손상만을 일으켰습니다." },
+      { en: "We require only a minimal effort for this task.", kr: "우리는 이 과제에 최소한의 노력만을 요구합니다." }
+    ]
+  },
+  {
+    id: "L3-105",
+    word: "modify",
+    meaning: "수정하다, 변경하다",
+    examples: [
+      { en: "We decided to modify the design based on customer feedback.", kr: "우리는 고객 피드백에 기반하여 디자인을 수정하기로 결정했습니다." },
+      { en: "You can modify your settings at any time.", kr: "당신은 언제든지 설정을 변경할 수 있습니다." }
+    ]
+  },
+  {
+    id: "L3-106",
+    word: "monitor",
+    meaning: "감시하다, 관찰하다",
+    examples: [
+      { en: "The team will monitor the patient's vitals closely.", kr: "팀은 환자의 활력 징후를 면밀히 관찰할 것입니다." },
+      { en: "We need to monitor traffic flow on the highway.", kr: "우리는 고속도로의 교통 흐름을 감시해야 합니다." }
+    ]
+  },
+  {
+    id: "L3-107",
+    word: "mutual",
+    meaning: "상호의, 공통의",
+    examples: [
+      { en: "The negotiation led to a mutual agreement.", kr: "그 협상은 상호 합의로 이어졌습니다." },
+      { en: "They share a mutual interest in photography.", kr: "그들은 사진에 대한 공통의 관심을 공유합니다." }
+    ]
+  },
+  {
+    id: "L3-108",
+    word: "notable",
+    meaning: "주목할 만한, 현저한",
+    examples: [
+      { en: "The company achieved a notable increase in sales.", kr: "그 회사는 주목할 만한 매출 증가를 달성했습니다." },
+      { en: "He is a notable figure in the history of science.", kr: "그는 과학 역사에서 현저한 인물입니다." }
+    ]
+  },
+  {
+    id: "L3-109",
+    word: "notion",
+    meaning: "개념, 생각",
+    examples: [
+      { en: "I disagree with the notion of absolute truth.", kr: "저는 절대 진리라는 개념에 동의하지 않습니다." },
+      { en: "She had a romantic notion of life in the countryside.", kr: "그녀는 시골 생활에 대한 낭만적인 생각을 가지고 있었습니다." }
+    ]
+  },
+  {
+    id: "L3-110",
+    word: "notorious",
+    meaning: "악명 높은",
+    examples: [
+      { en: "The bank robber was notorious for his daring escapes.", kr: "그 은행 강도는 대담한 탈출로 악명 높았습니다." },
+      { en: "The restaurant is notorious for its poor service.", kr: "그 식당은 형편없는 서비스로 악명이 높습니다." }
+    ]
+  },
+  {
+    id: "L3-111",
+    word: "notwithstanding",
+    meaning: "~에도 불구하고",
+    examples: [
+      { en: "Notwithstanding the high cost, the project proceeded.", kr: "높은 비용에도 불구하고, 프로젝트는 진행되었습니다." },
+      { en: "His lack of experience, notwithstanding, he got the job.", kr: "그의 경험 부족에도 불구하고, 그는 그 일자리를 얻었습니다." }
+    ]
+  },
+  {
+    id: "L3-112",
+    word: "objective",
+    meaning: "객관적인, 목표",
+    examples: [
+      { en: "We need an objective assessment of the situation.", kr: "우리는 상황에 대한 객관적인 평가가 필요합니다." },
+      { en: "The primary objective is to increase customer satisfaction.", kr: "주요 목표는 고객 만족을 높이는 것입니다." }
+    ]
+  },
+  {
+    id: "L3-113",
+    word: "orient",
+    meaning: "방향을 잡다, 지향하게 하다",
+    examples: [
+      { en: "It is difficult to orient yourself in the dark forest.", kr: "어두운 숲속에서 방향을 잡는 것은 어렵습니다." },
+      { en: "The company’s strategy is oriented towards innovation.", kr: "그 회사의 전략은 혁신을 지향하게 되어 있습니다." }
+    ]
+  },
+  {
+    id: "L3-114",
+    word: "outcome",
+    meaning: "결과, 성과",
+    examples: [
+      { en: "The outcome of the meeting was positive.", kr: "회의 결과는 긍정적이었습니다." },
+      { en: "We are waiting for the final outcome of the negotiation.", kr: "우리는 협상의 최종 결과를 기다리고 있습니다." }
+    ]
+  },
+  {
+    id: "L3-115",
+    word: "output",
+    meaning: "산출, 출력",
+    examples: [
+      { en: "The factory's output increased significantly this month.", kr: "그 공장의 산출이 이번 달에 상당히 증가했습니다." },
+      { en: "The printer provides a high-quality output.", kr: "그 프린터는 고품질 출력을 제공합니다." }
+    ]
+  },
+  {
+    id: "L3-116",
+    word: "overlap",
+    meaning: "겹치다, 중복되다",
+    examples: [
+      { en: "The two projects have a significant overlap in scope.", kr: "두 프로젝트는 범위에 상당한 중복이 있습니다." },
+      { en: "The new schedule is designed so that no classes overlap.", kr: "새로운 시간표는 어떤 수업도 겹치지 않도록 설계되었습니다." }
+    ]
+  },
+  {
+    id: "L3-117",
+    word: "panel",
+    meaning: "패널, 토론자단",
+    examples: [
+      { en: "The expert panel discussed the effects of climate change.", kr: "전문가 토론자단은 기후 변화의 영향을 논의했습니다." },
+      { en: "Solar panels are being installed on the roof.", kr: "태양광 패널이 지붕에 설치되고 있습니다." }
+    ]
+  },
+  {
+    id: "L3-118",
+    word: "paradigm",
+    meaning: "패러다임, 전형",
+    examples: [
+      { en: "The invention marked a paradigm shift in technology.", kr: "그 발명은 기술의 패러다임 변화를 나타냈습니다." },
+      { en: "His work is a paradigm of academic excellence.", kr: "그의 작품은 학문적 우수성의 전형입니다." }
+    ]
+  },
+  {
+    id: "L3-119",
+    word: "parameter",
+    meaning: "매개변수, 기준",
+    examples: [
+      { en: "We must define the parameters of the study clearly.", kr: "우리는 연구의 매개변수(기준)를 명확하게 정의해야 합니다." },
+      { en: "The budget set strict financial parameters.", kr: "예산은 엄격한 재정적 기준을 설정했습니다." }
+    ]
+  },
+  {
+    id: "L3-120",
+    word: "perceive",
+    meaning: "인지하다, 인식하다",
+    examples: [
+      { en: "The public perceives the brand as eco-friendly.", kr: "대중은 그 브랜드를 친환경적인 것으로 인식합니다." },
+      { en: "He did not perceive the hidden threat until it was too late.", kr: "그는 너무 늦을 때까지 숨겨진 위협을 인지하지 못했습니다." }
+    ]
+  },
+  {
+    id: "L3-121",
+    word: "perspective",
+    meaning: "관점, 시각",
+    examples: [
+      { en: "Try to look at the issue from a new perspective.", kr: "새로운 관점에서 그 문제를 바라보려고 노력하세요." },
+      { en: "The drawing uses a linear perspective.", kr: "그 그림은 선형 원근법(관점)을 사용합니다." }
+    ]
+  },
+  {
+    id: "L3-122",
+    word: "phase",
+    meaning: "단계, 국면",
+    examples: [
+      { en: "The project is currently in its final phase.", kr: "그 프로젝트는 현재 최종 단계에 있습니다." },
+      { en: "The moon goes through different phases during the month.", kr: "달은 한 달 동안 다른 국면들을 거칩니다." }
+    ]
+  },
+  {
+    id: "L3-123",
+    word: "phenomenon",
+    meaning: "현상",
+    examples: [
+      { en: "Global warming is a complex phenomenon.", kr: "지구 온난화는 복잡한 현상입니다." },
+      { en: "The sudden popularity of the song was an unusual phenomenon.", kr: "그 노래의 갑작스러운 인기는 특이한 현상이었습니다." }
+    ]
+  },
+  {
+    id: "L3-124",
+    word: "pose",
+    meaning: "제기하다, 자세를 취하다",
+    examples: [
+      { en: "The rapid development poses a challenge to local infrastructure.", kr: "빠른 발전은 지역 기반 시설에 도전을 제기합니다." },
+      { en: "The model was asked to pose for the new advertisement.", kr: "그 모델은 새 광고를 위해 자세를 취해 달라고 요청받았습니다." }
+    ]
+  },
+  {
+    id: "L3-125",
+    word: "prevalent",
+    meaning: "널리 퍼진, 일반적인",
+    examples: [
+      { en: "The illness is more prevalent in tropical climates.", kr: "그 질병은 열대 기후에서 더 널리 퍼져 있습니다." },
+      { en: "Misinformation is becoming increasingly prevalent online.", kr: "잘못된 정보가 온라인에서 점점 더 일반적이 되고 있습니다." }
+    ]
+  },
+  {
+    id: "L3-126",
+    word: "prior",
+    meaning: "이전의, 앞선",
+    examples: [
+      { en: "You need prior experience for this job.", kr: "당신은 이 일자리를 위해 이전의 경험이 필요합니다." },
+      { en: "The event occurred prior to the signing of the agreement.", kr: "그 사건은 계약 체결에 앞서 발생했습니다." }
+    ]
+  },
+  {
+    id: "L3-127",
+    word: "process",
+    meaning: "과정, 처리하다",
+    examples: [
+      { en: "Learning is a long and slow process.", kr: "학습은 길고 느린 과정입니다." },
+      { en: "Your application is being processed by the admissions office.", kr: "당신의 지원서는 입학처에서 처리되고 있습니다." }
+    ]
+  },
+  {
+    id: "L3-128",
+    word: "profound",
+    meaning: "심오한, 지대한",
+    examples: [
+      { en: "The book had a profound impact on his thinking.", kr: "그 책은 그의 사고방식에 지대한 영향을 미쳤습니다." },
+      { en: "She has a profound understanding of music theory.", kr: "그녀는 음악 이론에 대한 심오한 이해를 가지고 있습니다." }
+    ]
+  },
+  {
+    id: "L3-129",
+    word: "protocol",
+    meaning: "규약, 의정서",
+    examples: [
+      { en: "All employees must follow the strict safety protocol.", kr: "모든 직원은 엄격한 안전 규약을 따라야 합니다." },
+      { en: "The meeting followed international diplomatic protocol.", kr: "그 회의는 국제 외교 의정서를 따랐습니다." }
+    ]
+  },
+  {
+    id: "L3-130",
+    word: "qualify",
+    meaning: "자격을 얻다, 한정하다",
+    examples: [
+      { en: "You must pass the exam to qualify as a doctor.", kr: "의사가 되기 위해 시험에 합격하여 자격을 얻어야 합니다." },
+      { en: "I would like to qualify my earlier statement.", kr: "저는 제 이전 진술을 한정하고 싶습니다." }
+    ]
+  },
+  {
+    id: "L3-131",
+    word: "quantity",
+    meaning: "양",
+    examples: [
+      { en: "We need a large quantity of raw materials.", kr: "우리는 많은 양의 원자재가 필요합니다." },
+      { en: "The quantity of food provided was not sufficient.", kr: "제공된 음식의 양은 충분하지 않았습니다." }
+    ]
+  },
+  {
+    id: "L3-132",
+    word: "quota",
+    meaning: "할당량",
+    examples: [
+      { en: "Each department has a specific sales quota to meet.", kr: "각 부서는 충족해야 할 특정 판매 할당량이 있습니다." },
+      { en: "The import quota was limited by the government.", kr: "수입 할당량이 정부에 의해 제한되었습니다." }
+    ]
+  },
+  {
+    id: "L3-133",
+    word: "radical",
+    meaning: "근본적인, 급진적인",
+    examples: [
+      { en: "The company needs a radical overhaul of its management.", kr: "그 회사는 경영에 대한 근본적인 점검이 필요합니다." },
+      { en: "He holds radical political views.", kr: "그는 급진적인 정치적 견해를 가지고 있습니다." }
+    ]
+  },
+  {
+    id: "L3-134",
+    word: "random",
+    meaning: "무작위의, 임의의",
+    examples: [
+      { en: "The winner was chosen at random.", kr: "당첨자는 무작위로 선택되었습니다." },
+      { en: "They conducted random checks on the products.", kr: "그들은 제품에 대한 임의의 점검을 실시했습니다." }
+    ]
+  },
+  {
+    id: "L3-135",
+    word: "ratio",
+    meaning: "비율",
+    examples: [
+      { en: "The ratio of men to women in the team is 2:1.", kr: "팀에서 남성 대 여성의 비율은 2대 1입니다." },
+      { en: "We need to analyze the debt-to-equity ratio.", kr: "우리는 부채-자본 비율을 분석해야 합니다." }
+    ]
+  },
+  {
+    id: "L3-136",
+    word: "rational",
+    meaning: "합리적인, 이성적인",
+    examples: [
+      { en: "We must make a rational decision, not an emotional one.", kr: "우리는 감정적인 결정이 아닌, 합리적인 결정을 내려야 합니다." },
+      { en: "Humans are generally considered rational beings.", kr: "인간은 일반적으로 이성적인 존재로 간주됩니다." }
+    ]
+  },
+  {
+    id: "L3-137",
+    word: "recede",
+    meaning: "물러나다, 약해지다",
+    examples: [
+      { en: "The floodwaters slowly began to recede.", kr: "홍수가 난 물이 서서히 물러나기 시작했습니다." },
+      { en: "The pain gradually receded after the medication took effect.", kr: "약효가 나타난 후 통증이 점차 약해졌습니다." }
+    ]
+  },
+  {
+    id: "L3-138",
+    word: "refer",
+    meaning: "언급하다, 참조하다",
+    examples: [
+      { en: "Please refer to the manual for detailed instructions.", kr: "자세한 지침은 매뉴얼을 참조하십시오." },
+      { en: "The speaker did not refer to the recent controversy.", kr: "연사는 최근 논란에 대해 언급하지 않았습니다." }
+    ]
+  },
+  {
+    id: "L3-139",
+    word: "reflect",
+    meaning: "반영하다, 반사하다",
+    examples: [
+      { en: "The calm water clearly reflects the sky.", kr: "잔잔한 물이 하늘을 명확하게 반사합니다." },
+      { en: "The policy should reflect the needs of the community.", kr: "정책은 지역 사회의 필요를 반영해야 합니다." }
+    ]
+  },
+  {
+    id: "L3-140",
+    word: "reform",
+    meaning: "개혁하다, 개혁",
+    examples: [
+      { en: "The government promised to reform the education system.", kr: "정부는 교육 시스템을 개혁하겠다고 약속했습니다." },
+      { en: "Tax reform is a major political issue.", kr: "세제 개혁은 주요 정치적 쟁점입니다." }
+    ]
+  },
+  {
+    id: "L3-141",
+    word: "reinforce",
+    meaning: "강화하다, 보강하다",
+    examples: [
+      { en: "The new data will reinforce our earlier conclusions.", kr: "새로운 자료는 우리의 이전 결론을 강화할 것입니다." },
+      { en: "The workers used steel beams to reinforce the bridge.", kr: "작업자들은 강철 빔을 사용하여 다리를 보강했습니다." }
+    ]
+  },
+  {
+    id: "L3-142",
+    word: "reject",
+    meaning: "거절하다, 거부하다",
+    examples: [
+      { en: "The manager decided to reject the poor-quality materials.", kr: "관리자는 품질이 낮은 재료를 거부하기로 결정했습니다." },
+      { en: "She rejected his offer of help.", kr: "그녀는 그의 도움 제안을 거절했습니다." }
+    ]
+  },
+  {
+    id: "L3-143",
+    word: "relevant",
+    meaning: "관련된, 적절한",
+    examples: [
+      { en: "Is this information relevant to the case?", kr: "이 정보가 사건과 관련이 있습니까?" },
+      { en: "Please limit your comments to relevant topics.", kr: "의견을 관련된 주제로만 제한해 주세요." }
+    ]
+  },
+  {
+    id: "L3-144",
+    word: "replicate",
+    meaning: "복제하다, 되풀이하다",
+    examples: [
+      { en: "Scientists attempted to replicate the results of the original experiment.", kr: "과학자들은 원래 실험의 결과를 복제하려고 시도했습니다." },
+      { en: "The machine can replicate the key precisely.", kr: "그 기계는 열쇠를 정확하게 복제할 수 있습니다." }
+    ]
+  },
+  {
+    id: "L3-145",
+    word: "reproduce",
+    meaning: "번식하다, 복제하다",
+    examples: [
+      { en: "The artist has the sole right to reproduce his work.", kr: "그 예술가는 자신의 작품을 복제할 유일한 권리를 가지고 있습니다." },
+      { en: "Many species of fish reproduce during the spring.", kr: "많은 종의 물고기가 봄 동안 번식합니다." }
+    ]
+  },
+  {
+    id: "L3-146",
+    word: "resort",
+    meaning: "의존하다, 리조트",
+    examples: [
+      { en: "They had to resort to force to open the door.", kr: "그들은 문을 열기 위해 힘에 의존해야 했습니다." },
+      { en: "We are planning a trip to a seaside resort.", kr: "우리는 해변 리조트로 여행을 계획하고 있습니다." }
+    ]
+  },
+  {
+    id: "L3-147",
+    word: "restrain",
+    meaning: "억제하다, 제지하다",
+    examples: [
+      { en: "She had to restrain her laughter during the formal speech.", kr: "그녀는 공식 연설 동안 웃음을 억제해야 했습니다." },
+      { en: "Security guards were called to restrain the aggressive fan.", kr: "경호원들이 난폭한 팬을 제지하기 위해 호출되었습니다." }
+    ]
+  },
+  {
+    id: "L3-148",
+    word: "retrieve",
+    meaning: "되찾다, 회수하다",
+    examples: [
+      { en: "I need to retrieve the file from the backup server.", kr: "저는 백업 서버에서 파일을 되찾아와야 합니다." },
+      { en: "The dog was trained to retrieve objects.", kr: "그 개는 물건을 회수하도록 훈련되었습니다." }
+    ]
+  },
+  {
+    id: "L3-149",
+    word: "revenue",
+    meaning: "수익, 세입",
+    examples: [
+      { en: "The company's revenue increased significantly this year.", kr: "그 회사의 수익이 올해 상당히 증가했습니다." },
+      { en: "The new tax generated substantial government revenue.", kr: "새 세금은 상당한 정부 세입을 창출했습니다." }
+    ]
+  },
+  {
+    id: "L3-150",
+    word: "rigid",
+    meaning: "엄격한, 융통성 없는",
+    examples: [
+      { en: "The rules were too rigid to allow for any exceptions.", kr: "그 규칙들은 예외를 허용하기에는 너무 엄격했습니다." },
+      { en: "The old man's posture was rigid and straight.", kr: "그 노인의 자세는 뻣뻣하고 곧았습니다." }
+    ]
+  },
+  {
+    id: "L3-151",
+    word: "route",
+    meaning: "경로, 길",
+    examples: [
+      { en: "What is the fastest route to the airport?", kr: "공항까지 가장 빠른 경로는 무엇입니까?" },
+      { en: "The delivery service changed its main route.", kr: "그 배달 서비스는 주요 경로를 변경했습니다." }
+    ]
+  },
+  {
+    id: "L3-152",
+    word: "scenario",
+    meaning: "시나리오, 예상되는 상황",
+    examples: [
+      { en: "We prepared for several worst-case scenarios.", kr: "우리는 몇 가지 최악의 시나리오에 대비했습니다." },
+      { en: "The project team developed a full development scenario.", kr: "프로젝트 팀은 완전한 개발 시나리오를 개발했습니다." }
+    ]
+  },
+  {
+    id: "L3-153",
+    word: "scope",
+    meaning: "범위, 영역",
+    examples: [
+      { en: "The scope of the investigation was very limited.", kr: "그 조사의 범위는 매우 제한적이었습니다." },
+      { en: "We expanded the scope of our services.", kr: "우리는 서비스 영역을 확장했습니다." }
+    ]
+  },
+  {
+    id: "L3-154",
+    word: "security",
+    meaning: "보안, 안전",
+    examples: [
+      { en: "Data security is a top priority for the company.", kr: "데이터 보안은 회사의 최우선 과제입니다." },
+      { en: "The new system ensures personal security.", kr: "새로운 시스템은 개인의 안전을 보장합니다." }
+    ]
+  },
+  {
+    id: "L3-155",
+    word: "sphere",
+    meaning: "구, 영역",
+    examples: [
+      { en: "The earth is an almost perfect sphere.", kr: "지구는 거의 완벽한 구입니다." },
+      { en: "The matter falls outside the sphere of local government.", kr: "그 문제는 지방 정부의 영역 밖에 있습니다." }
+    ]
+  },
+  {
+    id: "L3-156",
+    word: "stabilize",
+    meaning: "안정시키다",
+    examples: [
+      { en: "The nurse worked to stabilize the patient's condition.", kr: "간호사는 환자의 상태를 안정시키기 위해 노력했습니다." },
+      { en: "New regulations were introduced to stabilize the financial markets.", kr: "금융 시장을 안정시키기 위해 새로운 규제가 도입되었습니다." }
+    ]
+  },
+  {
+    id: "L3-157",
+    word: "statute",
+    meaning: "법규, 법령",
+    examples: [
+      { en: "The new statute requires all citizens to pay the fee.", kr: "새 법령은 모든 시민들이 수수료를 지불하도록 요구합니다." },
+      { en: "The action violates an old state statute.", kr: "그 행위는 오래된 주 법규를 위반합니다." }
+    ]
+  },
+  {
+    id: "L3-158",
+    word: "summary",
+    meaning: "요약",
+    examples: [
+      { en: "The manager asked for a brief summary of the project status.", kr: "관리자는 프로젝트 상태에 대한 간략한 요약을 요청했습니다." },
+      { en: "The article provides a good summary of the book.", kr: "그 기사는 책에 대한 좋은 요약을 제공합니다." }
+    ]
+  },
+  {
+    id: "L3-159",
+    word: "survey",
+    meaning: "설문 조사, 조사하다",
+    examples: [
+      { en: "We conducted a detailed survey of customer satisfaction.", kr: "우리는 고객 만족에 대한 상세한 설문 조사를 실시했습니다." },
+      { en: "The team surveyed the damage after the hurricane.", kr: "팀은 허리케인 후 피해를 조사했습니다." }
+    ]
+  },
+  {
+    id: "L3-160",
+    word: "sustain",
+    meaning: "지속하다, 지탱하다",
+    examples: [
+      { en: "The economy needs to sustain its growth rate.", kr: "경제는 성장률을 지속해야 합니다." },
+      { en: "The bridge is built to sustain heavy loads.", kr: "그 다리는 무거운 하중을 지탱하도록 건설되었습니다." }
+    ]
+  },
+  {
+    id: "L3-161",
+    word: "symbol",
+    meaning: "상징",
+    examples: [
+      { en: "The white dove is a symbol of peace.", kr: "흰 비둘기는 평화의 상징입니다." },
+      { en: "The logo is a powerful symbol of the brand.", kr: "그 로고는 브랜드의 강력한 상징입니다." }
+    ]
+  },
+  {
+    id: "L3-162",
+    word: "tendency",
+    meaning: "경향, 추세",
+    examples: [
+      { en: "He has a tendency to be late for meetings.", kr: "그는 회의에 늦는 경향이 있습니다." },
+      { en: "There is a growing tendency toward remote work.", kr: "원격 근무를 향한 경향이 증가하고 있습니다." }
+    ]
+  },
+  {
+    id: "L3-163",
+    word: "theme",
+    meaning: "주제, 테마",
+    examples: [
+      { en: "The main theme of the novel is love and loss.", kr: "그 소설의 주요 주제는 사랑과 상실입니다." },
+      { en: "They decorated the room with a space theme.", kr: "그들은 방을 우주 테마로 장식했습니다." }
+    ]
+  },
+  {
+    id: "L3-164",
+    word: "transition",
+    meaning: "과도기, 전환",
+    examples: [
+      { en: "The country is undergoing a smooth transition to a new government.", kr: "그 나라는 새 정부로의 순조로운 전환을 겪고 있습니다." },
+      { en: "Learning a new language requires a transition in your thought process.", kr: "새 언어를 배우는 것은 사고 과정의 전환을 필요로 합니다." }
+    ]
+  },
+  {
+    id: "L3-165",
+    word: "trend",
+    meaning: "경향, 유행",
+    examples: [
+      { en: "We are analyzing the current market trend.", kr: "우리는 현재 시장의 경향을 분석하고 있습니다." },
+      { en: "The latest fashion trend is bright colors.", kr: "최신 패션 유행은 밝은 색상입니다." }
+    ]
+  },
+  {
+    id: "L3-166",
+    word: "unanimous",
+    meaning: "만장일치의",
+    examples: [
+      { en: "The jury reached a unanimous verdict of not guilty.", kr: "배심원단은 만장일치의 무죄 평결에 도달했습니다." },
+      { en: "The board's decision was unanimous.", kr: "이사회의 결정은 만장일치였습니다." }
+    ]
+  },
+  {
+    id: "L3-167",
+    word: "unprecedented",
+    meaning: "전례 없는",
+    examples: [
+      { en: "The crisis was of an unprecedented scale.", kr: "그 위기는 전례 없는 규모였습니다." },
+      { en: "The technology achieved an unprecedented speed.", kr: "그 기술은 전례 없는 속도를 달성했습니다." }
+    ]
+  },
+  {
+    id: "L3-168",
+    word: "utility",
+    meaning: "유용성, 공공시설",
+    examples: [
+      { en: "The utility of the new feature is questionable.", kr: "새 기능의 유용성은 의문스럽습니다." },
+      { en: "We have to pay the utility bills every month.", kr: "우리는 매달 공공시설 요금을 지불해야 합니다." }
+    ]
+  },
+  {
+    id: "L3-169",
+    word: "valid",
+    meaning: "유효한, 타당한",
+    examples: [
+      { en: "Is this parking ticket still valid?", kr: "이 주차권은 아직 유효합니까?" },
+      { en: "She provided a valid reason for her delay.", kr: "그녀는 자신의 지연에 대한 타당한 이유를 제시했습니다." }
+    ]
+  },
+  {
+    id: "L3-170",
+    word: "vehicle",
+    meaning: "차량, 수단",
+    examples: [
+      { en: "The insurance covers all types of motor vehicles.", kr: "그 보험은 모든 종류의 자동차를 보장합니다." },
+      { en: "Art is a powerful vehicle for social change.", kr: "예술은 사회 변화를 위한 강력한 수단입니다." }
+    ]
+  },
+  {
+    id: "L3-171",
+    word: "venue",
+    meaning: "장소",
+    examples: [
+      { en: "The venue for the concert has been changed.", kr: "콘서트 장소가 변경되었습니다." },
+      { en: "We need to find a suitable venue for the conference.", kr: "우리는 컨퍼런스를 위한 적절한 장소를 찾아야 합니다." }
+    ]
+  },
+  {
+    id: "L3-172",
+    word: "versus",
+    meaning: "~ 대(對)",
+    examples: [
+      { en: "It's a game of experience versus youth.", kr: "그것은 경험 대 젊음의 경기입니다." },
+      { en: "The team is playing against the Lakers tonight.", kr: "그 팀은 오늘 밤 레이커스 팀 대(對) 경기를 합니다." }
+    ]
+  },
+  {
+    id: "L3-173",
+    word: "via",
+    meaning: "~을 통하여, ~을 경유하여",
+    examples: [
+      { en: "I sent the documents via email.", kr: "저는 이메일을 통하여 서류를 보냈습니다." },
+      { en: "We flew to New York via London.", kr: "우리는 런던을 경유하여 뉴욕으로 비행했습니다." }
+    ]
+  },
+  {
+    id: "L3-174",
+    word: "virtual",
+    meaning: "가상의, 사실상의",
+    examples: [
+      { en: "They held a virtual meeting using video conferencing.", kr: "그들은 화상 회의를 사용하여 가상 회의를 개최했습니다." },
+      { en: "He is the virtual leader of the entire group.", kr: "그는 전체 그룹의 사실상의 리더입니다." }
+    ]
+  },
+  {
+    id: "L3-175",
+    word: "visible",
+    meaning: "눈에 보이는",
+    examples: [
+      { en: "The stars were clearly visible in the night sky.", kr: "별들이 밤하늘에 명확하게 보였습니다." },
+      { en: "There was a visible difference in their performance.", kr: "그들의 성과에는 눈에 보이는 차이가 있었습니다." }
+    ]
+  },
+  {
+    id: "L3-176",
+    word: "voluntary",
+    meaning: "자발적인",
+    examples: [
+      { en: "Participation in the survey is completely voluntary.", kr: "설문 조사 참여는 완전히 자발적입니다." },
+      { en: "She works at the hospital on a voluntary basis.", kr: "그녀는 자발적인(자원봉사) 기반으로 병원에서 일합니다." }
+    ]
+  },
+  {
+    id: "L3-177",
+    word: "whereby",
+    meaning: "~하는 것에 의하여",
+    examples: [
+      { en: "They established a system whereby members could vote online.", kr: "그들은 구성원들이 온라인으로 투표할 수 있는 시스템을 확립했습니다." },
+      { en: "A contract whereby you agree to sell the property was signed.", kr: "당신이 재산을 팔기로 동의하는 계약이 서명되었습니다." }
+    ]
+  },
+  {
+    id: "L3-178",
+    word: "whereas",
+    meaning: "반면에",
+    examples: [
+      { en: "She prefers tea, whereas I prefer coffee.", kr: "그녀는 차를 선호하는 반면에, 저는 커피를 선호합니다." },
+      { en: "The first part was easy, whereas the second was difficult.", kr: "첫 부분은 쉬웠던 반면에, 두 번째 부분은 어려웠습니다." }
+    ]
+  },
+  {
+    id: "L3-179",
+    word: "wherever",
+    meaning: "어디든지",
+    examples: [
+      { en: "You can sit wherever you like.", kr: "당신은 원하는 어디든지 앉을 수 있습니다." },
+      { en: "Wherever you go, I will follow.", kr: "당신이 어디를 가든지, 나는 따라갈 것입니다." }
+    ]
+  },
+  {
+    id: "L3-180",
+    word: "whilst",
+    meaning: "~하는 동안에, ~인 반면에",
+    examples: [
+      { en: "I listened to music whilst studying.", kr: "저는 공부하는 동안에 음악을 들었습니다." },
+      { en: "The city has modern buildings, whilst the old town remains historical.", kr: "도시는 현대적인 건물을 가지고 있지만, 구시가지는 역사적으로 남아 있습니다." }
+    ]
+  },
+  {
+    id: "L3-181",
+    word: "wholly",
+    meaning: "완전히",
+    examples: [
+      { en: "The decision was wholly supported by the staff.", kr: "그 결정은 직원들에 의해 완전히 지지받았습니다." },
+      { en: "His success was not wholly dependent on luck.", kr: "그의 성공은 전적으로 운에만 의존하는 것은 아니었습니다." }
+    ]
+  },
+  {
+    id: "L3-182",
+    word: "whose",
+    meaning: "누구의",
+    examples: [
+      { en: "Whose car is parked outside?", kr: "밖에 주차된 차는 누구의 것입니까?" },
+      { en: "He is the person whose advice I trust.", kr: "그는 제가 조언을 신뢰하는 사람입니다." }
+    ]
+  },
+  {
+    id: "L3-183",
+    word: "withdraw",
+    meaning: "철회하다, 인출하다",
+    examples: [
+      { en: "She decided to withdraw her complaint.", kr: "그녀는 자신의 불만을 철회하기로 결정했습니다." },
+      { en: "I need to withdraw some cash from the ATM.", kr: "저는 ATM에서 약간의 현금을 인출해야 합니다." }
+    ]
+  },
+  {
+    id: "L3-184",
+    word: "accurate",
+    meaning: "정확한",
+    examples: [
+      { en: "We need an accurate estimate of the total cost.", kr: "우리는 총 비용에 대한 정확한 추정치가 필요합니다." },
+      { en: "The measurement must be accurate to the millimeter.", kr: "그 측정은 밀리미터까지 정확해야 합니다." }
+    ]
+  },
+  {
+    id: "L3-185",
+    word: "accountable",
+    meaning: "책임이 있는",
+    examples: [
+      { en: "The manager is accountable for the team's performance.", kr: "관리자는 팀의 성과에 책임이 있습니다." },
+      { en: "Every public servant should be held accountable.", kr: "모든 공무원은 책임이 있다고 여겨져야 합니다." }
+    ]
+  },
+  {
+    id: "L3-186",
+    word: "adhere",
+    meaning: "고수하다, 들러붙다",
+    examples: [
+      { en: "We must adhere to the terms of the contract.", kr: "우리는 계약 조건을 고수해야 합니다." },
+      { en: "The sticker will not adhere to the wet surface.", kr: "그 스티커는 젖은 표면에 들러붙지 않을 것입니다." }
+    ]
+  },
+  {
+    id: "L3-187",
+    word: "allegedly",
+    meaning: "주장하는 바에 의하면",
+    examples: [
+      { en: "The suspect was allegedly seen near the crime scene.", kr: "그 용의자는 주장하는 바에 의하면 범죄 현장 근처에서 목격되었습니다." },
+      { en: "He was allegedly involved in the fraud.", kr: "그는 주장하는 바에 의하면 그 사기에 연루되었습니다." }
+    ]
+  },
+  {
+    id: "L3-188",
+    word: "bizarre",
+    meaning: "기이한, 특이한",
+    examples: [
+      { en: "The artist is known for his bizarre sculptures.", kr: "그 예술가는 그의 기이한 조각품들로 알려져 있습니다." },
+      { en: "We heard a bizarre story about a talking dog.", kr: "우리는 말하는 개에 대한 특이한 이야기를 들었습니다." }
+    ]
+  },
+  {
+    id: "L3-189",
+    word: "compatible",
+    meaning: "호환되는, 양립할 수 있는",
+    examples: [
+      { en: "Is this charger compatible with my new phone?", kr: "이 충전기가 제 새 전화기와 호환됩니까?" },
+      { en: "The two sides found their goals were not compatible.", kr: "양측은 그들의 목표가 양립할 수 없다는 것을 알았습니다." }
+    ]
+  },
+  {
+    id: "L3-190",
+    word: "comprehensive",
+    meaning: "종합적인, 포괄적인",
+    examples: [
+      { en: "The report provided a comprehensive analysis of the market.", kr: "그 보고서는 시장에 대한 종합적인 분석을 제공했습니다." },
+      { en: "The insurance offers comprehensive coverage.", kr: "그 보험은 포괄적인 보장을 제공합니다." }
+    ]
+  },
+  {
+    id: "L3-191",
+    word: "conscious",
+    meaning: "의식하는, 자각하는",
+    examples: [
+      { en: "She was conscious of the time passing quickly.", kr: "그녀는 시간이 빠르게 지나가는 것을 의식하고 있었습니다." },
+      { en: "It is important to be environmentally conscious.", kr: "환경적으로 자각하는 것이 중요합니다." }
+    ]
+  },
+  {
+    id: "L3-192",
+    word: "consult",
+    meaning: "상담하다, 참고하다",
+    examples: [
+      { en: "You should consult a doctor about your symptoms.", kr: "증상에 대해 의사와 상담해야 합니다." },
+      { en: "Consult the map to find the correct direction.", kr: "올바른 방향을 찾기 위해 지도를 참고하세요." }
+    ]
+  },
+  {
+    id: "L3-193",
+    word: "contrary",
+    meaning: "반대의",
+    examples: [
+      { en: "On the contrary, I think he is right.", kr: "그와는 반대로, 저는 그가 옳다고 생각합니다." },
+      { en: "She did the exact contrary of what she was told.", kr: "그녀는 들은 것과는 정반대의 일을 했습니다." }
+    ]
+  },
+  {
+    id: "L3-194",
+    word: "convenient",
+    meaning: "편리한",
+    examples: [
+      { en: "The location of the store is very convenient.", kr: "그 가게의 위치는 매우 편리합니다." },
+      { en: "A digital wallet is a convenient way to pay.", kr: "디지털 지갑은 편리한 결제 수단입니다." }
+    ]
+  },
+  {
+    id: "L3-195",
+    word: "corporate",
+    meaning: "기업의",
+    examples: [
+      { en: "He works in the corporate headquarters.", kr: "그는 기업 본사에서 일합니다." },
+      { en: "The company announced its new corporate strategy.", kr: "그 회사는 새로운 기업 전략을 발표했습니다." }
+    ]
+  },
+  {
+    id: "L3-196",
+    word: "deduct",
+    meaning: "공제하다, 빼다",
+    examples: [
+      { en: "The company will deduct the cost of the meal from your salary.", kr: "회사는 당신의 급여에서 식사 비용을 공제할 것입니다." },
+      { en: "You can deduct business expenses from your taxes.", kr: "사업 비용을 세금에서 공제할 수 있습니다." }
+    ]
+  },
+  {
+    id: "L3-197",
+    word: "deficit",
+    meaning: "적자, 부족액",
+    examples: [
+      { en: "The company reported a large financial deficit.", kr: "그 회사는 큰 재정 적자를 보고했습니다." },
+      { en: "He suffers from a sleep deficit.", kr: "그는 수면 부족에 시달립니다." }
+    ]
+  },
+  {
+    id: "L3-198",
+    word: "deploy",
+    meaning: "배치하다, 전개하다",
+    examples: [
+      { en: "The manager decided to deploy a new team to the project.", kr: "관리자는 프로젝트에 새로운 팀을 배치하기로 결정했습니다." },
+      { en: "The troops were deployed to the border area.", kr: "군대는 국경 지역에 전개되었습니다." }
+    ]
+  },
+  {
+    id: "L3-199",
+    word: "devote",
+    meaning: "헌신하다, 전념하다",
+    examples: [
+      { en: "She devotes all her time to charity work.", kr: "그녀는 자신의 모든 시간을 자선 활동에 헌신합니다." },
+      { en: "The book is devoted to the history of the region.", kr: "그 책은 그 지역의 역사에 전념합니다." }
+    ]
+  },
+  {
+    id: "L3-200",
+    word: "discrepancy",
+    meaning: "불일치, 차이",
+    examples: [
+      { en: "There is a major discrepancy between the two versions of the story.", kr: "그 이야기의 두 버전 사이에 큰 불일치가 있습니다." },
+      { en: "The auditor found a discrepancy in the accounts.", kr: "감사관은 계정에서 차이(불일치)를 발견했습니다." }
+    ]
+  }
+];
 
 
+const wordsLevel3_Part3 = [
+  {
+    id: "L3-201",
+    word: "domain",
+    meaning: "영역, 분야",
+    examples: [
+      { en: "That subject is outside my domain of expertise.", kr: "그 주제는 제 전문 지식 영역 밖에 있습니다." },
+      { en: "The research focuses on the domain of public health.", kr: "그 연구는 공중 보건 분야에 초점을 맞춥니다." }
+    ]
+  },
+  {
+    id: "L3-202",
+    word: "duration",
+    meaning: "지속 기간",
+    examples: [
+      { en: "The contract is for a duration of three years.", kr: "그 계약은 3년의 지속 기간 동안입니다." },
+      { en: "She slept for the entire duration of the flight.", kr: "그녀는 비행의 전체 지속 기간 동안 잤습니다." }
+    ]
+  },
+  {
+    id: "L3-203",
+    word: "dynamic",
+    meaning: "역동적인",
+    examples: [
+      { en: "The market is a constantly dynamic environment.", kr: "그 시장은 끊임없이 역동적인 환경입니다." },
+      { en: "She is a dynamic leader who motivates her team.", kr: "그녀는 팀원들에게 동기를 부여하는 역동적인 리더입니다." }
+    ]
+  },
+  {
+    id: "L3-204",
+    word: "emphasize",
+    meaning: "강조하다",
+    examples: [
+      { en: "The manager emphasized the importance of teamwork.", kr: "관리자는 팀워크의 중요성을 강조했습니다." },
+      { en: "The graph is used to emphasize the recent increase in sales.", kr: "그 그래프는 최근의 매출 증가를 강조하기 위해 사용됩니다." }
+    ]
+  },
+  {
+    id: "L3-205",
+    word: "exclude",
+    meaning: "제외하다, 배제하다",
+    examples: [
+      { en: "The final price excludes transportation costs.", kr: "최종 가격은 운송비를 제외합니다." },
+      { en: "We must exclude the possibility of human error.", kr: "우리는 인간의 실수 가능성을 배제해야 합니다." }
+    ]
+  },
+  {
+    id: "L3-206",
+    word: "exhibit",
+    meaning: "전시하다, 나타내다",
+    examples: [
+      { en: "The museum will exhibit the new collection next month.", kr: "그 박물관은 다음 달에 새로운 소장품을 전시할 것입니다." },
+      { en: "He did not exhibit any signs of distress.", kr: "그는 어떤 고통의 징후도 나타내지 않았습니다." }
+    ]
+  },
+  {
+    id: "L3-207",
+    word: "expand",
+    meaning: "확장하다, 확대하다",
+    examples: [
+      { en: "The company plans to expand its business into Europe.", kr: "그 회사는 유럽으로 사업을 확장할 계획입니다." },
+      { en: "Hot air causes gas to expand.", kr: "뜨거운 공기는 기체를 팽창하게 합니다." }
+    ]
+  },
+  {
+    id: "L3-208",
+    word: "exploit",
+    meaning: "착취하다, 활용하다",
+    examples: [
+      { en: "The company was criticized for exploiting low-wage workers.", kr: "그 회사는 저임금 노동자들을 착취했다는 비판을 받았습니다." },
+      { en: "We should exploit this market opportunity fully.", kr: "우리는 이 시장 기회를 충분히 활용해야 합니다." }
+    ]
+  },
+  {
+    id: "L3-209",
+    word: "export",
+    meaning: "수출하다, 수출품",
+    examples: [
+      { en: "The country mainly exports agricultural products.", kr: "그 나라는 주로 농산물을 수출합니다." },
+      { en: "Oil is a major export for the region.", kr: "석유는 그 지역의 주요 수출품입니다." }
+    ]
+  },
+  {
+    id: "L3-210",
+    word: "external",
+    meaning: "외부의",
+    examples: [
+      { en: "The problem requires external consultation.", kr: "그 문제는 외부 자문을 필요로 합니다." },
+      { en: "The external walls of the house need painting.", kr: "집의 외부 벽은 페인트칠이 필요합니다." }
+    ]
+  },
+  {
+    id: "L3-211",
+    word: "feasible",
+    meaning: "실행 가능한",
+    examples: [
+      { en: "We need a solution that is both practical and feasible.", kr: "우리는 실용적이고 실행 가능한 해결책이 필요합니다." },
+      { en: "Is it technically feasible to launch the product next month?", kr: "다음 달에 제품을 출시하는 것이 기술적으로 실행 가능합니까?" }
+    ]
+  },
+  {
+    id: "L3-212",
+    word: "formula",
+    meaning: "공식, 제조법",
+    examples: [
+      { en: "The scientist developed a new mathematical formula.", kr: "그 과학자는 새로운 수학 공식을 개발했습니다." },
+      { en: "The soft drink company keeps its formula secret.", kr: "그 청량음료 회사는 제조법을 비밀로 유지합니다." }
+    ]
+  },
+  {
+    id: "L3-213",
+    word: "foundation",
+    meaning: "토대, 재단",
+    examples: [
+      { en: "A strong foundation is essential for the building.", kr: "강력한 토대는 건물에 필수적입니다." },
+      { en: "The organization runs a charitable foundation.", kr: "그 조직은 자선 재단을 운영합니다." }
+    ]
+  },
+  {
+    id: "L3-214",
+    word: "framework",
+    meaning: "틀, 체계",
+    examples: [
+      { en: "The new law provides a legal framework for business.", kr: "새 법은 사업을 위한 법적 틀을 제공합니다." },
+      { en: "We need a conceptual framework for the research.", kr: "우리는 연구를 위한 개념적 체계가 필요합니다." }
+    ]
+  },
+  {
+    id: "L3-215",
+    word: "fund",
+    meaning: "자금, 자금을 대다",
+    examples: [
+      { en: "The project requires additional funding.", kr: "그 프로젝트는 추가 자금 조달을 필요로 합니다." },
+      { en: "The government will fund the construction of the new school.", kr: "정부는 새 학교 건설에 자금을 댈 것입니다." }
+    ]
+  },
+  {
+    id: "L3-216",
+    word: "furthermore",
+    meaning: "게다가, 더욱이",
+    examples: [
+      { en: "The book is insightful, and furthermore, it is entertaining.", kr: "그 책은 통찰력이 있으며, 게다가 재미있습니다." },
+      { en: "The cost is high; furthermore, the quality is low.", kr: "비용이 많이 듭니다. 더욱이, 품질이 낮습니다." }
+    ]
+  },
+  {
+    id: "L3-217",
+    word: "goal",
+    meaning: "목표",
+    examples: [
+      { en: "Our primary goal is customer satisfaction.", kr: "우리의 주요 목표는 고객 만족입니다." },
+      { en: "He scored a winning goal in the final minute.", kr: "그는 마지막 순간에 결승골을 넣었습니다." }
+    ]
+  },
+  {
+    id: "L3-218",
+    word: "govern",
+    meaning: "통치하다, 지배하다",
+    examples: [
+      { en: "The parliament governs the country.", kr: "의회는 그 나라를 통치합니다." },
+      { en: "Emotions should not govern rational decisions.", kr: "감정은 이성적인 결정을 지배해서는 안 됩니다." }
+    ]
+  },
+  {
+    id: "L3-219",
+    word: "graphic",
+    meaning: "그래픽의, 생생한",
+    examples: [
+      { en: "The report included graphic images of the damage.", kr: "그 보고서는 피해에 대한 생생한 이미지를 포함했습니다." },
+      { en: "She works as a graphic designer.", kr: "그녀는 그래픽 디자이너로 일합니다." }
+    ]
+  },
+  {
+    id: "L3-220",
+    word: "hence",
+    meaning: "그러므로, 따라서",
+    examples: [
+      { en: "The battery is low; hence, the device will not work.", kr: "배터리가 낮습니다. 그러므로, 장치가 작동하지 않을 것입니다." },
+      { en: "He is moving to London, hence the house sale.", kr: "그는 런던으로 이사할 것입니다. 따라서 집을 팝니다." }
+    ]
+  },
+  {
+    id: "L3-221",
+    word: "hierarchy",
+    meaning: "계층, 계급 제도",
+    examples: [
+      { en: "The company has a clear management hierarchy.", kr: "그 회사는 명확한 경영 계층을 가지고 있습니다." },
+      { en: "He is trying to climb the social hierarchy.", kr: "그는 사회 계급 제도를 오르려고 노력하고 있습니다." }
+    ]
+  },
+  {
+    id: "L3-222",
+    word: "illustrate",
+    meaning: "설명하다, 삽화",
+    examples: [
+      { en: "Can you illustrate your point with an example?", kr: "예를 들어 당신의 요점을 설명해 주시겠습니까?" },
+      { en: "The children's book is beautifully illustrated.", kr: "그 동화책은 아름답게 삽화되어 있습니다." }
+    ]
+  },
+  {
+    id: "L3-223",
+    word: "immigrant",
+    meaning: "이민자",
+    examples: [
+      { en: "The city has a large immigrant population.", kr: "그 도시는 많은 이민자 인구를 가지고 있습니다." },
+      { en: "She is a second-generation immigrant.", kr: "그녀는 2세대 이민자입니다." }
+    ]
+  },
+  {
+    id: "L3-224",
+    word: "impact",
+    meaning: "영향, 영향을 주다",
+    examples: [
+      { en: "The new policy will impact all employees.", kr: "새 정책은 모든 직원에게 영향을 미칠 것입니다." },
+      { en: "The storm had a negative impact on the crops.", kr: "폭풍은 작물에 부정적인 영향을 미쳤습니다." }
+    ]
+  },
+  {
+    id: "L3-225",
+    word: "implement",
+    meaning: "실행하다, 이행하다",
+    examples: [
+      { en: "We plan to implement the new system next month.", kr: "우리는 다음 달에 새 시스템을 실행할 계획입니다." },
+      { en: "The government needs to implement the reform quickly.", kr: "정부는 그 개혁을 빠르게 이행해야 합니다." }
+    ]
+  },
+  {
+    id: "L3-226",
+    word: "implicate",
+    meaning: "연루시키다, 관련시키다",
+    examples: [
+      { en: "The documents implicate him in the crime.", kr: "그 문서들은 그가 범죄에 연루되었음을 시사합니다." },
+      { en: "He refused to speak, fearing he might implicate his friends.", kr: "그는 친구들을 연루시킬까 두려워 말하기를 거부했습니다." }
+    ]
+  },
+  {
+    id: "L3-227",
+    word: "imply",
+    meaning: "암시하다, 내포하다",
+    examples: [
+      { en: "His silence seemed to imply guilt.", kr: "그의 침묵은 유죄를 암시하는 것처럼 보였습니다." },
+      { en: "The article implies a solution without stating it directly.", kr: "그 기사는 직접적으로 말하지 않고 해결책을 암시합니다." }
+    ]
+  },
+  {
+    id: "L3-228",
+    word: "impose",
+    meaning: "부과하다, 강요하다",
+    examples: [
+      { en: "The city decided to impose a new tax on tourists.", kr: "시는 관광객들에게 새로운 세금을 부과하기로 결정했습니다." },
+      { en: "Don't impose your opinions on others.", kr: "당신의 의견을 다른 사람에게 강요하지 마세요." }
+    ]
+  },
+  {
+    id: "L3-229",
+    word: "incentive",
+    meaning: "장려책, 동기",
+    examples: [
+      { en: "The company offers financial incentives for high performance.", kr: "그 회사는 높은 성과에 대해 금전적 장려책을 제공합니다." },
+      { en: "What is your main incentive for taking this job?", kr: "이 직업을 선택하는 당신의 주된 동기는 무엇입니까?" }
+    ]
+  },
+  {
+    id: "L3-230",
+    word: "incidence",
+    meaning: "발생률",
+    examples: [
+      { en: "The incidence of the disease has decreased significantly.", kr: "그 질병의 발생률이 상당히 감소했습니다." },
+      { en: "We are studying the incidence of traffic accidents in the city.", kr: "우리는 그 도시의 교통사고 발생률을 연구하고 있습니다." }
+    ]
+  },
+  {
+    id: "L3-231",
+    word: "incorporate",
+    meaning: "통합하다, 포함하다",
+    examples: [
+      { en: "We should incorporate the new findings into our report.", kr: "우리는 새로운 발견들을 보고서에 통합해야 합니다." },
+      { en: "The company was incorporated in 2010.", kr: "그 회사는 2010년에 법인으로 설립되었습니다." }
+    ]
+  },
+  {
+    id: "L3-232",
+    word: "induce",
+    meaning: "유도하다, 유발하다",
+    examples: [
+      { en: "The medicine is designed to induce sleep.", kr: "그 약은 수면을 유도하도록 고안되었습니다." },
+      { en: "High prices may induce consumers to look for cheaper options.", kr: "높은 가격은 소비자들이 더 저렴한 옵션을 찾도록 유도할 수 있습니다." }
+    ]
+  },
+  {
+    id: "L3-233",
+    word: "infer",
+    meaning: "추론하다",
+    examples: [
+      { en: "We can infer his feelings from his body language.", kr: "우리는 그의 몸짓 언어에서 그의 감정을 추론할 수 있습니다." },
+      { en: "What conclusion do you infer from the data?", kr: "그 자료에서 어떤 결론을 추론합니까?" }
+    ]
+  },
+  {
+    id: "L3-234",
+    word: "infrastructure",
+    meaning: "기반 시설",
+    examples: [
+      { en: "The city is investing in new communication infrastructure.", kr: "그 도시는 새로운 통신 기반 시설에 투자하고 있습니다." },
+      { en: "Damaged infrastructure needs immediate repair.", kr: "손상된 기반 시설은 즉각적인 수리가 필요합니다." }
+    ]
+  },
+  {
+    id: "L3-235",
+    word: "inhibit",
+    meaning: "억제하다, 저해하다",
+    examples: [
+      { en: "Lack of funding will inhibit the development of the project.", kr: "자금 부족은 프로젝트의 개발을 저해할 것입니다." },
+      { en: "The drug is designed to inhibit pain signals.", kr: "그 약은 통증 신호를 억제하도록 고안되었습니다." }
+    ]
+  },
+  {
+    id: "L3-236",
+    word: "initial",
+    meaning: "초기의",
+    examples: [
+      { en: "The initial phase of the construction is complete.", kr: "건설의 초기 단계가 완료되었습니다." },
+      { en: "My initial reaction was surprise.", kr: "저의 초기 반응은 놀라움이었습니다." }
+    ]
+  },
+  {
+    id: "L3-237",
+    word: "insight",
+    meaning: "통찰력",
+    examples: [
+      { en: "The book provides deep insight into human psychology.", kr: "그 책은 인간 심리에 대한 깊은 통찰력을 제공합니다." },
+      { en: "Her sudden insight helped solve the mystery.", kr: "그녀의 갑작스러운 통찰력이 미스터리를 해결하는 데 도움이 되었습니다." }
+    ]
+  },
+  {
+    id: "L3-238",
+    word: "instance",
+    meaning: "사례, 경우",
+    examples: [
+      { en: "For instance, look at the results from last year.", kr: "예를 들어, 작년의 결과를 보세요." },
+      { en: "The incident was a rare instance of violence.", kr: "그 사건은 드문 폭력 사례였습니다." }
+    ]
+  },
+  {
+    id: "L3-239",
+    word: "integral",
+    meaning: "필수적인, 통합적인",
+    examples: [
+      { en: "Teamwork is an integral part of the project.", kr: "팀워크는 프로젝트의 필수적인 부분입니다." },
+      { en: "The data is an integral element of the final analysis.", kr: "그 자료는 최종 분석의 통합적인 요소입니다." }
+    ]
+  },
+  {
+    id: "L3-240",
+    word: "intense",
+    meaning: "강렬한, 집중적인",
+    examples: [
+      { en: "They felt the intense heat of the desert sun.", kr: "그들은 사막 태양의 강렬한 열기를 느꼈습니다." },
+      { en: "The problem requires intense concentration.", kr: "그 문제는 집중적인 집중을 필요로 합니다." }
+    ]
+  },
+  {
+    id: "L3-241",
+    word: "invest",
+    meaning: "투자하다",
+    examples: [
+      { en: "It is wise to invest money in education.", kr: "교육에 돈을 투자하는 것은 현명합니다." },
+      { en: "They invested heavily in the renewable energy sector.", kr: "그들은 재생 에너지 부문에 막대하게 투자했습니다." }
+    ]
+  },
+  {
+    id: "L3-242",
+    word: "isolate",
+    meaning: "고립시키다, 분리하다",
+    examples: [
+      { en: "We need to isolate the patient to prevent infection.", kr: "우리는 감염을 막기 위해 환자를 고립시켜야 합니다." },
+      { en: "The study attempts to isolate one variable.", kr: "그 연구는 하나의 변수를 분리하려고 시도합니다." }
+    ]
+  },
+  {
+    id: "L3-243",
+    word: "issue",
+    meaning: "쟁점, 발행하다",
+    examples: [
+      { en: "The main issue is the lack of funding.", kr: "주요 쟁점은 자금 부족입니다." },
+      { en: "The company will issue a formal statement tomorrow.", kr: "그 회사는 내일 공식 성명을 발표할 것입니다." }
+    ]
+  },
+  {
+    id: "L3-244",
+    word: "justify",
+    meaning: "정당화하다, 해명하다",
+    examples: [
+      { en: "How can you justify leaving early?", kr: "일찍 떠나는 것을 어떻게 정당화할 수 있습니까?" },
+      { en: "The manager was asked to justify the high expenses.", kr: "관리자는 높은 경비를 해명하도록 요청받았습니다." }
+    ]
+  },
+  {
+    id: "L3-245",
+    word: "labor",
+    meaning: "노동, 노력",
+    examples: [
+      { en: "The project requires intensive manual labor.", kr: "그 프로젝트는 집중적인 수동 노동을 필요로 합니다." },
+      { en: "She gave birth after five hours of labor.", kr: "그녀는 5시간의 진통(노동) 끝에 출산했습니다." }
+    ]
+  },
+  {
+    id: "L3-246",
+    word: "legal",
+    meaning: "법적인, 합법적인",
+    examples: [
+      { en: "We need to seek legal advice on this matter.", kr: "우리는 이 문제에 대해 법적인 조언을 구할 필요가 있습니다." },
+      { en: "The contract is completely legal and binding.", kr: "그 계약은 완전히 합법적이며 구속력이 있습니다." }
+    ]
+  },
+  {
+    id: "L3-247",
+    word: "legislate",
+    meaning: "입법하다",
+    examples: [
+      { en: "The government should legislate to protect consumer rights.", kr: "정부는 소비자 권리를 보호하기 위해 입법해야 합니다." },
+      { en: "The city council plans to legislate on new zoning laws.", kr: "시의회는 새로운 구역 지정 법률에 대해 입법할 계획입니다." }
+    ]
+  },
+  {
+    id: "L3-248",
+    word: "leverage",
+    meaning: "영향력, 지렛대 효과",
+    examples: [
+      { en: "The company used its size as leverage in the negotiation.", kr: "그 회사는 협상에서 자사의 규모를 영향력으로 사용했습니다." },
+      { en: "We can leverage technology to improve efficiency.", kr: "우리는 효율성을 개선하기 위해 기술을 활용할 수 있습니다." }
+    ]
+  },
+  {
+    id: "L3-249",
+    word: "liberal",
+    meaning: "진보적인, 자유로운",
+    examples: [
+      { en: "She has very liberal views on social issues.", kr: "그녀는 사회 문제에 대해 매우 진보적인 견해를 가지고 있습니다." },
+      { en: "The university offers a liberal arts education.", kr: "그 대학은 자유로운 교양 교육을 제공합니다." }
+    ]
+  },
+  {
+    id: "L3-250",
+    word: "license",
+    meaning: "면허, 허가",
+    examples: [
+      { en: "You need a license to drive a motorcycle.", kr: "오토바이를 운전하려면 면허가 필요합니다." },
+      { en: "The city issued a license to the new restaurant.", kr: "시는 새 레스토랑에 허가를 발급했습니다." }
+    ]
+  },
+  {
+    id: "L3-251",
+    word: "likewise",
+    meaning: "마찬가지로, 또한",
+    examples: [
+      { en: "The first experiment failed; likewise, the second attempt was unsuccessful.", kr: "첫 번째 실험은 실패했습니다. 마찬가지로, 두 번째 시도도 성공적이지 못했습니다." },
+      { en: "I wish you a pleasant journey. Likewise!", kr: "즐거운 여행이 되기를 바랍니다. 저도 마찬가지예요!" }
+    ]
+  },
+  {
+    id: "L3-252",
+    word: "maximize",
+    meaning: "극대화하다",
+    examples: [
+      { en: "We need to maximize the use of our limited resources.", kr: "우리는 제한된 자원의 사용을 극대화해야 합니다." },
+      { en: "The system is designed to maximize energy efficiency.", kr: "그 시스템은 에너지 효율성을 극대화하도록 설계되었습니다." }
+    ]
+  },
+  {
+    id: "L3-253",
+    word: "mechanism",
+    meaning: "메커니즘, 장치",
+    examples: [
+      { en: "The clock has a complex internal mechanism.", kr: "그 오래된 시계는 복잡한 내부 장치를 가지고 있습니다." },
+      { en: "We need a mechanism to resolve disputes.", kr: "우리는 분쟁을 해결할 메커니즘이 필요합니다." }
+    ]
+  },
+  {
+    id: "L3-254",
+    word: "mediate",
+    meaning: "중재하다",
+    examples: [
+      { en: "An external party was called in to mediate the dispute.", kr: "외부 당사자가 분쟁을 중재하기 위해 소집되었습니다." },
+      { en: "Meditation can help mediate stress levels.", kr: "명상은 스트레스 수준을 중재하는 데 도움이 될 수 있습니다." }
+    ]
+  },
+  {
+    id: "L3-255",
+    word: "merely",
+    meaning: "단지, 그저",
+    examples: [
+      { en: "It was merely a suggestion, not a command.", kr: "그것은 단지 제안일 뿐, 명령은 아니었습니다." },
+      { en: "He is merely a student, not an expert.", kr: "그는 그저 학생일 뿐, 전문가가 아닙니다." }
+    ]
+  },
+  {
+    id: "L3-256",
+    word: "minimum",
+    meaning: "최소한의, 최소",
+    examples: [
+      { en: "The minimum age for the concert is 16.", kr: "그 콘서트의 최소 연령은 16세입니다." },
+      { en: "We should aim for a minimum of two hours of study per day.", kr: "우리는 하루에 최소 2시간 공부하는 것을 목표로 해야 합니다." }
+    ]
+  },
+  {
+    id: "L3-257",
+    word: "modify",
+    meaning: "수정하다, 변경하다",
+    examples: [
+      { en: "We need to modify the design slightly.", kr: "우리는 디자인을 약간 수정할 필요가 있습니다." },
+      { en: "The software was modified to include new features.", kr: "그 소프트웨어는 새로운 기능을 포함하도록 변경되었습니다." }
+    ]
+  },
+  {
+    id: "L3-258",
+    word: "monitor",
+    meaning: "감시하다, 관찰하다",
+    examples: [
+      { en: "The team will monitor the patient's vitals closely.", kr: "팀은 환자의 활력 징후를 면밀히 관찰할 것입니다." },
+      { en: "We need to monitor traffic flow on the highway.", kr: "우리는 고속도로의 교통 흐름을 감시해야 합니다." }
+    ]
+  },
+  {
+    id: "L3-259",
+    word: "multiple",
+    meaning: "다수의, 복합적인",
+    examples: [
+      { en: "The problem has multiple contributing factors.", kr: "그 문제는 다수의 기여 요인들을 가지고 있습니다." },
+      { en: "She speaks multiple languages fluently.", kr: "그녀는 다수의 언어를 유창하게 구사합니다." }
+    ]
+  },
+  {
+    id: "L3-260",
+    word: "mutual",
+    meaning: "상호의, 공통의",
+    examples: [
+      { en: "The agreement was made with mutual consent.", kr: "그 합의는 상호 동의로 이루어졌습니다." },
+      { en: "They share a mutual love of classic films.", kr: "그들은 고전 영화에 대한 공통의 사랑을 공유합니다." }
+    ]
+  },
+  {
+    id: "L3-261",
+    word: "neglect",
+    meaning: "방치하다, 소홀히 하다",
+    examples: [
+      { en: "He neglected his duties and was fired.", kr: "그는 자신의 임무를 소홀히 하여 해고되었습니다." },
+      { en: "The garden was overgrown and showed signs of neglect.", kr: "정원은 무성했고 방치된 징후를 보였습니다." }
+    ]
+  },
+  {
+    id: "L3-262",
+    word: "negotiate",
+    meaning: "협상하다",
+    examples: [
+      { en: "They spent hours negotiating the terms of the contract.", kr: "그들은 계약 조건을 협상하는 데 몇 시간을 보냈습니다." },
+      { en: "We need to negotiate a better price with the supplier.", kr: "우리는 공급업체와 더 나은 가격을 협상해야 합니다." }
+    ]
+  },
+  {
+    id: "L3-263",
+    word: "neutral",
+    meaning: "중립적인",
+    examples: [
+      { en: "The mediator remained strictly neutral during the talks.", kr: "중재자는 회담 동안 엄격하게 중립을 유지했습니다." },
+      { en: "The color of the walls is a neutral beige.", kr: "벽의 색은 중립적인 베이지색입니다." }
+    ]
+  },
+  {
+    id: "L3-264",
+    word: "notable",
+    meaning: "주목할 만한, 현저한",
+    examples: [
+      { en: "The building is notable for its unique architecture.", kr: "그 건물은 독특한 건축으로 주목할 만합니다." },
+      { en: "She made a notable contribution to the field of biology.", kr: "그녀는 생물학 분야에 현저한 기여를 했습니다." }
+    ]
+  },
+  {
+    id: "L3-265",
+    word: "notion",
+    meaning: "개념, 생각",
+    examples: [
+      { en: "I disagree with the notion of absolute authority.", kr: "저는 절대적인 권위라는 개념에 동의하지 않습니다." },
+      { en: "She had a sudden notion to adopt a pet.", kr: "그녀는 갑자기 애완동물을 입양하겠다는 생각이 들었습니다." }
+    ]
+  },
+  {
+    id: "L3-266",
+    word: "notorious",
+    meaning: "악명 높은",
+    examples: [
+      { en: "The abandoned house is notorious for strange occurrences.", kr: "그 버려진 집은 이상한 일들로 악명이 높습니다." },
+      { en: "He is a notorious gambler who lost his fortune.", kr: "그는 자신의 재산을 탕진한 악명 높은 도박꾼입니다." }
+    ]
+  },
+  {
+    id: "L3-267",
+    word: "objective",
+    meaning: "객관적인, 목표",
+    examples: [
+      { en: "The scientist must remain objective when analyzing the data.", kr: "과학자는 데이터를 분석할 때 객관성을 유지해야 합니다." },
+      { en: "What is your main objective for this year?", kr: "올해 당신의 주된 목표는 무엇입니까?" }
+    ]
+  },
+  {
+    id: "L3-268",
+    word: "obtain",
+    meaning: "얻다, 획득하다",
+    examples: [
+      { en: "You can obtain the necessary forms online.", kr: "필요한 양식들을 온라인에서 얻을 수 있습니다." },
+      { en: "We need to obtain permission from the owner.", kr: "우리는 소유주로부터 허가를 획득해야 합니다." }
+    ]
+  },
+  {
+    id: "L3-269",
+    word: "occur",
+    meaning: "발생하다, 떠오르다",
+    examples: [
+      { en: "The accident occurred at midnight.", kr: "그 사고는 자정에 발생했습니다." },
+      { en: "It didn't occur to me to ask for a refund.", kr: "환불을 요청해야겠다는 생각이 나에게 떠오르지 않았습니다." }
+    ]
+  },
+  {
+    id: "L3-270",
+    word: "ongoing",
+    meaning: "진행 중인",
+    examples: [
+      { en: "The issue is part of an ongoing debate.", kr: "그 쟁점은 진행 중인 논쟁의 일부입니다." },
+      { en: "The company is making ongoing efforts to improve customer service.", kr: "그 회사는 고객 서비스 개선을 위해 지속적인 노력을 하고 있습니다." }
+    ]
+  },
+  {
+    id: "L3-271",
+    word: "opaque",
+    meaning: "불투명한, 이해하기 어려운",
+    examples: [
+      { en: "The windows were made of opaque glass for privacy.", kr: "창문은 사생활 보호를 위해 불투명한 유리로 만들어졌습니다." },
+      { en: "The legal document was opaque and full of jargon.", kr: "그 법률 문서는 이해하기 어렵고 전문 용어로 가득했습니다." }
+    ]
+  },
+  {
+    id: "L3-272",
+    word: "oppose",
+    meaning: "반대하다",
+    examples: [
+      { en: "The majority of the committee members oppose the change.", kr: "위원회 구성원 대다수가 그 변화에 반대합니다." },
+      { en: "They opposed the construction of the new power plant.", kr: "그들은 새 발전소 건설에 반대했습니다." }
+    ]
+  },
+  {
+    id: "L3-273",
+    word: "optimum",
+    meaning: "최적의, 최고의",
+    examples: [
+      { en: "We need to operate at the optimum level of efficiency.", kr: "우리는 최적의 효율성 수준에서 운영해야 합니다." },
+      { en: "The seeds germinate best at the optimum temperature.", kr: "그 씨앗들은 최적의 온도에서 가장 잘 발아합니다." }
+    ]
+  },
+  {
+    id: "L3-274",
+    word: "orient",
+    meaning: "방향을 잡다, 지향하게 하다",
+    examples: [
+      { en: "It is difficult to orient yourself in the dark forest.", kr: "어두운 숲속에서 방향을 잡는 것은 어렵습니다." },
+      { en: "The company’s strategy is oriented towards innovation.", kr: "그 회사의 전략은 혁신을 지향하게 되어 있습니다." }
+    ]
+  },
+  {
+    id: "L3-275",
+    word: "outcome",
+    meaning: "결과, 성과",
+    examples: [
+      { en: "The outcome of the election surprised everyone.", kr: "선거 결과가 모두를 놀라게 했습니다." },
+      { en: "We are waiting for the final outcome of the investigation.", kr: "우리는 조사의 최종 결과를 기다리고 있습니다." }
+    ]
+  },
+  {
+    id: "L3-276",
+    word: "output",
+    meaning: "산출, 출력",
+    examples: [
+      { en: "The factory's output increased significantly this month.", kr: "그 공장의 산출이 이번 달에 상당히 증가했습니다." },
+      { en: "The printer provides a high-quality output.", kr: "그 프린터는 고품질 출력을 제공합니다." }
+    ]
+  },
+  {
+    id: "L3-277",
+    word: "oversee",
+    meaning: "감독하다, 관리하다",
+    examples: [
+      { en: "A manager was hired to oversee the daily operations.", kr: "매일의 운영을 감독하기 위해 관리자가 고용되었습니다." },
+      { en: "He oversees the production of over 50 products.", kr: "그는 50개가 넘는 제품의 생산을 관리합니다." }
+    ]
+  },
+  {
+    id: "L3-278",
+    word: "overwhelm",
+    meaning: "압도하다, 제압하다",
+    examples: [
+      { en: "The sheer volume of work began to overwhelm him.", kr: "순수한 업무량에 그는 압도되기 시작했습니다." },
+      { en: "The army was able to overwhelm the enemy forces.", kr: "그 군대는 적군을 제압할 수 있었습니다." }
+    ]
+  },
+  {
+    id: "L3-279",
+    word: "overlap",
+    meaning: "겹치다, 중복되다",
+    examples: [
+      { en: "The two projects have a significant overlap in scope.", kr: "두 프로젝트는 범위에 상당한 중복이 있습니다." },
+      { en: "The new schedule is designed so that no classes overlap.", kr: "새로운 시간표는 어떤 수업도 겹치지 않도록 설계되었습니다." }
+    ]
+  },
+  {
+    id: "L3-280",
+    word: "appraise",
+    meaning: "평가하다, 감정하다",
+    examples: [
+      { en: "We hired an expert to appraise the value of the antique.", kr: "우리는 골동품의 가치를 감정하기 위해 전문가를 고용했습니다." },
+      { en: "The manager will appraise the performance of all employees.", kr: "관리자는 모든 직원의 성과를 평가할 것입니다." }
+    ]
+  },
+  {
+    id: "L3-281",
+    word: "articulate",
+    meaning: "분명히 표현하다",
+    examples: [
+      { en: "She is very articulate and expresses her ideas clearly.", kr: "그녀는 매우 분명히 표현하며 자신의 아이디어를 명확하게 나타냅니다." },
+      { en: "It was difficult for him to articulate his feelings.", kr: "그가 자신의 감정을 분명히 표현하는 것은 어려웠습니다." }
+    ]
+  },
+  {
+    id: "L3-282",
+    word: "attest",
+    meaning: "증명하다, 입증하다",
+    examples: [
+      { en: "The growth figures attest to the success of the new strategy.", kr: "성장 수치는 새 전략의 성공을 증명합니다." },
+      { en: "I can personally attest to his honesty and integrity.", kr: "저는 그의 정직과 청렴함을 개인적으로 입증할 수 있습니다." }
+    ]
+  },
+  {
+    id: "L3-283",
+    word: "candid",
+    meaning: "솔직한, 정직한",
+    examples: [
+      { en: "I appreciate your candid opinion on the matter.", kr: "그 문제에 대한 당신의 솔직한 의견에 감사합니다." },
+      { en: "The politician was surprisingly candid about his failures.", kr: "그 정치인은 자신의 실패에 대해 놀라울 정도로 정직했습니다." }
+    ]
+  },
+  {
+    id: "L3-284",
+    word: "circulate",
+    meaning: "순환하다, 유통하다",
+    examples: [
+      { en: "The fan helps to circulate air throughout the room.", kr: "선풍기는 방 전체에 공기를 순환시키는 데 도움을 줍니다." },
+      { en: "The rumor began to circulate quickly through the office.", kr: "그 소문은 사무실 전체에 빠르게 유통되기 시작했습니다." }
+    ]
+  },
+  {
+    id: "L3-285",
+    word: "confer",
+    meaning: "협의하다, 수여하다",
+    examples: [
+      { en: "The doctors will confer to decide on the best treatment plan.", kr: "의사들은 최선의 치료 계획을 결정하기 위해 협의할 것입니다." },
+      { en: "The university conferred an honorary degree upon the distinguished guest.", kr: "그 대학은 그 저명한 손님에게 명예 학위를 수여했습니다." }
+    ]
+  },
+  {
+    id: "L3-286",
+    word: "congenial",
+    meaning: "마음에 드는, 마음이 맞는",
+    examples: [
+      { en: "She found a congenial atmosphere in the small coffee shop.", kr: "그녀는 그 작은 커피숍에서 마음에 드는 분위기를 발견했습니다." },
+      { en: "He is a congenial colleague who is easy to work with.", kr: "그는 함께 일하기 쉬운 마음이 맞는 동료입니다." }
+    ]
+  },
+  {
+    id: "L3-287",
+    word: "constrain",
+    meaning: "제약하다, 강요하다",
+    examples: [
+      { en: "The budget constraints constrained the scope of the project.", kr: "예산 제약이 프로젝트의 범위를 제약했습니다." },
+      { en: "She felt constrained by her promise to keep the secret.", kr: "그녀는 비밀을 지키겠다는 자신의 약속에 강요받는다고 느꼈습니다." }
+    ]
+  },
+  {
+    id: "L3-288",
+    word: "convene",
+    meaning: "소집하다, 회합하다",
+    examples: [
+      { en: "The committee will convene next week to discuss the proposal.", kr: "위원회는 다음 주에 그 제안을 논의하기 위해 소집될 것입니다." },
+      { en: "The global leaders convened for the annual summit.", kr: "세계 지도자들은 연례 정상회담을 위해 회합했습니다." }
+    ]
+  },
+  {
+    id: "L3-289",
+    word: "curtail",
+    meaning: "축소하다, 줄이다",
+    examples: [
+      { en: "The company was forced to curtail spending on non-essential items.", kr: "그 회사는 비필수 품목에 대한 지출을 축소할 수밖에 없었습니다." },
+      { en: "We had to curtail our vacation due to the bad weather.", kr: "우리는 악천후 때문에 휴가를 줄여야 했습니다." }
+    ]
+  },
+  {
+    id: "L3-290",
+    word: "disperse",
+    meaning: "흩어지게 하다, 해산하다",
+    examples: [
+      { en: "The police used tear gas to disperse the crowd.", kr: "경찰은 최루탄을 사용하여 군중을 해산시켰습니다." },
+      { en: "The seeds disperse by wind over a wide area.", kr: "씨앗들은 바람에 의해 넓은 지역에 흩어지게 됩니다." }
+    ]
+  },
+  {
+    id: "L3-291",
+    word: "divulge",
+    meaning: "누설하다, 폭로하다",
+    examples: [
+      { en: "The journalist refused to divulge the name of his source.", kr: "그 기자는 자신의 출처의 이름을 누설하는 것을 거부했습니다." },
+      { en: "Do not divulge any confidential information to outsiders.", kr: "외부인에게 어떤 기밀 정보도 누설하지 마세요." }
+    ]
+  },
+  {
+    id: "L3-292",
+    word: "elucidate",
+    meaning: "설명하다, 명료하게 하다",
+    examples: [
+      { en: "The professor stopped to elucidate the complex theory.", kr: "그 교수는 복잡한 이론을 설명하기 위해 멈췄습니다." },
+      { en: "Can you elucidate your position on the matter?", kr: "그 문제에 대한 당신의 입장을 명료하게 해 주시겠습니까?" }
+    ]
+  },
+  {
+    id: "L3-293",
+    word: "expedite",
+    meaning: "신속히 처리하다",
+    examples: [
+      { en: "We need to expedite the application process for urgent cases.", kr: "우리는 긴급한 사례를 위해 신청 절차를 신속히 처리해야 합니다." },
+      { en: "The new software will expedite data analysis.", kr: "새 소프트웨어는 데이터 분석을 신속히 처리할 것입니다." }
+    ]
+  },
+  {
+    id: "L3-294",
+    word: "foster",
+    meaning: "육성하다, 촉진하다",
+    examples: [
+      { en: "The program aims to foster cooperation among the members.", kr: "그 프로그램은 구성원들 사이에 협력을 육성하는 것을 목표로 합니다." },
+      { en: "Good leadership fosters trust and loyalty.", kr: "좋은 리더십은 신뢰와 충성심을 촉진합니다." }
+    ]
+  },
+  {
+    id: "L3-295",
+    word: "inaugurate",
+    meaning: "취임시키다, 시작하다",
+    examples: [
+      { en: "The new president will be inaugurated next month.", kr: "새 대통령은 다음 달에 취임할 것입니다." },
+      { en: "The company will inaugurate its new headquarters with a grand ceremony.", kr: "그 회사는 성대한 행사로 새 본사를 시작(개시)할 것입니다." }
+    ]
+  },
+  {
+    id: "L3-296",
+    word: "incur",
+    meaning: "(손해를) 입다, 발생시키다",
+    examples: [
+      { en: "The project incurred unexpected costs due to delays.", kr: "그 프로젝트는 지연 때문에 예상치 못한 비용을 발생시켰습니다." },
+      { en: "The company incurred heavy fines for violating the safety regulations.", kr: "그 회사는 안전 규정 위반으로 막대한 벌금을 입었습니다." }
+    ]
+  },
+  {
+    id: "L3-297",
+    word: "inhibit",
+    meaning: "억제하다, 저해하다",
+    examples: [
+      { en: "Fear of failure can inhibit a person's creativity.", kr: "실패에 대한 두려움은 사람의 창의성을 억제할 수 있습니다." },
+      { en: "The extreme cold will inhibit the growth of the crops.", kr: "극심한 추위는 작물의 성장을 저해할 것입니다." }
+    ]
+  },
+  {
+    id: "L3-298",
+    word: "invincible",
+    meaning: "무적의, 천하무적의",
+    examples: [
+      { en: "The football team felt invincible after winning every game of the season.", kr: "그 축구팀은 시즌의 모든 경기에서 승리한 후 무적으로 느꼈습니다." },
+      { en: "He believed he was invincible until he faced a major setback.", kr: "그는 큰 차질에 직면할 때까지 자신이 천하무적이라고 믿었습니다." }
+    ]
+  },
+  {
+    id: "L3-299",
+    word: "leverage",
+    meaning: "영향력, 지렛대 효과",
+    examples: [
+      { en: "The small firm used its unique technology as leverage in negotiations.", kr: "그 작은 회사는 협상에서 자신들의 독특한 기술을 영향력으로 사용했습니다." },
+      { en: "We can leverage social media to quickly spread the message.", kr: "우리는 메시지를 빠르게 퍼뜨리기 위해 소셜 미디어를 지렛대 효과로 활용할 수 있습니다." }
+    ]
+  },
+  {
+    id: "L3-300",
+    word: "parameter",
+    meaning: "매개변수, 기준",
+    examples: [
+      { en: "We must define the parameters of the study clearly.", kr: "우리는 연구의 매개변수(기준)를 명확하게 정의해야 합니다." },
+      { en: "The budget set strict financial parameters.", kr: "예산은 엄격한 재정적 기준을 설정했습니다." }
+    ]
+  }
+];
 
 
+const wordsLevel3_Part4 = [
+  {
+    id: "L3-301",
+    word: "parallel",
+    meaning: "평행한, 유사한",
+    examples: [
+      { en: "The two roads run parallel to the river.", kr: "두 도로는 강과 평행하게 이어집니다." },
+      { en: "The situation has a close parallel in history.", kr: "그 상황은 역사에서 밀접한 유사점을 가집니다." }
+    ]
+  },
+  {
+    id: "L3-302",
+    word: "periodical",
+    meaning: "정기 간행물, 주기적인",
+    examples: [
+      { en: "The library subscribes to many academic periodicals.", kr: "그 도서관은 많은 학술 정기 간행물을 구독합니다." },
+      { en: "The machine requires periodical maintenance.", kr: "그 기계는 주기적인 유지보수를 필요로 합니다." }
+    ]
+  },
+  {
+    id: "L3-303",
+    word: "permanent",
+    meaning: "영구적인",
+    examples: [
+      { en: "She is looking for a permanent position at the company.", kr: "그녀는 그 회사에서 영구적인(정규) 직책을 찾고 있습니다." },
+      { en: "The ink is permanent and cannot be washed out.", kr: "그 잉크는 영구적이며 지워지지 않습니다." }
+    ]
+  },
+  {
+    id: "L3-304",
+    word: "perspective",
+    meaning: "관점, 시각",
+    examples: [
+      { en: "Try to look at the issue from a new perspective.", kr: "새로운 관점에서 그 문제를 바라보려고 노력하세요." },
+      { en: "His unique perspective made his work interesting.", kr: "그의 독특한 시각이 그의 작품을 흥미롭게 만들었습니다." }
+    ]
+  },
+  {
+    id: "L3-305",
+    word: "phase",
+    meaning: "단계, 국면",
+    examples: [
+      { en: "The project is currently in the planning phase.", kr: "그 프로젝트는 현재 계획 단계에 있습니다." },
+      { en: "The moon goes through different phases each month.", kr: "달은 매달 다른 국면들을 거칩니다." }
+    ]
+  },
+  {
+    id: "L3-306",
+    word: "phenomenon",
+    meaning: "현상",
+    examples: [
+      { en: "Global warming is a complex phenomenon.", kr: "지구 온난화는 복잡한 현상입니다." },
+      { en: "The rapid spread of misinformation is a new social phenomenon.", kr: "잘못된 정보의 빠른 확산은 새로운 사회 현상입니다." }
+    ]
+  },
+  {
+    id: "L3-307",
+    word: "precise",
+    meaning: "정확한, 정밀한",
+    examples: [
+      { en: "We need the precise measurements before we can start.", kr: "우리는 시작하기 전에 정확한 측정이 필요합니다." },
+      { en: "Can you give me the precise time of the incident?", kr: "그 사건의 정밀한 시간을 말씀해 주시겠습니까?" }
+    ]
+  },
+  {
+    id: "L3-308",
+    word: "predict",
+    meaning: "예측하다",
+    examples: [
+      { en: "It is hard to predict the stock market accurately.", kr: "주식 시장을 정확하게 예측하기는 어렵습니다." },
+      { en: "Analysts predict a slow growth rate next year.", kr: "분석가들은 내년에 느린 성장률을 예측합니다." }
+    ]
+  },
+  {
+    id: "L3-309",
+    word: "predominantly",
+    meaning: "주로, 대부분",
+    examples: [
+      { en: "The audience was predominantly female.", kr: "청중은 주로 여성이었습니다." },
+      { en: "The diet consists predominantly of fresh vegetables.", kr: "그 식단은 대부분 신선한 채소로 구성되어 있습니다." }
+    ]
+  },
+  {
+    id: "L3-310",
+    word: "preliminary",
+    meaning: "예비의, 사전의",
+    examples: [
+      { en: "The committee is reviewing the preliminary results of the survey.", kr: "위원회는 설문조사의 예비 결과를 검토하고 있습니다." },
+      { en: "We had a preliminary discussion before the official meeting.", kr: "우리는 공식 회의 전에 사전 논의를 가졌습니다." }
+    ]
+  },
+  {
+    id: "L3-311",
+    word: "presume",
+    meaning: "추정하다, 가정하다",
+    examples: [
+      { en: "I presume you've already met my colleague.", kr: "저는 당신이 이미 제 동료를 만났다고 추정합니다." },
+      { en: "We must presume innocence until proven guilty.", kr: "유죄가 입증될 때까지는 무죄를 가정해야 합니다." }
+    ]
+  },
+  {
+    id: "L3-312",
+    word: "prior",
+    meaning: "이전의, 앞선",
+    examples: [
+      { en: "You need prior authorization before entering.", kr: "입장하기 전에 사전 승인이 필요합니다." },
+      { en: "The events prior to the war were complex.", kr: "전쟁에 앞선 사건들은 복잡했습니다." }
+    ]
+  },
+  {
+    id: "L3-313",
+    word: "process",
+    meaning: "과정, 처리하다",
+    examples: [
+      { en: "Learning a new language is a long process.", kr: "새로운 언어를 배우는 것은 긴 과정입니다." },
+      { en: "The application is being processed by the admissions office.", kr: "그 지원서는 입학처에서 처리되고 있습니다." }
+    ]
+  },
+  {
+    id: "L3-314",
+    word: "prohibit",
+    meaning: "금지하다",
+    examples: [
+      { en: "Smoking is strictly prohibited inside the building.", kr: "건물 내에서는 흡연이 엄격하게 금지됩니다." },
+      { en: "The contract prohibits early termination.", kr: "그 계약은 조기 해지를 금지합니다." }
+    ]
+  },
+  {
+    id: "L3-315",
+    word: "profound",
+    meaning: "심오한, 지대한",
+    examples: [
+      { en: "The film offers a profound insight into human nature.", kr: "그 영화는 인간 본성에 대한 심오한 통찰을 제공합니다." },
+      { en: "The crisis had a profound effect on the whole country.", kr: "그 위기는 온 나라에 지대한 영향을 미쳤습니다." }
+    ]
+  },
+  {
+    id: "L3-316",
+    word: "promote",
+    meaning: "촉진하다, 승진시키다",
+    examples: [
+      { en: "The campaign aims to promote local businesses.", kr: "그 캠페인은 지역 상권 활성화를 촉진하는 것을 목표로 합니다." },
+      { en: "She was promoted to the position of senior manager.", kr: "그녀는 선임 관리자 직책으로 승진되었습니다." }
+    ]
+  },
+  {
+    id: "L3-317",
+    word: "protocol",
+    meaning: "규약, 의정서",
+    examples: [
+      { en: "All data transfers must adhere to the security protocol.", kr: "모든 데이터 전송은 보안 규약을 준수해야 합니다." },
+      { en: "The diplomats followed the strict diplomatic protocol.", kr: "외교관들은 엄격한 외교 의정서를 따랐습니다." }
+    ]
+  },
+  {
+    id: "L3-318",
+    word: "qualify",
+    meaning: "자격을 얻다, 한정하다",
+    examples: [
+      { en: "You must pass the test to qualify as a teacher.", kr: "선생님이 되기 위해 시험에 합격하여 자격을 얻어야 합니다." },
+      { en: "I would like to qualify my earlier statement about the budget.", kr: "저는 예산에 대한 제 이전 진술을 한정하고 싶습니다." }
+    ]
+  },
+  {
+    id: "L3-319",
+    word: "quantity",
+    meaning: "양",
+    examples: [
+      { en: "We need a large quantity of raw materials.", kr: "우리는 많은 양의 원자재가 필요합니다." },
+      { en: "The experiment requires a small quantity of the chemical.", kr: "그 실험은 소량의 화학 물질을 필요로 합니다." }
+    ]
+  },
+  {
+    id: "L3-320",
+    word: "quota",
+    meaning: "할당량",
+    examples: [
+      { en: "Each salesperson has a monthly sales quota.", kr: "각 영업사원은 월별 판매 할당량을 가지고 있습니다." },
+      { en: "The government set a quota on imported goods.", kr: "정부는 수입품에 대한 할당량을 설정했습니다." }
+    ]
+  },
+  {
+    id: "L3-321",
+    word: "radical",
+    meaning: "근본적인, 급진적인",
+    examples: [
+      { en: "The committee proposed a radical solution to the problem.", kr: "위원회는 문제에 대한 근본적인 해결책을 제안했습니다." },
+      { en: "He holds very radical views on social change.", kr: "그는 사회 변화에 대해 매우 급진적인 견해를 가지고 있습니다." }
+    ]
+  },
+  {
+    id: "L3-322",
+    word: "random",
+    meaning: "무작위의, 임의의",
+    examples: [
+      { en: "The winner was chosen at random.", kr: "당첨자는 무작위로 선택되었습니다." },
+      { en: "We conducted a random inspection of the factory.", kr: "우리는 공장에 대한 임의의 검사를 실시했습니다." }
+    ]
+  },
+  {
+    id: "L3-323",
+    word: "range",
+    meaning: "범위, 다양하다",
+    examples: [
+      { en: "The store carries a wide range of products.", kr: "그 가게는 광범위한 제품들을 취급합니다." },
+      { en: "Temperatures will range from 10 to 20 degrees today.", kr: "오늘 기온은 10도에서 20도 사이일 것입니다." }
+    ]
+  },
+  {
+    id: "L3-324",
+    word: "rational",
+    meaning: "합리적인, 이성적인",
+    examples: [
+      { en: "We must find a rational explanation for the incident.", kr: "우리는 그 사건에 대한 합리적인 설명을 찾아야 합니다." },
+      { en: "Try to be rational and not emotional.", kr: "이성적이 되려고 노력하고 감정적이 되지 마세요." }
+    ]
+  },
+  {
+    id: "L3-325",
+    word: "recede",
+    meaning: "물러나다, 약해지다",
+    examples: [
+      { en: "The floodwaters slowly began to recede.", kr: "홍수가 난 물이 서서히 물러나기 시작했습니다." },
+      { en: "His painful memories gradually receded over time.", kr: "그의 고통스러운 기억들은 시간이 지남에 따라 점차 약해졌습니다." }
+    ]
+  },
+  {
+    id: "L3-326",
+    word: "recover",
+    meaning: "회복하다, 되찾다",
+    examples: [
+      { en: "It took him months to fully recover from the illness.", kr: "그가 질병에서 완전히 회복하는 데 몇 달이 걸렸습니다." },
+      { en: "The police managed to recover the stolen goods.", kr: "경찰은 도난당한 물품을 되찾는 데 성공했습니다." }
+    ]
+  },
+  {
+    id: "L3-327",
+    word: "refer",
+    meaning: "언급하다, 참조하다",
+    examples: [
+      { en: "I refer you to the company policy on refunds.", kr: "환불에 대한 회사 정책을 참조하십시오." },
+      { en: "The speaker did not refer to the recent controversy.", kr: "연사는 최근 논란에 대해 언급하지 않았습니다." }
+    ]
+  },
+  {
+    id: "L3-328",
+    word: "reflect",
+    meaning: "반영하다, 반사하다",
+    examples: [
+      { en: "The calm water reflects the surrounding mountains.", kr: "잔잔한 물이 주변 산들을 반사합니다." },
+      { en: "The company's problems reflect the poor state of the economy.", kr: "그 회사의 문제는 경제의 좋지 않은 상태를 반영합니다." }
+    ]
+  },
+  {
+    id: "L3-329",
+    word: "reform",
+    meaning: "개혁하다, 개혁",
+    examples: [
+      { en: "The government promised to reform the healthcare system.", kr: "정부는 의료 시스템을 개혁하겠다고 약속했습니다." },
+      { en: "Tax reform is a major political issue.", kr: "세제 개혁은 주요 정치적 쟁점입니다." }
+    ]
+  },
+  {
+    id: "L3-330",
+    word: "regulate",
+    meaning: "규제하다, 조절하다",
+    examples: [
+      { en: "The agency regulates the safety of food and drugs.", kr: "그 기관은 식품과 약품의 안전을 규제합니다." },
+      { en: "A thermostat regulates the temperature in the room.", kr: "온도 조절기가 방의 온도를 조절합니다." }
+    ]
+  },
+  {
+    id: "L3-331",
+    word: "reinforce",
+    meaning: "강화하다, 보강하다",
+    examples: [
+      { en: "The new data will reinforce our earlier conclusions.", kr: "새로운 자료는 우리의 이전 결론을 강화할 것입니다." },
+      { en: "The workers used steel beams to reinforce the bridge.", kr: "작업자들은 강철 빔을 사용하여 다리를 보강했습니다." }
+    ]
+  },
+  {
+    id: "L3-332",
+    word: "reject",
+    meaning: "거절하다, 거부하다",
+    examples: [
+      { en: "The committee decided to reject the proposal.", kr: "위원회는 그 제안을 거절하기로 결정했습니다." },
+      { en: "The body might reject the transplanted organ.", kr: "신체는 이식된 장기를 거부할 수도 있습니다." }
+    ]
+  },
+  {
+    id: "L3-333",
+    word: "relevant",
+    meaning: "관련된, 적절한",
+    examples: [
+      { en: "Is this information relevant to the case?", kr: "이 정보가 사건과 관련이 있습니까?" },
+      { en: "Please limit your comments to relevant topics.", kr: "의견을 관련된 주제로만 제한해 주세요." }
+    ]
+  },
+  {
+    id: "L3-334",
+    word: "replicate",
+    meaning: "복제하다, 되풀이하다",
+    examples: [
+      { en: "Scientists attempted to replicate the results of the original experiment.", kr: "과학자들은 원래 실험의 결과를 복제하려고 시도했습니다." },
+      { en: "The machine can replicate the key precisely.", kr: "그 기계는 열쇠를 정확하게 복제할 수 있습니다." }
+    ]
+  },
+  {
+    id: "L3-335",
+    word: "reproduce",
+    meaning: "번식하다, 복제하다",
+    examples: [
+      { en: "The artist has the sole right to reproduce his work.", kr: "그 예술가는 자신의 작품을 복제할 유일한 권리를 가지고 있습니다." },
+      { en: "Many species of fish reproduce during the spring.", kr: "많은 종의 물고기가 봄 동안 번식합니다." }
+    ]
+  },
+  {
+    id: "L3-336",
+    word: "resort",
+    meaning: "의존하다, 리조트",
+    examples: [
+      { en: "They had to resort to force to open the door.", kr: "그들은 문을 열기 위해 힘에 의존해야 했습니다." },
+      { en: "We are planning a trip to a seaside resort.", kr: "우리는 해변 리조트로 여행을 계획하고 있습니다." }
+    ]
+  },
+  {
+    id: "L3-337",
+    word: "restrain",
+    meaning: "억제하다, 제지하다",
+    examples: [
+      { en: "She had to restrain her laughter during the formal speech.", kr: "그녀는 공식 연설 동안 웃음을 억제해야 했습니다." },
+      { en: "Security guards were called to restrain the aggressive fan.", kr: "경호원들이 난폭한 팬을 제지하기 위해 호출되었습니다." }
+    ]
+  },
+  {
+    id: "L3-338",
+    word: "retrieve",
+    meaning: "되찾다, 회수하다",
+    examples: [
+      { en: "I need to retrieve the file from the backup server.", kr: "저는 백업 서버에서 파일을 되찾아와야 합니다." },
+      { en: "The dog was trained to retrieve objects.", kr: "그 개는 물건을 회수하도록 훈련되었습니다." }
+    ]
+  },
+  {
+    id: "L3-339",
+    word: "revenue",
+    meaning: "수익, 세입",
+    examples: [
+      { en: "The company's revenue increased significantly this year.", kr: "그 회사의 수익이 올해 상당히 증가했습니다." },
+      { en: "The new tax generated substantial government revenue.", kr: "새 세금은 상당한 정부 세입을 창출했습니다." }
+    ]
+  },
+  {
+    id: "L3-340",
+    word: "reverse",
+    meaning: "뒤집다, 반대의",
+    examples: [
+      { en: "The company decided to reverse its earlier decision.", kr: "그 회사는 이전의 결정을 뒤집기로 결정했습니다." },
+      { en: "She drove the car in reverse out of the garage.", kr: "그녀는 차를 후진으로 차고에서 운전했습니다." }
+    ]
+  },
+  {
+    id: "L3-341",
+    word: "rigid",
+    meaning: "엄격한, 융통성 없는",
+    examples: [
+      { en: "The rules were too rigid to allow for any exceptions.", kr: "그 규칙들은 예외를 허용하기에는 너무 엄격했습니다." },
+      { en: "The old man's posture was rigid and straight.", kr: "그 노인의 자세는 뻣뻣하고 곧았습니다." }
+    ]
+  },
+  {
+    id: "L3-342",
+    word: "route",
+    meaning: "경로, 길",
+    examples: [
+      { en: "What is the fastest route to the airport?", kr: "공항까지 가장 빠른 경로는 무엇입니까?" },
+      { en: "The delivery truck follows the same route every day.", kr: "그 배달 트럭은 매일 같은 길을 따릅니다." }
+    ]
+  },
+  {
+    id: "L3-343",
+    word: "scenario",
+    meaning: "시나리오, 예상되는 상황",
+    examples: [
+      { en: "We prepared for several worst-case scenarios.", kr: "우리는 몇 가지 최악의 시나리오에 대비했습니다." },
+      { en: "The project team developed a full development scenario.", kr: "프로젝트 팀은 완전한 개발 시나리오를 개발했습니다." }
+    ]
+  },
+  {
+    id: "L3-344",
+    word: "scope",
+    meaning: "범위, 영역",
+    examples: [
+      { en: "The scope of the investigation was very limited.", kr: "그 조사의 범위는 매우 제한적이었습니다." },
+      { en: "We expanded the scope of our services.", kr: "우리는 서비스 영역을 확장했습니다." }
+    ]
+  },
+  {
+    id: "L3-345",
+    word: "security",
+    meaning: "보안, 안전",
+    examples: [
+      { en: "Data security is a top priority for the company.", kr: "데이터 보안은 회사의 최우선 과제입니다." },
+      { en: "The new system ensures personal security.", kr: "새로운 시스템은 개인의 안전을 보장합니다." }
+    ]
+  },
+  {
+    id: "L3-346",
+    word: "sequence",
+    meaning: "순서, 연속",
+    examples: [
+      { en: "The DNA sequence was analyzed by the scientists.", kr: "DNA 순서가 과학자들에 의해 분석되었습니다." },
+      { en: "The events occurred in a rapid sequence.", kr: "그 사건들은 빠른 연속으로 발생했습니다." }
+    ]
+  },
+  {
+    id: "L3-347",
+    word: "sphere",
+    meaning: "구, 영역",
+    examples: [
+      { en: "The earth is an almost perfect sphere.", kr: "지구는 거의 완벽한 구입니다." },
+      { en: "The matter falls outside the sphere of local government.", kr: "그 문제는 지방 정부의 영역 밖에 있습니다." }
+    ]
+  },
+  {
+    id: "L3-348",
+    word: "stabilize",
+    meaning: "안정시키다",
+    examples: [
+      { en: "The nurse worked to stabilize the patient's condition.", kr: "간호사는 환자의 상태를 안정시키기 위해 노력했습니다." },
+      { en: "New regulations were introduced to stabilize the financial markets.", kr: "금융 시장을 안정시키기 위해 새로운 규제가 도입되었습니다." }
+    ]
+  },
+  {
+    id: "L3-349",
+    word: "statute",
+    meaning: "법규, 법령",
+    examples: [
+      { en: "The new statute requires all citizens to pay the fee.", kr: "새 법령은 모든 시민들이 수수료를 지불하도록 요구합니다." },
+      { en: "The action violates an old state statute.", kr: "그 행위는 오래된 주 법규를 위반합니다." }
+    ]
+  },
+  {
+    id: "L3-350",
+    word: "summary",
+    meaning: "요약",
+    examples: [
+      { en: "The manager asked for a brief summary of the project status.", kr: "관리자는 프로젝트 상태에 대한 간략한 요약을 요청했습니다." },
+      { en: "The article provides a good summary of the book.", kr: "그 기사는 책에 대한 좋은 요약을 제공합니다." }
+    ]
+  },
+  {
+    id: "L3-351",
+    word: "survey",
+    meaning: "설문 조사, 조사하다",
+    examples: [
+      { en: "We conducted a detailed survey of customer satisfaction.", kr: "우리는 고객 만족에 대한 상세한 설문 조사를 실시했습니다." },
+      { en: "The team surveyed the damage after the hurricane.", kr: "팀은 허리케인 후 피해를 조사했습니다." }
+    ]
+  },
+  {
+    id: "L3-352",
+    word: "suspend",
+    meaning: "중단하다, 매달다",
+    examples: [
+      { en: "The game was suspended due to heavy rain.", kr: "그 경기는 폭우로 인해 중단되었습니다." },
+      { en: "A heavy chandelier was suspended from the ceiling.", kr: "무거운 샹들리에가 천장에 매달려 있었습니다." }
+    ]
+  },
+  {
+    id: "L3-353",
+    word: "symbol",
+    meaning: "상징",
+    examples: [
+      { en: "The white dove is a symbol of peace.", kr: "흰 비둘기는 평화의 상징입니다." },
+      { en: "The logo is a powerful symbol of the brand.", kr: "그 로고는 브랜드의 강력한 상징입니다." }
+    ]
+  },
+  {
+    id: "L3-354",
+    word: "target",
+    meaning: "목표, 목표로 하다",
+    examples: [
+      { en: "Our target market is young adults.", kr: "우리의 목표 시장은 젊은 성인들입니다." },
+      { en: "The advertisement is targeted at health-conscious consumers.", kr: "그 광고는 건강을 의식하는 소비자들을 목표로 합니다." }
+    ]
+  },
+  {
+    id: "L3-355",
+    word: "tendency",
+    meaning: "경향, 추세",
+    examples: [
+      { en: "He has a tendency to be late for meetings.", kr: "그는 회의에 늦는 경향이 있습니다." },
+      { en: "There is a growing tendency toward remote work.", kr: "원격 근무를 향한 경향이 증가하고 있습니다." }
+    ]
+  },
+  {
+    id: "L3-356",
+    word: "theme",
+    meaning: "주제, 테마",
+    examples: [
+      { en: "The main theme of the novel is love and loss.", kr: "그 소설의 주요 주제는 사랑과 상실입니다." },
+      { en: "They decorated the room with a space theme.", kr: "그들은 방을 우주 테마로 장식했습니다." }
+    ]
+  },
+  {
+    id: "L3-357",
+    word: "transition",
+    meaning: "과도기, 전환",
+    examples: [
+      { en: "The country is undergoing a smooth transition to a new government.", kr: "그 나라는 새 정부로의 순조로운 전환을 겪고 있습니다." },
+      { en: "Learning a new language requires a transition in your thought process.", kr: "새 언어를 배우는 것은 사고 과정의 전환을 필요로 합니다." }
+    ]
+  },
+  {
+    id: "L3-358",
+    word: "trend",
+    meaning: "경향, 유행",
+    examples: [
+      { en: "We are analyzing the current market trend.", kr: "우리는 현재 시장의 경향을 분석하고 있습니다." },
+      { en: "The latest fashion trend is bright colors.", kr: "최신 패션 유행은 밝은 색상입니다." }
+    ]
+  },
+  {
+    id: "L3-359",
+    word: "unanimous",
+    meaning: "만장일치의",
+    examples: [
+      { en: "The jury reached a unanimous verdict of not guilty.", kr: "배심원단은 만장일치의 무죄 평결에 도달했습니다." },
+      { en: "The board's decision was unanimous.", kr: "이사회의 결정은 만장일치였습니다." }
+    ]
+  },
+  {
+    id: "L3-360",
+    word: "unprecedented",
+    meaning: "전례 없는",
+    examples: [
+      { en: "The crisis was of an unprecedented scale.", kr: "그 위기는 전례 없는 규모였습니다." },
+      { en: "The technology achieved an unprecedented speed.", kr: "그 기술은 전례 없는 속도를 달성했습니다." }
+    ]
+  },
+  {
+    id: "L3-361",
+    word: "utility",
+    meaning: "유용성, 공공시설",
+    examples: [
+      { en: "The utility of the new feature is questionable.", kr: "새 기능의 유용성은 의문스럽습니다." },
+      { en: "We have to pay the utility bills every month.", kr: "우리는 매달 공공시설 요금을 지불해야 합니다." }
+    ]
+  },
+  {
+    id: "L3-362",
+    word: "vehicle",
+    meaning: "차량, 수단",
+    examples: [
+      { en: "The insurance covers all types of motor vehicles.", kr: "그 보험은 모든 종류의 자동차를 보장합니다." },
+      { en: "Art is a powerful vehicle for social change.", kr: "예술은 사회 변화를 위한 강력한 수단입니다." }
+    ]
+  },
+  {
+    id: "L3-363",
+    word: "venue",
+    meaning: "장소",
+    examples: [
+      { en: "The venue for the concert has been changed.", kr: "콘서트 장소가 변경되었습니다." },
+      { en: "We need to find a suitable venue for the conference.", kr: "우리는 컨퍼런스를 위한 적절한 장소를 찾아야 합니다." }
+    ]
+  },
+  {
+    id: "L3-364",
+    word: "versus",
+    meaning: "~ 대(對)",
+    examples: [
+      { en: "It's a game of experience versus youth.", kr: "그것은 경험 대 젊음의 경기입니다." },
+      { en: "The team is playing versus the Lakers tonight.", kr: "그 팀은 오늘 밤 레이커스 팀 대(對) 경기를 합니다." }
+    ]
+  },
+  {
+    id: "L3-365",
+    word: "via",
+    meaning: "~을 통하여, ~을 경유하여",
+    examples: [
+      { en: "I sent the documents via email.", kr: "저는 이메일을 통하여 서류를 보냈습니다." },
+      { en: "We flew to New York via London.", kr: "우리는 런던을 경유하여 뉴욕으로 비행했습니다." }
+    ]
+  },
+  {
+    id: "L3-366",
+    word: "virtual",
+    meaning: "가상의, 사실상의",
+    examples: [
+      { en: "They held a virtual meeting using video conferencing.", kr: "그들은 화상 회의를 사용하여 가상 회의를 개최했습니다." },
+      { en: "He is the virtual leader of the entire group.", kr: "그는 전체 그룹의 사실상의 리더입니다." }
+    ]
+  },
+  {
+    id: "L3-367",
+    word: "visible",
+    meaning: "눈에 보이는",
+    examples: [
+      { en: "The stars were clearly visible in the night sky.", kr: "별들이 밤하늘에 명확하게 보였습니다." },
+      { en: "There was a visible difference in their performance.", kr: "그들의 성과에는 눈에 보이는 차이가 있었습니다." }
+    ]
+  },
+  {
+    id: "L3-368",
+    word: "voluntary",
+    meaning: "자발적인",
+    examples: [
+      { en: "Participation in the survey is completely voluntary.", kr: "설문 조사 참여는 완전히 자발적입니다." },
+      { en: "She works at the hospital on a voluntary basis.", kr: "그녀는 자발적인(자원봉사) 기반으로 병원에서 일합니다." }
+    ]
+  },
+  {
+    id: "L3-369",
+    word: "welfare",
+    meaning: "복지",
+    examples: [
+      { en: "The government is committed to improving child welfare.", kr: "정부는 아동 복지 개선에 전념하고 있습니다." },
+      { en: "We must consider the welfare of the animals.", kr: "우리는 동물들의 복지를 고려해야 합니다." }
+    ]
+  },
+  {
+    id: "L3-370",
+    word: "whereas",
+    meaning: "반면에",
+    examples: [
+      { en: "She prefers tea, whereas I prefer coffee.", kr: "그녀는 차를 선호하는 반면에, 저는 커피를 선호합니다." },
+      { en: "The first part was easy, whereas the second was difficult.", kr: "첫 부분은 쉬웠던 반면에, 두 번째 부분은 어려웠습니다." }
+    ]
+  },
+  {
+    id: "L3-371",
+    word: "whereby",
+    meaning: "~하는 것에 의하여",
+    examples: [
+      { en: "They established a system whereby members could vote online.", kr: "그들은 구성원들이 온라인으로 투표할 수 있는 시스템을 확립했습니다." },
+      { en: "A contract whereby you agree to sell the property was signed.", kr: "당신이 재산을 팔기로 동의하는 계약이 서명되었습니다." }
+    ]
+  },
+  {
+    id: "L3-372",
+    word: "whilst",
+    meaning: "~하는 동안에, ~인 반면에",
+    examples: [
+      { en: "I listened to music whilst studying.", kr: "저는 공부하는 동안에 음악을 들었습니다." },
+      { en: "The city has modern buildings, whilst the old town remains historical.", kr: "도시는 현대적인 건물을 가지고 있지만, 구시가지는 역사적으로 남아 있습니다." }
+    ]
+  },
+  {
+    id: "L3-373",
+    word: "wholly",
+    meaning: "완전히",
+    examples: [
+      { en: "The decision was wholly supported by the staff.", kr: "그 결정은 직원들에 의해 완전히 지지받았습니다." },
+      { en: "His success was not wholly dependent on luck.", kr: "그의 성공은 전적으로 운에만 의존하는 것은 아니었습니다." }
+    ]
+  },
+  {
+    id: "L3-374",
+    word: "whose",
+    meaning: "누구의",
+    examples: [
+      { en: "Whose car is parked outside?", kr: "밖에 주차된 차는 누구의 것입니까?" },
+      { en: "He is the person whose advice I trust.", kr: "그는 제가 조언을 신뢰하는 사람입니다." }
+    ]
+  },
+  {
+    id: "L3-375",
+    word: "yore",
+    meaning: "옛날, 옛적",
+    examples: [
+      { en: "The ancient text speaks of heroes from a time of yore.", kr: "그 고대 문헌은 옛적 영웅들에 대해 이야기합니다." },
+      { en: "The village square still hosts festivals just like in the days of yore.", kr: "그 마을 광장은 여전히 옛날처럼 축제를 개최합니다." }
+    ]
+  },
+  {
+    id: "L3-376",
+    word: "zenith",
+    meaning: "정점, 절정",
+    examples: [
+      { en: "The company reached its financial zenith in the late 1990s.", kr: "그 회사는 1990년대 후반에 재정적 정점에 도달했습니다." },
+      { en: "The sun reached its zenith at noon.", kr: "태양은 정오에 그 절정에 도달했습니다." }
+    ]
+  },
+  {
+    id: "L3-377",
+    word: "zealous",
+    meaning: "열성적인, 열렬한",
+    examples: [
+      { en: "The zealous volunteer worked day and night on the project.", kr: "그 열성적인 자원봉사자는 프로젝트에 밤낮으로 일했습니다." },
+      { en: "She is a zealous supporter of environmental conservation.", kr: "그녀는 환경 보존의 열렬한 지지자입니다." }
+    ]
+  },
+  {
+    id: "L3-378",
+    word: "acutely",
+    meaning: "강렬하게, 예리하게",
+    examples: [
+      { en: "The loss of the contract was acutely felt by the entire team.", kr: "계약 상실은 팀 전체에 강렬하게 느껴졌습니다." },
+      { en: "He is acutely aware of the risks involved.", kr: "그는 관련된 위험들을 예리하게 인식하고 있습니다." }
+    ]
+  },
+  {
+    id: "L3-379",
+    word: "adequately",
+    meaning: "적절하게, 충분히",
+    examples: [
+      { en: "The room was adequately heated for the cold weather.", kr: "그 방은 추운 날씨에 적절하게 난방되었습니다." },
+      { en: "She was adequately prepared for the difficult exam.", kr: "그녀는 어려운 시험에 충분히 준비되어 있었습니다." }
+    ]
+  },
+  {
+    id: "L3-380",
+    word: "allegedly",
+    meaning: "주장하는 바에 의하면",
+    examples: [
+      { en: "He was allegedly involved in the fraud.", kr: "그는 주장하는 바에 의하면 그 사기에 연루되었습니다." },
+      { en: "The document allegedly contains the secret plans.", kr: "그 문서는 주장하는 바에 의하면 비밀 계획을 포함하고 있습니다." }
+    ]
+  },
+  {
+    id: "L3-381",
+    word: "briefly",
+    meaning: "간결하게, 짧게",
+    examples: [
+      { en: "The chairman spoke briefly about the company's future.", kr: "의장은 회사의 미래에 대해 간결하게 말했습니다." },
+      { en: "I only saw her briefly in the hallway.", kr: "복도에서 그녀를 짧게(잠깐) 봤을 뿐입니다." }
+    ]
+  },
+  {
+    id: "L3-382",
+    word: "consequently",
+    meaning: "결과적으로",
+    examples: [
+      { en: "He missed the flight; consequently, he was late for the meeting.", kr: "그는 비행기를 놓쳤습니다. 결과적으로, 회의에 늦었습니다." },
+      { en: "The company cut costs, and consequently, profits increased.", kr: "회사는 비용을 절감했고, 결과적으로 수익이 증가했습니다." }
+    ]
+  },
+  {
+    id: "L3-383",
+    word: "currently",
+    meaning: "현재",
+    examples: [
+      { en: "She is currently working on a new project.", kr: "그녀는 현재 새로운 프로젝트를 진행하고 있습니다." },
+      { en: "The store is currently closed for renovation.", kr: "그 가게는 현재 리노베이션으로 인해 문을 닫았습니다." }
+    ]
+  },
+  {
+    id: "L3-384",
+    word: "distinctly",
+    meaning: "뚜렷하게, 명확하게",
+    examples: [
+      { en: "I distinctly remember meeting you last year.", kr: "저는 작년에 당신을 만났던 것을 뚜렷하게 기억합니다." },
+      { en: "The two voices sounded distinctly different.", kr: "두 목소리는 명확하게 다르게 들렸습니다." }
+    ]
+  },
+  {
+    id: "L3-385",
+    word: "equally",
+    meaning: "동등하게",
+    examples: [
+      { en: "The profits were shared equally among the three partners.", kr: "이익은 세 파트너 사이에 동등하게 분배되었습니다." },
+      { en: "He is equally skilled in both painting and sculpture.", kr: "그는 회화와 조각 모두에 동등하게 숙련되어 있습니다." }
+    ]
+  },
+  {
+    id: "L3-386",
+    word: "essentially",
+    meaning: "본질적으로",
+    examples: [
+      { en: "The two proposals are essentially the same.", kr: "그 두 제안은 본질적으로 동일합니다." },
+      { en: "He is essentially an honest man, despite his mistakes.", kr: "그는 실수에도 불구하고 본질적으로 정직한 사람입니다." }
+    ]
+  },
+  {
+    id: "L3-387",
+    word: "eventually",
+    meaning: "결국, 마침내",
+    examples: [
+      { en: "The long argument eventually led to a compromise.", kr: "그 긴 논쟁은 결국 타협으로 이어졌습니다." },
+      { en: "After years of trying, he eventually succeeded.", kr: "수년간의 시도 끝에, 그는 결국 성공했습니다." }
+    ]
+  },
+  {
+    id: "L3-388",
+    word: "explicitly",
+    meaning: "명시적으로, 명확하게",
+    examples: [
+      { en: "The contract explicitly states the terms of payment.", kr: "계약서는 지불 조건을 명시적으로 명확하게 명시합니다." },
+      { en: "He was explicitly warned not to enter the restricted area.", kr: "그는 제한 구역에 들어가지 말라는 명확한 경고를 받았습니다." }
+    ]
+  },
+  {
+    id: "L3-389",
+    word: "externally",
+    meaning: "외부적으로",
+    examples: [
+      { en: "The damage appears externally to be minor.", kr: "피해는 외부적으로는 경미해 보입니다." },
+      { en: "The company sought funding externally, not from its shareholders.", kr: "그 회사는 주주들이 아닌 외부적으로 자금을 구했습니다." }
+    ]
+  },
+  {
+    id: "L3-390",
+    word: "fundamentally",
+    meaning: "근본적으로",
+    examples: [
+      { en: "The new system is fundamentally different from the old one.", kr: "새로운 시스템은 근본적으로 이전 시스템과 다릅니다." },
+      { en: "They disagreed fundamentally on the role of government.", kr: "그들은 정부의 역할에 대해 근본적으로 의견이 달랐습니다." }
+    ]
+  },
+  {
+    id: "L3-391",
+    word: "furthermore",
+    meaning: "게다가, 더욱이",
+    examples: [
+      { en: "The product is expensive, and furthermore, it is unreliable.", kr: "그 제품은 비싸고, 게다가 신뢰할 수 없습니다." },
+      { en: "She is a skilled writer; furthermore, she is an excellent editor.", kr: "그녀는 숙련된 작가입니다. 더욱이, 그녀는 훌륭한 편집자입니다." }
+    ]
+  },
+  {
+    id: "L3-392",
+    word: "hence",
+    meaning: "그러므로, 따라서",
+    examples: [
+      { en: "The flight was delayed; hence, we missed the connection.", kr: "비행기가 지연되었습니다. 그러므로, 우리는 연결편을 놓쳤습니다." },
+      { en: "He left his keys at home, and hence could not enter the building.", kr: "그는 열쇠를 집에 두고 왔습니다. 따라서 건물에 들어갈 수 없었습니다." }
+    ]
+  },
+  {
+    id: "L3-393",
+    word: "initially",
+    meaning: "처음에",
+    examples: [
+      { en: "Initially, I found the new job challenging, but I enjoy it now.", kr: "처음에 저는 새 직장이 힘들다고 느꼈지만, 지금은 즐깁니다." },
+      { en: "The project was initially planned to take six months.", kr: "그 프로젝트는 처음에 6개월이 걸리도록 계획되었습니다." }
+    ]
+  },
+  {
+    id: "L3-394",
+    word: "invariably",
+    meaning: "변함없이, 언제나",
+    examples: [
+      { en: "The bus is invariably late on rainy mornings.", kr: "그 버스는 비 오는 아침에는 변함없이 늦습니다." },
+      { en: "He invariably chooses the most difficult option.", kr: "그는 언제나 가장 어려운 옵션을 선택합니다." }
+    ]
+  },
+  {
+    id: "L3-395",
+    word: "largely",
+    meaning: "주로, 대체로",
+    examples: [
+      { en: "The success of the experiment was largely due to her efforts.", kr: "그 실험의 성공은 주로 그녀의 노력 덕분이었습니다." },
+      { en: "The group is largely composed of retired teachers.", kr: "그 그룹은 대체로 은퇴한 선생님들로 구성되어 있습니다." }
+    ]
+  },
+  {
+    id: "L3-396",
+    word: "likewise",
+    meaning: "마찬가지로, 또한",
+    examples: [
+      { en: "The new model is popular; likewise, the older model is still selling well.", kr: "새 모델은 인기가 많습니다. 마찬가지로, 이전 모델도 여전히 잘 팔리고 있습니다." },
+      { en: "He wished me a happy birthday, and I did likewise.", kr: "그는 저에게 생일 축하 인사를 했고, 저도 또한 마찬가지로 했습니다." }
+    ]
+  },
+  {
+    id: "L3-397",
+    word: "merely",
+    meaning: "단지, 그저",
+    examples: [
+      { en: "It was merely a suggestion, not a final decision.", kr: "그것은 단지 제안일 뿐, 최종 결정은 아니었습니다." },
+      { en: "He is merely a beginner, so don't expect too much.", kr: "그는 그저 초보자일 뿐이니, 너무 많이 기대하지 마세요." }
+    ]
+  },
+  {
+    id: "L3-398",
+    word: "minimal",
+    meaning: "최소한의",
+    examples: [
+      { en: "The damage to the car was minimal.", kr: "차량의 손상은 최소한이었습니다." },
+      { en: "We only had a minimal amount of time to prepare.", kr: "우리는 준비할 최소한의 시간만 있었습니다." }
+    ]
+  },
+  {
+    id: "L3-399",
+    word: "notably",
+    meaning: "특히, 현저하게",
+    examples: [
+      { en: "Several large cities, notably London and Paris, experienced delays.", kr: "몇몇 대도시들, 특히 런던과 파리에서 지연이 발생했습니다." },
+      { en: "The quality of the final product was notably superior.", kr: "최종 제품의 품질은 현저하게 우수했습니다." }
+  ]},
+  {
+    id: "L3-400",
+    word: "objectively",
+    meaning: "객관적으로",
+    examples: [
+      { en: "We must analyze the data calmly and objectively.", kr: "우리는 자료를 침착하고 객관적으로 분석해야 합니다." },
+      { en: "Try to look at the situation objectively, without emotion.", kr: "감정 없이 객관적으로 상황을 보려고 노력하세요." }
+  ]}
+];
 
+
+const wordsLevel4_Part1 = [
+  {
+    id: "L4-001",
+    word: "acquisition",
+    meaning: "습득, 인수",
+    examples: [
+      { en: "The company's acquisition of its rival caused a stir.", kr: "그 회사의 경쟁사 인수는 소동을 일으켰습니다." },
+      { en: "Language acquisition is easier for children than adults.", kr: "언어 습득은 성인보다 어린이에게 더 쉽습니다." }
+    ]
+  },
+  {
+    id: "L4-002",
+    word: "adhere",
+    meaning: "고수하다, 들러붙다",
+    examples: [
+      { en: "We must adhere to the contract terms strictly.", kr: "우리는 계약 조건을 엄격하게 고수해야 합니다." },
+      { en: "The labels will not adhere to wet surfaces.", kr: "그 라벨들은 젖은 표면에 들러붙지 않을 것입니다." }
+    ]
+  },
+  {
+    id: "L4-003",
+    word: "allocate",
+    meaning: "할당하다, 배분하다",
+    examples: [
+      { en: "The budget allocates funds for new equipment.", kr: "예산은 새 장비를 위한 자금을 할당합니다." },
+      { en: "We need to allocate tasks fairly among team members.", kr: "우리는 팀원들에게 업무를 공정하게 배분해야 합니다." }
+    ]
+  },
+  {
+    id: "L4-004",
+    word: "ambiguous",
+    meaning: "모호한, 애매한",
+    examples: [
+      { en: "The politician gave an ambiguous answer to the question.", kr: "그 정치인은 질문에 모호한 답변을 했습니다." },
+      { en: "Avoid ambiguous language in legal documents.", kr: "법률 문서에서는 애매한 언어를 피하세요." }
+    ]
+  },
+  {
+    id: "L4-005",
+    word: "analogy",
+    meaning: "비유, 유추",
+    examples: [
+      { en: "The concept was explained using a simple analogy.", kr: "그 개념은 단순한 비유를 사용하여 설명되었습니다." },
+      { en: "She drew an analogy between the situation and a ship in a storm.", kr: "그녀는 그 상황과 폭풍 속의 배 사이에 유추를 이끌어냈습니다." }
+    ]
+  },
+  {
+    id: "L4-006",
+    word: "antithesis",
+    meaning: "정반대, 대조",
+    examples: [
+      { en: "War is the antithesis of peace.", kr: "전쟁은 평화의 정반대입니다." },
+      { en: "His laziness was the antithesis of his father's work ethic.", kr: "그의 게으름은 아버지의 근면한 직업 윤리와 대조적이었습니다." }
+    ]
+  },
+  {
+    id: "L4-007",
+    word: "apprehension",
+    meaning: "염려, 불안",
+    examples: [
+      { en: "She felt apprehension about speaking in front of a large crowd.", kr: "그녀는 많은 군중 앞에서 말하는 것에 대한 불안을 느꼈습니다." },
+      { en: "The delay caused widespread apprehension among the investors.", kr: "그 지연은 투자자들 사이에 광범위한 염려를 야기했습니다." }
+    ]
+  },
+  {
+    id: "L4-008",
+    word: "arbitrary",
+    meaning: "임의적인, 독단적인",
+    examples: [
+      { en: "The selection criteria seemed completely arbitrary.", kr: "선발 기준이 완전히 임의적인 것처럼 보였습니다." },
+      { en: "We cannot accept such an arbitrary increase in price.", kr: "우리는 그러한 독단적인 가격 인상을 받아들일 수 없습니다." }
+    ]
+  },
+  {
+    id: "L4-009",
+    word: "assert",
+    meaning: "주장하다, 단언하다",
+    examples: [
+      { en: "She asserted her authority in the meeting.", kr: "그녀는 회의에서 자신의 권위를 주장했습니다." },
+      { en: "It is difficult to assert yourself when dealing with a bully.", kr: "괴롭히는 사람을 다룰 때 자신을 단언하기 어렵습니다." }
+    ]
+  },
+  {
+    id: "L4-010",
+    word: "augment",
+    meaning: "증가시키다, 늘리다",
+    examples: [
+      { en: "He augmented his income by teaching evening classes.", kr: "그는 저녁 수업을 가르쳐 수입을 증가시켰습니다." },
+      { en: "The goal is to augment the system's capacity by 50%.", kr: "목표는 시스템 용량을 50% 늘리는 것입니다." }
+    ]
+  },
+  {
+    id: "L4-011",
+    word: "commence",
+    meaning: "시작하다",
+    examples: [
+      { en: "The trial will commence next Monday.", kr: "재판은 다음 주 월요일에 시작될 것입니다." },
+      { en: "We will commence work after a brief safety meeting.", kr: "우리는 짧은 안전 회의 후에 작업을 시작할 것입니다." }
+    ]
+  },
+  {
+    id: "L4-012",
+    word: "compatible",
+    meaning: "호환되는, 양립할 수 있는",
+    examples: [
+      { en: "The two files are not compatible and cannot be merged.", kr: "두 파일은 호환되지 않아 병합할 수 없습니다." },
+      { en: "Their goals for the project are perfectly compatible.", kr: "그들의 프로젝트 목표는 완벽하게 양립할 수 있습니다." }
+    ]
+  },
+  {
+    id: "L4-013",
+    word: "comprehensive",
+    meaning: "포괄적인, 광범위한",
+    examples: [
+      { en: "The insurance offers comprehensive coverage against all risks.", kr: "그 보험은 모든 위험에 대한 포괄적인 보장을 제공합니다." },
+      { en: "We need a comprehensive plan to address the issue.", kr: "우리는 그 문제를 다루기 위한 광범위한 계획이 필요합니다." }
+    ]
+  },
+  {
+    id: "L4-014",
+    word: "comprise",
+    meaning: "구성하다, 이루다",
+    examples: [
+      { en: "The committee comprises experts from three different nations.", kr: "그 위원회는 세 개의 다른 국가에서 온 전문가들로 구성되어 있습니다." },
+      { en: "The novel is comprised of several short stories.", kr: "그 소설은 몇 편의 단편 소설로 이루어져 있습니다." }
+    ]
+  },
+  {
+    id: "L4-015",
+    word: "concede",
+    meaning: "인정하다, 양보하다",
+    examples: [
+      { en: "The company conceded a pay raise to the striking workers.", kr: "그 회사는 파업 중인 노동자들에게 임금 인상을 양보했습니다." },
+      { en: "I concede that you are the better chess player.", kr: "나는 네가 더 나은 체스 선수라는 것을 인정한다." }
+    ]
+  },
+  {
+    id: "L4-016",
+    word: "confine",
+    meaning: "국한시키다, 가두다",
+    examples: [
+      { en: "Please confine your discussion to the budget matters.", kr: "당신의 논의를 예산 문제로 국한시켜 주세요." },
+      { en: "The storm forced them to confine the animals indoors.", kr: "폭풍은 그들이 동물들을 실내에 가두도록 강요했습니다." }
+    ]
+  },
+  {
+    id: "L4-017",
+    word: "conjecture",
+    meaning: "추측, 짐작",
+    examples: [
+      { en: "The cause of the fire is still a matter of conjecture.", kr: "화재의 원인은 여전히 추측의 문제입니다." },
+      { en: "The book offers interesting conjecture about the future of technology.", kr: "그 책은 기술의 미래에 대한 흥미로운 짐작을 제공합니다." }
+    ]
+  },
+  {
+    id: "L4-018",
+    word: "constituent",
+    meaning: "구성 요소, 유권자",
+    examples: [
+      { en: "Oxygen is a major constituent of air.", kr: "산소는 공기의 주요 구성 요소입니다." },
+      { en: "The senator must respond to the needs of his constituents.", kr: "그 상원의원은 그의 유권자들의 요구에 응답해야 합니다." }
+    ]
+  },
+  {
+    id: "L4-019",
+    word: "contend",
+    meaning: "다투다, 주장하다",
+    examples: [
+      { en: "The two athletes will contend for the gold medal.", kr: "두 선수는 금메달을 놓고 다툴 것입니다." },
+      { en: "He contends that the economic data is flawed.", kr: "그는 그 경제 자료가 결함이 있다고 주장합니다." }
+    ]
+  },
+  {
+    id: "L4-020",
+    word: "contingent",
+    meaning: "조건부의, 우발적인",
+    examples: [
+      { en: "Our success is contingent upon receiving the necessary funding.", kr: "우리의 성공은 필요한 자금 지원을 받는 것에 달려 있습니다(조건부입니다)." },
+      { en: "A contingent of soldiers was sent to the disaster area.", kr: "소규모 파견대(우발적인 그룹)의 군인들이 재난 지역으로 파견되었습니다." }
+    ]
+  },
+  {
+    id: "L4-021",
+    word: "criterion",
+    meaning: "기준, 척도 (복수형: criteria)",
+    examples: [
+      { en: "Experience is the main criterion for the job.", kr: "경험은 그 일자리의 주요 기준입니다." },
+      { en: "The product was judged based on several quality criteria.", kr: "그 제품은 몇 가지 품질 척도에 근거하여 판단되었습니다." }
+    ]
+  },
+  {
+    id: "L4-022",
+    word: "decline",
+    meaning: "감소하다, 거절하다",
+    examples: [
+      { en: "The number of young people in the town continues to decline.", kr: "그 마을의 젊은이들의 수가 계속 감소하고 있습니다." },
+      { en: "She declined the invitation due to a prior engagement.", kr: "그녀는 선약 때문에 초대를 거절했습니다." }
+    ]
+  },
+  {
+    id: "L4-023",
+    word: "demographic",
+    meaning: "인구 통계학적인",
+    examples: [
+      { en: "The company focuses on the older adult demographic.", kr: "그 회사는 나이 든 성인 인구 통계층에 집중합니다." },
+      { en: "We analyze demographic changes to predict housing needs.", kr: "우리는 주택 수요를 예측하기 위해 인구 통계학적인 변화를 분석합니다." }
+    ]
+  },
+  {
+    id: "L4-024",
+    word: "depict",
+    meaning: "묘사하다, 그리다",
+    examples: [
+      { en: "The film vividly depicts the struggles of the working class.", kr: "그 영화는 노동 계층의 고군분투를 생생하게 묘사합니다." },
+      { en: "The painting depicts a peaceful rural scene.", kr: "그 그림은 평화로운 시골 장면을 그립니다." }
+    ]
+  },
+  {
+    id: "L4-025",
+    word: "derive",
+    meaning: "끌어내다, 유래하다",
+    examples: [
+      { en: "She derives great personal satisfaction from her volunteer work.", kr: "그녀는 자신의 자원봉사 활동에서 큰 개인적 만족을 끌어냅니다." },
+      { en: "Many scientific terms derive from Latin.", kr: "많은 과학 용어들이 라틴어에서 유래합니다." }
+    ]
+  },
+  {
+    id: "L4-026",
+    word: "detrimental",
+    meaning: "해로운, 손해를 입히는",
+    examples: [
+      { en: "Lack of sleep is detrimental to long-term health.", kr: "수면 부족은 장기적인 건강에 해롭습니다." },
+      { en: "The scandal had a detrimental effect on the company's stock price.", kr: "그 스캔들은 회사 주가에 손해를 입히는 영향을 미쳤습니다." }
+    ]
+  },
+  {
+    id: "L4-027",
+    word: "discrepancy",
+    meaning: "불일치, 차이",
+    examples: [
+      { en: "There was a major discrepancy between his statement and the facts.", kr: "그의 진술과 사실 사이에 큰 불일치가 있었습니다." },
+      { en: "The audit found a financial discrepancy in the accounts.", kr: "감사는 계정에서 재정적 차이를 발견했습니다." }
+    ]
+  },
+  {
+    id: "L4-028",
+    word: "disseminate",
+    meaning: "보급하다, 퍼뜨리다",
+    examples: [
+      { en: "The new platform helps disseminate educational resources worldwide.", kr: "새로운 플랫폼은 교육 자료를 전 세계적으로 보급하는 데 도움을 줍니다." },
+      { en: "The media quickly disseminated the news of the discovery.", kr: "언론은 그 발견 소식을 빠르게 퍼뜨렸습니다." }
+    ]
+  },
+  {
+    id: "L4-029",
+    word: "dissent",
+    meaning: "반대, 이의",
+    examples: [
+      { en: "Three members recorded their dissent from the majority decision.", kr: "세 명의 구성원이 다수 결정에 대한 반대를 기록했습니다." },
+      { en: "The committee was divided, with significant internal dissent.", kr: "위원회는 상당한 내부 이의로 분열되었습니다." }
+    ]
+  },
+  {
+    id: "L4-030",
+    word: "dubious",
+    meaning: "의심스러운, 미심쩍은",
+    examples: [
+      { en: "The report made several dubious claims about the product's effectiveness.", kr: "그 보고서는 제품의 효능에 대해 몇 가지 의심스러운 주장을 했습니다." },
+      { en: "I was dubious about the sudden offer of help.", kr: "저는 갑작스러운 도움 제안에 대해 미심쩍었습니다." }
+    ]
+  },
+  {
+    id: "L4-031",
+    word: "eccentric",
+    meaning: "별난, 특이한",
+    examples: [
+      { en: "The inventor was known for his eccentric lifestyle.", kr: "그 발명가는 그의 별난 생활 방식으로 알려져 있었습니다." },
+      { en: "The artist painted the house in eccentric colors.", kr: "그 예술가는 집을 특이한 색으로 칠했습니다." }
+    ]
+  },
+  {
+    id: "L4-032",
+    word: "elicit",
+    meaning: "이끌어내다, 유도하다",
+    examples: [
+      { en: "The detective hoped to elicit a confession from the suspect.", kr: "탐정은 용의자로부터 자백을 이끌어내기를 희망했습니다." },
+      { en: "The comments elicited a strong reaction from the audience.", kr: "그 논평은 청중으로부터 강한 반응을 유도했습니다." }
+    ]
+  },
+  {
+    id: "L4-033",
+    word: "empirical",
+    meaning: "경험적인, 실증적인",
+    examples: [
+      { en: "Her theory is based on solid empirical evidence.", kr: "그녀의 이론은 견고한 실증적인 증거에 기반합니다." },
+      { en: "The research requires empirical testing and observation.", kr: "그 연구는 경험적인 테스트와 관찰을 필요로 합니다." }
+    ]
+  },
+  {
+    id: "L4-034",
+    word: "encompass",
+    meaning: "포함하다, 아우르다",
+    examples: [
+      { en: "The course will encompass history, politics, and economics.", kr: "그 과정은 역사, 정치, 경제를 모두 포함할 것입니다." },
+      { en: "The new park encompasses the entire valley.", kr: "새 공원은 계곡 전체를 아우릅니다." }
+    ]
+  },
+  {
+    id: "L4-035",
+    word: "entail",
+    meaning: "수반하다",
+    examples: [
+      { en: "The project will entail a significant amount of extra work.", kr: "그 프로젝트는 상당한 양의 추가 작업을 수반할 것입니다." },
+      { en: "Being a leader entails great responsibility.", kr: "리더가 되는 것은 큰 책임을 수반합니다." }
+    ]
+  },
+  {
+    id: "L4-036",
+    word: "equitable",
+    meaning: "공정한, 공평한",
+    examples: [
+      { en: "We are seeking an equitable solution for both parties.", kr: "우리는 양 당사자를 위한 공정한 해결책을 찾고 있습니다." },
+      { en: "The committee ensured an equitable distribution of resources.", kr: "위원회는 자원의 공평한 분배를 보장했습니다." }
+    ]
+  },
+  {
+    id: "L4-037",
+    word: "erroneous",
+    meaning: "잘못된, 틀린",
+    examples: [
+      { en: "The report contained several erroneous conclusions.", kr: "그 보고서에는 여러 개의 잘못된 결론이 포함되어 있었습니다." },
+      { en: "It was an erroneous belief that the sun revolved around the Earth.", kr: "태양이 지구 주위를 돈다는 것은 틀린 믿음이었습니다." }
+    ]
+  },
+  {
+    id: "L4-038",
+    word: "exacerbate",
+    meaning: "악화시키다",
+    examples: [
+      { en: "The new regulations will exacerbate the unemployment problem.", kr: "새로운 규정은 실업 문제를 악화시킬 것입니다." },
+      { en: "His refusal to apologize only exacerbated the conflict.", kr: "사과를 거부한 그의 태도는 갈등을 악화시키기만 했습니다." }
+    ]
+  },
+  {
+    id: "L4-039",
+    word: "exigent",
+    meaning: "절박한, 긴급한",
+    examples: [
+      { en: "The hospital faced exigent demands for blood donations.", kr: "그 병원은 헌혈에 대한 절박한 요구에 직면했습니다." },
+      { en: "The exigent circumstances required an immediate decision.", kr: "긴급한 상황은 즉각적인 결정을 요구했습니다." }
+    ]
+  },
+  {
+    id: "L4-040",
+    word: "feasible",
+    meaning: "실행 가능한, 그럴듯한",
+    examples: [
+      { en: "We need a feasible plan that we can actually afford.", kr: "우리는 실제로 감당할 수 있는 실행 가능한 계획이 필요합니다." },
+      { en: "The idea sounds plausible and feasible.", kr: "그 아이디어는 그럴듯하고 실행 가능하게 들립니다." }
+    ]
+  },
+  {
+    id: "L4-041",
+    word: "fluctuate",
+    meaning: "변동하다, 오르내리다",
+    examples: [
+      { en: "Stock market prices fluctuate constantly.", kr: "주식 시장 가격은 끊임없이 변동합니다." },
+      { en: "The temperature will fluctuate throughout the day.", kr: "기온은 하루 종일 오르내릴 것입니다." }
+    ]
+  },
+  {
+    id: "L4-042",
+    word: "foster",
+    meaning: "육성하다, 촉진하다",
+    examples: [
+      { en: "The program aims to foster creativity in children.", kr: "그 프로그램은 아이들의 창의성을 육성하는 것을 목표로 합니다." },
+      { en: "Good management can foster a positive work environment.", kr: "좋은 관리는 긍정적인 근무 환경을 촉진할 수 있습니다." }
+    ]
+  },
+  {
+    id: "L4-043",
+    word: "generic",
+    meaning: "일반적인, 포괄적인",
+    examples: [
+      { en: "The politician's speech was full of generic promises.", kr: "그 정치인의 연설은 일반적인 약속들로 가득했습니다." },
+      { en: "You can buy generic brands for less money.", kr: "더 적은 돈으로 일반적인(저가) 브랜드를 살 수 있습니다." }
+    ]
+  },
+  {
+    id: "L4-044",
+    word: "homogeneous",
+    meaning: "균질의, 동종의",
+    examples: [
+      { en: "The mixture must be perfectly homogeneous before testing.", kr: "그 혼합물은 테스트 전에 완전히 균질해야 합니다." },
+      { en: "A truly homogeneous society is rare.", kr: "진정으로 동종의 사회는 드뭅니다." }
+    ]
+  },
+  {
+    id: "L4-045",
+    word: "hypothesis",
+    meaning: "가설",
+    examples: [
+      { en: "The experiment was designed to test a new scientific hypothesis.", kr: "그 실험은 새로운 과학적 가설을 시험하기 위해 설계되었습니다." },
+      { en: "We have a working hypothesis for the cause of the disease.", kr: "우리는 그 질병의 원인에 대한 작업 가설을 가지고 있습니다." }
+    ]
+  },
+  {
+    id: "L4-046",
+    word: "imminent",
+    meaning: "임박한, 곧 닥칠",
+    examples: [
+      { en: "The dark clouds suggested that a storm was imminent.", kr: "검은 구름은 폭풍이 임박했음을 시사했습니다." },
+      { en: "The company faced the imminent threat of bankruptcy.", kr: "그 회사는 곧 닥칠 파산 위협에 직면했습니다." }
+    ]
+  },
+  {
+    id: "L4-047",
+    word: "impair",
+    meaning: "손상시키다, 악화시키다",
+    examples: [
+      { en: "Alcohol can impair driving ability.", kr: "알코올은 운전 능력을 손상시킬 수 있습니다." },
+      { en: "His health was severely impaired by the long illness.", kr: "그의 건강은 오랜 질병으로 심각하게 악화되었습니다." }
+    ]
+  },
+  {
+    id: "L4-048",
+    word: "impart",
+    meaning: "전달하다, 주다",
+    examples: [
+      { en: "The old man imparted his wisdom to his grandchildren.", kr: "그 노인은 자신의 지혜를 손주들에게 전달했습니다." },
+      { en: "The spice imparts a pungent flavor to the sauce.", kr: "그 향신료는 소스에 매운 풍미를 줍니다." }
+    ]
+  },
+  {
+    id: "L4-049",
+    word: "implicit",
+    meaning: "암묵적인, 내포된",
+    examples: [
+      { en: "There was an implicit understanding that he would pay for the dinner.", kr: "그가 저녁 식사 비용을 지불할 것이라는 암묵적인 이해가 있었습니다." },
+      { en: "The meaning was implicit in her tone of voice.", kr: "그 의미는 그녀의 목소리 톤에 내포되어 있었습니다." }
+    ]
+  },
+  {
+    id: "L4-050",
+    word: "inadvertently",
+    meaning: "무심코, 부주의로",
+    examples: [
+      { en: "I inadvertently deleted the wrong file.", kr: "저는 무심코 잘못된 파일을 삭제했습니다." },
+      { en: "She inadvertently revealed the surprise party plans.", kr: "그녀는 부주의로 깜짝 파티 계획을 밝혔습니다." }
+    ]
+  },
+  {
+    id: "L4-051",
+    word: "incoherent",
+    meaning: "일관성 없는, 앞뒤가 맞지 않는",
+    examples: [
+      { en: "His arguments became rambling and incoherent.", kr: "그의 주장은 장황하고 일관성이 없어졌습니다." },
+      { en: "The witness gave a confusing and incoherent testimony.", kr: "그 증인은 혼란스럽고 앞뒤가 맞지 않는 증언을 했습니다." }
+    ]
+  },
+  {
+    id: "L4-052",
+    word: "incongruous",
+    meaning: "조화되지 않는, 부조화한",
+    examples: [
+      { en: "The modern statue looked incongruous in the ancient temple.", kr: "그 현대 조각상은 고대 사원에서 부조화하게 보였습니다." },
+      { en: "His cheerful reaction was incongruous with the serious news.", kr: "그의 쾌활한 반응은 심각한 소식과 조화되지 않았습니다." }
+    ]
+  },
+  {
+    id: "L4-053",
+    word: "indigenous",
+    meaning: "토착의, 고유의",
+    examples: [
+      { en: "The island is home to several indigenous tribes.", kr: "그 섬은 여러 토착 부족들의 고향입니다." },
+      { en: "This plant is indigenous to the mountainous region.", kr: "이 식물은 산악 지역 고유의 것입니다." }
+    ]
+  },
+  {
+    id: "L4-054",
+    word: "indispensable",
+    meaning: "필수적인",
+    examples: [
+      { en: "A sharp knife is an indispensable tool for a chef.", kr: "날카로운 칼은 요리사에게 필수적인 도구입니다." },
+      { en: "She quickly proved herself indispensable to the project.", kr: "그녀는 빠르게 자신이 프로젝트에 필수적인 존재임을 입증했습니다." }
+    ]
+  },
+  {
+    id: "L4-055",
+    word: "inhibit",
+    meaning: "억제하다, 저해하다",
+    examples: [
+      { en: "The extreme cold will inhibit plant growth.", kr: "극심한 추위는 식물 성장을 저해할 것입니다." },
+      { en: "Fear of judgment can inhibit creativity.", kr: "판단에 대한 두려움은 창의성을 억제할 수 있습니다." }
+    ]
+  },
+  {
+    id: "L4-056",
+    word: "inherent",
+    meaning: "내재하는, 본질적인",
+    examples: [
+      { en: "Every job has its inherent risks.", kr: "모든 일에는 내재하는 위험이 있습니다." },
+      { en: "The product's design has an inherent flaw.", kr: "그 제품의 디자인에는 본질적인 결함이 있습니다." }
+    ]
+  },
+  {
+    id: "L4-057",
+    word: "innate",
+    meaning: "타고난, 선천적인",
+    examples: [
+      { en: "She has an innate ability to lead.", kr: "그녀는 이끌 수 있는 타고난 능력을 가지고 있습니다." },
+      { en: "The behavior is innate, not learned.", kr: "그 행동은 학습된 것이 아니라 선천적입니다." }
+    ]
+  },
+  {
+    id: "L4-058",
+    word: "insufficient",
+    meaning: "불충분한",
+    examples: [
+      { en: "The evidence was insufficient to convict him.", kr: "그 증거는 그에게 유죄를 선고하기에 불충분했습니다." },
+      { en: "The current budget is insufficient for our needs.", kr: "현재 예산은 우리의 필요에 불충분합니다." }
+    ]
+  },
+  {
+    id: "L4-059",
+    word: "integrity",
+    meaning: "청렴, 진실성, 완전성",
+    examples: [
+      { en: "The committee questioned the integrity of the witness.", kr: "위원회는 증인의 진실성에 의문을 제기했습니다." },
+      { en: "We must ensure the integrity of the data.", kr: "우리는 자료의 완전성(훼손되지 않음)을 보장해야 합니다." }
+    ]
+  },
+  {
+    id: "L4-060",
+    word: "interact",
+    meaning: "상호 작용하다",
+    examples: [
+      { en: "It is important for children to interact with their peers.", kr: "아이들이 또래와 상호 작용하는 것은 중요합니다." },
+      { en: "The two systems interact seamlessly.", kr: "그 두 시스템은 원활하게 상호 작용합니다." }
+    ]
+  },
+  {
+    id: "L4-061",
+    word: "intervene",
+    meaning: "개입하다, 중재하다",
+    examples: [
+      { en: "The government decided to intervene in the financial markets.", kr: "정부는 금융 시장에 개입하기로 결정했습니다." },
+      { en: "The dispute was resolved without anyone having to intervene.", kr: "그 분쟁은 아무도 개입할 필요 없이 해결되었습니다." }
+    ]
+  },
+  {
+    id: "L4-062",
+    word: "intrinsic",
+    meaning: "본질적인, 고유의",
+    examples: [
+      { en: "The intrinsic value of the diamond is high.", kr: "그 다이아몬드의 본질적인 가치는 높습니다." },
+      { en: "He found intrinsic motivation in helping others.", kr: "그는 다른 사람들을 돕는 것에서 고유한 동기를 찾았습니다." }
+    ]
+  },
+  {
+    id: "L4-063",
+    word: "invincible",
+    meaning: "무적의, 천하무적의",
+    examples: [
+      { en: "The team seemed invincible after winning ten games in a row.", kr: "그 팀은 10경기 연속 승리 후 무적으로 보였습니다." },
+      { en: "He believed he was invincible until the accident.", kr: "그는 사고가 나기 전까지 자신이 천하무적이라고 믿었습니다." }
+    ]
+  },
+  {
+    id: "L4-064",
+    word: "irrelevant",
+    meaning: "무관한, 관계없는",
+    examples: [
+      { en: "Your personal feelings are irrelevant to the professional discussion.", kr: "당신의 개인적인 감정은 전문적인 논의와 무관합니다." },
+      { en: "The judge dismissed the evidence as totally irrelevant.", kr: "판사는 그 증거를 완전히 관계없는 것으로 기각했습니다." }
+    ]
+  },
+  {
+    id: "L4-065",
+    word: "legitimate",
+    meaning: "합법적인, 정당한",
+    examples: [
+      { en: "The government’s actions must be legitimate and constitutional.", kr: "정부의 행동은 합법적이고 헌법적이어야 합니다." },
+      { en: "She had a legitimate reason for her absence.", kr: "그녀는 결석에 대한 정당한 이유가 있었습니다." }
+    ]
+  },
+  {
+    id: "L4-066",
+    word: "mandate",
+    meaning: "명령, 위임하다",
+    examples: [
+      { en: "The election gave the new leader a clear mandate for change.", kr: "그 선거는 새 지도자에게 변화를 위한 명확한 위임을 부여했습니다." },
+      { en: "The law mandates that all children must attend school.", kr: "그 법은 모든 아이들이 학교에 다녀야 한다고 명령합니다." }
+    ]
+  },
+  {
+    id: "L4-067",
+    word: "metaphor",
+    meaning: "은유",
+    examples: [
+      { en: "Life is a journey is a common metaphor.", kr: "인생은 여정이라는 것은 흔한 은유입니다." },
+      { en: "The poet used nature metaphors to describe the human heart.", kr: "그 시인은 인간의 마음을 묘사하기 위해 자연 은유를 사용했습니다." }
+    ]
+  },
+  {
+    id: "L4-068",
+    word: "mitigate",
+    meaning: "완화하다, 경감시키다",
+    examples: [
+      { en: "We need to mitigate the risks associated with the investment.", kr: "우리는 투자와 관련된 위험을 완화해야 합니다." },
+      { en: "A public apology helped to mitigate the public's anger.", kr: "공개 사과는 대중의 분노를 경감시키는 데 도움이 되었습니다." }
+    ]
+  },
+  {
+    id: "L4-069",
+    word: "monetary",
+    meaning: "화폐의, 금융의",
+    examples: [
+      { en: "The central bank controls the nation's monetary policy.", kr: "중앙은행은 국가의 금융 정책을 통제합니다." },
+      { en: "He was motivated purely by monetary gain.", kr: "그는 순전히 화폐적 이득 때문에 동기 부여되었습니다." }
+    ]
+  },
+  {
+    id: "L4-070",
+    word: "nefarious",
+    meaning: "사악한, 흉악한",
+    examples: [
+      { en: "The villain plotted a nefarious scheme to steal the artwork.", kr: "그 악당은 미술품을 훔치기 위한 흉악한 계획을 꾸몄습니다." },
+      { en: "The police uncovered a series of nefarious activities.", kr: "경찰은 일련의 사악한 활동들을 밝혀냈습니다." }
+    ]
+  },
+  {
+    id: "L4-071",
+    word: "notwithstanding",
+    meaning: "~에도 불구하고",
+    examples: [
+      { en: "Notwithstanding his injury, he continued to play the game.", kr: "부상에도 불구하고, 그는 경기를 계속했습니다." },
+      { en: "The company performed well, notwithstanding the recession.", kr: "경기 침체에도 불구하고, 그 회사는 좋은 성과를 보였습니다." }
+    ]
+  },
+  {
+    id: "L4-072",
+    word: "paradigm",
+    meaning: "패러다임, 사고의 틀",
+    examples: [
+      { en: "The discovery caused a complete paradigm shift in the field.", kr: "그 발견은 그 분야에서 완전한 사고의 틀 변화를 야기했습니다." },
+      { en: "The new technology sets a paradigm for future devices.", kr: "새로운 기술은 미래 장치들의 패러다임을 설정합니다." }
+    ]
+  },
+  {
+    id: "L4-073",
+    word: "perceive",
+    meaning: "인식하다, 감지하다",
+    examples: [
+      { en: "How do customers perceive the quality of our service?", kr: "고객들은 우리 서비스의 품질을 어떻게 인식합니까?" },
+      { en: "He perceived a slight change in the wind direction.", kr: "그는 바람 방향의 약간의 변화를 감지했습니다." }
+    ]
+  },
+  {
+    id: "L4-074",
+    word: "pervasive",
+    meaning: "만연하는, 스며드는",
+    examples: [
+      { en: "The pervasive influence of social media affects everyone.", kr: "소셜 미디어의 만연하는 영향은 모두에게 영향을 미칩니다." },
+      { en: "The pervasive smell of smoke filled the hotel lobby.", kr: "코를 찌르는(만연하는) 연기 냄새가 호텔 로비를 채웠습니다." }
+    ]
+  },
+  {
+    id: "L4-075",
+    word: "plausible",
+    meaning: "그럴듯한, 타당한",
+    examples: [
+      { en: "The detective listened to the suspect's plausible alibi.", kr: "탐정은 용의자의 그럴듯한 알리바이를 들었습니다." },
+      { en: "We need a plausible explanation for the sudden loss of data.", kr: "우리는 갑작스러운 데이터 손실에 대한 타당한 설명이 필요합니다." }
+    ]
+  },
+  {
+    id: "L4-076",
+    word: "precedent",
+    meaning: "선례, 전례",
+    examples: [
+      { en: "The court's decision will set a legal precedent for similar cases.", kr: "법원의 결정은 유사한 사건들에 대한 법적 선례를 세울 것입니다." },
+      { en: "There is no precedent for this kind of economic policy.", kr: "이러한 종류의 경제 정책에 대한 전례가 없습니다." }
+    ]
+  },
+  {
+    id: "L4-077",
+    word: "preclude",
+    meaning: "배제하다, 막다",
+    examples: [
+      { en: "The low price doesn't preclude the possibility of high quality.", kr: "낮은 가격이 높은 품질의 가능성을 배제하지 않습니다." },
+      { en: "His injury will preclude him from participating in the game.", kr: "그의 부상은 그가 게임에 참여하는 것을 막을 것입니다." }
+    ]
+  },
+  {
+    id: "L4-078",
+    word: "preliminary",
+    meaning: "예비의, 사전의",
+    examples: [
+      { en: "The preliminary results of the experiment are promising.", kr: "그 실험의 예비 결과는 유망합니다." },
+      { en: "We had a preliminary discussion before the contract was signed.", kr: "우리는 계약이 서명되기 전에 사전 논의를 가졌습니다." }
+    ]
+  },
+  {
+    id: "L4-079",
+    word: "premise",
+    meaning: "전제, 가정",
+    examples: [
+      { en: "The entire film is based on a fantastic premise.", kr: "영화 전체는 환상적인 전제에 기반하고 있습니다." },
+      { en: "His argument rests on a shaky premise.", kr: "그의 주장은 불안정한 전제 위에 놓여 있습니다." }
+    ]
+  },
+  {
+    id: "L4-080",
+    word: "presume",
+    meaning: "추정하다, 가정하다",
+    examples: [
+      { en: "We must presume that the witnesses are telling the truth.", kr: "우리는 증인들이 진실을 말하고 있다고 추정해야 합니다." },
+      { en: "I presume you would like a drink.", kr: "당신은 음료를 원할 것이라고 가정합니다." }
+    ]
+  },
+  {
+    id: "L4-081",
+    word: "prevalent",
+    meaning: "널리 퍼진, 일반적인",
+    examples: [
+      { en: "The use of mobile payment is highly prevalent in this region.", kr: "모바일 결제 사용은 이 지역에서 매우 널리 퍼져 있습니다." },
+      { en: "Mistrust of the media is a prevalent sentiment today.", kr: "언론에 대한 불신은 오늘날 일반적인 정서입니다." }
+    ]
+  },
+  {
+    id: "L4-082",
+    word: "pristine",
+    meaning: "원시 상태의, 깨끗한",
+    examples: [
+      { en: "The archaeologists discovered a pristine ancient artifact.", kr: "고고학자들은 원시 상태의 고대 유물을 발견했습니다." },
+      { en: "The mountain lake has pristine, clear water.", kr: "그 산악 호수는 깨끗하고 맑은 물을 가지고 있습니다." }
+    ]
+  },
+  {
+    id: "L4-083",
+    word: "proliferate",
+    meaning: "급증하다, 확산하다",
+    examples: [
+      { en: "Online misinformation continues to proliferate rapidly.", kr: "온라인 잘못된 정보가 계속해서 빠르게 확산하고 있습니다." },
+      { en: "The small businesses in the area have begun to proliferate.", kr: "그 지역의 소기업들이 급증하기 시작했습니다." }
+    ]
+  },
+  {
+    id: "L4-084",
+    word: "proposition",
+    meaning: "제의, 명제",
+    examples: [
+      { en: "The investor rejected the business proposition.", kr: "그 투자자는 사업 제의를 거절했습니다." },
+      { en: "The entire debate rests on a complex proposition.", kr: "그 전체 논쟁은 복잡한 명제 위에 놓여 있습니다." }
+    ]
+  },
+  {
+    id: "L4-085",
+    word: "protocol",
+    meaning: "규약, 의례",
+    examples: [
+      { en: "All data must be encrypted according to the security protocol.", kr: "모든 자료는 보안 규약에 따라 암호화되어야 합니다." },
+      { en: "The meeting followed the established diplomatic protocol.", kr: "그 회의는 확립된 외교 의례를 따랐습니다." }
+    ]
+  },
+  {
+    id: "L4-086",
+    word: "quantify",
+    meaning: "정량화하다, 수량화하다",
+    examples: [
+      { en: "It is difficult to quantify the emotional impact of the tragedy.", kr: "그 비극의 감정적 영향을 정량화하기는 어렵습니다." },
+      { en: "We need to quantify the results before we present them.", kr: "우리는 결과를 발표하기 전에 수량화해야 합니다." }
+    ]
+  },
+  {
+    id: "L4-087",
+    word: "rebuttal",
+    meaning: "반박, 항변",
+    examples: [
+      { en: "The lawyer presented a strong rebuttal to the prosecutor's claims.", kr: "변호사는 검찰 측 주장에 대한 강력한 반박을 제시했습니다." },
+      { en: "The politician issued a formal rebuttal to the criticism.", kr: "그 정치인은 그 비판에 대한 공식적인 항변을 발표했습니다." }
+    ]
+  },
+  {
+    id: "L4-088",
+    word: "reiterate",
+    meaning: "반복하여 말하다, 되풀이하다",
+    examples: [
+      { en: "The CEO reiterated the company's commitment to quality.", kr: "최고 경영자는 품질에 대한 회사의 약속을 반복하여 말했습니다." },
+      { en: "I asked him to reiterate the safety instructions.", kr: "저는 그에게 안전 지침을 되풀이해 달라고 요청했습니다." }
+    ]
+  },
+  {
+    id: "L4-089",
+    word: "relinquish",
+    meaning: "포기하다, 양도하다",
+    examples: [
+      { en: "The king was forced to relinquish his throne and leave the country.", kr: "그 왕은 왕위를 포기하고 나라를 떠나도록 강요받았습니다." },
+      { en: "She decided to relinquish her control over the family business.", kr: "그녀는 가족 사업에 대한 자신의 통제권을 양도하기로 결정했습니다." }
+    ]
+  },
+  {
+    id: "L4-090",
+    word: "repertoire",
+    meaning: "레퍼토리, 연주 목록",
+    examples: [
+      { en: "The band has a wide repertoire covering multiple genres.", kr: "그 밴드는 여러 장르를 아우르는 광범위한 레퍼토리를 가지고 있습니다." },
+      { en: "The actor demonstrated a deep repertoire of voices and accents.", kr: "그 배우는 목소리와 억양의 깊은 연주 목록(능력)을 보여주었습니다." }
+    ]
+  },
+  {
+    id: "L4-091",
+    word: "resilience",
+    meaning: "회복력, 탄력성",
+    examples: [
+      { en: "The city showed great resilience after the earthquake.", kr: "그 도시는 지진 후 엄청난 회복력을 보여주었습니다." },
+      { en: "Emotional resilience is key to dealing with stress.", kr: "감정적 탄력성은 스트레스에 대처하는 핵심입니다." }
+    ]
+  },
+  {
+    id: "L4-092",
+    word: "retrospect",
+    meaning: "회상, 회고",
+    examples: [
+      { en: "In retrospect, the decision was clearly a mistake.", kr: "돌이켜보면(회고해보면), 그 결정은 명백히 실수였습니다." },
+      { en: "The event offers a moment of quiet retrospect on the past year.", kr: "그 행사는 지난 한 해를 조용히 회고하는 순간을 제공합니다." }
+    ]
+  },
+  {
+    id: "L4-093",
+    word: "sanction",
+    meaning: "승인, 제재",
+    examples: [
+      { en: "The plan requires formal sanction from the CEO.", kr: "그 계획은 최고 경영자로부터 공식적인 승인을 필요로 합니다." },
+      { en: "The country faced international sanctions due to its policies.", kr: "그 나라는 정책 때문에 국제적인 제재에 직면했습니다." }
+    ]
+  },
+  {
+    id: "L4-094",
+    word: "scrutiny",
+    meaning: "정밀 조사, 자세히 살펴봄",
+    examples: [
+      { en: "The company's finances came under intense government scrutiny.", kr: "그 회사의 재정은 강도 높은 정부의 정밀 조사를 받게 되었습니다." },
+      { en: "Every detail of the new design was subjected to close scrutiny.", kr: "새 디자인의 모든 세부 사항이 자세히 살펴봄에 노출되었습니다." }
+    ]
+  },
+  {
+    id: "L4-095",
+    word: "skeptical",
+    meaning: "회의적인",
+    examples: [
+      { en: "I am skeptical about the promises of quick success.", kr: "저는 빠른 성공 약속에 대해 회의적입니다." },
+      { en: "The board was initially skeptical of the new technology.", kr: "이사회는 처음에 새 기술에 대해 회의적이었습니다." }
+    ]
+  },
+  {
+    id: "L4-096",
+    word: "solicitous",
+    meaning: "염려하는, 걱정하는",
+    examples: [
+      { en: "The solicitous nurse ensured the patient was comfortable.", kr: "그 염려하는 간호사는 환자가 편안한지 확인했습니다." },
+      { en: "He was solicitous about the well-being of his former employees.", kr: "그는 전 직원들의 안녕에 대해 걱정했습니다." }
+    ]
+  },
+  {
+    id: "L4-097",
+    word: "stance",
+    meaning: "입장, 태도",
+    examples: [
+      { en: "The government took a firm stance on the issue.", kr: "정부는 그 문제에 대해 확고한 입장을 취했습니다." },
+      { en: "His aggressive stance made negotiations difficult.", kr: "그의 공격적인 태도는 협상을 어렵게 만들었습니다." }
+    ]
+  },
+  {
+    id: "L4-098",
+    word: "static",
+    meaning: "정적인, 고정된",
+    examples: [
+      { en: "The market remained static for the past three months.", kr: "시장은 지난 석 달 동안 정적인 상태를 유지했습니다." },
+      { en: "The system displays a static image that does not update.", kr: "그 시스템은 업데이트되지 않는 고정된 이미지를 표시합니다." }
+    ]
+  },
+  {
+    id: "L4-099",
+    word: "stigma",
+    meaning: "오명, 낙인",
+    examples: [
+      { en: "The organization works to remove the stigma attached to mental illness.", kr: "그 조직은 정신 질환에 붙어 있는 오명을 제거하기 위해 노력합니다." },
+      { en: "Being associated with the scandal left a permanent stigma.", kr: "그 스캔들과 연관되는 것은 영구적인 낙인을 남겼습니다." }
+    ]
+  },
+  {
+    id: "L4-100",
+    word: "stipulate",
+    meaning: "규정하다, 조건으로 요구하다",
+    examples: [
+      { en: "The contract stipulates a penalty for late completion.", kr: "그 계약은 완료 지연에 대한 벌칙을 규정합니다." },
+      { en: "We stipulated that the new features must be added by next month.", kr: "우리는 새 기능이 다음 달까지 추가되어야 한다고 조건으로 요구했습니다." }
+    ]
+  }
+];
+
+const wordsLevel4_Part2 = [
+  {
+    id: "L4-101",
+    word: "subjective",
+    meaning: "주관적인",
+    examples: [
+      { en: "Art appreciation is highly subjective; everyone has a different opinion.", kr: "예술 감상은 매우 주관적입니다; 모든 사람이 다른 의견을 가지고 있습니다." },
+      { en: "The judge tried to make a subjective assessment of the performance.", kr: "심사위원은 그 공연에 대해 주관적이지 않은 평가를 내리려고 노력했습니다." }
+    ]
+  },
+  {
+    id: "L4-102",
+    word: "subsidiary",
+    meaning: "자회사의, 보조적인",
+    examples: [
+      { en: "The large corporation acquired a small subsidiary company.", kr: "그 대기업은 작은 자회사를 인수했습니다." },
+      { en: "This product is just a subsidiary part of the main system.", kr: "이 제품은 주 시스템의 단지 보조적인 부분입니다." }
+    ]
+  },
+  {
+    id: "L4-103",
+    word: "subsidize",
+    meaning: "보조금을 주다",
+    examples: [
+      { en: "The government will subsidize the public transportation system.", kr: "정부는 대중교통 시스템에 보조금을 줄 것입니다." },
+      { en: "The program is designed to subsidize education costs for low-income families.", kr: "그 프로그램은 저소득층 가정을 위한 교육비를 보조하도록 고안되었습니다." }
+    ]
+  },
+  {
+    id: "L4-104",
+    word: "substantiate",
+    meaning: "입증하다, 실증하다",
+    examples: [
+      { en: "You must substantiate your claims with solid evidence.", kr: "당신은 확실한 증거로 당신의 주장을 입증해야 합니다." },
+      { en: "The theory has yet to be fully substantiated by experiments.", kr: "그 이론은 아직 실험으로 완전히 실증되지 않았습니다." }
+    ]
+  },
+  {
+    id: "L4-105",
+    word: "tentative",
+    meaning: "잠정적인, 머뭇거리는",
+    examples: [
+      { en: "We have reached a tentative agreement, but it needs final approval.", kr: "우리는 잠정적인 합의에 도달했지만, 최종 승인이 필요합니다." },
+      { en: "His steps were tentative on the icy ground.", kr: "그의 발걸음은 얼음 위에서 머뭇거렸습니다." }
+    ]
+  },
+  {
+    id: "L4-106",
+    word: "transcend",
+    meaning: "초월하다",
+    examples: [
+      { en: "His music transcends cultural boundaries and language barriers.", kr: "그의 음악은 문화적 경계와 언어 장벽을 초월합니다." },
+      { en: "She believes one must transcend personal feelings to achieve true objectivity.", kr: "그녀는 진정한 객관성을 달성하기 위해 개인적인 감정을 초월해야 한다고 믿습니다." }
+    ]
+  },
+  {
+    id: "L4-107",
+    word: "treatise",
+    meaning: "논문, 학술서",
+    examples: [
+      { en: "He published a lengthy treatise on the history of economic thought.", kr: "그는 경제 사상의 역사에 대한 장문의 논문을 출판했습니다." },
+      { en: "The book is a scholarly treatise on early Roman law.", kr: "그 책은 초기 로마법에 대한 학술서입니다." }
+    ]
+  },
+  {
+    id: "L4-108",
+    word: "ubiquitous",
+    meaning: "어디에나 있는, 편재하는",
+    examples: [
+      { en: "Mobile phones are now ubiquitous in modern society.", kr: "휴대폰은 이제 현대 사회에서 어디에나 있습니다(편재합니다)." },
+      { en: "The company aims to make its brand ubiquitous.", kr: "그 회사는 자사의 브랜드를 어디에나 있게 만드는 것을 목표로 합니다." }
+    ]
+  },
+  {
+    id: "L4-109",
+    word: "undermine",
+    meaning: "약화시키다",
+    examples: [
+      { en: "Constant criticism will eventually undermine his confidence.", kr: "끊임없는 비판은 결국 그의 자신감을 약화시킬 것입니다." },
+      { en: "The delay threatened to undermine the entire project.", kr: "그 지연은 전체 프로젝트를 약화시킬 위험이 있었습니다." }
+    ]
+  },
+  {
+    id: "L4-110",
+    word: "unilateral",
+    meaning: "일방적인",
+    examples: [
+      { en: "The CEO made a unilateral decision without consulting the board.", kr: "최고 경영자는 이사회와 상의 없이 일방적인 결정을 내렸습니다." },
+      { en: "The country's unilateral action led to international disapproval.", kr: "그 나라의 일방적인 행동은 국제적인 비난을 초래했습니다." }
+    ]
+  },
+  {
+    id: "L4-111",
+    word: "unprecedented",
+    meaning: "전례 없는",
+    examples: [
+      { en: "The storm caused an unprecedented level of damage.", kr: "그 폭풍은 전례 없는 수준의 피해를 입혔습니다." },
+      { en: "The company reported unprecedented profits this quarter.", kr: "그 회사는 이번 분기에 전례 없는 이익을 보고했습니다." }
+    ]
+  },
+  {
+    id: "L4-112",
+    word: "validate",
+    meaning: "입증하다, 확인하다",
+    examples: [
+      { en: "The experiment was conducted to validate the new theory.", kr: "그 실험은 새로운 이론을 입증하기 위해 수행되었습니다." },
+      { en: "You should always validate your input before submitting the form.", kr: "양식을 제출하기 전에 항상 입력을 확인해야 합니다." }
+    ]
+  },
+  {
+    id: "L4-113",
+    word: "vehement",
+    meaning: "열정적인, 맹렬한",
+    examples: [
+      { en: "The proposal was met with vehement opposition from the public.", kr: "그 제안은 대중으로부터 맹렬한 반대에 부딪혔습니다." },
+      { en: "He delivered a vehement speech about social injustice.", kr: "그는 사회적 불의에 대해 열정적인 연설을 했습니다." }
+    ]
+  },
+  {
+    id: "L4-114",
+    word: "viable",
+    meaning: "실행 가능한, 생존 가능한",
+    examples: [
+      { en: "The committee concluded that the plan was not financially viable.", kr: "위원회는 그 계획이 재정적으로 실행 가능하지 않다고 결론 내렸습니다." },
+      { en: "We need to find a viable alternative to fossil fuels.", kr: "우리는 화석 연료에 대한 생존 가능한 대안을 찾아야 합니다." }
+    ]
+  },
+  {
+    id: "L4-115",
+    word: "volatile",
+    meaning: "변동성이 심한, 휘발성의",
+    examples: [
+      { en: "The political situation in the region remains highly volatile.", kr: "그 지역의 정치 상황은 여전히 매우 변동성이 심합니다." },
+      { en: "Gasoline is a highly volatile substance that evaporates quickly.", kr: "휘발유는 빠르게 증발하는 매우 휘발성의 물질입니다." }
+    ]
+  },
+  {
+    id: "L4-116",
+    word: "zeal",
+    meaning: "열정, 열의",
+    examples: [
+      { en: "He pursued his goals with great zeal and determination.", kr: "그는 엄청난 열정과 결단력으로 자신의 목표를 추구했습니다." },
+      { en: "The new employee showed commendable zeal for his work.", kr: "새 직원은 자신의 일에 대해 칭찬할 만한 열의를 보였습니다." }
+    ]
+  },
+  {
+    id: "L4-117",
+    word: "anomaly",
+    meaning: "변칙, 예외",
+    examples: [
+      { en: "The test result was an anomaly that baffled the scientists.", kr: "그 테스트 결과는 과학자들을 당황하게 만든 변칙(예외)이었습니다." },
+      { en: "A calm period in this volatile market is a rare anomaly.", kr: "이 변동성 심한 시장에서의 평온한 기간은 희귀한 예외입니다." }
+    ]
+  },
+  {
+    id: "L4-118",
+    word: "brevity",
+    meaning: "간결함, 짧음",
+    examples: [
+      { en: "The speaker was praised for the brevity of his presentation.", kr: "그 연사는 발표의 간결함으로 칭찬받았습니다." },
+      { en: "The brevity of human life makes every moment precious.", kr: "인생의 짧음은 모든 순간을 소중하게 만듭니다." }
+    ]
+  },
+  {
+    id: "L4-119",
+    word: "coherent",
+    meaning: "일관성 있는, 논리 정연한",
+    examples: [
+      { en: "She gave a clear and coherent explanation of the new policy.", kr: "그녀는 새 정책에 대해 명확하고 일관성 있는 설명을 했습니다." },
+      { en: "The paragraphs must be coherent and flow logically.", kr: "문단들은 일관성 있어야 하고 논리적으로 이어져야 합니다." }
+    ]
+  },
+  {
+    id: "L4-120",
+    word: "concise",
+    meaning: "간결한",
+    examples: [
+      { en: "Please make your report as concise as possible.", kr: "보고서를 가능한 한 간결하게 작성해 주십시오." },
+      { en: "The book offers a concise overview of European history.", kr: "그 책은 유럽 역사에 대한 간결한 개요를 제공합니다." }
+    ]
+  },
+  {
+    id: "L4-121",
+    word: "conviction",
+    meaning: "신념, 유죄 판결",
+    examples: [
+      { en: "He spoke with deep conviction about the need for reform.", kr: "그는 개혁의 필요성에 대해 깊은 신념을 가지고 말했습니다." },
+      { en: "The jury returned a conviction after a long deliberation.", kr: "배심원단은 긴 심의 끝에 유죄 판결을 내렸습니다." }
+    ]
+  },
+  {
+    id: "L4-122",
+    word: "curtail",
+    meaning: "축소하다, 줄이다",
+    examples: [
+      { en: "The government decided to curtail spending on public services.", kr: "정부는 공공 서비스에 대한 지출을 축소하기로 결정했습니다." },
+      { en: "We must curtail unnecessary travel to save time.", kr: "우리는 시간을 절약하기 위해 불필요한 여행을 줄여야 합니다." }
+    ]
+  },
+  {
+    id: "L4-123",
+    word: "demeanor",
+    meaning: "태도, 품행",
+    examples: [
+      { en: "Her professional demeanor impressed the interviewers.", kr: "그녀의 전문적인 태도는 면접관들에게 깊은 인상을 주었습니다." },
+      { en: "The suspect's calm demeanor suggested he was innocent.", kr: "용의자의 침착한 품행은 그가 무죄임을 시사했습니다." }
+    ]
+  },
+  {
+    id: "L4-124",
+    word: "denounce",
+    meaning: "비난하다, 고발하다",
+    examples: [
+      { en: "The organization denounced the recent human rights violations.", kr: "그 조직은 최근의 인권 침해를 비난했습니다." },
+      { en: "Whistleblowers often denounce illegal activities within a company.", kr: "내부 고발자들은 종종 회사 내의 불법 활동을 고발합니다." }
+    ]
+  },
+  {
+    id: "L4-125",
+    word: "deplore",
+    meaning: "개탄하다, 비난하다",
+    examples: [
+      { en: "We deeply deplore the loss of life caused by the disaster.", kr: "우리는 그 재난으로 인한 인명 손실에 대해 깊이 개탄합니다." },
+      { en: "Critics deplore the lack of historical accuracy in the movie.", kr: "비평가들은 영화의 역사적 정확성 부족을 비난합니다." }
+    ]
+  },
+  {
+    id: "L4-126",
+    word: "didactic",
+    meaning: "교훈적인, 가르치려 드는",
+    examples: [
+      { en: "The film was criticized for its overly didactic tone.", kr: "그 영화는 지나치게 교훈적인 어조로 비판받았습니다." },
+      { en: "A didactic approach to teaching can sometimes stifle creativity.", kr: "가르치려 드는 접근 방식은 때때로 창의성을 억누를 수 있습니다." }
+    ]
+  },
+  {
+    id: "L4-127",
+    word: "diffuse",
+    meaning: "퍼뜨리다, 산만한",
+    examples: [
+      { en: "The scent of flowers diffused throughout the room.", kr: "꽃 향기가 방 전체에 퍼졌습니다." },
+      { en: "The speaker's argument was too diffuse and hard to follow.", kr: "그 연사의 주장은 너무 산만해서 따라가기 어려웠습니다." }
+    ]
+  },
+  {
+    id: "L4-128",
+    word: "disconcerting",
+    meaning: "당황하게 만드는, 혼란스러운",
+    examples: [
+      { en: "The sudden silence was disconcerting to everyone in the room.", kr: "갑작스러운 침묵은 방 안의 모두를 당황하게 만들었습니다." },
+      { en: "The constant surveillance created a disconcerting atmosphere.", kr: "끊임없는 감시는 혼란스러운 분위기를 조성했습니다." }
+    ]
+  },
+  {
+    id: "L4-129",
+    word: "dismantle",
+    meaning: "분해하다, 해체하다",
+    examples: [
+      { en: "The engineers had to dismantle the machine to find the fault.", kr: "엔지니어들은 결함을 찾기 위해 기계를 분해해야 했습니다." },
+      { en: "The new administration promised to dismantle the old bureaucracy.", kr: "새 행정부는 구시대 관료제를 해체하겠다고 약속했습니다." }
+    ]
+  },
+  {
+    id: "L4-130",
+    word: "distraught",
+    meaning: "정신이 혼란한, 괴로운",
+    examples: [
+      { en: "She was so distraught after the accident that she couldn't speak.", kr: "그녀는 사고 후 너무 정신이 혼란하여 말할 수 없었습니다." },
+      { en: "The parents were distraught when their child went missing.", kr: "부모는 아이가 실종되었을 때 괴로워했습니다." }
+    ]
+  },
+  {
+    id: "L4-131",
+    word: "docile",
+    meaning: "유순한, 다루기 쉬운",
+    examples: [
+      { en: "The large dog was surprisingly docile with small children.", kr: "그 큰 개는 어린 아이들에게 놀라울 정도로 유순했습니다." },
+      { en: "He wished his students were more docile and less rebellious.", kr: "그는 학생들이 더 다루기 쉽고 반항적이지 않기를 바랐습니다." }
+    ]
+  },
+  {
+    id: "L4-132",
+    word: "ecstatic",
+    meaning: "열광적인, 황홀해하는",
+    examples: [
+      { en: "The team's fans were ecstatic after winning the championship.", kr: "그 팀의 팬들은 챔피언십 우승 후 열광적이었습니다." },
+      { en: "She was in an ecstatic state of joy after hearing the news.", kr: "그녀는 그 소식을 듣고 황홀해하는 기쁨의 상태였습니다." }
+    ]
+  },
+  {
+    id: "L4-133",
+    word: "efface",
+    meaning: "지우다, 말소하다",
+    examples: [
+      { en: "Time can efface the painful memories of the past.", kr: "시간은 과거의 고통스러운 기억을 지울 수 있습니다." },
+      { en: "He tried to efface himself from the photograph.", kr: "그는 사진에서 자신을 말소하려고 노력했습니다." }
+    ]
+  },
+  {
+    id: "L4-134",
+    word: "emulate",
+    meaning: "모방하다, 따라가다",
+    examples: [
+      { en: "Young athletes often emulate the techniques of their heroes.", kr: "젊은 운동선수들은 종종 그들의 영웅들의 기술을 모방합니다." },
+      { en: "The company tried to emulate the success of its competitor.", kr: "그 회사는 경쟁사의 성공을 따라가려고 노력했습니다." }
+    ]
+  },
+  {
+    id: "L4-135",
+    word: "enigma",
+    meaning: "수수께끼, 불가사의",
+    examples: [
+      { en: "The source of the mysterious signal remains an enigma.", kr: "그 신비한 신호의 출처는 여전히 수수께끼로 남아 있습니다." },
+      { en: "He has always been an enigma to his colleagues.", kr: "그는 항상 그의 동료들에게 불가사의한 존재였습니다." }
+    ]
+  },
+  {
+    id: "L4-136",
+    word: "ephemeral",
+    meaning: "덧없는, 수명이 짧은",
+    examples: [
+      { en: "Fame in the modern age is often ephemeral.", kr: "현대 시대의 명성은 종종 덧없습니다." },
+      { en: "The beauty of the sunset is an ephemeral moment.", kr: "일몰의 아름다움은 수명이 짧은(순간적인) 순간입니다." }
+    ]
+  },
+  {
+    id: "L4-137",
+    word: "expedite",
+    meaning: "신속히 처리하다",
+    examples: [
+      { en: "We need to expedite the delivery of the emergency supplies.", kr: "우리는 긴급 구호품의 배송을 신속히 처리해야 합니다." },
+      { en: "The new system is designed to expedite the application process.", kr: "새 시스템은 신청 절차를 신속히 처리하도록 설계되었습니다." }
+    ]
+  },
+  {
+    id: "L4-138",
+    word: "extol",
+    meaning: "극찬하다, 칭찬하다",
+    examples: [
+      { en: "Critics extolled the film as a masterpiece.", kr: "비평가들은 그 영화를 걸작이라고 극찬했습니다." },
+      { en: "The media continues to extol the virtues of the new technology.", kr: "언론은 새로운 기술의 장점을 계속 칭찬합니다." }
+    ]
+  },
+  {
+    id: "L4-139",
+    word: "fastidious",
+    meaning: "꼼꼼한, 까다로운",
+    examples: [
+      { en: "He is fastidious about his appearance and always dresses impeccably.", kr: "그는 자신의 외모에 꼼꼼하여 항상 흠잡을 데 없이 옷을 입습니다." },
+      { en: "The editor was fastidious about grammar and punctuation.", kr: "그 편집자는 문법과 구두점에 대해 까다로웠습니다." }
+    ]
+  },
+  {
+    id: "L4-140",
+    word: "furtive",
+    meaning: "은밀한, 몰래 하는",
+    examples: [
+      { en: "The spy exchanged a furtive glance with his contact.", kr: "그 스파이는 그의 접선책과 은밀한 시선을 교환했습니다." },
+      { en: "He made a furtive attempt to copy the answers.", kr: "그는 답을 베끼려는 몰래 하는 시도를 했습니다." }
+    ]
+  },
+  {
+    id: "L4-141",
+    word: "garrulous",
+    meaning: "수다스러운",
+    examples: [
+      { en: "The garrulous old man told endless stories about his youth.", kr: "그 수다스러운 노인은 자신의 젊은 시절에 대한 끝없는 이야기를 했습니다." },
+      { en: "He was too garrulous to be a good secret keeper.", kr: "그는 너무 수다스러워서 좋은 비밀 지키미가 될 수 없었습니다." }
+    ]
+  },
+  {
+    id: "L4-142",
+    word: "hedonism",
+    meaning: "쾌락주의",
+    examples: [
+      { en: "His lifestyle was defined by a strong sense of hedonism.", kr: "그의 생활 방식은 강한 쾌락주의 감각으로 정의되었습니다." },
+      { en: "The philosophy promotes a moderate hedonism, not excess.", kr: "그 철학은 과잉이 아닌 온건한 쾌락주의를 장려합니다." }
+    ]
+  },
+  {
+    id: "L4-143",
+    word: "hierarchy",
+    meaning: "계층, 계급",
+    examples: [
+      { en: "The military operates on a strict hierarchy of command.", kr: "군대는 엄격한 명령 계층에 따라 운영됩니다." },
+      { en: "The company is moving away from a traditional hierarchy.", kr: "그 회사는 전통적인 계층 구조에서 벗어나고 있습니다." }
+    ]
+  },
+  {
+    id: "L4-144",
+    word: "hypothetical",
+    meaning: "가상의, 가정의",
+    examples: [
+      { en: "We discussed a hypothetical scenario to test the new rules.", kr: "우리는 새 규칙을 시험하기 위해 가상의 시나리오를 논의했습니다." },
+      { en: "The solution is purely hypothetical until we confirm the data.", kr: "그 해결책은 우리가 데이터를 확인할 때까지 순전히 가정의 것입니다." }
+    ]
+  },
+  {
+    id: "L4-145",
+    word: "illicit",
+    meaning: "불법적인",
+    examples: [
+      { en: "The police cracked down on the illicit trade of rare artifacts.", kr: "경찰은 희귀 유물들의 불법 거래를 단속했습니다." },
+      { en: "They were accused of having an illicit affair.", kr: "그들은 불법적인 관계를 맺은 혐의로 고발되었습니다." }
+    ]
+  },
+  {
+    id: "L4-146",
+    word: "impervious",
+    meaning: "영향받지 않는, 통과시키지 않는",
+    examples: [
+      { en: "The new coating makes the material impervious to water.", kr: "새 코팅은 그 재료를 물이 통과하지 않도록 만듭니다." },
+      { en: "He seemed impervious to criticism from his rivals.", kr: "그는 경쟁자들의 비판에 영향을 받지 않는 것처럼 보였습니다." }
+    ]
+  },
+  {
+    id: "L4-147",
+    word: "impunity",
+    meaning: "처벌을 면함",
+    examples: [
+      { en: "The dictator acted with complete impunity, ignoring international law.", kr: "그 독재자는 국제법을 무시하며 완전히 처벌을 면한 채 행동했습니다." },
+      { en: "No one should be allowed to commit crimes with impunity.", kr: "어떤 누구도 처벌을 면한 채 범죄를 저지르는 것이 허용되어서는 안 됩니다." }
+    ]
+  },
+  {
+    id: "L4-148",
+    word: "inception",
+    meaning: "시작, 개시",
+    examples: [
+      { en: "The project has been successful since its inception five years ago.", kr: "그 프로젝트는 5년 전 시작(개시)된 이후로 성공적이었습니다." },
+      { en: "From the inception of the idea, we knew it would be revolutionary.", kr: "그 아이디어의 시작부터, 우리는 그것이 혁명적일 것임을 알았습니다." }
+    ]
+  },
+  {
+    id: "L4-149",
+    word: "incontrovertible",
+    meaning: "논쟁의 여지가 없는, 명백한",
+    examples: [
+      { en: "The evidence presented was incontrovertible and led to a guilty verdict.", kr: "제시된 증거는 논쟁의 여지가 없었고 유죄 평결로 이어졌습니다." },
+      { en: "She provided incontrovertible proof of her identity.", kr: "그녀는 자신의 신원에 대한 명백한 증거를 제공했습니다." }
+    ]
+  },
+  {
+    id: "L4-150",
+    word: "incipient",
+    meaning: "막 시작된, 초기의",
+    examples: [
+      { en: "The doctor detected an incipient infection and prescribed antibiotics.", kr: "의사는 막 시작된 감염을 감지하고 항생제를 처방했습니다." },
+      { en: "We need to deal with the problem in its incipient stages.", kr: "우리는 그 문제를 초기 단계에서 다룰 필요가 있습니다." }
+    ]
+  },
+  {
+    id: "L4-151",
+    word: "indolent",
+    meaning: "게으른, 나태한",
+    examples: [
+      { en: "His indolent lifestyle was a constant source of frustration for his family.", kr: "그의 게으른 생활 방식은 가족에게 끊임없는 좌절의 원천이었습니다." },
+      { en: "The hot weather makes everyone feel indolent.", kr: "더운 날씨는 모두를 나태하게 느끼게 만듭니다." }
+    ]
+  },
+  {
+    id: "L4-152",
+    word: "inertia",
+    meaning: "관성, 타성",
+    examples: [
+      { en: "The company's reluctance to change was a clear sign of corporate inertia.", kr: "변화를 꺼리는 그 회사의 태도는 기업의 타성을 보여주는 분명한 신호였습니다." },
+      { en: "The ball continued to roll due to inertia.", kr: "공은 관성 때문에 계속 굴러갔습니다." }
+    ]
+  },
+  {
+    id: "L4-153",
+    word: "infallible",
+    meaning: "결코 틀리지 않는, 절대 확실한",
+    examples: [
+      { en: "She believes her instincts are infallible in business matters.", kr: "그녀는 자신의 직감이 사업 문제에서 결코 틀리지 않는다고 믿습니다." },
+      { en: "There is no infallible method for predicting the future.", kr: "미래를 예측하는 절대 확실한 방법은 없습니다." }
+    ]
+  },
+  {
+    id: "L4-154",
+    word: "innocuous",
+    meaning: "무해한, 악의 없는",
+    examples: [
+      { en: "The mushroom looked poisonous, but it was actually innocuous.", kr: "그 버섯은 독성이 있어 보였지만, 실제로는 무해했습니다." },
+      { en: "He made an innocuous comment that was later misinterpreted.", kr: "그는 악의 없는 논평을 했지만 나중에 오해를 받았습니다." }
+    ]
+  },
+  {
+    id: "L4-155",
+    word: "insipid",
+    meaning: "맛없는, 재미없는",
+    examples: [
+      { en: "The soup was bland and insipid, lacking any seasoning.", kr: "그 수프는 싱겁고 맛이 없었으며, 어떤 양념도 부족했습니다." },
+      { en: "The speech was long and insipid, failing to engage the audience.", kr: "그 연설은 길고 재미없었으며, 청중의 참여를 유도하지 못했습니다." }
+    ]
+  },
+  {
+    id: "L4-156",
+    word: "intangible",
+    meaning: "무형의, 만질 수 없는",
+    examples: [
+      { en: "The brand name has a large intangible value.", kr: "그 브랜드 이름은 큰 무형의 가치를 가지고 있습니다." },
+      { en: "Motivation and morale are intangible factors in a team's success.", kr: "동기 부여와 사기는 팀 성공의 무형적인 요소입니다." }
+    ]
+  },
+  {
+    id: "L4-157",
+    word: "intermittent",
+    meaning: "간헐적인",
+    examples: [
+      { en: "The region is experiencing intermittent rain showers today.", kr: "그 지역은 오늘 간헐적인 소나기를 겪고 있습니다." },
+      { en: "The machine's performance suffered from intermittent power failures.", kr: "그 기계의 성능은 간헐적인 전력 공급 실패로 인해 저하되었습니다." }
+    ]
+  },
+  {
+    id: "L4-158",
+    word: "intrepid",
+    meaning: "용감한, 대담한",
+    examples: [
+      { en: "The intrepid explorer ventured into the uncharted jungle.", kr: "그 용감한 탐험가는 지도에 없는 정글 속으로 모험을 떠났습니다." },
+      { en: "The newspaper praised the intrepid rescue team.", kr: "신문은 그 대담한 구조 팀을 칭찬했습니다." }
+    ]
+  },
+  {
+    id: "L4-159",
+    word: "inundate",
+    meaning: "물에 잠기게 하다, 쇄도하다",
+    examples: [
+      { en: "The small town was inundated by the river after the heavy rain.", kr: "그 작은 마을은 폭우 후에 강물에 잠기게 되었습니다." },
+      { en: "After the commercial aired, the company was inundated with calls.", kr: "광고가 방영된 후, 그 회사는 전화로 쇄도했습니다." }
+    ]
+  },
+  {
+    id: "L4-160",
+    word: "jocular",
+    meaning: "우스꽝스러운, 익살맞은",
+    examples: [
+      { en: "He has a jocular manner that makes everyone feel at ease.", kr: "그는 모두를 편안하게 만드는 익살맞은 태도를 가지고 있습니다." },
+      { en: "The mood of the meeting was light and jocular.", kr: "회의 분위기는 가볍고 우스꽝스러웠습니다." }
+    ]
+  },
+  {
+    id: "L4-161",
+    word: "judicious",
+    meaning: "현명한, 신중한",
+    examples: [
+      { en: "The CEO made a judicious decision to delay the launch.", kr: "최고 경영자는 출시를 연기하는 현명한 결정을 내렸습니다." },
+      { en: "Judicious use of resources is crucial for the environment.", kr: "자원의 신중한 사용은 환경에 중요합니다." }
+    ]
+  },
+  {
+    id: "L4-162",
+    word: "languid",
+    meaning: "나른한, 무기력한",
+    examples: [
+      { en: "The hot summer afternoon made everyone feel languid.", kr: "뜨거운 여름 오후는 모두를 나른하게 만들었습니다." },
+      { en: "She gave a languid wave from the deck chair.", kr: "그녀는 갑판 의자에서 무기력한 손짓을 했습니다." }
+    ]
+  },
+  {
+    id: "L4-163",
+    word: "laud",
+    meaning: "칭찬하다",
+    examples: [
+      { en: "The critics lauded the director's bold new vision.", kr: "비평가들은 감독의 대담한 새 비전을 칭찬했습니다." },
+      { en: "His efforts to improve the community were lauded by the mayor.", kr: "지역 사회를 개선하려는 그의 노력은 시장으로부터 칭찬을 받았습니다." }
+    ]
+  },
+  {
+    id: "L4-164",
+    word: "meticulous",
+    meaning: "꼼꼼한, 세심한",
+    examples: [
+      { en: "The accountant was meticulous in his attention to detail.", kr: "그 회계사는 세부 사항에 대한 그의 주의에서 꼼꼼했습니다." },
+      { en: "The building plans require a meticulous review.", kr: "그 건물 계획은 세심한 검토를 필요로 합니다." }
+    ]
+  },
+  {
+    id: "L4-165",
+    word: "morose",
+    meaning: "시무룩한, 침울한",
+    examples: [
+      { en: "After losing the game, the players were morose and silent.", kr: "경기에 진 후, 선수들은 시무룩하고 말이 없었습니다." },
+      { en: "He has been morose ever since he lost his job.", kr: "그는 일자리를 잃은 이후로 계속 침울했습니다." }
+    ]
+  },
+  {
+    id: "L4-166",
+    word: "nomadic",
+    meaning: "유목의, 방랑하는",
+    examples: [
+      { en: "The tribe maintained a traditional nomadic lifestyle.", kr: "그 부족은 전통적인 유목 생활 방식을 유지했습니다." },
+      { en: "After graduation, he led a nomadic existence, traveling from city to city.", kr: "졸업 후, 그는 도시에서 도시로 여행하는 방랑하는 삶을 살았습니다." }
+    ]
+  },
+  {
+    id: "L4-167",
+    word: "novice",
+    meaning: "초보자",
+    examples: [
+      { en: "Even a complete novice can use this software easily.", kr: "완전한 초보자도 이 소프트웨어를 쉽게 사용할 수 있습니다." },
+      { en: "She is a novice at coding, but she learns quickly.", kr: "그녀는 코딩 초보자이지만, 빠르게 배웁니다." }
+    ]
+  },
+  {
+    id: "L4-168",
+    word: "oblivious",
+    meaning: "염두에 없는, 망각하는",
+    examples: [
+      { en: "He seemed completely oblivious to the danger he was in.", kr: "그는 자신이 처한 위험을 완전히 염두에 두지 않는 것처럼 보였습니다." },
+      { en: "The driver was oblivious to the siren behind him.", kr: "그 운전자는 뒤에서 들리는 사이렌을 망각했습니다(알지 못했습니다)." }
+    ]
+  },
+  {
+    id: "L4-169",
+    word: "oscillate",
+    meaning: "동요하다, 진동하다",
+    examples: [
+      { en: "The fan oscillates to circulate air throughout the room.", kr: "선풍기는 방 전체에 공기를 순환시키기 위해 진동합니다." },
+      { en: "His opinions on the matter oscillate between two extremes.", kr: "그 문제에 대한 그의 의견은 두 극단 사이를 동요합니다." }
+    ]
+  },
+  {
+    id: "L4-170",
+    word: "ostensibly",
+    meaning: "표면상으로는",
+    examples: [
+      { en: "Ostensibly, the meeting was about the budget, but it was really about power.", kr: "표면상으로는 그 회의는 예산에 관한 것이었지만, 실제로는 권력에 관한 것이었습니다." },
+      { en: "She arrived late, ostensibly due to traffic.", kr: "그녀는 표면상으로는 교통 체증 때문에 늦게 도착했습니다." }
+    ]
+  },
+  {
+    id: "L4-171",
+    word: "palatable",
+    meaning: "맛있는, 구미에 맞는",
+    examples: [
+      { en: "The meal was simple but surprisingly palatable.", kr: "그 식사는 단순했지만 놀랍도록 맛있었습니다." },
+      { en: "The contract terms were made more palatable to the union.", kr: "그 계약 조건들은 노조에 더 구미에 맞게 만들어졌습니다." }
+    ]
+  },
+  {
+    id: "L4-172",
+    word: "peripheral",
+    meaning: "주변적인, 중요하지 않은",
+    examples: [
+      { en: "The issue of office lighting is peripheral to the main budget discussion.", kr: "사무실 조명 문제는 주요 예산 논의에 주변적입니다." },
+      { en: "We only need to focus on the central problem, not the peripheral details.", kr: "우리는 주변적인 세부 사항이 아니라 중심 문제에만 집중하면 됩니다." }
+    ]
+  },
+  {
+    id: "L4-173",
+    word: "perpetuate",
+    meaning: "영구화하다, 지속시키다",
+    examples: [
+      { en: "We must not perpetuate the myth that hard work alone guarantees success.", kr: "우리는 열심히 일하는 것만이 성공을 보장한다는 신화를 영구화해서는 안 됩니다." },
+      { en: "The monument was built to perpetuate the memory of the soldiers.", kr: "그 기념비는 군인들의 기억을 영구화하기 위해 세워졌습니다." }
+    ]
+  },
+  {
+    id: "L4-174",
+    word: "philanthropy",
+    meaning: "박애, 자선",
+    examples: [
+      { en: "The billionaire is well known for his philanthropy and charitable donations.", kr: "그 억만장자는 자신의 박애와 자선 기부로 잘 알려져 있습니다." },
+      { en: "The foundation is dedicated to promoting philanthropy in developing nations.", kr: "그 재단은 개발 도상국에서 자선을 증진하는 데 전념하고 있습니다." }
+    ]
+  },
+  {
+    id: "L4-175",
+    word: "plummet",
+    meaning: "급락하다",
+    examples: [
+      { en: "Stock prices plummeted after the sudden economic news.", kr: "갑작스러운 경제 뉴스 이후 주가가 급락했습니다." },
+      { en: "The bird released its prey and watched it plummet to the ground.", kr: "그 새는 먹이를 놓아주었고 그것이 땅으로 급락하는 것을 지켜보았습니다." }
+    ]
+  },
+  {
+    id: "L4-176",
+    word: "poignant",
+    meaning: "가슴 아픈, 신랄한",
+    examples: [
+      { en: "The old letter contained a poignant reminder of his lost youth.", kr: "그 오래된 편지에는 그의 잃어버린 젊은 시절에 대한 가슴 아픈 상기가 담겨 있었습니다." },
+      { en: "Her final performance was a poignant farewell to the stage.", kr: "그녀의 마지막 공연은 무대에 대한 신랄한(가슴을 찌르는) 작별 인사였습니다." }
+    ]
+  },
+  {
+    id: "L4-177",
+    word: "precarious",
+    meaning: "불안정한, 위태로운",
+    examples: [
+      { en: "The political situation in the region remains precarious.", kr: "그 지역의 정치 상황은 불안정한 상태로 남아 있습니다." },
+      { en: "The climber found himself in a precarious position on the cliff face.", kr: "그 등반가는 절벽 면에서 위태로운 위치에 있음을 발견했습니다." }
+    ]
+  },
+  {
+    id: "L4-178",
+    word: "pragmatic",
+    meaning: "실용적인",
+    examples: [
+      { en: "The manager took a pragmatic approach to solving the problem.", kr: "그 관리자는 문제를 해결하기 위해 실용적인 접근 방식을 취했습니다." },
+      { en: "We need a more pragmatic budget that reflects the current reality.", kr: "우리는 현재의 현실을 반영하는 더 실용적인 예산이 필요합니다." }
+    ]
+  },
+  {
+    id: "L4-179",
+    word: "prodigious",
+    meaning: "엄청난, 경이로운",
+    examples: [
+      { en: "She has a prodigious talent for playing the piano.", kr: "그녀는 피아노 연주에 엄청난 재능을 가지고 있습니다." },
+      { en: "The mountain range is a prodigious feat of nature.", kr: "그 산맥은 자연의 경이로운 업적입니다." }
+    ]
+  },
+  {
+    id: "L4-180",
+    word: "propensity",
+    meaning: "성향, 경향",
+    examples: [
+      { en: "He has a propensity for telling exaggerated stories.", kr: "그는 과장된 이야기를 하는 성향이 있습니다." },
+      { en: "There is a natural human propensity to fear the unknown.", kr: "미지의 것을 두려워하는 자연스러운 인간의 경향이 있습니다." }
+    ]
+  },
+  {
+    id: "L4-181",
+    word: "proponent",
+    meaning: "옹호자, 지지자",
+    examples: [
+      { en: "He is a leading proponent of renewable energy.", kr: "그는 재생 에너지의 선도적인 옹호자입니다." },
+      { en: "The proponents of the new law held a rally.", kr: "새 법의 지지자들은 집회를 열었습니다." }
+    ]
+  },
+  {
+    id: "L4-182",
+    word: "quell",
+    meaning: "진압하다, 가라앉히다",
+    examples: [
+      { en: "The police were called in to quell the riot.", kr: "경찰은 폭동을 진압하기 위해 소집되었습니다." },
+      { en: "She took a deep breath to quell her rising anxiety.", kr: "그녀는 치솟는 불안을 가라앉히기 위해 심호흡을 했습니다." }
+    ]
+  },
+  {
+    id: "L4-183",
+    word: "rationalize",
+    meaning: "합리화하다",
+    examples: [
+      { en: "He tried to rationalize his impulsive purchase by saying it was an investment.", kr: "그는 충동적인 구매를 그것이 투자였다고 말하며 합리화하려고 노력했습니다." },
+      { en: "You can't rationalize bad behavior by blaming others.", kr: "다른 사람들을 비난함으로써 나쁜 행동을 합리화할 수 없습니다." }
+    ]
+  },
+  {
+    id: "L4-184",
+    word: "recluse",
+    meaning: "은둔자",
+    examples: [
+      { en: "The old artist lived as a recluse in the remote mountains.", kr: "그 나이든 예술가는 외딴 산에서 은둔자로 살았습니다." },
+      { en: "She became a recluse after the media scandal.", kr: "그녀는 언론 스캔들 이후 은둔자가 되었습니다." }
+    ]
+  },
+  {
+    id: "L4-185",
+    word: "recoup",
+    meaning: "만회하다, 되찾다",
+    examples: [
+      { en: "The company hopes to recoup its losses with the new product line.", kr: "그 회사는 새 제품 라인으로 손실을 만회하기를 희망합니다." },
+      { en: "It took him months to recoup his strength after the illness.", kr: "그가 병에서 회복한 후 힘을 되찾는 데는 몇 달이 걸렸습니다." }
+    ]
+  },
+  {
+    id: "L4-186",
+    word: "refute",
+    meaning: "반박하다",
+    examples: [
+      { en: "The lawyer was able to refute the key witness's testimony.", kr: "그 변호사는 핵심 증인의 증언을 반박할 수 있었습니다." },
+      { en: "Scientists have yet to refute the controversial claims completely.", kr: "과학자들은 논란이 되는 주장을 완전히 반박하지 못했습니다." }
+    ]
+  },
+  {
+    id: "L4-187",
+    word: "remorse",
+    meaning: "후회, 양심의 가책",
+    examples: [
+      { en: "He felt deep remorse for having caused the accident.", kr: "그는 사고를 일으킨 것에 대해 깊은 후회를 느꼈습니다." },
+      { en: "The criminal showed no remorse for his actions.", kr: "그 범죄자는 자신의 행동에 대해 아무런 양심의 가책도 보이지 않았습니다." }
+    ]
+  },
+  {
+    id: "L4-188",
+    word: "reprehensible",
+    meaning: "비난받을 만한",
+    examples: [
+      { en: "His actions were utterly reprehensible and unacceptable.", kr: "그의 행동은 전적으로 비난받을 만하고 용납될 수 없었습니다." },
+      { en: "The politician was forced to resign due to his reprehensible conduct.", kr: "그 정치인은 비난받을 만한 행위로 인해 사임해야 했습니다." }
+    ]
+  },
+  {
+    id: "L4-189",
+    word: "reprove",
+    meaning: "꾸짖다, 책망하다",
+    examples: [
+      { en: "The teacher reproved the student for shouting in the library.", kr: "선생님은 도서관에서 소리를 지른 학생을 꾸짖었습니다." },
+      { en: "He had to reprove his son for being disrespectful.", kr: "그는 아들에게 무례한 행동을 책망해야 했습니다." }
+    ]
+  },
+  {
+    id: "L4-190",
+    word: "rescind",
+    meaning: "철회하다, 폐지하다",
+    examples: [
+      { en: "The company decided to rescind the job offer due to budget cuts.", kr: "그 회사는 예산 삭감으로 인해 채용 제안을 철회하기로 결정했습니다." },
+      { en: "The city council voted to rescind the unpopular new tax.", kr: "시의회는 인기 없는 새 세금을 폐지하기로 투표했습니다." }
+    ]
+  },
+  {
+    id: "L4-191",
+    word: "resolute",
+    meaning: "단호한, 확고한",
+    examples: [
+      { en: "She remained resolute in her decision to leave the job.", kr: "그녀는 직장을 떠나겠다는 결정에 단호한 태도를 유지했습니다." },
+      { en: "The leader showed a resolute commitment to achieving peace.", kr: "그 지도자는 평화를 달성하기 위한 확고한 헌신을 보여주었습니다." }
+    ]
+  },
+  {
+    id: "L4-192",
+    word: "revere",
+    meaning: "존경하다, 숭배하다",
+    examples: [
+      { en: "The people revere the former president for his humanitarian work.", kr: "사람들은 전 대통령의 인도주의적 활동을 존경합니다." },
+      { en: "Many cultures revere certain animals as sacred.", kr: "많은 문화권에서 특정 동물들을 신성한 것으로 숭배합니다." }
+    ]
+  },
+  {
+    id: "L4-193",
+    word: "rhetoric",
+    meaning: "수사학, 미사여구",
+    examples: [
+      { en: "The politician's speech was full of empty rhetoric and lacked substance.", kr: "그 정치인의 연설은 공허한 미사여구로 가득했고 실속이 없었습니다." },
+      { en: "She studied classical rhetoric to improve her persuasive speaking skills.", kr: "그녀는 설득력 있는 연설 기술을 향상시키기 위해 고전 수사학을 공부했습니다." }
+    ]
+  },
+  {
+    id: "L4-194",
+    word: "rife",
+    meaning: "가득한, 만연한",
+    examples: [
+      { en: "The historical documents were rife with errors and contradictions.", kr: "그 역사적 문서들은 오류와 모순으로 가득했습니다." },
+      { en: "Corruption is unfortunately rife in certain sectors of the industry.", kr: "부패는 불행하게도 산업의 특정 부문에서 만연합니다." }
+    ]
+  },
+  {
+    id: "L4-195",
+    word: "rudimentary",
+    meaning: "기본적인, 초보적인",
+    examples: [
+      { en: "He only has a rudimentary understanding of complex mathematics.", kr: "그는 복잡한 수학에 대해 단지 기본적인 이해만 가지고 있습니다." },
+      { en: "The shelter was a rudimentary structure built from branches.", kr: "그 은신처는 나뭇가지로 지어진 초보적인 구조물이었습니다." }
+    ]
+  },
+  {
+    id: "L4-196",
+    word: "succinct",
+    meaning: "간결한",
+    examples: [
+      { en: "The professor asked for a succinct summary of the chapter.", kr: "교수님은 그 장에 대한 간결한 요약을 요청했습니다." },
+      { en: "His comments were succinct and to the point.", kr: "그의 논평은 간결하고 핵심적이었습니다." }
+    ]
+  },
+  {
+    id: "L4-197",
+    word: "surmise",
+    meaning: "추측하다",
+    examples: [
+      { en: "Based on the evidence, the detective could only surmise the motive.", kr: "증거를 바탕으로, 탐정은 동기를 추측할 수밖에 없었습니다." },
+      { en: "I can only surmise that they missed the train.", kr: "저는 그들이 기차를 놓쳤다고 추측할 수 있을 뿐입니다." }
+    ]
+  },
+  {
+    id: "L4-198",
+    word: "synergy",
+    meaning: "시너지 효과, 협력 작용",
+    examples: [
+      { en: "The merger was designed to create synergy between the two companies.", kr: "그 합병은 두 회사 사이에 시너지 효과를 창출하도록 설계되었습니다." },
+      { en: "Teamwork creates a synergy that is greater than the sum of its parts.", kr: "팀워크는 각 부분의 합보다 더 큰 시너지 효과를 창출합니다." }
+    ]
+  },
+  {
+    id: "L4-199",
+    word: "tacit",
+    meaning: "암묵적인",
+    examples: [
+      { en: "There was a tacit agreement that they would not discuss politics.", kr: "그들이 정치에 대해 논의하지 않겠다는 암묵적인 합의가 있었습니다." },
+      { en: "His nod was a tacit approval of the plan.", kr: "그의 고갯짓은 그 계획에 대한 암묵적인 승인이었습니다." }
+    ]
+  },
+  {
+    id: "L4-200",
+    word: "tantamount",
+    meaning: "동등한, 마찬가지인",
+    examples: [
+      { en: "A dismissal without cause is tantamount to an admission of guilt.", kr: "정당한 이유 없는 해고는 유죄 인정과 마찬가지입니다." },
+      { en: "Ignoring the warning signs is tantamount to inviting disaster.", kr: "경고 신호를 무시하는 것은 재난을 초래하는 것과 동등합니다." }
+    ]
+  }
+];
+
+const wordsLevel4_Part3 = [
+  {
+    id: "L4-201",
+    word: "tenacious",
+    meaning: "집요한, 끈기 있는",
+    examples: [
+      { en: "He is a tenacious defender and rarely lets opponents score.", kr: "그는 끈기 있는 수비수이며 상대방이 득점하도록 좀처럼 내버려 두지 않습니다." },
+      { en: "The weed is surprisingly tenacious and difficult to remove.", kr: "그 잡초는 놀라울 정도로 집요하고 제거하기 어렵습니다." }
+    ]
+  },
+  {
+    id: "L4-202",
+    word: "salient",
+    meaning: "가장 중요한, 현저한",
+    examples: [
+      { en: "The most salient feature of the new model is its battery life.", kr: "새 모델의 가장 중요한 특징은 배터리 수명입니다." },
+      { en: "She outlined the salient points of the proposal in her introduction.", kr: "그녀는 도입부에서 제안의 현저한(핵심적인) 요점들을 간략하게 설명했습니다." }
+    ]
+  },
+  {
+    id: "L4-203",
+    word: "ostentatious",
+    meaning: "과시하는, 허세 부리는",
+    examples: [
+      { en: "The millionaire was criticized for his ostentatious display of wealth.", kr: "그 백만장자는 자신의 과시하는 부의 전시로 비판받았습니다." },
+      { en: "She prefers simple jewelry over ostentatious pieces.", kr: "그녀는 허세 부리는 장신구보다 단순한 보석을 선호합니다." }
+    ]
+  },
+  {
+    id: "L4-204",
+    word: "superfluous",
+    meaning: "불필요한, 여분의",
+    examples: [
+      { en: "The last chapter contains superfluous details that can be cut.", kr: "마지막 장에는 삭제해도 되는 불필요한 세부 사항들이 포함되어 있습니다." },
+      { en: "Please eliminate all superfluous words from your essay.", kr: "당신의 에세이에서 모든 여분의 단어를 제거해 주세요." }
+    ]
+  },
+  {
+    id: "L4-205",
+    word: "esoteric",
+    meaning: "난해한, 소수만 아는",
+    examples: [
+      { en: "The text was full of esoteric references that only scholars understood.", kr: "그 글은 학자들만 이해하는 난해한 참고 자료들로 가득했습니다." },
+      { en: "He has an esoteric knowledge of rare musical instruments.", kr: "그는 희귀한 악기에 대한 소수만 아는 지식을 가지고 있습니다." }
+    ]
+  },
+  {
+    id: "L4-206",
+    word: "clandestine",
+    meaning: "비밀의, 은밀한",
+    examples: [
+      { en: "The couple held a clandestine meeting late at night.", kr: "그 커플은 늦은 밤에 비밀 회동을 가졌습니다." },
+      { en: "Clandestine operations were carried out by the intelligence agency.", kr: "정보국에 의해 은밀한 작전들이 수행되었습니다." }
+    ]
+  },
+  {
+    id: "L4-207",
+    word: "egregious",
+    meaning: "지독한, 터무니없는",
+    examples: [
+      { en: "The lawyer cited several egregious errors in the previous trial.", kr: "그 변호사는 이전 재판에서 몇 가지 터무니없는 오류들을 언급했습니다." },
+      { en: "It was an egregious violation of human rights.", kr: "그것은 지독한 인권 침해였습니다." }
+    ]
+  },
+  {
+    id: "L4-208",
+    word: "epitome",
+    meaning: "전형, 완벽한 본보기",
+    examples: [
+      { en: "He is the epitome of a modern, successful entrepreneur.", kr: "그는 현대적이고 성공적인 사업가의 완벽한 전형입니다." },
+      { en: "The old house was the epitome of rustic elegance.", kr: "그 오래된 집은 소박한 우아함의 본보기였습니다." }
+    ]
+  },
+  {
+    id: "L4-209",
+    word: "hiatus",
+    meaning: "중단, 공백",
+    examples: [
+      { en: "The band announced a one-year hiatus to focus on solo projects.", kr: "그 밴드는 솔로 프로젝트에 집중하기 위해 1년 간의 중단을 발표했습니다." },
+      { en: "There was a brief hiatus in the conversation as the waiter approached.", kr: "웨이터가 다가오자 대화에 짧은 공백이 있었습니다." }
+    ]
+  },
+  {
+    id: "L4-210",
+    word: "impetus",
+    meaning: "추진력, 자극",
+    examples: [
+      { en: "The new technology gave a fresh impetus to the industry.", kr: "새로운 기술은 그 산업에 새로운 추진력을 제공했습니다." },
+      { en: "The change in management provided the necessary impetus for reform.", kr: "경영진의 변화는 개혁을 위한 필수적인 자극을 제공했습니다." }
+    ]
+  },
+  {
+    id: "L4-211",
+    word: "lexicon",
+    meaning: "어휘, 어휘 목록",
+    examples: [
+      { en: "The specialized lexicon of computer science is constantly expanding.", kr: "컴퓨터 과학의 전문 어휘는 끊임없이 확장되고 있습니다." },
+      { en: "He possessed a rich lexicon that allowed him to express himself precisely.", kr: "그는 자신을 정확하게 표현할 수 있게 해주는 풍부한 어휘 목록을 소유하고 있었습니다." }
+    ]
+  },
+  {
+    id: "L4-212",
+    word: "mercenary",
+    meaning: "돈을 위한, 용병",
+    examples: [
+      { en: "His motives were entirely mercenary; he only cared about the profit.", kr: "그의 동기는 전적으로 돈을 위한 것이었습니다; 그는 오직 이익에만 신경 썼습니다." },
+      { en: "The former general was hired as a mercenary by a foreign regime.", kr: "그 전직 장군은 외국 정권에 의해 용병으로 고용되었습니다." }
+    ]
+  },
+  {
+    id: "L4-213",
+    word: "opaque",
+    meaning: "불투명한, 이해하기 어려운",
+    examples: [
+      { en: "The window was covered with an opaque film for privacy.", kr: "그 창문은 사생활 보호를 위해 불투명한 필름으로 덮여 있었습니다." },
+      { en: "The government's decision-making process was entirely opaque.", kr: "정부의 의사 결정 과정은 완전히 이해하기 어려웠습니다." }
+    ]
+  },
+  {
+    id: "L4-214",
+    word: "paramount",
+    meaning: "가장 중요한",
+    examples: [
+      { en: "The safety of the children is of paramount importance.", kr: "아이들의 안전이 가장 중요한 사항입니다." },
+      { en: "Quality is paramount to our reputation as a manufacturer.", kr: "품질은 제조업체로서 우리의 명성에 가장 중요합니다." }
+    ]
+  },
+  {
+    id: "L4-215",
+    word: "pernicious",
+    meaning: "유해한, 치명적인",
+    examples: [
+      { en: "The pernicious effects of social isolation are well documented.", kr: "사회적 고립의 유해한 영향은 잘 기록되어 있습니다." },
+      { en: "His pernicious influence corrupted the whole organization.", kr: "그의 치명적인 영향은 조직 전체를 타락시켰습니다." }
+    ]
+  },
+  {
+    id: "L4-216",
+    word: "quiescent",
+    meaning: "활동이 없는, 잠잠한",
+    examples: [
+      { en: "The volcano has been quiescent for centuries, but it is still monitored.", kr: "그 화산은 수 세기 동안 활동이 없었지만, 여전히 감시됩니다." },
+      { en: "The market is currently quiescent, with little trading activity.", kr: "시장은 현재 거래 활동이 거의 없이 잠잠합니다." }
+    ]
+  },
+  {
+    id: "L4-217",
+    word: "rancor",
+    meaning: "원한, 악의",
+    examples: [
+      { en: "He spoke without rancor, despite the bitter feud between them.", kr: "그는 그들 사이의 쓰라린 불화에도 불구하고 원한 없이 말했습니다." },
+      { en: "The debate was filled with old rancor and personal attacks.", kr: "그 토론은 오래된 악의와 인신공격으로 가득했습니다." }
+    ]
+  },
+  {
+    id: "L4-218",
+    word: "satiate",
+    meaning: "충족시키다, 물리게 하다",
+    examples: [
+      { en: "A single piece of cake was enough to satiate her craving for sweets.", kr: "케이크 한 조각만으로 그녀의 단맛에 대한 갈망을 충족시키기에 충분했습니다." },
+      { en: "The endless stream of information does not satiate the public's curiosity.", kr: "끝없는 정보의 흐름은 대중의 호기심을 물리게 하지 않습니다." }
+    ]
+  },
+  {
+    id: "L4-219",
+    word: "solace",
+    meaning: "위로, 위안",
+    examples: [
+      { en: "She found solace in her faith after the tragic loss.", kr: "그녀는 비극적인 상실 후에 자신의 믿음에서 위안을 찾았습니다." },
+      { en: "Music was the only solace he could find in his lonely life.", kr: "음악은 그가 외로운 삶에서 찾을 수 있는 유일한 위로였습니다." }
+    ]
+  },
+  {
+    id: "L4-220",
+    word: "transient",
+    meaning: "일시적인, 순간적인",
+    examples: [
+      { en: "The feeling of happiness was unfortunately transient.", kr: "행복감은 불행히도 일시적이었습니다." },
+      { en: "The hotel provides accommodation for transient guests.", kr: "그 호텔은 일시적인(단기) 손님들을 위한 숙박 시설을 제공합니다." }
+    ]
+  },
+  {
+    id: "L4-221",
+    word: "venerate",
+    meaning: "존경하다, 숭배하다",
+    examples: [
+      { en: "Many people continue to venerate the late leader for his reforms.", kr: "많은 사람들이 그의 개혁 때문에 고(故) 지도자를 계속 존경합니다." },
+      { en: "In that culture, elders are highly venerated.", kr: "그 문화에서는 어른들이 매우 숭배됩니다(존경받습니다)." }
+    ]
+  },
+  {
+    id: "L4-222",
+    word: "admonish",
+    meaning: "꾸짖다, 충고하다",
+    examples: [
+      { en: "The teacher had to admonish the students for being noisy in the hall.", kr: "선생님은 복도에서 시끄럽게 구는 학생들을 꾸짖어야 했습니다." },
+      { en: "I admonished him to be more careful with his health.", kr: "나는 그에게 건강에 더 조심하라고 충고했습니다." }
+    ]
+  },
+  {
+    id: "L4-223",
+    word: "ameliorate",
+    meaning: "개선하다, 완화시키다",
+    examples: [
+      { en: "We hope to ameliorate the living conditions of the poor.", kr: "우리는 가난한 사람들의 생활 환경을 개선하기를 희망합니다." },
+      { en: "Relief efforts were sent to ameliorate the suffering after the earthquake.", kr: "지진 후 고통을 완화시키기 위해 구호 노력이 파견되었습니다." }
+    ]
+  },
+  {
+    id: "L4-224",
+    word: "cajole",
+    meaning: "꼬드기다, 회유하다",
+    examples: [
+      { en: "He tried to cajole his daughter into eating her vegetables.", kr: "그는 딸을 회유하여 채소를 먹이려고 노력했습니다." },
+      { en: "They cajoled the manager into giving them a discount.", kr: "그들은 매니저를 꼬드겨 할인을 받았습니다." }
+    ]
+  },
+  {
+    id: "L4-225",
+    word: "chastise",
+    meaning: "징벌하다, 비난하다",
+    examples: [
+      { en: "The manager chastised the team for their poor performance.", kr: "매니저는 그들의 저조한 실적 때문에 팀을 징벌(엄하게 꾸짖음)했습니다." },
+      { en: "She was chastised for speaking out of turn during the meeting.", kr: "그녀는 회의 중에 순서 없이 발언하여 비난받았습니다." }
+    ]
+  },
+  {
+    id: "L4-226",
+    word: "cogent",
+    meaning: "설득력 있는",
+    examples: [
+      { en: "The lawyer presented a cogent argument that swayed the jury.", kr: "그 변호사는 배심원들을 움직인 설득력 있는 주장을 제시했습니다." },
+      { en: "We need a cogent reason to approve the proposal.", kr: "우리는 그 제안을 승인할 설득력 있는 이유가 필요합니다." }
+    ]
+  },
+  {
+    id: "L4-227",
+    word: "concomitant",
+    meaning: "수반되는, 동시에 발생하는",
+    examples: [
+      { en: "Loss of memory is a common concomitant of aging.", kr: "기억 상실은 노화에 수반되는 흔한 현상입니다." },
+      { en: "The rise in prices and the concomitant fall in sales worried the company.", kr: "가격 상승과 동시에 발생하는 판매 하락은 회사를 걱정시켰습니다." }
+    ]
+  },
+  {
+    id: "L4-228",
+    word: "deleterious",
+    meaning: "해로운, 유해한",
+    examples: [
+      { en: "The doctor warned about the deleterious effects of smoking.", kr: "의사는 흡연의 해로운 영향에 대해 경고했습니다." },
+      { en: "A lack of sunlight can have deleterious consequences for certain plants.", kr: "햇빛 부족은 특정 식물에 유해한 결과를 초래할 수 있습니다." }
+    ]
+  },
+  {
+    id: "L4-229",
+    word: "denigrate",
+    meaning: "훼손하다, 폄하하다",
+    examples: [
+      { en: "It is unfair to denigrate someone's work without understanding their efforts.", kr: "그들의 노력을 이해하지 않고 누군가의 작업을 폄하하는 것은 불공평합니다." },
+      { en: "Rival politicians often denigrate each other's policies.", kr: "경쟁 정치인들은 종종 서로의 정책을 훼손합니다." }
+    ]
+  },
+  {
+    id: "L4-230",
+    word: "disparate",
+    meaning: "서로 전혀 다른",
+    examples: [
+      { en: "The research team brought together disparate fields of study.", kr: "그 연구팀은 서로 전혀 다른 연구 분야들을 한데 모았습니다." },
+      { en: "The city is characterized by disparate architectural styles.", kr: "그 도시는 서로 전혀 다른 건축 양식들로 특징지어집니다." }
+    ]
+  },
+  {
+    id: "L4-231",
+    word: "elucidate",
+    meaning: "설명하다, 명료하게 하다",
+    examples: [
+      { en: "The professor was asked to elucidate the complex theory.", kr: "그 교수는 복잡한 이론을 설명해 달라는 요청을 받았습니다." },
+      { en: "I need you to elucidate your proposal with some concrete examples.", kr: "저는 당신이 몇 가지 구체적인 예시로 당신의 제안을 명료하게 해주기를 바랍니다." }
+    ]
+  },
+  {
+    id: "L4-232",
+    word: "enervate",
+    meaning: "기력을 떨어뜨리다, 무기력하게 하다",
+    examples: [
+      { en: "The intense heat tended to enervate the workers in the field.", kr: "강렬한 더위는 현장의 노동자들의 기력을 떨어뜨리는 경향이 있었습니다." },
+      { en: "A lack of purpose can enervate an otherwise ambitious person.", kr: "목표 부족은 그렇지 않아도 야심 찬 사람을 무기력하게 만들 수 있습니다." }
+    ]
+  },
+  {
+    id: "L4-233",
+    word: "equanimity",
+    meaning: "평정, 침착",
+    examples: [
+      { en: "She faced the crisis with impressive equanimity.", kr: "그녀는 인상적인 평정심으로 위기에 맞섰습니다." },
+      { en: "Maintaining equanimity is essential for a good leader.", kr: "침착함을 유지하는 것은 좋은 리더에게 필수적입니다." }
+    ]
+  },
+  {
+    id: "L4-234",
+    word: "exigency",
+    meaning: "긴급, 위급",
+    examples: [
+      { en: "The exigency of the situation required immediate action.", kr: "그 상황의 긴급함은 즉각적인 조치를 요구했습니다." },
+      { en: "Due to the financial exigency, we had to cut many programs.", kr: "재정적 위급함 때문에, 우리는 많은 프로그램을 줄여야 했습니다." }
+    ]
+  },
+  {
+    id: "L4-235",
+    word: "fatuous",
+    meaning: "어리석은, 얼빠진",
+    examples: [
+      { en: "The interviewer asked a fatuous question that wasted everyone's time.", kr: "면접관은 모두의 시간을 낭비하는 어리석은 질문을 했습니다." },
+      { en: "It was a fatuous mistake to ignore the warning signs.", kr: "경고 신호를 무시한 것은 얼빠진 실수였습니다." }
+    ]
+  },
+  {
+    id: "L4-236",
+    word: "gregarious",
+    meaning: "사교적인, 군집성의",
+    examples: [
+      { en: "Lions are gregarious animals that live in prides.", kr: "사자는 무리를 지어 사는 군집성 동물입니다." },
+      { en: "She is highly gregarious and loves attending large parties.", kr: "그녀는 매우 사교적이며 대규모 파티에 참석하는 것을 좋아합니다." }
+    ]
+  },
+  {
+    id: "L4-237",
+    word: "inane",
+    meaning: "어리석은, 무의미한",
+    examples: [
+      { en: "He kept making inane comments that annoyed his colleagues.", kr: "그는 동료들을 짜증 나게 하는 어리석은 논평을 계속했습니다." },
+      { en: "The film was an inane comedy with no plot to speak of.", kr: "그 영화는 말할 만한 줄거리도 없는 무의미한 코미디였습니다." }
+    ]
+  },
+  {
+    id: "L4-238",
+    word: "inchoate",
+    meaning: "초기의, 미발달의",
+    examples: [
+      { en: "The idea for the novel was still in an inchoate stage.", kr: "그 소설에 대한 아이디어는 여전히 초기 단계에 있었습니다." },
+      { en: "The country's inchoate legal system needs comprehensive reform.", kr: "그 나라의 미발달된 법률 시스템은 포괄적인 개혁을 필요로 합니다." }
+    ]
+  },
+  {
+    id: "L4-239",
+    word: "inculcate",
+    meaning: "주입시키다, 심어주다",
+    examples: [
+      { en: "Parents try to inculcate a sense of responsibility in their children.", kr: "부모들은 아이들에게 책임감을 주입시키려고 노력합니다." },
+      { en: "The school curriculum aims to inculcate a love of learning.", kr: "그 학교 교육과정은 배움에 대한 사랑을 심어주는 것을 목표로 합니다." }
+    ]
+  },
+  {
+    id: "L4-240",
+    word: "innuendo",
+    meaning: "암시, 빈정거림",
+    examples: [
+      { en: "The rumor was spread through innuendo rather than direct accusation.", kr: "그 소문은 직접적인 비난보다는 암시를 통해 퍼졌습니다." },
+      { en: "He responded to the criticism with a witty innuendo.", kr: "그는 재치 있는 빈정거림으로 비판에 응답했습니다." }
+    ]
+  },
+  {
+    id: "L4-241",
+    word: "interminable",
+    meaning: "끝없이 계속되는",
+    examples: [
+      { en: "The drive through the desert seemed interminable.", kr: "사막을 통과하는 운전은 끝없이 계속되는 것 같았습니다." },
+      { en: "We had to sit through an interminable series of meetings.", kr: "우리는 끝없이 계속되는 일련의 회의들을 앉아서 견뎌야 했습니다." }
+    ]
+  },
+  {
+    id: "L4-242",
+    word: "invective",
+    meaning: "욕설, 비난",
+    examples: [
+      { en: "The politician's speech was full of invective against his opponents.", kr: "그 정치인의 연설은 그의 반대자들에 대한 비난으로 가득했습니다." },
+      { en: "She endured a stream of invective from the angry customer.", kr: "그녀는 화난 고객으로부터 쏟아지는 욕설을 견뎌냈습니다." }
+    ]
+  },
+  {
+    id: "L4-243",
+    word: "juxtaposition",
+    meaning: "병치, 병렬",
+    examples: [
+      { en: "The artist used the juxtaposition of bright and dark colors effectively.", kr: "그 예술가는 밝은 색과 어두운 색의 병치를 효과적으로 사용했습니다." },
+      { en: "The play works through the juxtaposition of comedy and tragedy.", kr: "그 연극은 코미디와 비극의 병치를 통해 작동합니다." }
+    ]
+  },
+  {
+    id: "L4-244",
+    word: "laconic",
+    meaning: "말이 없는, 간결한",
+    examples: [
+      { en: "His laconic reply suggested he was not interested in further discussion.", kr: "그의 간결한 답변은 그가 더 이상의 논의에 관심이 없음을 시사했습니다." },
+      { en: "The general was known for his laconic style of command.", kr: "그 장군은 말이 없는 지휘 스타일로 알려져 있었습니다." }
+    ]
+  },
+  {
+    id: "L4-245",
+    word: "lithe",
+    meaning: "유연한, 나긋나긋한",
+    examples: [
+      { en: "The dancer's movements were lithe and graceful.", kr: "그 무용수의 움직임은 유연하고 우아했습니다." },
+      { en: "Cats are known for their lithe bodies and quick reflexes.", kr: "고양이는 그들의 나긋나긋한 몸과 빠른 반사 신경으로 알려져 있습니다." }
+    ]
+  },
+  {
+    id: "L4-246",
+    word: "maverick",
+    meaning: "독불장군, 이단아",
+    examples: [
+      { en: "He was a maverick scientist who rejected conventional theories.", kr: "그는 전통적인 이론을 거부한 독불장군 과학자였습니다." },
+      { en: "The company encourages its employees to be mavericks and think differently.", kr: "그 회사는 직원들에게 이단아가 되어 다르게 생각하도록 장려합니다." }
+    ]
+  },
+  {
+    id: "L4-247",
+    word: "neophyte",
+    meaning: "신참, 초심자",
+    examples: [
+      { en: "The program is designed to teach coding to complete neophytes.", kr: "그 프로그램은 완전한 초심자들에게 코딩을 가르치도록 설계되었습니다." },
+      { en: "As a neophyte in the kitchen, she struggled with the complex recipe.", kr: "주방의 신참으로서, 그녀는 복잡한 레시피에 어려움을 겪었습니다." }
+    ]
+  },
+  {
+    id: "L4-248",
+    word: "obdurate",
+    meaning: "고집 센, 완고한",
+    examples: [
+      { en: "The mayor remained obdurate in his refusal to compromise.", kr: "시장은 타협을 거부하는 데 고집 센 태도를 유지했습니다." },
+      { en: "She was obdurate in her belief that the company was at fault.", kr: "그녀는 회사가 잘못했다는 자신의 믿음에 완고했습니다." }
+    ]
+  },
+  {
+    id: "L4-249",
+    word: "obfuscate",
+    meaning: "흐리게 하다, 혼란스럽게 하다",
+    examples: [
+      { en: "The politician tried to obfuscate the issue by using vague language.", kr: "그 정치인은 모호한 언어를 사용하여 쟁점을 혼란스럽게 만들려고 노력했습니다." },
+      { en: "The complex manual only served to obfuscate the simple setup process.", kr: "그 복잡한 매뉴얼은 단순한 설치 과정을 흐리게 하는 역할만 했습니다." }
+    ]
+  },
+  {
+    id: "L4-250",
+    word: "paucity",
+    meaning: "부족, 결핍",
+    examples: [
+      { en: "There is a paucity of reliable data on the subject.", kr: "그 주제에 대한 신뢰할 수 있는 자료의 부족이 있습니다." },
+      { en: "A paucity of resources made the project extremely difficult.", kr: "자원의 결핍은 그 프로젝트를 극도로 어렵게 만들었습니다." }
+    ]
+  },
+  {
+    id: "L4-251",
+    word: "pellucid",
+    meaning: "투명한, 명쾌한",
+    examples: [
+      { en: "The glass-like lake water was beautifully pellucid.", kr: "유리 같은 호수 물은 아름답게 투명했습니다." },
+      { en: "The professor's explanation was pellucid and easy to follow.", kr: "그 교수의 설명은 명쾌하고 따라가기 쉬웠습니다." }
+    ]
+  },
+  {
+    id: "L4-252",
+    word: "penchant",
+    meaning: "강한 기호, 경향",
+    examples: [
+      { en: "He has a penchant for collecting rare books.", kr: "그는 희귀한 책을 수집하는 강한 기호(경향)가 있습니다." },
+      { en: "She has a pronounced penchant for late-night snacking.", kr: "그녀는 늦은 밤에 간식을 먹는 뚜렷한 경향이 있습니다." }
+    ]
+  },
+  {
+    id: "L4-253",
+    word: "perfunctory",
+    meaning: "형식적인, 마지못해 하는",
+    examples: [
+      { en: "The employee gave a perfunctory apology for his mistake.", kr: "그 직원은 자신의 실수에 대해 형식적인 사과를 했습니다." },
+      { en: "The inspection was perfunctory, missing several key violations.", kr: "그 검사는 마지못해 하는 것이어서, 몇 가지 주요 위반 사항을 놓쳤습니다." }
+    ]
+  },
+  {
+    id: "L4-254",
+    word: "peruse",
+    meaning: "정독하다, 숙독하다",
+    examples: [
+      { en: "She spent the afternoon perusing the contract carefully.", kr: "그녀는 오후를 그 계약서를 주의 깊게 정독하며 보냈습니다." },
+      { en: "Please peruse the attached documents before the meeting.", kr: "회의 전에 첨부된 문서들을 숙독해 주십시오." }
+    ]
+  },
+  {
+    id: "L4-255",
+    word: "placate",
+    meaning: "달래다, 진정시키다",
+    examples: [
+      { en: "The manager tried to placate the angry customer with a full refund.", kr: "매니저는 전액 환불로 화난 고객을 달래려고 노력했습니다." },
+      { en: "It was difficult to placate the crying child.", kr: "우는 아이를 진정시키기는 어려웠습니다." }
+    ]
+  },
+  {
+    id: "L4-256",
+    word: "plethora",
+    meaning: "과다, 과잉",
+    examples: [
+      { en: "The market offers a plethora of options for smartphone users.", kr: "시장은 스마트폰 사용자들에게 과다한 선택지를 제공합니다." },
+      { en: "A plethora of information can sometimes lead to confusion.", kr: "정보의 과잉은 때때로 혼란을 초래할 수 있습니다." }
+    ]
+  },
+  {
+    id: "L4-257",
+    word: "precipitous",
+    meaning: "성급한, 급경사의",
+    examples: [
+      { en: "The company made a precipitous move into a new market.", kr: "그 회사는 새 시장으로 성급한 움직임을 보였습니다." },
+      { en: "Be careful when driving on the precipitous mountain roads.", kr: "급경사의 산길에서 운전할 때 조심하세요." }
+    ]
+  },
+  {
+    id: "L4-258",
+    word: "profligate",
+    meaning: "낭비하는, 방탕한",
+    examples: [
+      { en: "He was criticized for his profligate spending habits.", kr: "그는 자신의 낭비하는 지출 습관으로 비판받았습니다." },
+      { en: "A profligate lifestyle quickly led him into debt.", kr: "방탕한 생활 방식은 그를 빠르게 빚더미에 빠지게 했습니다." }
+    ]
+  },
+  {
+    id: "L4-259",
+    word: "quixotic",
+    meaning: "돈키호테식의, 비현실적인",
+    examples: [
+      { en: "His quixotic quest to save the local library was admired by many.", kr: "지역 도서관을 구하려는 그의 돈키호테식 탐구는 많은 사람들에게 존경받았습니다." },
+      { en: "The investors dismissed the plan as financially quixotic.", kr: "투자자들은 그 계획을 재정적으로 비현실적이라고 일축했습니다." }
+    ]
+  },
+  {
+    id: "L4-260",
+    word: "recalcitrant",
+    meaning: "저항하는, 다루기 힘든",
+    examples: [
+      { en: "The government struggled to control the recalcitrant protest groups.", kr: "정부는 저항하는 시위대들을 통제하는 데 어려움을 겪었습니다." },
+      { en: "The recalcitrant child refused to go to bed.", kr: "그 다루기 힘든 아이는 잠자리에 드는 것을 거부했습니다." }
+    ]
+  },
+  {
+    id: "L4-261",
+    word: "redolent",
+    meaning: "냄새가 나는, 생각나게 하는",
+    examples: [
+      { en: "The air was redolent of fresh pine and damp earth.", kr: "공기는 신선한 소나무와 축축한 흙 냄새가 났습니다." },
+      { en: "The old photographs were redolent of his childhood memories.", kr: "그 오래된 사진들은 그의 어린 시절 기억들을 생각나게 했습니다." }
+    ]
+  },
+  {
+    id: "L4-262",
+    word: "repartee",
+    meaning: "재치 있는 응답, 말재주",
+    examples: [
+      { en: "The comedy show was filled with clever repartee between the two hosts.", kr: "그 코미디 쇼는 두 진행자 사이의 재치 있는 응답으로 가득했습니다." },
+      { en: "His quick repartee made him a formidable debater.", kr: "그의 빠른 말재주는 그를 강력한 토론자로 만들었습니다." }
+    ]
+  },
+  {
+    id: "L4-263",
+    word: "repudiate",
+    meaning: "거부하다, 부인하다",
+    examples: [
+      { en: "The politician was forced to repudiate his earlier statement.", kr: "그 정치인은 자신의 이전 발언을 부인하도록 강요받았습니다." },
+      { en: "The company will repudiate any claims of negligence.", kr: "그 회사는 어떤 태만 주장도 거부할 것입니다." }
+    ]
+  },
+  {
+    id: "L4-264",
+    word: "ruminate",
+    meaning: "심사숙고하다, 반추하다",
+    examples: [
+      { en: "She sat quietly, ruminating on the meaning of his words.", kr: "그녀는 그의 말의 의미에 대해 심사숙고하며 조용히 앉아 있었습니다." },
+      { en: "Cows ruminate on their food to aid digestion.", kr: "소들은 소화를 돕기 위해 먹이를 반추합니다." }
+    ]
+  },
+  {
+    id: "L4-265",
+    word: "sardonic",
+    meaning: "냉소적인, 비꼬는",
+    examples: [
+      { en: "The comedian delivered his jokes with a sardonic smile.", kr: "그 코미디언은 냉소적인 미소를 지으며 농담을 했습니다." },
+      { en: "His sardonic humor was often misunderstood as rudeness.", kr: "그의 비꼬는 유머는 종종 무례함으로 오해받았습니다." }
+    ]
+  },
+  {
+    id: "L4-266",
+    word: "scintilla",
+    meaning: "아주 조금, 미량",
+    examples: [
+      { en: "The prosecution failed to produce even a scintilla of evidence.", kr: "검찰은 아주 조금의 증거조차 제시하지 못했습니다." },
+      { en: "There was not a scintilla of doubt in her mind.", kr: "그녀의 마음속에는 미량의 의심도 없었습니다." }
+    ]
+  },
+  {
+    id: "L4-267",
+    word: "scurrilous",
+    meaning: "상스러운, 무례한",
+    examples: [
+      { en: "The newspaper published a scurrilous attack on the mayor.", kr: "그 신문은 시장에 대한 상스러운 공격을 보도했습니다." },
+      { en: "We decided to ignore his scurrilous comments and continue the discussion.", kr: "우리는 그의 무례한 논평을 무시하고 토론을 계속하기로 결정했습니다." }
+    ]
+  },
+  {
+    id: "L4-268",
+    word: "solipsism",
+    meaning: "유아론, 자기중심주의",
+    examples: [
+      { en: "The philosopher argued against the extreme form of solipsism.", kr: "그 철학자는 극단적인 형태의 유아론에 반대하여 주장했습니다." },
+      { en: "His complete disregard for others' feelings suggested a dangerous solipsism.", kr: "다른 사람들의 감정에 대한 그의 완전한 무시는 위험한 자기중심주의를 시사했습니다." }
+    ]
+  },
+  {
+    id: "L4-269",
+    word: "stentorian",
+    meaning: "목소리가 큰, 우렁찬",
+    examples: [
+      { en: "The coach delivered his instructions in a stentorian voice.", kr: "코치는 우렁찬 목소리로 자신의 지시를 전달했습니다." },
+      { en: "He used a stentorian tone to call for immediate silence.", kr: "그는 즉각적인 침묵을 요구하기 위해 목소리가 큰 어조를 사용했습니다." }
+    ]
+  },
+  {
+    id: "L4-270",
+    word: "subsume",
+    meaning: "포함하다, 포괄하다",
+    examples: [
+      { en: "The new law will subsume several older regulations.", kr: "새 법은 몇 가지 더 오래된 규정들을 포괄할 것입니다." },
+      { en: "All these smaller categories are subsumed under one large heading.", kr: "이 모든 더 작은 범주들은 하나의 큰 제목 아래에 포함됩니다." }
+    ]
+  },
+  {
+    id: "L4-271",
+    word: "surreptitious",
+    meaning: "은밀한, 몰래 하는",
+    examples: [
+      { en: "They held a surreptitious meeting in the back room of the cafe.", kr: "그들은 카페 뒷방에서 은밀한 회의를 가졌습니다." },
+      { en: "He cast a surreptitious glance at his watch during the long lecture.", kr: "그는 긴 강의 중에 자신의 시계를 몰래 쳐다보았습니다." }
+    ]
+  },
+  {
+    id: "L4-272",
+    word: "travesty",
+    meaning: "모방, 서투른 모방",
+    examples: [
+      { en: "The whole trial was a travesty of justice.", kr: "전체 재판은 정의의 서투른 모방(왜곡)이었습니다." },
+      { en: "His performance was a travesty of the original opera.", kr: "그의 공연은 원작 오페라의 모방(풍자)이었습니다." }
+    ]
+  },
+  {
+    id: "L4-273",
+    word: "trenchant",
+    meaning: "정곡을 찌르는, 날카로운",
+    examples: [
+      { en: "The critic delivered a trenchant analysis of the new novel.", kr: "그 비평가는 새 소설에 대한 정곡을 찌르는 분석을 내놓았습니다." },
+      { en: "She offered a few trenchant observations on the current political climate.", kr: "그녀는 현재의 정치적 분위기에 대한 몇 가지 날카로운 관찰을 제공했습니다." }
+    ]
+  },
+  {
+    id: "L4-274",
+    word: "turpitude",
+    meaning: "타락, 비열한 행위",
+    examples: [
+      { en: "The board condemned his actions as involving moral turpitude.", kr: "이사회는 그의 행동이 도덕적 타락을 수반한다고 비난했습니다." },
+      { en: "He was removed from office for an act of shocking turpitude.", kr: "그는 충격적인 비열한 행위로 인해 공직에서 해임되었습니다." }
+    ]
+  },
+  {
+    id: "L4-275",
+    word: "unctuous",
+    meaning: "번지르르한, 기름진",
+    examples: [
+      { en: "The salesman's unctuous manner made the customer suspicious.", kr: "그 세일즈맨의 번지르르한 태도는 고객을 의심하게 만들었습니다." },
+      { en: "He delivered an unctuous speech full of false praise.", kr: "그는 거짓 칭찬으로 가득 찬 기름진 연설을 했습니다." }
+    ]
+  },
+  {
+    id: "L4-276",
+    word: "untenable",
+    meaning: "옹호할 수 없는, 지탱할 수 없는",
+    examples: [
+      { en: "The high costs made the business model financially untenable.", kr: "높은 비용은 그 사업 모델을 재정적으로 지탱할 수 없게 만들었습니다." },
+      { en: "His current argument is clearly untenable under cross-examination.", kr: "그의 현재 주장은 반대 심문 하에서 명확히 옹호할 수 없습니다." }
+    ]
+  },
+  {
+    id: "L4-277",
+    word: "vacillate",
+    meaning: "흔들리다, 망설이다",
+    examples: [
+      { en: "The committee continues to vacillate between the two proposals.", kr: "위원회는 두 제안 사이에서 계속 흔들리고 있습니다." },
+      { en: "He tends to vacillate when making important decisions.", kr: "그는 중요한 결정을 내릴 때 망설이는 경향이 있습니다." }
+    ]
+  },
+  {
+    id: "L4-278",
+    word: "vicarious",
+    meaning: "대리의, 간접적인",
+    examples: [
+      { en: "She gained vicarious pleasure from watching her children succeed.", kr: "그녀는 자녀가 성공하는 것을 보면서 간접적인 즐거움을 얻었습니다." },
+      { en: "The book allows for a vicarious experience of life in a foreign country.", kr: "그 책은 외국에서의 삶에 대한 대리 경험을 가능하게 합니다." }
+    ]
+  },
+  {
+    id: "L4-279",
+    word: "vituperate",
+    meaning: "욕설하다, 비난하다",
+    examples: [
+      { en: "The editor did not hesitate to vituperate the sloppy journalism.", kr: "그 편집자는 엉성한 저널리즘을 비난하는 것을 주저하지 않았습니다." },
+      { en: "He chose to vituperate his opponent during the heated debate.", kr: "그는 격렬한 토론 중에 자신의 상대방에게 욕설을 퍼붓기로 선택했습니다." }
+    ]
+  },
+  {
+    id: "L4-280",
+    word: "wanton",
+    meaning: "고의적인, 무자비한",
+    examples: [
+      { en: "The report documented numerous acts of wanton destruction of property.", kr: "그 보고서는 수많은 고의적인 재산 파괴 행위를 기록했습니다." },
+      { en: "The general was accused of wanton disregard for civilian lives.", kr: "그 장군은 민간인의 생명에 대한 무자비한 무시로 고발당했습니다." }
+    ]
+  },
+  {
+    id: "L4-281",
+    word: "acrimonious",
+    meaning: "신랄한, 격렬한",
+    examples: [
+      { en: "The debate ended in an acrimonious exchange between the two sides.", kr: "그 토론은 양측 사이의 격렬한(신랄한) 설전으로 끝났습니다." },
+      { en: "Their divorce was marked by a bitter and acrimonious legal battle.", kr: "그들의 이혼은 쓰라리고 신랄한 법정 싸움으로 특징지어졌습니다." }
+    ]
+  },
+  {
+    id: "L4-282",
+    word: "belligerent",
+    meaning: "호전적인, 싸우기 좋아하는",
+    examples: [
+      { en: "The customer became belligerent after his request was denied.", kr: "그 고객은 자신의 요청이 거부된 후 호전적으로 변했습니다." },
+      { en: "The two countries maintained a belligerent relationship for decades.", kr: "두 나라는 수십 년 동안 싸우기 좋아하는 관계를 유지했습니다." }
+    ]
+  },
+  {
+    id: "L4-283",
+    word: "capricious",
+    meaning: "변덕스러운",
+    examples: [
+      { en: "The weather in the mountains is notoriously capricious.", kr: "산의 날씨는 변덕스러운 것으로 악명이 높습니다." },
+      { en: "A capricious ruler can cause great instability in a nation.", kr: "변덕스러운 통치자는 한 국가에 큰 불안정성을 야기할 수 있습니다." }
+    ]
+  },
+  {
+    id: "L4-284",
+    word: "circumvent",
+    meaning: "피하다, 우회하다",
+    examples: [
+      { en: "They found a clever way to circumvent the new tax laws.", kr: "그들은 새 세법을 피할 영리한 방법을 찾았습니다." },
+      { en: "We need to circumvent the red tape to get the project approved faster.", kr: "우리는 프로젝트를 더 빨리 승인받기 위해 관료적인 절차를 우회해야 합니다." }
+    ]
+  },
+  {
+    id: "L4-285",
+    word: "confluence",
+    meaning: "합류점, 융합",
+    examples: [
+      { en: "The city is located at the confluence of two major rivers.", kr: "그 도시는 두 개의 주요 강이 합류하는 지점에 위치하고 있습니다." },
+      { en: "The innovation occurred at the confluence of several different technologies.", kr: "그 혁신은 몇 가지 다른 기술들의 융합 지점에서 발생했습니다." }
+    ]
+  },
+  {
+    id: "L4-286",
+    word: "conflagration",
+    meaning: "큰불, 대화재",
+    examples: [
+      { en: "The ancient library was tragically destroyed in a conflagration.", kr: "그 고대 도서관은 비극적으로 큰불로 파괴되었습니다." },
+      { en: "Preventing a financial conflagration requires strict regulation.", kr: "금융 대화재(위기)를 막는 것은 엄격한 규제를 필요로 합니다." }
+    ]
+  },
+  {
+    id: "L4-287",
+    word: "contravene",
+    meaning: "위반하다, 반대하다",
+    examples: [
+      { en: "The new policy does not contravene any existing federal laws.", kr: "새 정책은 현존하는 연방 법규를 위반하지 않습니다." },
+      { en: "His recent actions clearly contravene the company's code of conduct.", kr: "그의 최근 행동은 회사의 행동 강령을 명백히 위반합니다." }
+    ]
+  },
+  {
+    id: "L4-288",
+    word: "credence",
+    meaning: "신뢰, 신용",
+    examples: [
+      { en: "The report lends credence to the idea that the economy is recovering.", kr: "그 보고서는 경제가 회복되고 있다는 생각에 신뢰를 더합니다." },
+      { en: "I can give no credence to such an absurd story.", kr: "저는 그러한 터무니없는 이야기에 신용을 줄 수 없습니다." }
+    ]
+  },
+  {
+    id: "L4-289",
+    word: "cynicism",
+    meaning: "냉소주의",
+    examples: [
+      { en: "The latest scandal only deepened the public's cynicism toward politics.", kr: "최근의 스캔들은 정치에 대한 대중의 냉소주의를 심화시켰을 뿐입니다." },
+      { en: "His initial enthusiasm was replaced by growing cynicism.", kr: "그의 초기 열정은 커져가는 냉소주의로 대체되었습니다." }
+    ]
+  },
+  {
+    id: "L4-290",
+    word: "denouement",
+    meaning: "대단원, 결말",
+    examples: [
+      { en: "The denouement of the play was unexpected and deeply moving.", kr: "그 연극의 대단원(결말)은 예상치 못했고 깊은 감동을 주었습니다." },
+      { en: "The book's long and complicated plot finally led to a satisfying denouement.", kr: "그 책의 길고 복잡한 줄거리는 마침내 만족스러운 결말에 이르렀습니다." }
+    ]
+  },
+  {
+    id: "L4-291",
+    word: "dichotomy",
+    meaning: "양분, 이분법",
+    examples: [
+      { en: "The dichotomy between rich and poor is growing wider.", kr: "부자와 가난한 사람 사이의 양분(이분법)이 점점 더 커지고 있습니다." },
+      { en: "The book explores the dichotomy between the public and private self.", kr: "그 책은 공적인 자아와 사적인 자아 사이의 이분법을 탐구합니다." }
+    ]
+  },
+  {
+    id: "L4-292",
+    word: "dissemble",
+    meaning: "숨기다, 위장하다",
+    examples: [
+      { en: "She was adept at dissembling her true emotions during negotiations.", kr: "그녀는 협상 중에 자신의 진정한 감정을 숨기는 데 능숙했습니다." },
+      { en: "The spy was able to dissemble his intentions perfectly.", kr: "그 스파이는 자신의 의도를 완벽하게 위장할 수 있었습니다." }
+    ]
+  },
+  {
+    id: "L4-293",
+    word: "equivocate",
+    meaning: "얼버무리다, 모호하게 말하다",
+    examples: [
+      { en: "When asked for a direct answer, the politician chose to equivocate.", kr: "직접적인 답변을 요청받았을 때, 그 정치인은 얼버무리기를 선택했습니다." },
+      { en: "Do not equivocate; tell me exactly what happened.", kr: "모호하게 말하지 마세요; 무슨 일이 있었는지 정확히 말해주세요." }
+    ]
+  },
+  {
+    id: "L4-294",
+    word: "expiate",
+    meaning: "속죄하다, 보상하다",
+    examples: [
+      { en: "He tried to expiate his guilt by helping the victims of the accident.", kr: "그는 사고 피해자들을 돕는 것으로 자신의 죄책감을 속죄하려고 노력했습니다." },
+      { en: "A simple apology is not enough to expiate his betrayal.", kr: "단순한 사과로는 그의 배신을 보상하기에 충분하지 않습니다." }
+    ]
+  },
+  {
+    id: "L4-295",
+    word: "extrapolate",
+    meaning: "추론하다, 추정하다",
+    examples: [
+      { en: "We can extrapolate future sales trends from the current data.", kr: "우리는 현재 데이터로부터 미래 판매 동향을 추론할 수 있습니다." },
+      { en: "It is dangerous to extrapolate a general rule from a single instance.", kr: "단 하나의 사례로부터 일반적인 규칙을 추정하는 것은 위험합니다." }
+    ]
+  },
+  {
+    id: "L4-296",
+    word: "facetious",
+    meaning: "우스꽝스러운, 경박한",
+    examples: [
+      { en: "He was criticized for making facetious remarks during the serious meeting.", kr: "그는 진지한 회의 중에 우스꽝스러운 발언을 하여 비판받았습니다." },
+      { en: "The author adopted a light and facetious tone throughout the book.", kr: "그 작가는 책 전체에서 가볍고 경박한 어조를 채택했습니다." }
+    ]
+  },
+  {
+    id: "L4-297",
+    word: "hegemony",
+    meaning: "패권, 지배권",
+    examples: [
+      { en: "The ancient city established its hegemony over the entire region.", kr: "그 고대 도시는 전체 지역에 대한 자신의 패권을 확립했습니다." },
+      { en: "The struggle for global economic hegemony is complex.", kr: "글로벌 경제 지배권을 위한 투쟁은 복잡합니다." }
+    ]
+  },
+  {
+    id: "L4-298",
+    word: "incendiary",
+    meaning: "선동적인, 방화의",
+    examples: [
+      { en: "The speaker's incendiary comments sparked a heated debate.", kr: "그 연사의 선동적인 발언은 격렬한 논쟁을 촉발했습니다." },
+      { en: "The police suspected the fire was caused by an incendiary device.", kr: "경찰은 그 화재가 방화 장치로 인해 발생했다고 의심했습니다." }
+    ]
+  },
+  {
+    id: "L4-299",
+    word: "inscrutable",
+    meaning: "헤아릴 수 없는, 불가사의한",
+    examples: [
+      { en: "The old man had an inscrutable expression that gave away nothing.", kr: "그 노인은 아무것도 드러내지 않는 헤아릴 수 없는 표정을 가지고 있었습니다." },
+      { en: "The workings of the universe remain largely inscrutable to us.", kr: "우주의 작동 방식은 우리에게 대체로 불가사의한 상태로 남아 있습니다." }
+    ]
+  },
+  {
+    id: "L4-300",
+    word: "intransigent",
+    meaning: "비타협적인, 완고한",
+    examples: [
+      { en: "The union took an intransigent stance in the wage negotiations.", kr: "노조는 임금 협상에서 비타협적인 입장을 취했습니다." },
+      { en: "It is difficult to negotiate with someone so intransigent.", kr: "그렇게 완고한 사람과는 협상하기 어렵습니다." }
+    ]
+  }
+];
+
+const wordsLevel4_Part4 = [
+  {
+    id: "L4-301",
+    word: "lassitude",
+    meaning: "권태, 무기력",
+    examples: [
+      { en: "A feeling of lassitude settled over him after the long, hot journey.", kr: "길고 더운 여정 후 그에게 권태감이 밀려왔습니다." },
+      { en: "The report noted a general lassitude among the team members.", kr: "그 보고서는 팀원들 사이의 전반적인 무기력을 지적했습니다." }
+    ]
+  },
+  {
+    id: "L4-302",
+    word: "maudlin",
+    meaning: "감상적인, 눈물을 잘 흘리는",
+    examples: [
+      { en: "He became maudlin and started crying about his past mistakes after drinking.", kr: "그는 술을 마신 후 감상적이 되어 과거의 실수에 대해 울기 시작했습니다." },
+      { en: "The movie's ending was overly maudlin and failed to move the critics.", kr: "그 영화의 결말은 지나치게 감상적이어서 비평가들의 마음을 움직이는 데 실패했습니다." }
+    ]
+  },
+  {
+    id: "L4-303",
+    word: "misanthrope",
+    meaning: "인간 혐오자",
+    examples: [
+      { en: "The old man was a renowned misanthrope who avoided all social contact.", kr: "그 노인은 모든 사회적 접촉을 피하는 유명한 인간 혐오자였습니다." },
+      { en: "Despite his grumpy exterior, he was not a true misanthrope.", kr: "그의 심술궂은 겉모습에도 불구하고, 그는 진정한 인간 혐오자는 아니었습니다." }
+    ]
+  },
+  {
+    id: "L4-304",
+    word: "mitigate",
+    meaning: "완화시키다, 경감시키다",
+    examples: [
+      { en: "They implemented new policies to mitigate the risks of climate change.", kr: "그들은 기후 변화의 위험을 완화시키기 위해 새로운 정책들을 시행했습니다." },
+      { en: "Taking painkillers can mitigate the severity of the headache.", kr: "진통제를 복용하는 것은 두통의 심각성을 경감시킬 수 있습니다." }
+    ]
+  },
+  {
+    id: "L4-305",
+    word: "mollify",
+    meaning: "달래다, 진정시키다",
+    examples: [
+      { en: "He tried to mollify his angry wife with flowers and apologies.", kr: "그는 꽃과 사과로 화난 아내를 달래려고 노력했습니다." },
+      { en: "The concessions were not enough to mollify the striking workers.", kr: "그 양보는 파업 중인 노동자들을 진정시키기에 충분하지 않았습니다." }
+    ]
+  },
+  {
+    id: "L4-306",
+    word: "nascent",
+    meaning: "초기의, 발생기의",
+    examples: [
+      { en: "The nascent space tourism industry is expected to grow rapidly.", kr: "발생기의 우주 관광 산업은 빠르게 성장할 것으로 예상됩니다." },
+      { en: "We must protect the nascent democratic institutions in the country.", kr: "우리는 그 나라의 초기의 민주 제도를 보호해야 합니다." }
+    ]
+  },
+  {
+    id: "L4-307",
+    word: "nefarious",
+    meaning: "사악한, 흉악한",
+    examples: [
+      { en: "The police uncovered a nefarious plot to smuggle ancient artifacts.", kr: "경찰은 고대 유물을 밀수하려는 흉악한 음모를 밝혀냈습니다." },
+      { en: "The villain in the novel committed several nefarious acts.", kr: "그 소설 속 악당은 몇 가지 사악한 행위를 저질렀습니다." }
+    ]
+  },
+  {
+    id: "L4-308",
+    word: "obstreperous",
+    meaning: "시끄러운, 통제하기 힘든",
+    examples: [
+      { en: "The teacher struggled to control the obstreperous class of teenagers.", kr: "선생님은 통제하기 힘든 십대 학생들을 통제하는 데 어려움을 겪었습니다." },
+      { en: "The protestors became obstreperous after the police arrived.", kr: "경찰이 도착한 후 시위자들은 시끄럽게 변했습니다." }
+    ]
+  },
+  {
+    id: "L4-309",
+    word: "parsimonious",
+    meaning: "인색한, 지나치게 절약하는",
+    examples: [
+      { en: "Despite his wealth, he was famously parsimonious and lived frugally.", kr: "그는 부유함에도 불구하고, 인색하기로 유명했고 검소하게 살았습니다." },
+      { en: "The company's parsimonious attitude toward employee benefits caused unrest.", kr: "직원 복지에 대한 그 회사의 지나치게 절약하는 태도는 불안을 야기했습니다." }
+    ]
+  },
+  {
+    id: "L4-310",
+    word: "pensive",
+    meaning: "생각에 잠긴, 수심에 찬",
+    examples: [
+      { en: "She looked pensive as she gazed out the window at the rain.", kr: "그녀는 창밖의 비를 응시하며 생각에 잠긴 듯 보였습니다." },
+      { en: "The poem's pensive tone reflected the author's sadness.", kr: "그 시의 수심에 찬 어조는 작가의 슬픔을 반영했습니다." }
+    ]
+  },
+  {
+    id: "L4-311",
+    word: "perfidious",
+    meaning: "배신하는, 불성실한",
+    examples: [
+      { en: "The perfidious advisor leaked confidential plans to the enemy.", kr: "그 배신하는 조언자는 기밀 계획을 적에게 유출했습니다." },
+      { en: "They were warned against trusting the perfidious businessman.", kr: "그들은 그 불성실한 사업가를 믿지 말라는 경고를 받았습니다." }
+    ]
+  },
+  {
+    id: "L4-312",
+    word: "platitude",
+    meaning: "진부한 이야기, 상투적인 말",
+    examples: [
+      { en: "His speech was full of meaningless platitudes about hard work and success.", kr: "그의 연설은 노력과 성공에 대한 의미 없는 상투적인 말들로 가득했습니다." },
+      { en: "The audience was tired of hearing the same old platitudes.", kr: "청중은 똑같은 진부한 이야기를 듣는 것에 지쳤습니다." }
+    ]
+  },
+  {
+    id: "L4-313",
+    word: "prolific",
+    meaning: "다작하는, 풍부한",
+    examples: [
+      { en: "Picasso was one of the most prolific artists of the 20th century.", kr: "피카소는 20세기 가장 다작하는 예술가 중 한 명이었습니다." },
+      { en: "The soil in this valley is so rich that it is incredibly prolific.", kr: "이 계곡의 토양은 매우 비옥하여 믿을 수 없을 만큼 풍부한 수확을 냅니다." }
+    ]
+  },
+  {
+    id: "L4-314",
+    word: "prudent",
+    meaning: "신중한, 현명한",
+    examples: [
+      { en: "It was a prudent decision to save money before making a major purchase.", kr: "큰 구매를 하기 전에 돈을 저축하는 것은 신중한 결정이었습니다." },
+      { en: "A prudent investor diversifies their portfolio.", kr: "현명한 투자자는 자신의 포트폴리오를 다양화합니다." }
+    ]
+  },
+  {
+    id: "L4-315",
+    word: "punctilious",
+    meaning: "꼼꼼한, 격식을 차리는",
+    examples: [
+      { en: "The chef was punctilious about the presentation of the dish.", kr: "그 주방장은 요리의 플레이팅에 대해 꼼꼼했습니다." },
+      { en: "He always maintains a punctilious standard of professional etiquette.", kr: "그는 항상 전문적인 예절에 대한 격식을 차리는 기준을 유지합니다." }
+    ]
+  },
+  {
+    id: "L4-316",
+    word: "quandary",
+    meaning: "곤경, 난처한 상황",
+    examples: [
+      { en: "The government is facing a major policy quandary over the rising debt.", kr: "정부는 증가하는 부채 문제로 주요 정책적 곤경에 직면해 있습니다." },
+      { en: "She was in a quandary about whether to take the job or continue her studies.", kr: "그녀는 그 직업을 가져야 할지 아니면 학업을 계속해야 할지에 대해 난처한 상황에 있었습니다." }
+    ]
+  },
+  {
+    id: "L4-317",
+    word: "rancid",
+    meaning: "썩은 냄새가 나는, 맛이 변한",
+    examples: [
+      { en: "The butter had been left out and turned rancid.", kr: "버터가 밖에 놓여져서 썩은 냄새가 나게 변했습니다." },
+      { en: "You should discard any food that smells rancid.", kr: "썩은 냄새가 나는 모든 음식은 버려야 합니다." }
+    ]
+  },
+  {
+    id: "L4-318",
+    word: "reprobate",
+    meaning: "타락한 사람, 무뢰한",
+    examples: [
+      { en: "The novel's protagonist was a charming but dangerous reprobate.", kr: "그 소설의 주인공은 매력적이지만 위험한 무뢰한이었습니다." },
+      { en: "His behavior at the party marked him as a complete reprobate.", kr: "파티에서의 그의 행동은 그를 완전한 타락한 사람으로 규정했습니다." }
+    ]
+  },
+  {
+    id: "L4-319",
+    word: "sanguine",
+    meaning: "낙관적인, 혈색 좋은",
+    examples: [
+      { en: "Despite the market crash, the CEO remained sanguine about the company's future.", kr: "시장 붕괴에도 불구하고, 최고 경영자는 회사의 미래에 대해 낙관적이었습니다." },
+      { en: "Her face was sanguine and cheerful after the long walk.", kr: "긴 산책 후 그녀의 얼굴은 혈색이 좋고 쾌활했습니다." }
+    ]
+  },
+  {
+    id: "L4-320",
+    word: "soporific",
+    meaning: "잠이 오게 하는, 수면제",
+    examples: [
+      { en: "The professor's monotonous voice had a soporific effect on the students.", kr: "그 교수의 단조로운 목소리는 학생들에게 잠이 오게 하는 효과를 주었습니다." },
+      { en: "The old remedy uses herbs with a mild soporific quality.", kr: "그 오래된 치료법은 순한 수면제 성질을 가진 허브를 사용합니다." }
+    ]
+  },
+  {
+    id: "L4-321",
+    word: "stolid",
+    meaning: "둔감한, 무신경한",
+    examples: [
+      { en: "He remained stolid and unemotional throughout the interrogation.", kr: "그는 심문 내내 둔감하고 감정을 드러내지 않았습니다." },
+      { en: "The stolid indifference of the public was hard to understand.", kr: "대중의 무신경한 무관심은 이해하기 어려웠습니다." }
+    ]
+  },
+  {
+    id: "L4-322",
+    word: "subversive",
+    meaning: "체제 전복적인",
+    examples: [
+      { en: "The government censored the play for its subversive political message.", kr: "정부는 그 연극의 체제 전복적인 정치적 메시지 때문에 검열했습니다." },
+      { en: "The activist was known for his subtle but highly subversive tactics.", kr: "그 활동가는 미묘하지만 매우 체제 전복적인 전술로 알려져 있었습니다." }
+    ]
+  },
+  {
+    id: "L4-323",
+    word: "surfeit",
+    meaning: "과잉, 과다",
+    examples: [
+      { en: "A surfeit of food at the party left everyone feeling bloated.", kr: "파티의 음식 과잉은 모두가 배부름을 느끼게 했습니다." },
+      { en: "The media is suffering from a surfeit of irrelevant information.", kr: "언론은 관련 없는 정보의 과잉으로 고통받고 있습니다." }
+    ]
+  },
+  {
+    id: "L4-324",
+    word: "talisman",
+    meaning: "부적, 행운의 상징",
+    examples: [
+      { en: "He carried a small wooden cross as a talisman for good luck.", kr: "그는 행운을 위한 부적으로 작은 나무 십자가를 가지고 다녔습니다." },
+      { en: "The ring was a family talisman, passed down through generations.", kr: "그 반지는 세대를 거쳐 전해 내려오는 가족의 행운의 상징이었습니다." }
+    ]
+  },
+  {
+    id: "L4-325",
+    word: "temerity",
+    meaning: "무모함, 만용",
+    examples: [
+      { en: "He had the temerity to contradict the CEO during the board meeting.", kr: "그는 이사회 회의 중에 최고 경영자에게 반박하는 무모함(만용)을 부렸습니다." },
+      { en: "Few people had the temerity to challenge the dictator.", kr: "독재자에게 도전할 만용을 가진 사람은 거의 없었습니다." }
+    ]
+  },
+  {
+    id: "L4-326",
+    word: "truculent",
+    meaning: "호전적인, 싸우기 좋아하는",
+    examples: [
+      { en: "The truculent teenager constantly picked fights with his classmates.", kr: "그 호전적인 십대 학생은 끊임없이 급우들과 싸움을 걸었습니다." },
+      { en: "The negotiations were disrupted by the union's truculent demands.", kr: "그 협상은 노조의 싸우기 좋아하는 요구 때문에 중단되었습니다." }
+    ]
+  },
+  {
+    id: "L4-327",
+    word: "uberrimae fidei",
+    meaning: "최고 선의 (라틴어: 계약법 용어)",
+    examples: [
+      { en: "Insurance contracts are considered contracts of uberrimae fidei, requiring full honesty.", kr: "보험 계약은 최고 선의의 계약으로 간주되어, 완전한 정직을 요구합니다." },
+      { en: "The business transaction was conducted on the principle of uberrimae fidei.", kr: "그 사업 거래는 최고 선의의 원칙에 따라 수행되었습니다." }
+    ]
+  },
+  {
+    id: "L4-328",
+    word: "vituperative",
+    meaning: "통렬한, 독설적인",
+    examples: [
+      { en: "The critic wrote a vituperative review, destroying the film's reputation.", kr: "그 비평가는 통렬한(독설적인) 리뷰를 작성하여 그 영화의 명성을 망가뜨렸습니다." },
+      { en: "The public was shocked by the politician's vituperative attack on his rival.", kr: "대중은 그 정치인이 경쟁자에게 가한 독설적인 공격에 충격을 받았습니다." }
+    ]
+  },
+  {
+    id: "L4-329",
+    word: "waive",
+    meaning: "포기하다, 면제하다",
+    examples: [
+      { en: "The university decided to waive the application fee for all low-income students.", kr: "그 대학은 모든 저소득층 학생들에게 지원 수수료를 면제하기로 결정했습니다." },
+      { en: "He chose to waive his right to an attorney during the initial questioning.", kr: "그는 초기 심문 동안 변호사를 선임할 자신의 권리를 포기하기로 선택했습니다." }
+    ]
+  },
+  {
+    id: "L4-330",
+    word: "wry",
+    meaning: "비꼬는, 씁쓸한",
+    examples: [
+      { en: "He made a wry comment about his own inability to follow instructions.", kr: "그는 지시를 따르지 못하는 자신의 무능력에 대해 비꼬는 논평을 했습니다." },
+      { en: "She gave a wry smile, acknowledging the irony of the situation.", kr: "그녀는 그 상황의 아이러니를 인정하며 씁쓸한 미소를 지었습니다." }
+    ]
+  },
+  {
+    id: "L4-331",
+    word: "aberration",
+    meaning: "일탈, 변이",
+    examples: [
+      { en: "The sudden drop in temperature was an aberration for this time of year.", kr: "갑작스러운 기온 하락은 이맘때의 일탈(변이)이었습니다." },
+      { en: "He hoped that his recent failure was just an aberration.", kr: "그는 자신의 최근 실패가 단지 일탈(일시적 현상)이기를 바랐습니다." }
+    ]
+  },
+  {
+    id: "L4-332",
+    word: "accede",
+    meaning: "동의하다, (지위에) 취임하다",
+    examples: [
+      { en: "The committee finally acceded to the union's demands.", kr: "위원회는 마침내 노조의 요구에 동의했습니다." },
+      { en: "The prince will accede to the throne upon the death of the king.", kr: "그 왕자는 왕의 서거 시 왕위에 취임할 것입니다." }
+    ]
+  },
+  {
+    id: "L4-333",
+    word: "adjudicate",
+    meaning: "판결하다, 심판하다",
+    examples: [
+      { en: "The court was called upon to adjudicate the dispute between the neighbors.", kr: "법원은 이웃 간의 분쟁을 판결하도록 요청받았습니다." },
+      { en: "A neutral third party was brought in to adjudicate the claims.", kr: "중립적인 제3자가 그 주장들을 심판하기 위해 투입되었습니다." }
+    ]
+  },
+  {
+    id: "L4-334",
+    word: "apprise",
+    meaning: "알리다, 통지하다",
+    examples: [
+      { en: "We must apprise the manager of the latest developments immediately.", kr: "우리는 최신 개발 상황을 즉시 매니저에게 알려야 합니다." },
+      { en: "The agent was fully apprised of the risks involved in the mission.", kr: "그 요원은 임무에 관련된 위험을 완전히 통지받았습니다." }
+    ]
+  },
+  {
+    id: "L4-335",
+    word: "ascetic",
+    meaning: "금욕적인, 금욕주의자",
+    examples: [
+      { en: "He lives an ascetic life, rejecting all forms of luxury.", kr: "그는 모든 종류의 사치를 거부하는 금욕적인 삶을 삽니다." },
+      { en: "The monk was a strict ascetic who meditated for hours daily.", kr: "그 승려는 매일 몇 시간 동안 명상하는 엄격한 금욕주의자였습니다." }
+    ]
+  },
+  {
+    id: "L4-336",
+    word: "assuage",
+    meaning: "달래다, 완화시키다",
+    examples: [
+      { en: "A warm cup of tea helped to assuage her anxiety.", kr: "따뜻한 차 한 잔은 그녀의 불안을 완화시키는 데 도움이 되었습니다." },
+      { en: "The company gave a public apology to assuage the customers' anger.", kr: "그 회사는 고객들의 분노를 달래기 위해 공개 사과를 했습니다." }
+    ]
+  },
+  {
+    id: "L4-337",
+    word: "atrophy",
+    meaning: "위축, 쇠퇴",
+    examples: [
+      { en: "Muscles can atrophy quickly if they are not used regularly.", kr: "근육은 규칙적으로 사용되지 않으면 빠르게 위축될 수 있습니다." },
+      { en: "The town suffered an intellectual atrophy after the university closed.", kr: "그 마을은 대학이 문을 닫은 후 지적인 쇠퇴를 겪었습니다." }
+    ]
+  },
+  {
+    id: "L4-338",
+    word: "augury",
+    meaning: "징조, 전조",
+    examples: [
+      { en: "The sudden drop in oil prices was a bad augury for the global economy.", kr: "유가의 급락은 세계 경제에 대한 나쁜 징조였습니다." },
+      { en: "Ancient Romans practiced augury by observing the flight of birds.", kr: "고대 로마인들은 새들의 비행을 관찰하여 전조를 점쳤습니다." }
+    ]
+  },
+  {
+    id: "L4-339",
+    word: "auspicious",
+    meaning: "길조의, 상서로운",
+    examples: [
+      { en: "The start of the new year was an auspicious time to launch the project.", kr: "새해의 시작은 그 프로젝트를 시작하기에 길조의 시간이었습니다." },
+      { en: "Meeting the client on the first try felt like an auspicious beginning.", kr: "첫 시도에 고객을 만난 것은 상서로운 시작처럼 느껴졌습니다." }
+    ]
+  },
+  {
+    id: "L4-340",
+    word: "chicanery",
+    meaning: "속임수, 술책",
+    examples: [
+      { en: "The investigation exposed years of political chicanery and corruption.", kr: "그 조사는 수년간의 정치적 속임수와 부패를 폭로했습니다." },
+      { en: "He was too honest to engage in any form of legal chicanery.", kr: "그는 어떤 종류의 법적 술책에도 가담하기에는 너무 정직했습니다." }
+    ]
+  },
+  {
+    id: "L4-341",
+    word: "compendium",
+    meaning: "요약, 개론",
+    examples: [
+      { en: "The book is a compendium of modern philosophical thought.", kr: "그 책은 현대 철학 사상의 요약(개론)입니다." },
+      { en: "He created a compendium of all the relevant scientific papers.", kr: "그는 모든 관련 과학 논문들의 개론을 만들었습니다." }
+    ]
+  },
+  {
+    id: "L4-342",
+    word: "condone",
+    meaning: "묵과하다, 용납하다",
+    examples: [
+      { en: "The school cannot condone cheating, regardless of the student's circumstances.", kr: "학교는 학생의 상황과 관계없이 부정행위를 용납할 수 없습니다." },
+      { en: "The government was criticized for condoning human rights abuses.", kr: "정부는 인권 침해를 묵과한 것에 대해 비난받았습니다." }
+    ]
+  },
+  {
+    id: "L4-343",
+    word: "conundrum",
+    meaning: "수수께끼, 난제",
+    examples: [
+      { en: "The issue of climate change remains a significant global conundrum.", kr: "기후 변화 문제는 여전히 중요한 세계적인 난제로 남아 있습니다." },
+      { en: "The detective was faced with the ultimate conundrum: who committed the crime?", kr: "그 탐정은 궁극적인 수수께끼, 즉 누가 범죄를 저질렀는지에 직면했습니다." }
+    ]
+  },
+  {
+    id: "L4-344",
+    word: "delineate",
+    meaning: "윤곽을 그리다, 정확하게 묘사하다",
+    examples: [
+      { en: "The architect delineated the boundaries of the new park on the map.", kr: "그 건축가는 지도에 새 공원의 경계를 윤곽으로 그렸습니다." },
+      { en: "The contract clearly delineates the duties of each party.", kr: "그 계약서는 각 당사자의 의무를 정확하게 묘사합니다." }
+    ]
+  },
+  {
+    id: "L4-345",
+    word: "denigrating",
+    meaning: "훼손하는, 폄하하는",
+    examples: [
+      { en: "He was fined for making denigrating comments about a rival company.", kr: "그는 경쟁사에 대해 훼손하는 발언을 하여 벌금을 물었습니다." },
+      { en: "Avoid using denigrating language during the negotiation.", kr: "협상 중에 폄하하는 언어를 사용하는 것을 피하세요." }
+    ]
+  },
+  {
+    id: "L4-346",
+    word: "disabuse",
+    meaning: "오해를 풀어주다",
+    examples: [
+      { en: "I had to disabuse him of the notion that the job would be easy.", kr: "저는 그에게 그 일이 쉬울 것이라는 오해를 풀어주어야 했습니다." },
+      { en: "We must disabuse the public of the false information they received.", kr: "우리는 대중이 받은 잘못된 정보를 오해를 풀어주어야 합니다." }
+    ]
+  },
+  {
+    id: "L4-347",
+    word: "disparage",
+    meaning: "얕보다, 폄하하다",
+    examples: [
+      { en: "It is unprofessional to disparage the work of your colleagues.", kr: "동료들의 작업을 얕보는 것은 비전문적입니다." },
+      { en: "The coach tried not to disparage the efforts of the losing team.", kr: "코치는 패배한 팀의 노력을 폄하하지 않으려고 노력했습니다." }
+    ]
+  },
+  {
+    id: "L4-348",
+    word: "efficacy",
+    meaning: "효능, 효험",
+    examples: [
+      { en: "The clinical trials demonstrated the high efficacy of the new drug.", kr: "그 임상 시험은 새 약물의 높은 효능을 입증했습니다." },
+      { en: "Questions were raised about the efficacy of the current training program.", kr: "현재 훈련 프로그램의 효험에 대한 의문이 제기되었습니다." }
+    ]
+  },
+  {
+    id: "L4-349",
+    word: "enmity",
+    meaning: "적대감, 원한",
+    examples: [
+      { en: "The old business rivalry was characterized by deep enmity.", kr: "그 오래된 사업 경쟁은 깊은 적대감으로 특징지어졌습니다." },
+      { en: "He felt a sudden surge of enmity toward his betrayer.", kr: "그는 자신을 배신한 사람에 대해 갑작스러운 원한의 분출을 느꼈습니다." }
+    ]
+  },
+  {
+    id: "L4-350",
+    word: "epicure",
+    meaning: "미식가, 식도락가",
+    examples: [
+      { en: "The renowned chef was an epicure who appreciated subtle flavors.", kr: "그 유명한 요리사는 미묘한 맛을 감상하는 미식가였습니다." },
+      { en: "She considers herself an epicure when it comes to fine wines.", kr: "그녀는 고급 와인에 관해서는 자신을 식도락가라고 생각합니다." }
+    ]
+  },
+  {
+    id: "L4-351",
+    word: "exigent",
+    meaning: "긴급한, 절박한",
+    examples: [
+      { en: "The project team faced an exigent deadline for the software launch.", kr: "그 프로젝트 팀은 소프트웨어 출시를 위한 긴급한 마감일에 직면했습니다." },
+      { en: "The report emphasizes the exigent need for environmental reform.", kr: "그 보고서는 환경 개혁에 대한 절박한 필요성을 강조합니다." }
+    ]
+  },
+  {
+    id: "L4-352",
+    word: "extant",
+    meaning: "현존하는, 남아있는",
+    examples: [
+      { en: "There are only a few extant copies of the original manuscript.", kr: "원래 원고의 현존하는 사본은 몇 부밖에 없습니다." },
+      { en: "The museum displays the oldest extant artifacts from the Roman era.", kr: "그 박물관은 로마 시대의 가장 오래된 남아있는 유물들을 전시합니다." }
+    ]
+  },
+  {
+    id: "L4-353",
+    word: "fecund",
+    meaning: "다산의, 비옥한, 창의적인",
+    examples: [
+      { en: "The scientist was known for his fecund imagination and numerous inventions.", kr: "그 과학자는 자신의 창의적인 상상력과 수많은 발명품으로 알려져 있었습니다." },
+      { en: "The fecund delta region yielded three harvests a year.", kr: "그 비옥한 삼각주 지역은 1년에 세 번의 수확을 냈습니다." }
+    ]
+  },
+  {
+    id: "L4-354",
+    word: "felicitous",
+    meaning: "절묘하게 어울리는, 적절한",
+    examples: [
+      { en: "The speaker chose a felicitous metaphor that perfectly captured the mood.", kr: "그 연사는 분위기를 완벽하게 포착하는 절묘하게 어울리는 은유를 선택했습니다." },
+      { en: "His impromptu comments were surprisingly felicitous and well-received.", kr: "그의 즉흥적인 논평은 놀라울 정도로 적절했고 호평을 받았습니다." }
+    ]
+  },
+  {
+    id: "L4-355",
+    word: "gregariously",
+    meaning: "사교적으로",
+    examples: [
+      { en: "She greeted all the new guests gregariously at the welcome dinner.", kr: "그녀는 환영 만찬에서 모든 새 손님들을 사교적으로 맞이했습니다." },
+      { en: "Birds that feed gregariously often have better protection against predators.", kr: "사교적으로(떼 지어) 먹이를 먹는 새들은 포식자들로부터 더 나은 보호를 받습니다." }
+    ]
+  },
+  {
+    id: "L4-356",
+    word: "hallowed",
+    meaning: "신성한, 신성시되는",
+    examples: [
+      { en: "Westminster Abbey is a hallowed place for British history.", kr: "웨스트민스터 사원은 영국 역사에 있어 신성한 장소입니다." },
+      { en: "The battlefield remains a hallowed ground, dedicated to the fallen soldiers.", kr: "그 전쟁터는 전사한 군인들에게 바쳐진 신성시되는 땅으로 남아 있습니다." }
+    ]
+  },
+  {
+    id: "L4-357",
+    word: "harangue",
+    meaning: "열변, 장광설; 열변을 토하다",
+    examples: [
+      { en: "The activist delivered a fiery harangue about social injustice.", kr: "그 활동가는 사회적 불의에 대한 격렬한 열변을 토했습니다." },
+      { en: "The father began to harangue his son for his reckless behavior.", kr: "아버지는 아들의 무모한 행동에 대해 열변을 토하기 시작했습니다." }
+    ]
+  },
+  {
+    id: "L4-358",
+    word: "ignominious",
+    meaning: "불명예스러운, 수치스러운",
+    examples: [
+      { en: "The team suffered an ignominious defeat in the championship final.", kr: "그 팀은 챔피언십 결승전에서 불명예스러운 패배를 겪었습니다." },
+      { en: "He made an ignominious retreat after his plan failed.", kr: "그는 자신의 계획이 실패한 후 수치스러운 후퇴를 했습니다." }
+    ]
+  },
+  {
+    id: "L4-359",
+    word: "impecunious",
+    meaning: "돈 없는, 가난한",
+    examples: [
+      { en: "He started his career as an impecunious artist living in a small studio.", kr: "그는 작은 스튜디오에 사는 돈 없는 예술가로 자신의 경력을 시작했습니다." },
+      { en: "The foundation helps impecunious students pay for their tuition.", kr: "그 재단은 가난한 학생들이 등록금을 지불하도록 돕습니다." }
+    ]
+  },
+  {
+    id: "L4-360",
+    word: "inculpate",
+    meaning: "죄를 씌우다, 비난하다",
+    examples: [
+      { en: "The evidence seemed to inculpate the former employee in the theft.", kr: "그 증거는 전 직원이 절도에 죄가 있다고 씌우는 것처럼 보였습니다." },
+      { en: "The lawyer argued that his client was being unfairly inculpated.", kr: "그 변호사는 자신의 의뢰인이 부당하게 죄를 뒤집어쓰고 있다고 주장했습니다." }
+    ]
+  },
+  {
+    id: "L4-361",
+    word: "indefatigable",
+    meaning: "지칠 줄 모르는",
+    examples: [
+      { en: "The volunteer workers showed an indefatigable dedication to the cause.", kr: "그 자원봉사자들은 그 목적에 대한 지칠 줄 모르는 헌신을 보여주었습니다." },
+      { en: "Her indefatigable spirit inspired everyone around her.", kr: "그녀의 지칠 줄 모르는 정신은 주변의 모두에게 영감을 주었습니다." }
+    ]
+  },
+  {
+    id: "L4-362",
+    word: "inscrutably",
+    meaning: "헤아릴 수 없게, 불가사의하게",
+    examples: [
+      { en: "The judge listened inscrutably to the witness's long testimony.", kr: "판사는 증인의 긴 증언을 헤아릴 수 없게 들었습니다." },
+      { en: "The ancient text was inscrutably complex, resisting easy translation.", kr: "그 고대 문서는 불가사의하게 복잡하여 쉬운 번역을 거부했습니다." }
+    ]
+  },
+  {
+    id: "L4-363",
+    word: "intemperance",
+    meaning: "무절제, 방종",
+    examples: [
+      { en: "His sudden intemperance with food and drink worried his family.", kr: "음식과 음료에 대한 그의 갑작스러운 무절제는 가족을 걱정시켰습니다." },
+      { en: "The leader was criticized for the intemperance of his language during the interview.", kr: "그 지도자는 인터뷰 중 자신의 언어의 방종함으로 비판받았습니다." }
+    ]
+  },
+  {
+    id: "L4-364",
+    word: "inundated",
+    meaning: "물에 잠긴, 쇄도하는",
+    examples: [
+      { en: "The coastal area was inundated by the storm surge.", kr: "그 해안 지역은 폭풍 해일에 물에 잠겼습니다." },
+      { en: "After the commercial, the call center was immediately inundated with orders.", kr: "광고 후, 콜센터는 즉시 주문으로 쇄도했습니다." }
+    ]
+  },
+  {
+    id: "L4-365",
+    word: "irascible",
+    meaning: "화를 잘 내는",
+    examples: [
+      { en: "The old editor was notorious for his irascible temperament.", kr: "그 나이든 편집자는 화를 잘 내는 성질로 악명이 높았습니다." },
+      { en: "He became increasingly irascible as the deadline approached.", kr: "그는 마감일이 다가옴에 따라 점점 더 화를 잘 내게 되었습니다." }
+    ]
+  },
+  {
+    id: "L4-366",
+    word: "languor",
+    meaning: "나른함, 권태",
+    examples: [
+      { en: "The summer heat brought a wave of languor to the small village.", kr: "여름 더위는 그 작은 마을에 나른함의 물결을 가져왔습니다." },
+      { en: "The afternoon was spent in a pleasant languor by the pool.", kr: "오후는 수영장 옆에서 즐거운 권태 속에서 보내졌습니다." }
+    ]
+  },
+  {
+    id: "L4-367",
+    word: "latent",
+    meaning: "잠재적인, 숨어있는",
+    examples: [
+      { en: "The scientist aimed to awaken the latent potential of the new compound.", kr: "그 과학자는 새 화합물의 잠재적인 잠재력을 깨우는 것을 목표로 했습니다." },
+      { en: "His artistic talent remained latent until he reached college.", kr: "그의 예술적 재능은 대학에 도달할 때까지 숨어 있었습니다." }
+    ]
+  },
+  {
+    id: "L4-368",
+    word: "malapropism",
+    meaning: "말의 오용, 부적절한 말실수",
+    examples: [
+      { en: "His speech was interrupted by laughter at his accidental malapropism.", kr: "그의 연설은 의도치 않은 말의 오용(말실수)에 대한 웃음 때문에 중단되었습니다." },
+      { en: "The teacher gently corrected the student's humorous malapropism.", kr: "선생님은 학생의 유머러스한 부적절한 말실수를 부드럽게 고쳐주었습니다." }
+    ]
+  },
+  {
+    id: "L4-369",
+    word: "mendacious",
+    meaning: "허위의, 거짓말하는",
+    examples: [
+      { en: "The journalist was fired for publishing mendacious reports.", kr: "그 언론인은 허위의 보고서를 출판한 혐의로 해고되었습니다." },
+      { en: "The witness's mendacious testimony severely damaged his credibility.", kr: "그 증인의 거짓말하는 증언은 그의 신뢰도를 심각하게 손상시켰습니다." }
+    ]
+  },
+  {
+    id: "L4-370",
+    word: "mercurial",
+    meaning: "변덕스러운, 활달한",
+    examples: [
+      { en: "The fashion industry is notoriously mercurial, with trends changing quickly.", kr: "패션 산업은 트렌드가 빠르게 변하는 것으로 악명 높게 변덕스럽습니다." },
+      { en: "His mercurial temperament made him difficult to work with.", kr: "그의 변덕스러운 기질은 그와 함께 일하기 어렵게 만들었습니다." }
+    ]
+  },
+  {
+    id: "L4-371",
+    word: "mordant",
+    meaning: "신랄한, 통렬한",
+    examples: [
+      { en: "The show was known for its dark and mordant satire.", kr: "그 쇼는 어둡고 신랄한 풍자로 알려져 있었습니다." },
+      { en: "She made a mordant observation about the irony of the situation.", kr: "그녀는 그 상황의 아이러니에 대해 통렬한 관찰을 했습니다." }
+    ]
+  },
+  {
+    id: "L4-372",
+    word: "neophyte",
+    meaning: "신참, 초심자",
+    examples: [
+      { en: "As a neophyte in the financial sector, she made a few costly mistakes.", kr: "금융 부문의 신참으로서, 그녀는 몇 가지 비용이 많이 드는 실수를 저질렀습니다." },
+      { en: "The organization offers special training for new neophytes.", kr: "그 조직은 새로운 초심자들을 위한 특별 훈련을 제공합니다." }
+    ]
+  },
+  {
+    id: "L4-373",
+    word: "obloquy",
+    meaning: "비난, 불명예",
+    examples: [
+      { en: "The former CEO retired in disgrace, facing public obloquy.", kr: "그 전직 최고 경영자는 대중의 비난에 직면하며 불명예스럽게 은퇴했습니다." },
+      { en: "He bore the obloquy of the scandal for the rest of his career.", kr: "그는 경력의 남은 기간 동안 그 스캔들의 불명예를 감당했습니다." }
+    ]
+  },
+  {
+    id: "L4-374",
+    word: "palliative",
+    meaning: "완화하는, 일시적인 처방",
+    examples: [
+      { en: "The new measures are merely palliative and do not address the root cause.", kr: "새 조치들은 단지 완화하는(일시적인) 것일 뿐 근본적인 원인을 다루지 않습니다." },
+      { en: "Palliative care focuses on relieving symptoms, not curing the disease.", kr: "완화 치료는 질병을 치료하는 것이 아니라 증상을 완화하는 데 중점을 둡니다." }
+    ]
+  },
+  {
+    id: "L4-375",
+    word: "panegyric",
+    meaning: "찬사, 칭송",
+    examples: [
+      { en: "The general's former colleague delivered a moving panegyric at his funeral.", kr: "그 장군의 전 동료는 그의 장례식에서 감동적인 찬사를 보냈습니다." },
+      { en: "The book is less a biography and more a panegyric of the late leader.", kr: "그 책은 전기라기보다는 고(故) 지도자에 대한 칭송에 가깝습니다." }
+    ]
+  },
+  {
+    id: "L4-376",
+    word: "parochial",
+    meaning: "편협한, 지방의",
+    examples: [
+      { en: "The small town was characterized by a parochial outlook and resistance to change.", kr: "그 작은 마을은 편협한 시각과 변화에 대한 저항으로 특징지어졌습니다." },
+      { en: "We need to move beyond parochial concerns to address global issues.", kr: "우리는 세계적인 문제들을 다루기 위해 편협한 관심사를 넘어서야 합니다." }
+    ]
+  },
+  {
+    id: "L4-377",
+    word: "penurious",
+    meaning: "몹시 가난한, 인색한",
+    examples: [
+      { en: "The great writer lived a penurious life before achieving success.", kr: "그 위대한 작가는 성공을 거두기 전에 몹시 가난한 삶을 살았습니다." },
+      { en: "Despite his large inheritance, he was notoriously penurious with his money.", kr: "그의 많은 유산에도 불구하고, 그는 자신의 돈에 대해 악명이 높게 인색했습니다." }
+    ]
+  },
+  {
+    id: "L4-378",
+    word: "peremptory",
+    meaning: "단호한, 독단적인",
+    examples: [
+      { en: "The boss delivered a peremptory dismissal without any discussion.", kr: "상사는 아무런 논의 없이 단호한 해고를 통보했습니다." },
+      { en: "His peremptory tone in the meeting offended several board members.", kr: "회의에서 그의 독단적인 어조는 여러 이사회 구성원들의 감정을 상하게 했습니다." }
+    ]
+  },
+  {
+    id: "L4-379",
+    word: "perspicacious",
+    meaning: "통찰력 있는, 현명한",
+    examples: [
+      { en: "The perspicacious analyst correctly predicted the market collapse.", kr: "그 통찰력 있는 분석가는 시장 붕괴를 정확하게 예측했습니다." },
+      { en: "A truly perspicacious leader anticipates future challenges.", kr: "진정으로 현명한 지도자는 미래의 도전을 예측합니다." }
+    ]
+  },
+  {
+    id: "L4-380",
+    word: "polemical",
+    meaning: "논쟁을 좋아하는, 논쟁적인",
+    examples: [
+      { en: "The article was highly polemical, intended to provoke strong disagreement.", kr: "그 기사는 강한 불일치를 유발하기 위한 의도로 매우 논쟁적이었습니다." },
+      { en: "He is known for his sharp wit and polemical writing style.", kr: "그는 자신의 날카로운 재치와 논쟁적인 글쓰기 스타일로 알려져 있습니다." }
+    ]
+  },
+  {
+    id: "L4-381",
+    word: "proscribe",
+    meaning: "금지하다, 추방하다",
+    examples: [
+      { en: "The use of certain chemicals in food production is proscribed by law.", kr: "식품 생산에서 특정 화학 물질의 사용은 법으로 금지됩니다." },
+      { en: "The ancient city would proscribe citizens found guilty of treason.", kr: "그 고대 도시는 반역죄가 있는 것으로 밝혀진 시민들을 추방하곤 했습니다." }
+    ]
+  },
+  {
+    id: "L4-382",
+    word: "prosaic",
+    meaning: "평범한, 지루한",
+    examples: [
+      { en: "The poet tried to find beauty in the most prosaic details of daily life.", kr: "그 시인은 일상생활의 가장 평범한 세부 사항에서 아름다움을 찾으려고 노력했습니다." },
+      { en: "The novel was criticized for its prosaic plot and uninspired characters.", kr: "그 소설은 지루한 줄거리와 영감을 주지 않는 등장인물들로 비판받았습니다." }
+    ]
+  },
+  {
+    id: "L4-383",
+    word: "pusillanimous",
+    meaning: "소심한, 겁이 많은",
+    examples: [
+      { en: "The leader was replaced for being too pusillanimous in times of crisis.", kr: "그 지도자는 위기 상황에서 너무 소심하다는 이유로 교체되었습니다." },
+      { en: "He made a pusillanimous decision to retreat instead of fighting.", kr: "그는 싸우는 대신 후퇴하는 겁이 많은 결정을 내렸습니다." }
+    ]
+  },
+  {
+    id: "L4-384",
+    word: "recondite",
+    meaning: "난해한, 심오한",
+    examples: [
+      { en: "The professor's lecture focused on recondite matters of metaphysics.", kr: "그 교수의 강의는 형이상학의 난해한 문제들에 초점을 맞췄습니다." },
+      { en: "His poetry is so recondite that it requires a special academic background.", kr: "그의 시는 너무 심오해서 특별한 학술적 배경을 필요로 합니다." }
+    ]
+  },
+  {
+    id: "L4-385",
+    word: "recumbent",
+    meaning: "기대 누운, 드러누운",
+    examples: [
+      { en: "She spent the morning in a recumbent position, reading a book.", kr: "그녀는 아침을 기대 누운 자세로 책을 읽으며 보냈습니다." },
+      { en: "The statue depicts a recumbent figure resting by the fountain.", kr: "그 조각상은 분수 옆에 드러누워 쉬고 있는 형상을 묘사합니다." }
+    ]
+  },
+  {
+    id: "L4-386",
+    word: "refulgent",
+    meaning: "찬란하게 빛나는, 눈부신",
+    examples: [
+      { en: "The star was refulgent in the clear night sky.", kr: "그 별은 맑은 밤하늘에서 찬란하게 빛났습니다." },
+      { en: "The bride looked refulgent in her silver wedding gown.", kr: "신부는 은색 웨딩 가운을 입고 눈부시게 보였습니다." }
+    ]
+  },
+  {
+    id: "L4-387",
+    word: "relegate",
+    meaning: "좌천시키다, 격하시키다",
+    examples: [
+      { en: "The manager decided to relegate the poorly performing employee to a minor role.", kr: "매니저는 실적이 좋지 않은 직원을 사소한 역할로 좌천시키기로 결정했습니다." },
+      { en: "He felt his research was unfairly relegated to a footnote in the report.", kr: "그는 자신의 연구가 보고서의 각주로 부당하게 격하되었다고 느꼈습니다." }
+    ]
+  },
+  {
+    id: "L4-388",
+    word: "sally",
+    meaning: "돌격, 재치 있는 말",
+    examples: [
+      { en: "The besieged soldiers made a desperate sally out of the castle gates.", kr: "포위된 병사들은 성문 밖으로 필사적인 돌격을 감행했습니다." },
+      { en: "His lecture was punctuated by witty sallies that kept the audience engaged.", kr: "그의 강의는 청중을 계속 집중하게 만드는 재치 있는 말들로 간간이 이어졌습니다." }
+    ]
+  },
+  {
+    id: "L4-389",
+    word: "saturnine",
+    meaning: "음침한, 침울한",
+    examples: [
+      { en: "The villain's saturnine expression promised danger and malice.", kr: "그 악당의 음침한 표정은 위험과 악의를 약속했습니다." },
+      { en: "He had a saturnine disposition that rarely showed happiness.", kr: "그는 행복을 거의 드러내지 않는 침울한 기질을 가지고 있었습니다." }
+    ]
+  },
+  {
+    id: "L4-390",
+    word: "sedulous",
+    meaning: "근면한, 꼼꼼한",
+    examples: [
+      { en: "The sedulous student spent every night studying in the library.", kr: "그 근면한 학생은 매일 밤 도서관에서 공부했습니다." },
+      { en: "She completed the translation with sedulous attention to detail.", kr: "그녀는 세부 사항에 대한 꼼꼼한 주의를 기울여 번역을 완료했습니다." }
+    ]
+  },
+  {
+    id: "L4-391",
+    word: "splenetic",
+    meaning: "성미가 까다로운, 비위에 거슬리는",
+    examples: [
+      { en: "The old man was known for his splenetic rants about the youth.", kr: "그 노인은 젊은이들에 대한 자신의 성미가 까다로운 폭언으로 알려져 있었습니다." },
+      { en: "His splenetic reaction to the minor change was surprising.", kr: "사소한 변화에 대한 그의 비위에 거슬리는 반응은 놀라웠습니다." }
+    ]
+  },
+  {
+    id: "L4-392",
+    word: "subterfuge",
+    meaning: "속임수, 구실",
+    examples: [
+      { en: "The spy used a series of clever subterfuges to enter the building unnoticed.", kr: "그 스파이는 눈에 띄지 않게 건물에 들어가기 위해 일련의 영리한 속임수를 사용했습니다." },
+      { en: "The team resorted to petty subterfuge to win the game.", kr: "그 팀은 경기에서 이기기 위해 사소한 구실을 사용했습니다." }
+    ]
+  },
+  {
+    id: "L4-393",
+    word: "surreptitiously",
+    meaning: "은밀하게, 몰래",
+    examples: [
+      { en: "He glanced surreptitiously at the clock, hoping the meeting would end soon.", kr: "그는 회의가 곧 끝나기를 바라며 시계를 은밀하게 쳐다보았습니다." },
+      { en: "The children were surreptitiously passing notes under the table.", kr: "아이들은 탁자 밑으로 쪽지를 몰래 전달하고 있었습니다." }
+    ]
+  },
+  {
+    id: "L4-394",
+    word: "tenebrous",
+    meaning: "어두운, 음침한",
+    examples: [
+      { en: "The abandoned house had a tenebrous and eerie atmosphere.", kr: "그 버려진 집은 어둡고 섬뜩한 분위기를 가지고 있었습니다." },
+      { en: "The painter used deep, tenebrous shadows to create drama.", kr: "그 화가는 드라마를 만들기 위해 깊고 음침한 그림자를 사용했습니다." }
+    ]
+  },
+  {
+    id: "L4-395",
+    word: "titular",
+    meaning: "이름뿐인, 명목상의",
+    examples: [
+      { en: "The Queen is the titular head of the Commonwealth, but holds little real power.", kr: "여왕은 영연방의 명목상의 수장이지만, 실제 권한은 거의 없습니다." },
+      { en: "The titular character of the book appears only briefly.", kr: "그 책의 이름뿐인 주인공은 아주 잠깐만 등장합니다." }
+    ]
+  },
+  {
+    id: "L4-396",
+    word: "ubiquitously",
+    meaning: "어디에나 존재하게",
+    examples: [
+      { en: "Digital screens are ubiquitously present in modern urban environments.", kr: "디지털 화면은 현대 도시 환경에서 어디에나 존재하게 있습니다." },
+      { en: "The brand has successfully marketed its product ubiquitously across all continents.", kr: "그 브랜드는 모든 대륙에 걸쳐 자신의 제품을 어디에나 존재하게 성공적으로 마케팅했습니다." }
+    ]
+  },
+  {
+    id: "L4-397",
+    word: "unflappable",
+    meaning: "침착한, 동요하지 않는",
+    examples: [
+      { en: "The pilot remained unflappable despite the severe turbulence.", kr: "그 조종사는 심한 난기류에도 불구하고 침착함을 유지했습니다." },
+      { en: "She has an unflappable nature that makes her ideal for crisis management.", kr: "그녀는 위기 관리에 이상적인 동요하지 않는 천성을 가지고 있습니다." }
+    ]
+  },
+  {
+    id: "L4-398",
+    word: "vapid",
+    meaning: "지루한, 김빠진",
+    examples: [
+      { en: "The conversation was utterly vapid, focusing only on trivial gossip.", kr: "그 대화는 오직 사소한 가십에만 초점을 맞추어 완전히 지루했습니다." },
+      { en: "The movie was a vapid rehash of old action cliches.", kr: "그 영화는 오래된 액션 클리셰를 김빠지게 재탕한 것이었습니다." }
+    ]
+  },
+  {
+    id: "L4-399",
+    word: "vituperated",
+    meaning: "욕설을 퍼붓는, 맹렬히 비난하는",
+    examples: [
+      { en: "He was so angered by the insult that he vituperated the offender loudly.", kr: "그는 그 모욕에 너무 화가 나서 가해자에게 맹렬히 비난하는 욕설을 크게 퍼부었습니다." },
+      { en: "The editor's vituperated column on the new novel caused a sensation.", kr: "그 편집자의 새 소설에 대한 맹렬히 비난하는 칼럼은 큰 파장을 일으켰습니다." }
+    ]
+  },
+  {
+    id: "L4-400",
+    word: "voluble",
+    meaning: "유창한, 말이 많은",
+    examples: [
+      { en: "She is a voluble public speaker, known for her easy flow of words.", kr: "그녀는 말이 많은 대중 연설가이며, 쉬운 말의 흐름으로 알려져 있습니다." },
+      { en: "The voluble tour guide never stopped talking throughout the museum visit.", kr: "그 유창한(말이 많은) 여행 가이드는 박물관 방문 내내 말을 멈추지 않았습니다." }
+    ]
+  }
+];
+
+const wordsLevel5_Part1 = [
+  {
+    id: "L5-001",
+    word: "abrogate",
+    meaning: "폐지하다, 철폐하다",
+    examples: [
+      { en: "The government voted to abrogate the outdated treaty.", kr: "정부는 시대에 뒤떨어진 조약을 폐지하기 위해 투표했습니다." },
+      { en: "The new law will abrogate the old property restrictions.", kr: "새 법은 이전의 재산 규제들을 철폐할 것입니다." }
+    ]
+  },
+  {
+    id: "L5-002",
+    word: "acumen",
+    meaning: "통찰력, 안목",
+    examples: [
+      { en: "Her business acumen allowed her to spot the emerging market trend.", kr: "그녀의 사업적 통찰력은 그녀가 떠오르는 시장 추세를 발견하도록 했습니다." },
+      { en: "The investor showed great financial acumen.", kr: "그 투자자는 뛰어난 재정적 안목을 보여주었습니다." }
+    ]
+  },
+  {
+    id: "L5-003",
+    word: "admonish",
+    meaning: "훈계하다, 꾸짖다",
+    examples: [
+      { en: "The teacher had to admonish the student for repeated lateness.", kr: "선생님은 반복된 지각 때문에 학생을 훈계해야 했습니다." },
+      { en: "I admonished him to be more cautious next time.", kr: "나는 그에게 다음번에는 더 신중하라고 꾸짖었습니다." }
+    ]
+  },
+  {
+    id: "L5-004",
+    word: "alacrity",
+    meaning: "민첩함, 활발함",
+    examples: [
+      { en: "She accepted the new assignment with alacrity and enthusiasm.", kr: "그녀는 민첩함과 열정으로 새로운 임무를 수락했습니다." },
+      { en: "The staff responded to the customer's request with alacrity.", kr: "직원들은 고객의 요청에 활발하게 응답했습니다." }
+    ]
+  },
+  {
+    id: "L5-005",
+    word: "ameliorate",
+    meaning: "개선하다, 완화시키다",
+    examples: [
+      { en: "New policies were introduced to ameliorate the living standards of the poor.", kr: "가난한 사람들의 생활 수준을 개선하기 위해 새로운 정책들이 도입되었습니다." },
+      { en: "Relief efforts helped ameliorate the suffering caused by the flood.", kr: "구호 노력은 홍수로 인한 고통을 완화시키는 데 도움이 되었습니다." }
+    ]
+  },
+  {
+    id: "L5-006",
+    word: "anachronism",
+    meaning: "시대착오적인 것",
+    examples: [
+      { en: "The horse-drawn carriage in the modern city was an anachronism.", kr: "현대 도시의 마차는 시대착오적인 것이었습니다." },
+      { en: "His reliance on outdated technology is a curious anachronism.", kr: "그의 구식 기술 의존은 흥미로운 시대착오적인 것입니다." }
+    ]
+  },
+  {
+    id: "L5-007",
+    word: "anomaly",
+    meaning: "변칙, 이례",
+    examples: [
+      { en: "The low vote count was an anomaly in an otherwise high-turnout election.", kr: "낮은 득표수는 그렇지 않은 높은 투표율 선거에서 변칙이었습니다." },
+      { en: "Scientists are trying to explain the observed anomaly in the data.", kr: "과학자들은 관찰된 자료의 이례 현상을 설명하려고 노력하고 있습니다." }
+    ]
+  },
+  {
+    id: "L5-008",
+    word: "apathy",
+    meaning: "무관심, 무감각",
+    examples: [
+      { en: "Voter apathy resulted in a very low election turnout.", kr: "유권자들의 무관심은 매우 낮은 선거 투표율을 초래했습니다." },
+      { en: "She met his problems with complete apathy.", kr: "그녀는 그의 문제들을 완전한 무관심으로 대했습니다." }
+    ]
+  },
+  {
+    id: "L5-009",
+    word: "apotheosis",
+    meaning: "절정, 신격화",
+    examples: [
+      { en: "His final film is considered the apotheosis of his career.", kr: "그의 마지막 영화는 그의 경력의 절정으로 간주됩니다." },
+      { en: "The painting represents the apotheosis of the ancient hero.", kr: "그 그림은 고대 영웅의 신격화를 나타냅니다." }
+    ]
+  },
+  {
+    id: "L5-010",
+    word: "apprise",
+    meaning: "알리다, 통지하다",
+    examples: [
+      { en: "We must apprise the CEO of the failure immediately.", kr: "우리는 실패에 대해 최고 경영자에게 즉시 알려야 합니다." },
+      { en: "The general was apprised of the enemy's movements.", kr: "그 장군은 적의 움직임에 대해 통지받았습니다." }
+    ]
+  },
+  {
+    id: "L5-011",
+    word: "arcane",
+    meaning: "비밀의, 불가사의한",
+    examples: [
+      { en: "The ancient text was full of arcane symbols.", kr: "그 고대 문헌은 불가사의한 상징들로 가득했습니다." },
+      { en: "The procedures of the hidden society are arcane.", kr: "그 숨겨진 사회의 절차들은 비밀스럽습니다." }
+    ]
+  },
+  {
+    id: "L5-012",
+    word: "arduous",
+    meaning: "힘든, 고된",
+    examples: [
+      { en: "Climbing Mount Everest is an arduous task.", kr: "에베레스트 산 등반은 고된 임무입니다." },
+      { en: "The team completed the arduous project under a tight deadline.", kr: "팀은 촉박한 마감 기한 내에 힘든 프로젝트를 완료했습니다." }
+    ]
+  },
+  {
+    id: "L5-013",
+    word: "assuage",
+    meaning: "달래다, 완화시키다",
+    examples: [
+      { en: "Nothing could assuage the parent's grief after the loss of their child.", kr: "자녀를 잃은 후 부모의 슬픔을 아무것도 달래줄 수 없었습니다." },
+      { en: "The government issued a statement to assuage public fears.", kr: "정부는 대중의 두려움을 완화시키기 위해 성명을 발표했습니다." }
+    ]
+  },
+  {
+    id: "L5-014",
+    word: "atrophy",
+    meaning: "위축, 퇴화",
+    examples: [
+      { en: "Prolonged inactivity can lead to muscle atrophy.", kr: "장기간의 활동 부족은 근육 위축으로 이어질 수 있습니다." },
+      { en: "The political party suffered from an atrophy of leadership.", kr: "그 정당은 지도력의 퇴화로 고통받았습니다." }
+    ]
+  },
+  {
+    id: "L5-015",
+    word: "augury",
+    meaning: "징조, 전조",
+    examples: [
+      { en: "The clear skies were taken as a good augury for the voyage.", kr: "맑은 하늘은 항해에 좋은 징조로 받아들여졌습니다." },
+      { en: "The drop in oil prices was an augury of a coming recession.", kr: "유가의 하락은 다가오는 경기 침체의 전조였습니다." }
+    ]
+  },
+  {
+    id: "L5-016",
+    word: "auspicious",
+    meaning: "길조의, 상서로운",
+    examples: [
+      { en: "They chose an auspicious date to launch the new business.", kr: "그들은 새 사업을 시작하기 위해 길조의 날짜를 선택했습니다." },
+      { en: "The early success was an auspicious sign for the rest of the year.", kr: "초기 성공은 한 해의 나머지 기간에 상서로운 징조였습니다." }
+    ]
+  },
+  {
+    id: "L5-017",
+    word: "avarice",
+    meaning: "탐욕, 강한 욕심",
+    examples: [
+      { en: "The CEO's downfall was caused by sheer greed and avarice.", kr: "최고 경영자의 몰락은 순전한 탐욕과 강한 욕심 때문에 발생했습니다." },
+      { en: "Avarice often corrupts those who gain power quickly.", kr: "탐욕은 권력을 빨리 얻는 사람들을 종종 타락시킵니다." }
+    ]
+  },
+  {
+    id: "L5-018",
+    word: "bifurcation",
+    meaning: "양분, 분기",
+    examples: [
+      { en: "The road reached a clear bifurcation, forcing us to choose left or right.", kr: "길은 명확한 양분점에 도달하여 우리가 왼쪽이나 오른쪽을 선택하도록 강요했습니다." },
+      { en: "The political party faced a bifurcation into two opposing groups.", kr: "그 정당은 두 개의 반대 그룹으로의 분기에 직면했습니다." }
+    ]
+  },
+  {
+    id: "L5-019",
+    word: "bombast",
+    meaning: "허풍, 과장된 말",
+    examples: [
+      { en: "His speeches were full of empty bombast and lacked clear policy.", kr: "그의 연설은 공허한 허풍으로 가득했고 명확한 정책이 부족했습니다." },
+      { en: "We ignored the salesman's bombast about the product's amazing features.", kr: "우리는 그 제품의 놀라운 기능에 대한 영업사원의 과장된 말을 무시했습니다." }
+    ]
+  },
+  {
+    id: "L5-020",
+    word: "buttress",
+    meaning: "지지하다, 보강하다",
+    examples: [
+      { en: "The new study buttresses the original theory with fresh data.", kr: "새 연구는 신선한 자료로 원래 이론을 지지합니다." },
+      { en: "Stone buttresses were added to the old wall for structural support.", kr: "구조적 지지를 위해 오래된 벽에 돌 지지대가 추가되었습니다." }
+    ]
+  },
+  {
+    id: "L5-021",
+    word: "cacophony",
+    meaning: "불협화음, 시끄러운 소리",
+    examples: [
+      { en: "The city street was a cacophony of sirens and construction noise.", kr: "도시 거리는 사이렌 소리와 공사 소음의 불협화음이었습니다." },
+      { en: "The experimental orchestra produced a shocking cacophony.", kr: "그 실험적인 오케스트라는 충격적인 불협화음을 만들어냈습니다." }
+    ]
+  },
+  {
+    id: "L5-022",
+    word: "calumny",
+    meaning: "비방, 명예 훼손",
+    examples: [
+      { en: "He was a victim of political calumny spread by his rivals.", kr: "그는 라이벌들이 퍼뜨린 정치적 비방의 희생자였습니다." },
+      { en: "The newspaper was sued for publishing baseless calumny.", kr: "그 신문은 근거 없는 명예 훼손을 보도한 혐의로 고소당했습니다." }
+    ]
+  },
+  {
+    id: "L5-023",
+    word: "canard",
+    meaning: "헛소문, 유언비어",
+    examples: [
+      { en: "The story about the merger was later exposed as a complete canard.", kr: "합병에 대한 이야기는 나중에 완전한 헛소문으로 폭로되었습니다." },
+      { en: "Don't believe that old canard about snakes drinking milk.", kr: "뱀이 우유를 마신다는 그 오래된 유언비어를 믿지 마세요." }
+    ]
+  },
+  {
+    id: "L5-024",
+    word: "capitulate",
+    meaning: "굴복하다, 항복하다",
+    examples: [
+      { en: "The general refused to capitulate even when facing overwhelming odds.", kr: "그 장군은 압도적인 역경에 직면했을 때도 굴복하기를 거부했습니다." },
+      { en: "We must not capitulate to unreasonable demands.", kr: "우리는 불합리한 요구에 항복해서는 안 됩니다." }
+    ]
+  },
+  {
+    id: "L5-025",
+    word: "castigate",
+    meaning: "혹평하다, 징계하다",
+    examples: [
+      { en: "The critic severely castigated the director's latest film.", kr: "그 비평가는 감독의 최신 영화를 심하게 혹평했습니다." },
+      { en: "The manager publicly castigated the employee for his carelessness.", kr: "매니저는 부주의함 때문에 직원을 공개적으로 징계했습니다." }
+    ]
+  },
+  {
+    id: "L5-026",
+    word: "censure",
+    meaning: "비난하다, 견책",
+    examples: [
+      { en: "The board voted to censure the director for his inappropriate conduct.", kr: "이사회는 부적절한 행위 때문에 이사를 비난하기 위해 투표했습니다." },
+      { en: "He faced public censure after the scandal.", kr: "그는 스캔들 후 대중의 견책에 직면했습니다." }
+    ]
+  },
+  {
+    id: "L5-027",
+    word: "chasten",
+    meaning: "훈계하다, 징계하다",
+    examples: [
+      { en: "The failure of the project chastened the team's overconfidence.", kr: "프로젝트의 실패는 팀의 지나친 자신감을 훈계했습니다." },
+      { en: "He was chastened by the harsh experience.", kr: "그는 가혹한 경험으로 징계받았습니다(교훈을 얻었습니다)." }
+    ]
+  },
+  {
+    id: "L5-028",
+    word: "chicanery",
+    meaning: "속임수, 술책",
+    examples: [
+      { en: "The politician was known for engaging in financial chicanery.", kr: "그 정치인은 재정적인 속임수에 가담하는 것으로 알려져 있었습니다." },
+      { en: "Legal proceedings should be free from chicanery.", kr: "법적 절차는 술책으로부터 자유로워야 합니다." }
+    ]
+  },
+  {
+    id: "L5-029",
+    word: "circumvent",
+    meaning: "회피하다, 우회하다",
+    examples: [
+      { en: "They tried to circumvent the regulations by finding a loophole.", kr: "그들은 허점을 찾아 규제를 회피하려고 노력했습니다." },
+      { en: "We had to circumvent the traffic jam by taking a side road.", kr: "우리는 지름길을 택하여 교통 체증을 우회해야 했습니다." }
+    ]
+  },
+  {
+    id: "L5-030",
+    word: "cloying",
+    meaning: "싫증날 정도인, 역겨울 정도의",
+    examples: [
+      { en: "The heavy, sweet perfume was cloying.", kr: "그 진하고 달콤한 향수는 역겨울 정도였습니다." },
+      { en: "The movie's ending was criticized for being too cloying and sentimental.", kr: "그 영화의 결말은 지나치게 감상적이어서 역겨울 정도로 비판받았습니다." }
+    ]
+  },
+  {
+    id: "L5-031",
+    word: "coercion",
+    meaning: "강압, 강제",
+    examples: [
+      { en: "He claimed the confession was made under police coercion.", kr: "그는 그 자백이 경찰의 강압 하에 이루어졌다고 주장했습니다." },
+      { en: "The company was accused of using coercion to make employees sign the contract.", kr: "그 회사는 직원들에게 계약서에 서명하도록 강제하기 위해 강압을 사용했다는 비난을 받았습니다." }
+    ]
+  },
+  {
+    id: "L5-032",
+    word: "confluence",
+    meaning: "합류점, 융합",
+    examples: [
+      { en: "The city is located at the confluence of two major rivers.", kr: "그 도시는 두 개의 주요 강이 합류하는 지점에 위치하고 있습니다." },
+      { en: "The project succeeded due to the confluence of talent and resources.", kr: "그 프로젝트는 인재와 자원의 융합 덕분에 성공했습니다." }
+    ]
+  },
+  {
+    id: "L5-033",
+    word: "concomitant",
+    meaning: "수반되는, 동시에 발생하는",
+    examples: [
+      { en: "Loss of sleep is a common concomitant of stress.", kr: "수면 부족은 스트레스에 수반되는 흔한 현상입니다." },
+      { en: "The rise in crime was concomitant with the increase in unemployment.", kr: "범죄 증가는 실업률 증가와 동시에 발생했습니다." }
+    ]
+  },
+  {
+    id: "L5-034",
+    word: "conflagration",
+    meaning: "대화재",
+    examples: [
+      { en: "The city was destroyed in the great conflagration of 1666.", kr: "그 도시는 1666년의 대화재로 파괴되었습니다." },
+      { en: "The diplomatic incident threatened to spark a military conflagration.", kr: "그 외교적 사건은 군사적 대화재(대분쟁)를 촉발할 위험이 있었습니다." }
+    ]
+  },
+  {
+    id: "L5-035",
+    word: "contrite",
+    meaning: "죄를 뉘우치는, 참회하는",
+    examples: [
+      { en: "The thief offered a contrite apology to the victim.", kr: "그 도둑은 피해자에게 죄를 뉘우치는 사과를 했습니다." },
+      { en: "He was deeply contrite after realizing the gravity of his mistake.", kr: "그는 자신의 실수의 중대함을 깨달은 후 깊이 참회했습니다." }
+    ]
+  },
+  {
+    id: "L5-036",
+    word: "contumacious",
+    meaning: "권위에 반항하는, 고집 센",
+    examples: [
+      { en: "The contumacious student refused to follow the instructions.", kr: "그 권위에 반항하는 학생은 지시를 따르기를 거부했습니다." },
+      { en: "The contumacious rebel was quickly arrested by the authorities.", kr: "그 고집 센 반군은 당국에 의해 빠르게 체포되었습니다." }
+    ]
+  },
+  {
+    id: "L5-037",
+    word: "craven",
+    meaning: "겁 많은, 비겁한",
+    examples: [
+      { en: "The craven soldier abandoned his post during the attack.", kr: "그 겁 많은 병사는 공격 중에 자신의 진지를 버렸습니다." },
+      { en: "It was a craven decision to sacrifice his friend for personal safety.", kr: "자신의 안전을 위해 친구를 희생한 것은 비겁한 결정이었습니다." }
+    ]
+  },
+  {
+    id: "L5-038",
+    word: "credence",
+    meaning: "신뢰, 신용",
+    examples: [
+      { en: "The report gives little credence to the claims of the local politician.", kr: "그 보고서는 지역 정치인의 주장에 거의 신뢰를 주지 않습니다." },
+      { en: "I can give no credence to such an unbelievable story.", kr: "저는 그런 믿기 힘든 이야기에 신용을 줄 수 없습니다." }
+    ]
+  },
+  {
+    id: "L5-039",
+    word: "cynicism",
+    meaning: "냉소주의",
+    examples: [
+      { en: "His initial enthusiasm was replaced by growing cynicism about the system.", kr: "그의 초기 열정은 시스템에 대한 커져가는 냉소주의로 대체되었습니다." },
+      { en: "The scandal deepened public cynicism toward the government.", kr: "그 스캔들은 정부에 대한 대중의 냉소주의를 심화시켰습니다." }
+    ]
+  },
+  {
+    id: "L5-040",
+    word: "daunt",
+    meaning: "위압하다, 기를 죽이다",
+    examples: [
+      { en: "The sheer volume of work did not daunt the dedicated team.", kr: "순전한 업무량도 헌신적인 팀의 기를 죽이지 못했습니다." },
+      { en: "He was daunted by the difficult questions asked by the press.", kr: "그는 언론이 던진 어려운 질문들에 위압당했습니다." }
+    ]
+  },
+  {
+    id: "L5-041",
+    word: "dearth",
+    meaning: "부족, 결핍",
+    examples: [
+      { en: "There is a severe dearth of affordable housing in the city.", kr: "그 도시에는 저렴한 주택의 심각한 부족이 있습니다." },
+      { en: "The critics noted a dearth of originality in the new movie.", kr: "비평가들은 새 영화의 독창성 결핍을 지적했습니다." }
+    ]
+  },
+  {
+    id: "L5-042",
+    word: "debase",
+    meaning: "가치를 떨어뜨리다, 비하하다",
+    examples: [
+      { en: "The scandal debased the reputation of the entire organization.", kr: "그 스캔들은 조직 전체의 명성을 떨어뜨렸습니다." },
+      { en: "Do not let others debase your self-worth.", kr: "다른 사람들이 당신의 자존감을 떨어뜨리도록 두지 마세요." }
+    ]
+  },
+  {
+    id: "L5-043",
+    word: "decimate",
+    meaning: "대량으로 죽이다, 격감시키다",
+    examples: [
+      { en: "The virus threatened to decimate the local bird population.", kr: "그 바이러스는 지역 조류 개체수를 대량으로 죽일 위험이 있었습니다." },
+      { en: "Budget cuts will decimate funding for arts programs.", kr: "예산 삭감은 예술 프로그램에 대한 자금을 격감시킬 것입니다." }
+    ]
+  },
+  {
+    id: "L5-044",
+    word: "deference",
+    meaning: "존중, 경의",
+    examples: [
+      { en: "Out of deference to the elder statesman, he remained silent.", kr: "그 노(老)정치가에 대한 존중으로, 그는 침묵을 지켰습니다." },
+      { en: "The decision was made in deference to the wishes of the founder.", kr: "그 결정은 설립자의 바람에 대한 경의로 내려졌습니다." }
+    ]
+  },
+  {
+    id: "L5-045",
+    word: "derisive",
+    meaning: "조롱하는",
+    examples: [
+      { en: "The losing team was met with derisive cheers from the opposing fans.", kr: "패배한 팀은 상대편 팬들의 조롱하는 환호를 받았습니다." },
+      { en: "His derisive tone suggested contempt for the speaker.", kr: "그의 조롱하는 어조는 연사에 대한 경멸을 시사했습니다." }
+    ]
+  },
+  {
+    id: "L5-046",
+    word: "desultory",
+    meaning: "두서 없는, 산만한",
+    examples: [
+      { en: "He made a desultory attempt to clean his room.", kr: "그는 자신의 방을 청소하려는 두서 없는 시도를 했습니다." },
+      { en: "The conversation was desultory, jumping from one topic to another.", kr: "그 대화는 한 주제에서 다른 주제로 건너뛰며 산만했습니다." }
+    ]
+  },
+  {
+    id: "L5-047",
+    word: "diaphanous",
+    meaning: "투명한, 아주 얇은",
+    examples: [
+      { en: "She wore a diaphanous veil over her face.", kr: "그녀는 얼굴에 아주 얇은 면사포를 착용했습니다." },
+      { en: "The diaphanous material allowed the sunlight to shine through.", kr: "그 투명한 재료는 햇빛이 통과하도록 허용했습니다." }
+    ]
+  },
+  {
+    id: "L5-048",
+    word: "dichotomy",
+    meaning: "이분법",
+    examples: [
+      { en: "The novel explores the dichotomy between love and duty.", kr: "그 소설은 사랑과 의무 사이의 이분법을 탐구합니다." },
+      { en: "We must avoid the simplistic dichotomy of 'good vs. evil'.", kr: "우리는 '선 대 악'이라는 단순한 이분법을 피해야 합니다." }
+    ]
+  },
+  {
+    id: "L5-049",
+    word: "diffidence",
+    meaning: "자신 없음, 소심함",
+    examples: [
+      { en: "His innate diffidence prevented him from asking for a raise.", kr: "그의 타고난 자신 없음은 그가 임금 인상을 요청하는 것을 막았습니다." },
+      { en: "She overcame her diffidence to give a powerful speech.", kr: "그녀는 강력한 연설을 하기 위해 자신의 소심함을 극복했습니다." }
+    ]
+  },
+  {
+    id: "L5-050",
+    word: "dilatory",
+    meaning: "느린, 꾸물거리는",
+    examples: [
+      { en: "The committee was criticized for its dilatory response to the crisis.", kr: "위원회는 위기에 대한 느린 대응으로 비판받았습니다." },
+      { en: "The dilatory government process frustrated many citizens.", kr: "그 꾸물거리는 정부 과정은 많은 시민들을 좌절시켰습니다." }
+    ]
+  },
+  {
+    id: "L5-051",
+    word: "disparage",
+    meaning: "얕보다, 폄하하다",
+    examples: [
+      { en: "It is unprofessional to disparage the work of your competition.", kr: "경쟁사의 작업을 얕보는 것은 비전문적입니다." },
+      { en: "The critics disparaged the new film as unoriginal.", kr: "비평가들은 새 영화를 독창성이 없다고 폄하했습니다." }
+    ]
+  },
+  {
+    id: "L5-052",
+    word: "disparate",
+    meaning: "서로 전혀 다른, 이질적인",
+    examples: [
+      { en: "The book attempts to unify disparate philosophical concepts.", kr: "그 책은 서로 전혀 다른 철학적 개념들을 통합하려고 시도합니다." },
+      { en: "The team brought together experts from disparate fields.", kr: "그 팀은 이질적인 분야의 전문가들을 모았습니다." }
+    ]
+  },
+  {
+    id: "L5-053",
+    word: "dissemble",
+    meaning: "숨기다, 위장하다",
+    examples: [
+      { en: "He tried to dissemble his true intentions with a friendly smile.", kr: "그는 친근한 미소로 자신의 진짜 의도를 숨기려고 노력했습니다." },
+      { en: "A good spy must be able to dissemble fear and anxiety.", kr: "훌륭한 스파이는 두려움과 불안을 위장할 수 있어야 합니다." }
+    ]
+  },
+  {
+    id: "L5-054",
+    word: "dissonance",
+    meaning: "불협화음, 불일치",
+    examples: [
+      { en: "The economic policy caused social dissonance and unrest.", kr: "그 경제 정책은 사회적 불일치와 불안을 야기했습니다." },
+      { en: "The avant-garde music was full of intentional dissonance.", kr: "그 아방가르드 음악은 의도적인 불협화음으로 가득했습니다." }
+    ]
+  },
+  {
+    id: "L5-055",
+    word: "dudgeon",
+    meaning: "불쾌, 분개",
+    examples: [
+      { en: "He left the meeting in high dudgeon after his proposal was rejected.", kr: "그는 자신의 제안이 거절된 후 큰 불쾌(분개) 속에 회의를 떠났습니다." },
+      { en: "She took dudgeon at the suggestion that she was not qualified.", kr: "그녀는 자신이 자격이 없다는 제안에 불쾌함을 느꼈습니다." }
+    ]
+  },
+  {
+    id: "L5-056",
+    word: "eccentric",
+    meaning: "별난, 특이한",
+    examples: [
+      { en: "The genius inventor was notoriously eccentric.", kr: "그 천재 발명가는 악명 높게 별났습니다." },
+      { en: "She has an eccentric habit of talking to plants.", kr: "그녀는 식물에게 말을 거는 특이한 습관을 가지고 있습니다." }
+    ]
+  },
+  {
+    id: "L5-057",
+    word: "edify",
+    meaning: "교화하다, 덕성을 높이다",
+    examples: [
+      { en: "The purpose of the play was to edify the audience morally.", kr: "그 연극의 목적은 관객들의 도덕성을 교화하는 것이었습니다." },
+      { en: "Reading classic literature is meant to edify the mind.", kr: "고전 문학을 읽는 것은 정신의 덕성을 높이는 것을 의미합니다." }
+    ]
+  },
+  {
+    id: "L5-058",
+    word: "effrontery",
+    meaning: "뻔뻔스러움, 철면피",
+    examples: [
+      { en: "He had the effrontery to ask for a large loan after defaulting on the last one.", kr: "그는 마지막 대출을 불이행한 후 큰 대출을 요구하는 뻔뻔스러움을 보였습니다." },
+      { en: "The child's effrontery was shocking to the adult guests.", kr: "그 아이의 철면피는 성인 손님들에게 충격적이었습니다." }
+    ]
+  },
+  {
+    id: "L5-059",
+    word: "egregious",
+    meaning: "지독한, 터무니없는",
+    examples: [
+      { en: "The error was so egregious that it cost the company millions.", kr: "그 오류는 너무 터무니없어서 회사에 수백만 달러의 손해를 입혔습니다." },
+      { en: "His egregious misconduct led to his immediate termination.", kr: "그의 지독한 비행은 즉각적인 해고로 이어졌습니다." }
+    ]
+  },
+  {
+    id: "L5-060",
+    word: "elegy",
+    meaning: "애가, 비가",
+    examples: [
+      { en: "The poet wrote a moving elegy for the victims of the fire.", kr: "그 시인은 화재 피해자들을 위한 감동적인 애가를 썼습니다." },
+      { en: "The sad music sounded like an elegy for a lost era.", kr: "그 슬픈 음악은 잃어버린 시대를 위한 비가처럼 들렸습니다." }
+    ]
+  },
+  {
+    id: "L5-061",
+    word: "enervate",
+    meaning: "기력을 약화시키다, 무기력하게 하다",
+    examples: [
+      { en: "The intense heat and humidity enervated the visiting team.", kr: "강렬한 더위와 습도는 방문 팀의 기력을 약화시켰습니다." },
+      { en: "His frequent complaints tend to enervate the morale of his colleagues.", kr: "그의 잦은 불만은 동료들의 사기를 무기력하게 하는 경향이 있습니다." }
+    ]
+  },
+  {
+    id: "L5-062",
+    word: "encomium",
+    meaning: "찬사, 칭찬",
+    examples: [
+      { en: "The retiring CEO was presented with a long encomium detailing his service.", kr: "은퇴하는 최고 경영자는 그의 봉사를 상세히 설명하는 긴 찬사를 받았습니다." },
+      { en: "The film received an encomium from the national film society.", kr: "그 영화는 국립 영화 협회로부터 칭찬을 받았습니다." }
+    ]
+  },
+  {
+    id: "L5-063",
+    word: "enmity",
+    meaning: "적대감, 증오",
+    examples: [
+      { en: "A deep-seated enmity existed between the two rival families.", kr: "그 두 라이벌 가족 사이에는 뿌리 깊은 적대감이 존재했습니다." },
+      { en: "The peace treaty aimed to end the years of enmity between the nations.", kr: "그 평화 조약은 국가들 사이의 수년간의 증오를 끝내는 것을 목표로 했습니다." }
+    ]
+  },
+  {
+    id: "L5-064",
+    word: "epicure",
+    meaning: "미식가, 식도락가",
+    examples: [
+      { en: "The chef is an epicure who travels the world seeking new flavors.", kr: "그 주방장은 새로운 맛을 찾아 세계를 여행하는 미식가입니다." },
+      { en: "He is a true epicure when it comes to fine dining.", kr: "그는 고급 식사에 관해서는 진정한 식도락가입니다." }
+    ]
+  },
+  {
+    id: "L5-065",
+    word: "ephemeral",
+    meaning: "덧없는, 수명이 짧은",
+    examples: [
+      { en: "The joy of a sudden win is often ephemeral.", kr: "갑작스러운 승리의 기쁨은 종종 덧없습니다." },
+      { en: "She sought deeper meaning, rejecting the ephemeral pleasures of youth.", kr: "그녀는 젊음의 수명이 짧은(순간적인) 즐거움을 거부하고 더 깊은 의미를 추구했습니다." }
+    ]
+  },
+  {
+    id: "L5-066",
+    word: "epitome",
+    meaning: "전형, 완벽한 본보기",
+    examples: [
+      { en: "She is the epitome of elegance and grace.", kr: "그녀는 우아함과 품위의 전형입니다." },
+      { en: "The luxury resort is the epitome of comfort.", kr: "그 고급 리조트는 편안함의 완벽한 본보기입니다." }
+    ]
+  },
+  {
+    id: "L5-067",
+    word: "eschew",
+    meaning: "피하다, 삼가다",
+    examples: [
+      { en: "He chose to eschew all forms of mass media and live simply.", kr: "그는 모든 형태의 대중 매체를 피하고 소박하게 살기로 선택했습니다." },
+      { en: "You should eschew behaviors that will damage your reputation.", kr: "명성을 손상시킬 행동은 삼가야 합니다." }
+    ]
+  },
+  {
+    id: "L5-068",
+    word: "evanescent",
+    meaning: "덧없는, 사라져 가는",
+    examples: [
+      { en: "The rainbow was an evanescent splash of color against the gray sky.", kr: "무지개는 회색 하늘에 대고 있는 덧없는 색채의 물보라였습니다." },
+      { en: "The singer's popularity was sadly evanescent.", kr: "그 가수의 인기는 슬프게도 사라져 가는 것이었습니다." }
+    ]
+  },
+  {
+    id: "L5-069",
+    word: "exigent",
+    meaning: "절박한, 긴급한",
+    examples: [
+      { en: "The emergency room doctor responded to the exigent situation immediately.", kr: "응급실 의사는 절박한 상황에 즉시 대응했습니다." },
+      { en: "The financial crisis created an exigent need for new capital.", kr: "금융 위기는 새로운 자본에 대한 긴급한 필요를 만들었습니다." }
+    ]
+  },
+  {
+    id: "L5-070",
+    word: "exhort",
+    meaning: "간곡히 권고하다, 촉구하다",
+    examples: [
+      { en: "The leader exhorted the people to remain unified during the turmoil.", kr: "지도자는 혼란 동안 단결을 유지하도록 사람들에게 간곡히 권고했습니다." },
+      { en: "I exhorted him to take the opportunity seriously.", kr: "나는 그에게 그 기회를 진지하게 받아들이도록 촉구했습니다." }
+    ]
+  },
+  {
+    id: "L5-071",
+    word: "expedient",
+    meaning: "편의적인, 임시방편의",
+    examples: [
+      { en: "It was an expedient but unethical solution to the problem.", kr: "그것은 문제에 대한 편의적이지만 비윤리적인 해결책이었습니다." },
+      { en: "The manager chose the most expedient method to finish the job quickly.", kr: "매니저는 그 일을 빠르게 끝낼 가장 임시방편적인 방법을 선택했습니다." }
+    ]
+  },
+  {
+    id: "L5-072",
+    word: "extemporaneous",
+    meaning: "즉흥적인, 즉석의",
+    examples: [
+      { en: "The speaker gave an impressive, entirely extemporaneous address.", kr: "그 연사는 인상적인, 완전히 즉흥적인 연설을 했습니다." },
+      { en: "The jazz musician's solo was a moment of true extemporaneous genius.", kr: "그 재즈 음악가의 솔로는 진정한 즉흥적인 천재성의 순간이었습니다." }
+    ]
+  },
+  {
+    id: "L5-073",
+    word: "fallacy",
+    meaning: "오류, 허위",
+    examples: [
+      { en: "The idea that the Earth is flat is a long-debunked fallacy.", kr: "지구가 평평하다는 생각은 오래전에 반증된 오류입니다." },
+      { en: "His entire argument rested on a logical fallacy.", kr: "그의 전체 주장은 논리적 허위에 기반했습니다." }
+    ]
+  },
+  {
+    id: "L5-074",
+    word: "fatuous",
+    meaning: "어리석은, 얼빠진",
+    examples: [
+      { en: "He ignored the warnings and made a fatuous decision to invest everything.", kr: "그는 경고를 무시하고 모든 것을 투자하는 얼빠진 결정을 내렸습니다." },
+      { en: "The article was filled with fatuous comments about the economy.", kr: "그 기사는 경제에 대한 어리석은 논평들로 가득했습니다." }
+    ]
+  },
+  {
+    id: "L5-075",
+    word: "fecund",
+    meaning: "비옥한, 창의적인",
+    examples: [
+      { en: "The rich, dark soil of the valley is extremely fecund.", kr: "그 계곡의 풍부하고 어두운 토양은 극도로 비옥합니다." },
+      { en: "The writer's mind was incredibly fecund, producing three novels in a year.", kr: "그 작가의 정신은 믿을 수 없을 만큼 창의적이어서, 일 년에 세 권의 소설을 썼습니다." }
+    ]
+  },
+  {
+    id: "L5-076",
+    word: "feign",
+    meaning: "~인 체하다, 가장하다",
+    examples: [
+      { en: "He tried to feign illness to avoid the difficult assignment.", kr: "그는 어려운 임무를 피하기 위해 아픈 체했습니다." },
+      { en: "The dog can feign injury to get attention.", kr: "그 개는 관심을 얻기 위해 부상을 가장할 수 있습니다." }
+    ]
+  },
+  {
+    id: "L5-077",
+    word: "fervid",
+    meaning: "열렬한, 열정적인",
+    examples: [
+      { en: "She is a fervid supporter of animal rights.", kr: "그녀는 동물 권리의 열렬한 지지자입니다." },
+      { en: "The team’s coach delivered a fervid pre-game speech.", kr: "그 팀의 코치는 경기 전 열정적인 연설을 했습니다." }
+    ]
+  },
+  {
+    id: "L5-078",
+    word: "fetter",
+    meaning: "족쇄, 구속",
+    examples: [
+      { en: "The lack of resources placed a fetter on the project's progress.", kr: "자원 부족은 프로젝트의 진행에 족쇄를 걸었습니다." },
+      { en: "The ancient prisoner wore heavy iron fetters.", kr: "그 고대 죄수는 무거운 쇠 족쇄를 착용했습니다." }
+    ]
+  },
+  {
+    id: "L5-079",
+    word: "fidelity",
+    meaning: "충실, 정확성",
+    examples: [
+      { en: "The historical film was praised for its fidelity to the original events.", kr: "그 역사 영화는 원래 사건에 대한 충실성으로 칭찬받았습니다." },
+      { en: "The system ensures a high fidelity of sound reproduction.", kr: "그 시스템은 높은 음향 재현 정확성을 보장합니다." }
+    ]
+  },
+  {
+    id: "L5-080",
+    word: "flout",
+    meaning: "(법 등을) 경멸하며 어기다",
+    examples: [
+      { en: "Many drivers openly flout the speed limit late at night.", kr: "많은 운전자들이 늦은 밤에 공개적으로 속도 제한을 경멸하며 어깁니다." },
+      { en: "The company was criticized for flouting environmental regulations.", kr: "그 회사는 환경 규제를 경멸하며 어긴 것에 대해 비판받았습니다." }
+    ]
+  },
+  {
+    id: "L5-081",
+    word: "foment",
+    meaning: "불화 등을 조성하다, 선동하다",
+    examples: [
+      { en: "The agitator was accused of fomenting unrest among the workers.", kr: "그 선동가는 노동자들 사이에 불안을 조성한 혐의로 고발되었습니다." },
+      { en: "The article seemed designed to foment discord between the two parties.", kr: "그 기사는 두 당사자 사이에 불화를 선동하도록 고안된 것처럼 보였습니다." }
+    ]
+  },
+  {
+    id: "L5-082",
+    word: "fortuitous",
+    meaning: "우연한, 행운의",
+    examples: [
+      { en: "Their meeting was entirely fortuitous, happening by chance at the airport.", kr: "그들의 만남은 공항에서 우연히 일어난 전적으로 행운이었습니다." },
+      { en: "The timing of the investment proved to be fortuitous.", kr: "그 투자의 타이밍은 행운으로 판명되었습니다." }
+    ]
+  },
+  {
+    id: "L5-083",
+    word: "furtive",
+    meaning: "은밀한, 수상쩍은",
+    examples: [
+      { en: "The cat made a furtive attempt to steal a piece of chicken.", kr: "그 고양이는 닭고기 한 조각을 훔치려는 은밀한 시도를 했습니다." },
+      { en: "He cast a furtive glance at the test paper next to him.", kr: "그는 옆에 있는 시험지를 수상쩍게 쳐다보았습니다." }
+    ]
+  },
+  {
+    id: "L5-084",
+    word: "gainsay",
+    meaning: "반박하다, 부인하다",
+    examples: [
+      { en: "No one could gainsay the truth of her powerful testimony.", kr: "아무도 그녀의 강력한 증언의 진실을 반박할 수 없었습니다." },
+      { en: "It is hard to gainsay the fact that the company is failing.", kr: "그 회사가 실패하고 있다는 사실을 부인하기 어렵습니다." }
+    ]
+  },
+  {
+    id: "L5-085",
+    word: "garrulous",
+    meaning: "수다스러운",
+    examples: [
+      { en: "The garrulous travel guide never stopped talking throughout the tour.", kr: "그 수다스러운 여행 가이드는 여행 내내 말하는 것을 멈추지 않았습니다." },
+      { en: "He is too garrulous to be trusted with sensitive information.", kr: "그는 민감한 정보를 맡기기에는 너무 수다스럽습니다." }
+    ]
+  },
+  {
+    id: "L5-086",
+    word: "germane",
+    meaning: "밀접한 관련이 있는",
+    examples: [
+      { en: "Please ensure your questions are germane to the presentation topic.", kr: "질문이 발표 주제와 밀접한 관련이 있는지 확인해 주세요." },
+      { en: "The evidence was ruled inadmissible because it was not germane to the crime.", kr: "그 증거는 범죄와 관련이 없었기 때문에 인정될 수 없었습니다." }
+    ]
+  },
+  {
+    id: "L5-087",
+    word: "gregarious",
+    meaning: "사교적인",
+    examples: [
+      { en: "She is a gregarious person who enjoys meeting new people.", kr: "그녀는 새로운 사람들을 만나는 것을 즐기는 사교적인 사람입니다." },
+      { en: "Many primate species are gregarious and live in large groups.", kr: "많은 영장류 종들은 사교적이며 큰 무리를 이루어 삽니다." }
+    ]
+  },
+  {
+    id: "L5-088",
+    word: "hackneyed",
+    meaning: "진부한, 케케묵은",
+    examples: [
+      { en: "The film's plot was full of hackneyed clichés and predictable twists.", kr: "그 영화의 줄거리는 진부한 상투적인 표현과 예측 가능한 반전으로 가득했습니다." },
+      { en: "Avoid using hackneyed phrases in your professional writing.", kr: "전문적인 글쓰기에서는 케케묵은 구절 사용을 피하세요." }
+    ]
+  },
+  {
+    id: "L5-089",
+    word: "haphazard",
+    meaning: "되는대로의, 무계획적인",
+    examples: [
+      { en: "The filing system was completely haphazard, making it impossible to find documents.", kr: "파일링 시스템은 완전히 되는대로여서 문서를 찾는 것이 불가능했습니다." },
+      { en: "He took a haphazard approach to studying for the exam.", kr: "그는 시험공부에 무계획적인 접근 방식을 취했습니다." }
+    ]
+  },
+  {
+    id: "L5-090",
+    word: "hedonism",
+    meaning: "쾌락주의",
+    examples: [
+      { en: "His excessive spending was a symptom of his commitment to hedonism.", kr: "그의 지나친 지출은 쾌락주의에 대한 그의 헌신의 징후였습니다." },
+      { en: "The ancient city was notorious for its lifestyle of unchecked hedonism.", kr: "그 고대 도시는 억제되지 않은 쾌락주의 생활 방식으로 악명이 높았습니다." }
+    ]
+  },
+  {
+    id: "L5-091",
+    word: "hegemony",
+    meaning: "패권, 지배권",
+    examples: [
+      { en: "The nation sought to maintain its cultural and economic hegemony in the region.", kr: "그 나라는 그 지역에서 문화적, 경제적 패권을 유지하려고 노력했습니다." },
+      { en: "The company's market hegemony was finally challenged by new startups.", kr: "그 회사의 시장 지배권은 마침내 새로운 스타트업들에 의해 도전받았습니다." }
+    ]
+  },
+  {
+    id: "L5-092",
+    word: "hiatus",
+    meaning: "중단, 공백",
+    examples: [
+      { en: "The band announced a brief hiatus before starting their next world tour.", kr: "그 밴드는 다음 월드 투어를 시작하기 전에 짧은 중단을 발표했습니다." },
+      { en: "There was a noticeable hiatus in the funding for the research project.", kr: "그 연구 프로젝트에 대한 자금 조달에 눈에 띄는 공백이 있었습니다." }
+    ]
+  },
+  {
+    id: "L5-093",
+    word: "homily",
+    meaning: "설교, 지루한 훈계",
+    examples: [
+      { en: "The manager gave the staff a long homily about the importance of being on time.", kr: "매니저는 직원들에게 시간을 잘 지키는 것의 중요성에 대해 긴 훈계를 했습니다." },
+      { en: "His lectures often turned into a tiresome homily about morality.", kr: "그의 강의는 종종 도덕에 대한 지루한 설교로 변했습니다." }
+    ]
+  },
+  {
+    id: "L5-094",
+    word: "hubris",
+    meaning: "오만, 자만",
+    examples: [
+      { en: "The CEO’s hubris led him to ignore all warnings, causing the company’s downfall.", kr: "최고 경영자의 오만은 그가 모든 경고를 무시하도록 이끌었고, 회사의 몰락을 초래했습니다." },
+      { en: "Hubris is a common tragic flaw in classical literature.", kr: "오만은 고전 문학에서 흔한 비극적 결함입니다." }
+    ]
+  },
+  {
+    id: "L5-095",
+    word: "impetus",
+    meaning: "추진력, 자극",
+    examples: [
+      { en: "The new technology provided the impetus for the development of the market.", kr: "새로운 기술은 시장 발전에 추진력을 제공했습니다." },
+      { en: "His success gave her the impetus she needed to start her own business.", kr: "그의 성공은 그녀가 자신의 사업을 시작하는 데 필요한 자극을 주었습니다." }
+    ]
+  },
+  {
+    id: "L5-096",
+    word: "impunity",
+    meaning: "처벌을 면함",
+    examples: [
+      { en: "The powerful figures acted with impunity, believing they were above the law.", kr: "그 강력한 인물들은 법 위에 있다고 믿으며 처벌을 면한 채 행동했습니다." },
+      { en: "The law must ensure that no one commits crimes with impunity.", kr: "법은 아무도 처벌을 면한 채 범죄를 저지르지 않도록 보장해야 합니다." }
+    ]
+  },
+  {
+    id: "L5-097",
+    word: "inchoate",
+    meaning: "초기의, 미발달의",
+    examples: [
+      { en: "The plan is still in an inchoate, undeveloped state.", kr: "그 계획은 여전히 미발달된 초기 상태에 있습니다." },
+      { en: "The author was working on the inchoate ideas for his next novel.", kr: "그 작가는 다음 소설에 대한 초기의 아이디어들을 작업하고 있었습니다." }
+    ]
+  },
+  {
+    id: "L5-098",
+    word: "incontrovertible",
+    meaning: "반박의 여지가 없는, 명백한",
+    examples: [
+      { en: "The security footage provided incontrovertible evidence of the theft.", kr: "보안 영상은 절도에 대한 반박의 여지가 없는 증거를 제공했습니다." },
+      { en: "His achievements are an incontrovertible testament to his genius.", kr: "그의 업적은 그의 천재성에 대한 명백한 증거입니다." }
+    ]
+  },
+  {
+    id: "L5-099",
+    word: "indefatigable",
+    meaning: "지칠 줄 모르는",
+    examples: [
+      { en: "The rescue workers showed indefatigable spirit after days of searching.", kr: "구조 대원들은 수일간의 수색 후 지칠 줄 모르는 정신을 보여주었습니다." },
+      { en: "Her indefatigable enthusiasm motivated the entire team.", kr: "그녀의 지칠 줄 모르는 열정은 팀 전체에 동기를 부여했습니다." }
+    ]
+  },
+  {
+    id: "L5-100",
+    word: "indolent",
+    meaning: "게으른, 나태한",
+    examples: [
+      { en: "The hot, humid air made him feel indolent and unwilling to work.", kr: "뜨겁고 습한 공기는 그가 게으르고 일하기 싫게 만들었습니다." },
+      { en: "He was fired due to his indolent work habits.", kr: "그는 그의 나태한 근무 습관 때문에 해고되었습니다." }
+    ]
+  }
+];
+
+const wordsLevel5_Part2 = [
+  {
+    id: "L5-101",
+    word: "hypothesis",
+    meaning: "가설",
+    examples: [
+      { en: "The experiment was designed to test the scientist's main hypothesis.", kr: "그 실험은 과학자의 주요 가설을 시험하기 위해 고안되었습니다." },
+      { en: "We formed a working hypothesis for the investigation.", kr: "우리는 조사를 위한 작업 가설을 세웠습니다." }
+    ]
+  },
+  {
+    id: "L5-102",
+    word: "ignominy",
+    meaning: "불명예, 치욕",
+    examples: [
+      { en: "The politician resigned in the face of public ignominy.", kr: "그 정치인은 대중의 불명예에 직면하여 사임했습니다." },
+      { en: "The team suffered the ignominy of losing every game.", kr: "그 팀은 모든 경기에서 지는 치욕을 겪었습니다." }
+    ]
+  },
+  {
+    id: "L5-103",
+    word: "impecunious",
+    meaning: "돈 없는, 가난한",
+    examples: [
+      { en: "He started his career as an impecunious young writer.", kr: "그는 돈 없는 젊은 작가로 자신의 경력을 시작했습니다." },
+      { en: "The charity provides aid to impecunious families.", kr: "그 자선 단체는 가난한 가족들에게 지원을 제공합니다." }
+    ]
+  },
+  {
+    id: "L5-104",
+    word: "impertinent",
+    meaning: "무례한, 건방진",
+    examples: [
+      { en: "The student was disciplined for making impertinent remarks to the teacher.", kr: "그 학생은 선생님에게 무례한 발언을 하여 징계를 받았습니다." },
+      { en: "His impertinent tone suggested a lack of respect.", kr: "그의 건방진 어조는 존중 부족을 시사했습니다." }
+    ]
+  },
+  {
+    id: "L5-105",
+    word: "impugn",
+    meaning: "이의를 제기하다, 비난하다",
+    examples: [
+      { en: "The lawyer impugned the witness's credibility.", kr: "변호사는 증인의 신뢰성에 이의를 제기했습니다." },
+      { en: "No one dared to impugn the findings of the lead scientist.", kr: "아무도 선임 과학자의 발견 사항들을 비난할 용기를 내지 못했습니다." }
+    ]
+  },
+  {
+    id: "L5-106",
+    word: "inadvertent",
+    meaning: "부주의한, 무심코 한",
+    examples: [
+      { en: "The error was an inadvertent mistake, not an intentional act.", kr: "그 오류는 고의적인 행동이 아닌 부주의한 실수였습니다." },
+      { en: "He made an inadvertent comment that revealed the surprise.", kr: "그는 무심코 놀라운 사실을 드러내는 논평을 했습니다." }
+    ]
+  },
+  {
+    id: "L5-107",
+    word: "inarticulate",
+    meaning: "불분명하게 말하는, 표현이 서툰",
+    examples: [
+      { en: "He was so nervous that his speech was largely inarticulate.", kr: "그는 너무 긴장해서 그의 연설은 대체로 불분명했습니다." },
+      { en: "The witness was unable to give an articulate account of the events.", kr: "그 증인은 사건에 대해 분명하게 설명하는 진술을 할 수 없었습니다." }
+    ]
+  },
+  {
+    id: "L5-108",
+    word: "incisive",
+    meaning: "예리한, 통찰력 있는",
+    examples: [
+      { en: "The manager delivered an incisive analysis of the company's problems.", kr: "그 관리자는 회사 문제에 대한 예리한 분석을 전달했습니다." },
+      { en: "She made an incisive comment that cut straight to the core issue.", kr: "그녀는 핵심 문제로 곧바로 들어가는 통찰력 있는 논평을 했습니다." }
+    ]
+  },
+  {
+    id: "L5-109",
+    word: "incontrovertible",
+    meaning: "논쟁의 여지가 없는, 명백한",
+    examples: [
+      { en: "The security footage provided incontrovertible evidence of the crime.", kr: "보안 영상은 범죄에 대한 논쟁의 여지가 없는 증거를 제공했습니다." },
+      { en: "It is an incontrovertible fact that the Earth is round.", kr: "지구가 둥글다는 것은 명백한 사실입니다." }
+    ]
+  },
+  {
+    id: "L5-110",
+    word: "indefatigable",
+    meaning: "지칠 줄 모르는",
+    examples: [
+      { en: "The rescue team showed indefatigable spirit after days of searching.", kr: "구조팀은 수일간의 수색 후 지칠 줄 모르는 정신을 보여주었습니다." },
+      { en: "Her indefatigable effort led to the success of the project.", kr: "그녀의 지칠 줄 모르는 노력이 프로젝트의 성공으로 이어졌습니다." }
+    ]
+  },
+  {
+    id: "L5-111",
+    word: "indiscriminate",
+    meaning: "무차별적인, 무분별한",
+    examples: [
+      { en: "The bombing caused indiscriminate destruction across the city.", kr: "그 폭격은 도시 전역에 무차별적인 파괴를 야기했습니다." },
+      { en: "He has an indiscriminate taste in music, listening to everything.", kr: "그는 모든 것을 듣는 무분별한 음악 취향을 가지고 있습니다." }
+    ]
+  },
+  {
+    id: "L5-112",
+    word: "indolent",
+    meaning: "게으른, 나태한",
+    examples: [
+      { en: "His indolent attitude prevented him from achieving his potential.", kr: "그의 게으른 태도는 그가 잠재력을 달성하는 것을 막았습니다." },
+      { en: "The hot climate made everyone feel indolent and sluggish.", kr: "뜨거운 기후는 모두를 나태하고 둔하게 느끼게 만들었습니다." }
+    ]
+  },
+  {
+    id: "L5-113",
+    word: "inept",
+    meaning: "서툰, 무능한",
+    examples: [
+      { en: "The manager was criticized for his inept handling of the crisis.", kr: "그 관리자는 위기 대처에 대한 서툰(무능한) 처리로 비판받았습니다." },
+      { en: "His attempts at humor were completely inept.", kr: "그의 유머 시도는 완전히 서툴렀습니다." }
+    ]
+  },
+  {
+    id: "L5-114",
+    word: "infamous",
+    meaning: "악명 높은",
+    examples: [
+      { en: "The city is known for its infamous prison.", kr: "그 도시는 악명 높은 감옥으로 알려져 있습니다." },
+      { en: "He was arrested for the infamous theft of the diamond necklace.", kr: "그는 그 악명 높은 다이아몬드 목걸이 절도 혐의로 체포되었습니다." }
+    ]
+  },
+  {
+    id: "L5-115",
+    word: "ingratiate",
+    meaning: "환심을 사다, 비위를 맞추다",
+    examples: [
+      { en: "He tried to ingratiate himself with the boss by offering constant compliments.", kr: "그는 끊임없이 칭찬하며 상사에게 환심을 사려고 노력했습니다." },
+      { en: "I dislike people who try to ingratiate themselves with flattery.", kr: "저는 아첨으로 환심을 사려는 사람들을 싫어합니다." }
+    ]
+  },
+  {
+    id: "L5-116",
+    word: "innocuous",
+    meaning: "무해한, 악의 없는",
+    examples: [
+      { en: "The substance looked dangerous, but it was completely innocuous.", kr: "그 물질은 위험해 보였지만, 완전히 무해했습니다." },
+      { en: "He made an innocuous comment that was later misinterpreted.", kr: "그는 악의 없는 논평을 했지만 나중에 오해를 받았습니다." }
+    ]
+  },
+  {
+    id: "L5-117",
+    word: "insatiable",
+    meaning: "만족시킬 수 없는, 채울 수 없는",
+    examples: [
+      { en: "He has an insatiable thirst for power and wealth.", kr: "그는 권력과 부에 대한 만족시킬 수 없는 갈증을 가지고 있습니다." },
+      { en: "The company's insatiable demand for raw materials led to environmental damage.", kr: "그 회사의 원자재에 대한 채울 수 없는 요구는 환경 피해로 이어졌습니다." }
+    ]
+  },
+  {
+    id: "L5-118",
+    word: "inscrutable",
+    meaning: "헤아릴 수 없는, 불가사의한",
+    examples: [
+      { en: "The old man gave an inscrutable smile, revealing nothing of his thoughts.", kr: "그 노인은 자신의 생각을 아무것도 드러내지 않는 불가사의한 미소를 지었습니다." },
+      { en: "The decision-making process was so complex it seemed inscrutable.", kr: "그 의사 결정 과정은 너무 복잡해서 헤아릴 수 없는 것처럼 보였습니다." }
+    ]
+  },
+  {
+    id: "L5-119",
+    word: "insidious",
+    meaning: "교활한, 서서히 퍼지는",
+    examples: [
+      { en: "The disease has an insidious onset, making it hard to detect early.", kr: "그 질병은 서서히 퍼지기 시작하여 조기 발견이 어렵습니다." },
+      { en: "The insidious propaganda slowly changed the public's opinion.", kr: "그 교활한 선전은 대중의 의견을 서서히 변화시켰습니다." }
+    ]
+  },
+  {
+    id: "L5-120",
+    word: "insipid",
+    meaning: "맛없는, 재미없는",
+    examples: [
+      { en: "The soup was so insipid that I had to add a lot of salt.", kr: "그 수프는 너무 맛이 없어서 소금을 많이 넣어야 했습니다." },
+      { en: "The movie was criticized for its insipid plot and characters.", kr: "그 영화는 재미없는 줄거리와 인물들로 비판받았습니다." }
+    ]
+  },
+  {
+    id: "L5-121",
+    word: "intractable",
+    meaning: "다루기 힘든, 고집 센",
+    examples: [
+      { en: "The intractable problem required a radical new solution.", kr: "그 다루기 힘든 문제는 급진적인 새 해결책을 필요로 했습니다." },
+      { en: "The manager struggled with the most intractable employee.", kr: "그 관리자는 가장 고집 센 직원과 씨름했습니다." }
+    ]
+  },
+  {
+    id: "L5-122",
+    word: "intransigent",
+    meaning: "비타협적인, 완고한",
+    examples: [
+      { en: "The union remained intransigent in its demand for higher wages.", kr: "노조는 더 높은 임금 요구에 비타협적인 태도를 유지했습니다." },
+      { en: "It is impossible to negotiate with someone so intransigent.", kr: "그렇게 완고한 사람과는 협상하는 것이 불가능합니다." }
+    ]
+  },
+  {
+    id: "L5-123",
+    word: "intricate",
+    meaning: "복잡한, 뒤얽힌",
+    examples: [
+      { en: "The clock had an intricate design with many small moving parts.", kr: "그 시계는 작은 움직이는 부품들이 많은 복잡한 디자인을 가지고 있었습니다." },
+      { en: "The plot of the novel was so intricate that it required close attention.", kr: "그 소설의 줄거리는 너무 뒤얽혀서 세심한 주의를 요했습니다." }
+    ]
+  },
+  {
+    id: "L5-124",
+    word: "intrinsic",
+    meaning: "고유의, 본질적인",
+    examples: [
+      { en: "The painting's intrinsic value is separate from its market price.", kr: "그 그림의 본질적인 가치는 시장 가격과 별개입니다." },
+      { en: "The ability to empathize is an intrinsic human quality.", kr: "공감 능력은 인간의 고유한 특성입니다." }
+    ]
+  },
+  {
+    id: "L5-125",
+    word: "inundate",
+    meaning: "물에 잠기게 하다, 쇄도하다",
+    examples: [
+      { en: "The city was inundated with calls after the power outage.", kr: "정전 후 도시는 전화로 쇄도했습니다." },
+      { en: "Heavy rain caused the river to inundate the fields.", kr: "폭우로 인해 강물이 들판을 물에 잠기게 했습니다." }
+    ]
+  },
+  {
+    id: "L5-126",
+    word: "inure",
+    meaning: "익숙하게 하다, 단련하다",
+    examples: [
+      { en: "The harsh winters inured the villagers to the cold.", kr: "그 혹독한 겨울은 마을 사람들을 추위에 익숙하게 만들었습니다." },
+      { en: "She was inured to the sight of blood after working in the hospital for years.", kr: "그녀는 수년간 병원에서 일한 후 피를 보는 것에 단련되었습니다." }
+    ]
+  },
+  {
+    id: "L5-127",
+    word: "invective",
+    meaning: "욕설, 비난",
+    examples: [
+      { en: "The speech quickly devolved into a torrent of personal invective.", kr: "그 연설은 빠르게 개인적인 욕설의 연속으로 퇴화했습니다." },
+      { en: "The newspaper was criticized for its use of political invective.", kr: "그 신문은 정치적 비난(욕설) 사용으로 비판받았습니다." }
+    ]
+  },
+  {
+    id: "L5-128",
+    word: "invidious",
+    meaning: "시기심을 유발하는, 불쾌한",
+    examples: [
+      { en: "The task of making invidious comparisons between the students was unpleasant.", kr: "학생들 사이에 시기심을 유발하는 비교를 해야 하는 임무는 불쾌했습니다." },
+      { en: "The manager's decision created an invidious situation among the staff.", kr: "관리자의 결정은 직원들 사이에 불쾌한 상황을 만들었습니다." }
+    ]
+  },
+  {
+    id: "L5-129",
+    word: "irascible",
+    meaning: "화 잘 내는, 성미 급한",
+    examples: [
+      { en: "The irascible old man often shouted at the local children.", kr: "그 화 잘 내는 노인은 종종 동네 아이들에게 소리쳤습니다." },
+      { en: "His irascible temper made him a difficult boss to work for.", kr: "그의 성미 급한 성질은 그를 함께 일하기 어려운 상사로 만들었습니다." }
+    ]
+  },
+  {
+    id: "L5-130",
+    word: "jocular",
+    meaning: "우스꽝스러운, 익살맞은",
+    examples: [
+      { en: "He has a jocular manner that puts everyone at ease.", kr: "그는 모두를 편안하게 만드는 익살맞은 태도를 가지고 있습니다." },
+      { en: "The presentation was interrupted by jocular remarks from the audience.", kr: "그 발표는 청중의 우스꽝스러운 발언으로 중단되었습니다." }
+    ]
+  },
+  {
+    id: "L5-131",
+    word: "judicious",
+    meaning: "현명한, 신중한",
+    examples: [
+      { en: "The CEO made a judicious decision to sell the unprofitable division.", kr: "최고 경영자는 수익성이 없는 부서를 매각하는 현명한 결정을 내렸습니다." },
+      { en: "Judicious use of limited resources is necessary.", kr: "제한된 자원의 신중한 사용이 필수적입니다." }
+    ]
+  },
+  {
+    id: "L5-132",
+    word: "laconic",
+    meaning: "간결한, 말수가 적은",
+    examples: [
+      { en: "The general gave a laconic reply to the complex question.", kr: "그 장군은 복잡한 질문에 간결한 답변을 했습니다." },
+      { en: "He is known for his sharp wit and laconic style.", kr: "그는 날카로운 재치와 말수가 적은 스타일로 알려져 있습니다." }
+    ]
+  },
+  {
+    id: "L5-133",
+    word: "languid",
+    meaning: "나른한, 무기력한",
+    examples: [
+      { en: "The hot, humid air made her feel languid and sleepy.", kr: "뜨겁고 습한 공기는 그녀를 나른하고 졸리게 만들었습니다." },
+      { en: "She gave a languid wave from the balcony.", kr: "그녀는 발코니에서 무기력한 손짓을 했습니다." }
+    ]
+  },
+  {
+    id: "L5-134",
+    word: "laud",
+    meaning: "칭찬하다",
+    examples: [
+      { en: "Critics lauded the novel for its originality and style.", kr: "비평가들은 그 소설의 독창성과 스타일에 대해 칭찬했습니다." },
+      { en: "His humanitarian efforts were lauded by international organizations.", kr: "그의 인도주의적 노력은 국제 기구들로부터 칭찬받았습니다." }
+    ]
+  },
+  {
+    id: "L5-135",
+    word: "levity",
+    meaning: "경솔함, 경박함",
+    examples: [
+      { en: "The meeting lacked seriousness, being constantly interrupted by levity.", kr: "그 회의는 경솔함 때문에 심각성이 부족했습니다." },
+      { en: "He treated the serious issue with an inappropriate amount of levity.", kr: "그는 심각한 문제를 부적절한 정도의 경박함으로 다루었습니다." }
+    ]
+  },
+  {
+    id: "L5-136",
+    word: "licentious",
+    meaning: "방탕한, 음란한",
+    examples: [
+      { en: "The book was banned for its licentious content.", kr: "그 책은 음란한 내용으로 인해 금지되었습니다." },
+      { en: "His licentious lifestyle led to his financial ruin.", kr: "그의 방탕한 생활 방식은 재정적 파멸로 이어졌습니다." }
+    ]
+  },
+  {
+    id: "L5-137",
+    word: "lilliputian",
+    meaning: "아주 작은, 하찮은",
+    examples: [
+      { en: "The town built a lilliputian park for children.", kr: "그 마을은 아이들을 위한 아주 작은 공원을 지었습니다." },
+      { en: "The politician focused on lilliputian issues instead of major policy reforms.", kr: "그 정치인은 주요 정책 개혁 대신 하찮은 문제에 집중했습니다." }
+    ]
+  },
+  {
+    id: "L5-138",
+    word: "litany",
+    meaning: "장황한 목록, 잦은 반복",
+    examples: [
+      { en: "He recited a litany of complaints about the restaurant's service.", kr: "그는 식당 서비스에 대한 장황한 불만 목록을 읊었습니다." },
+      { en: "The speech became a tiresome litany of past achievements.", kr: "그 연설은 과거 업적에 대한 지루한 잦은 반복이 되었습니다." }
+    ]
+  },
+  {
+    id: "L5-139",
+    word: "lugubrious",
+    meaning: "침울한, 슬픔에 잠긴",
+    examples: [
+      { en: "The atmosphere was lugubrious after the news of the defeat.", kr: "패배 소식 후 분위기는 침울했습니다." },
+      { en: "The dog gave a lugubrious howl when the owner left.", kr: "주인이 떠나자 개는 슬픔에 잠긴 울음소리를 냈습니다." }
+    ]
+  },
+  {
+    id: "L5-140",
+    word: "machination",
+    meaning: "음모, 술책",
+    examples: [
+      { en: "The spy was uncovered after years of machination against the government.", kr: "그 스파이는 수년간의 정부에 대한 음모 끝에 정체가 드러났습니다." },
+      { en: "The political turmoil was caused by the secret machinations of the ministers.", kr: "정치적 혼란은 장관들의 비밀 술책 때문에 야기되었습니다." }
+    ]
+  },
+  {
+    id: "L5-141",
+    word: "malediction",
+    meaning: "저주, 악담",
+    examples: [
+      { en: "The old woman hurled a malediction at the man who wronged her.", kr: "그 노파는 자신에게 잘못한 남자에게 저주를 퍼부었습니다." },
+      { en: "He muttered a malediction under his breath when he missed the bus.", kr: "그는 버스를 놓쳤을 때 숨을 죽이고 악담을 중얼거렸습니다." }
+    ]
+  },
+  {
+    id: "L5-142",
+    word: "maudlin",
+    meaning: "감상적인, 눈물 많은",
+    examples: [
+      { en: "The movie's maudlin ending failed to earn respect from the critics.", kr: "그 영화의 감상적인 결말은 비평가들로부터 존경을 얻는 데 실패했습니다." },
+      { en: "He became maudlin and started crying about his childhood.", kr: "그는 감상적이 되어 자신의 어린 시절에 대해 울기 시작했습니다." }
+    ]
+  },
+  {
+    id: "L5-143",
+    word: "mawkish",
+    meaning: "징그러울 정도로 감상적인",
+    examples: [
+      { en: "I found the love scene to be excessively mawkish and unconvincing.", kr: "저는 그 사랑 장면이 지나치게 징그러울 정도로 감상적이고 설득력이 없다고 생각했습니다." },
+      { en: "The song was a mawkish tribute to a fallen hero.", kr: "그 노래는 쓰러진 영웅에게 바치는 징그러울 정도로 감상적인 헌사였습니다." }
+    ]
+  },
+  {
+    id: "L5-144",
+    word: "mellifluous",
+    meaning: "감미로운, 듣기 좋은",
+    examples: [
+      { en: "The singer has a mellifluous voice that soothes the audience.", kr: "그 가수는 청중을 달래는 감미로운 목소리를 가지고 있습니다." },
+      { en: "He delivered the bad news in a mellifluous, calming tone.", kr: "그는 감미롭고 차분한 어조로 나쁜 소식을 전달했습니다." }
+    ]
+  },
+  {
+    id: "L5-145",
+    word: "meretricious",
+    meaning: "겉만 번지르르한, 야한",
+    examples: [
+      { en: "The film relied on meretricious special effects instead of a good story.", kr: "그 영화는 좋은 이야기 대신 겉만 번지르르한 특수 효과에 의존했습니다." },
+      { en: "She saw through his meretricious charm quickly.", kr: "그녀는 그의 겉만 번지르르한 매력을 빠르게 간파했습니다." }
+    ]
+  },
+  {
+    id: "L5-146",
+    word: "misanthrope",
+    meaning: "인간 혐오자",
+    examples: [
+      { en: "The old hermit was a notorious misanthrope who avoided all human contact.", kr: "그 나이든 은둔자는 모든 인간과의 접촉을 피하는 악명 높은 인간 혐오자였습니다." },
+      { en: "Despite his occasional cynical remarks, he is not a true misanthrope.", kr: "그의 가끔의 냉소적인 발언에도 불구하고, 그는 진정한 인간 혐오자는 아닙니다." }
+    ]
+  },
+  {
+    id: "L5-147",
+    word: "monetary",
+    meaning: "화폐의, 금융의",
+    examples: [
+      { en: "The central bank controls the nation's monetary policy.", kr: "중앙은행은 국가의 금융 정책을 통제합니다." },
+      { en: "The dispute was settled with a large monetary payment.", kr: "그 분쟁은 큰 화폐(금전) 지불로 해결되었습니다." }
+    ]
+  },
+  {
+    id: "L5-148",
+    word: "morose",
+    meaning: "시무룩한, 침울한",
+    examples: [
+      { en: "The boy was morose after losing his favorite toy.", kr: "그 소년은 가장 좋아하는 장난감을 잃은 후 시무룩했습니다." },
+      { en: "His morose silence made the atmosphere heavy.", kr: "그의 침울한 침묵은 분위기를 무겁게 만들었습니다." }
+    ]
+  },
+  {
+    id: "L5-149",
+    word: "nefarious",
+    meaning: "사악한, 흉악한",
+    examples: [
+      { en: "The gang was involved in several nefarious activities.", kr: "그 갱단은 여러 흉악한 활동에 연루되었습니다." },
+      { en: "The villain's nefarious plan was finally exposed.", kr: "그 악당의 사악한 계획은 마침내 폭로되었습니다." }
+    ]
+  },
+  {
+    id: "L5-150",
+    word: "neophyte",
+    meaning: "신참, 초보자",
+    examples: [
+      { en: "The program is designed to guide neophytes through the complex process.", kr: "그 프로그램은 초보자들이 복잡한 과정을 거치도록 안내하기 위해 설계되었습니다." },
+      { en: "As a neophyte chef, he made a few basic mistakes.", kr: "신참 요리사로서, 그는 몇 가지 기본적인 실수를 저질렀습니다." }
+    ]
+  },
+  {
+    id: "L5-151",
+    word: "nonplussed",
+    meaning: "당황한, 어찌할 바를 모르는",
+    examples: [
+      { en: "He was nonplussed by the sudden, complex question.", kr: "그는 갑작스럽고 복잡한 질문에 당황했습니다." },
+      { en: "The unexpected delay left the host entirely nonplussed.", kr: "예상치 못한 지연은 진행자를 완전히 어찌할 바를 모르게 만들었습니다." }
+    ]
+  },
+  {
+    id: "L5-152",
+    word: "notorious",
+    meaning: "악명 높은",
+    examples: [
+      { en: "The criminal was notorious for his many daring bank robberies.", kr: "그 범죄자는 그의 대담한 은행 강도 행위로 악명이 높았습니다." },
+      { en: "The company is notorious for its poor customer service.", kr: "그 회사는 형편없는 고객 서비스로 악명이 높습니다." }
+    ]
+  },
+  {
+    id: "L5-153",
+    word: "obdurate",
+    meaning: "고집 센, 완고한",
+    examples: [
+      { en: "The politician remained obdurate in his refusal to compromise.", kr: "그 정치인은 타협을 거부하는 데 고집 센 태도를 유지했습니다." },
+      { en: "The obdurate resistance of the city led to a long siege.", kr: "그 도시의 완고한 저항은 오랜 포위 공격으로 이어졌습니다." }
+    ]
+  },
+  {
+    id: "L5-154",
+    word: "obsequious",
+    meaning: "아첨하는, 비굴한",
+    examples: [
+      { en: "The new employee was criticized for being too obsequious to the manager.", kr: "새 직원은 관리자에게 너무 아첨한다는 비판을 받았습니다." },
+      { en: "His obsequious smile made me feel uneasy.", kr: "그의 비굴한 미소는 나를 불편하게 만들었습니다." }
+    ]
+  },
+  {
+    id: "L5-155",
+    word: "obviate",
+    meaning: "미연에 방지하다, 제거하다",
+    examples: [
+      { en: "The new software update will obviate the need for manual data entry.", kr: "새 소프트웨어 업데이트는 수동 데이터 입력의 필요성을 미연에 방지할 것입니다." },
+      { en: "Careful planning obviated the possibility of unexpected delays.", kr: "신중한 계획은 예상치 못한 지연의 가능성을 제거했습니다." }
+    ]
+  },
+  {
+    id: "L5-156",
+    word: "opaque",
+    meaning: "불투명한, 이해하기 어려운",
+    examples: [
+      { en: "The window glass was opaque, blocking out the light.", kr: "창문 유리는 불투명하여 빛을 차단했습니다." },
+      { en: "The financial report was opaque and full of confusing jargon.", kr: "그 재정 보고서는 이해하기 어려웠고 혼란스러운 전문 용어로 가득했습니다." }
+    ]
+  },
+  {
+    id: "L5-157",
+    word: "opprobrium",
+    meaning: "맹비난, 불명예",
+    examples: [
+      { en: "The scandal brought public opprobrium upon the entire political party.", kr: "그 스캔들은 정치 정당 전체에 대중의 맹비난을 가져왔습니다." },
+      { en: "He resigned to avoid the opprobrium of his colleagues.", kr: "그는 동료들의 불명예를 피하기 위해 사임했습니다." }
+    ]
+  },
+  {
+    id: "L5-158",
+    word: "ostensibly",
+    meaning: "표면상으로는",
+    examples: [
+      { en: "Ostensibly, he was on a business trip, but he was actually on vacation.", kr: "표면상으로는 그는 출장 중이었지만, 실제로는 휴가 중이었습니다." },
+      { en: "The meeting was ostensibly about budgets, but the real topic was layoffs.", kr: "그 회의는 표면상으로는 예산에 관한 것이었지만, 실제 주제는 정리해고였습니다." }
+    ]
+  },
+  {
+    id: "L5-159",
+    word: "oscillate",
+    meaning: "동요하다, 진동하다",
+    examples: [
+      { en: "The pendulum continued to oscillate back and forth.", kr: "그 추는 계속해서 앞뒤로 진동했습니다." },
+      { en: "His opinions tend to oscillate depending on who he talks to.", kr: "그의 의견은 누구와 이야기하느냐에 따라 동요하는 경향이 있습니다." }
+    ]
+  },
+  {
+    id: "L5-160",
+    word: "palliative",
+    meaning: "완화하는, 일시적인 처방",
+    examples: [
+      { en: "The new tax cut was merely a palliative measure, not a real solution.", kr: "새 세금 감면은 진정한 해결책이 아닌, 단지 일시적인 처방이었습니다." },
+      { en: "Palliative care focuses on relieving symptoms, not curing the disease.", kr: "완화 치료는 질병을 치료하는 것이 아니라 증상을 완화하는 데 중점을 둡니다." }
+    ]
+  },
+  {
+    id: "L5-161",
+    word: "palpable",
+    meaning: "손으로 만질 수 있는, 명백한",
+    examples: [
+      { en: "There was a palpable tension in the room before the vote.", kr: "투표 전에 방 안에는 손으로 만질 수 있는 듯한 긴장감이 있었습니다." },
+      { en: "The sense of relief among the survivors was palpable.", kr: "생존자들 사이의 안도감은 명백했습니다." }
+    ]
+  },
+  {
+    id: "L5-162",
+    word: "parochial",
+    meaning: "편협한, 지방적인",
+    examples: [
+      { en: "The village was known for its closed, parochial outlook on life.", kr: "그 마을은 삶에 대한 폐쇄적이고 편협한 시각으로 알려져 있었습니다." },
+      { en: "We need to move beyond parochial concerns and think globally.", kr: "우리는 지방적인 관심사를 넘어서 세계적으로 생각해야 합니다." }
+    ]
+  },
+  {
+    id: "L5-163",
+    word: "pensive",
+    meaning: "생각에 잠긴, 수심에 찬",
+    examples: [
+      { en: "She sat quietly on the bench, looking pensive.", kr: "그녀는 벤치에 조용히 앉아 생각에 잠긴 듯 보였습니다." },
+      { en: "The portrait captured his pensive mood perfectly.", kr: "그 초상화는 그의 수심에 찬 기분을 완벽하게 포착했습니다." }
+    ]
+  },
+  {
+    id: "L5-164",
+    word: "peremptory",
+    meaning: "단호한, 독단적인",
+    examples: [
+      { en: "The manager issued a peremptory order to shut down the system immediately.", kr: "관리자는 시스템을 즉시 종료하라는 단호한 명령을 내렸습니다." },
+      { en: "His peremptory tone left no room for discussion.", kr: "그의 독단적인 어조는 논의의 여지를 남기지 않았습니다." }
+    ]
+  },
+  {
+    id: "L5-165",
+    word: "perquisite",
+    meaning: "특전, 부수입",
+    examples: [
+      { en: "A company car is a common perquisite for senior executives.", kr: "회사차는 고위 임원들을 위한 흔한 특전입니다." },
+      { en: "The job offered a high salary and various small perquisites.", kr: "그 일자리는 높은 급여와 다양한 작은 부수입을 제공했습니다." }
+    ]
+  },
+  {
+    id: "L5-166",
+    word: "perspicacious",
+    meaning: "통찰력 있는, 현명한",
+    examples: [
+      { en: "The perspicacious investor sold his stocks just before the crash.", kr: "그 통찰력 있는 투자자는 폭락 직전에 주식을 팔았습니다." },
+      { en: "She made a perspicacious observation about the root cause of the problem.", kr: "그녀는 문제의 근본 원인에 대한 현명한 관찰을 했습니다." }
+    ]
+  },
+  {
+    id: "L5-167",
+    word: "peruse",
+    meaning: "정독하다, 숙독하다",
+    examples: [
+      { en: "Please peruse the contract carefully before signing.", kr: "서명하기 전에 계약서를 주의 깊게 정독해 주세요." },
+      { en: "He spent the afternoon perusing old maps in the library.", kr: "그는 오후를 도서관에서 오래된 지도들을 숙독하며 보냈습니다." }
+    ]
+  },
+  {
+    id: "L5-168",
+    word: "philippic",
+    meaning: "맹렬한 비난 연설",
+    examples: [
+      { en: "The congressman's philippic against the opposition was broadcast nationwide.", kr: "그 국회의원의 야당에 대한 맹렬한 비난 연설은 전국적으로 방송되었습니다." },
+      { en: "The column was a scathing philippic against corporate greed.", kr: "그 칼럼은 기업 탐욕에 대한 신랄한 맹렬한 비난 연설이었습니다." }
+    ]
+  },
+  {
+    id: "L5-169",
+    word: "phlegmatic",
+    meaning: "침착한, 무감정한",
+    examples: [
+      { en: "He maintained a phlegmatic attitude throughout the crisis.", kr: "그는 위기 내내 침착한 태도를 유지했습니다." },
+      { en: "Her phlegmatic response suggested she was not easily rattled.", kr: "그녀의 무감정한 반응은 그녀가 쉽게 동요하지 않음을 시사했습니다." }
+    ]
+  },
+  {
+    id: "L5-170",
+    word: "plaintive",
+    meaning: "구슬픈, 애처로운",
+    examples: [
+      { en: "The dog let out a plaintive howl after being left alone.", kr: "개는 혼자 남겨진 후 구슬픈 울음소리를 냈습니다." },
+      { en: "We listened to the plaintive melody of the folk song.", kr: "우리는 그 민요의 애처로운 멜로디를 들었습니다." }
+    ]
+  },
+  {
+    id: "L5-171",
+    word: "plethora",
+    meaning: "과다, 과잉",
+    examples: [
+      { en: "The menu offered a plethora of dessert options.", kr: "메뉴는 과다한 디저트 옵션들을 제공했습니다." },
+      { en: "A plethora of confusing rules made the game impossible to play.", kr: "혼란스러운 규칙들의 과다가 그 게임을 하는 것을 불가능하게 만들었습니다." }
+    ]
+  },
+  {
+    id: "L5-172",
+    word: "polemical",
+    meaning: "논쟁적인, 격렬하게 비판하는",
+    examples: [
+      { en: "The article was highly polemical and sparked immediate controversy.", kr: "그 기사는 매우 논쟁적이었고 즉각적인 논란을 촉발했습니다." },
+      { en: "He is known for his sharp, polemical writing style.", kr: "그는 그의 날카롭고 격렬하게 비판하는 글쓰기 스타일로 알려져 있습니다." }
+    ]
+  },
+  {
+    id: "L5-173",
+    word: "prodigious",
+    meaning: "엄청난, 굉장한",
+    examples: [
+      { en: "The project required a prodigious amount of capital and labor.", kr: "그 프로젝트는 엄청난 양의 자본과 노동을 필요로 했습니다." },
+      { en: "She showed a prodigious talent for mathematics from a young age.", kr: "그녀는 어린 나이부터 수학에 대한 굉장한 재능을 보여주었습니다." }
+    ]
+  },
+  {
+    id: "L5-174",
+    word: "proscribe",
+    meaning: "금지하다, 추방하다",
+    examples: [
+      { en: "The law proscribes the use of certain chemicals in food processing.", kr: "그 법은 식품 가공에서 특정 화학 물질의 사용을 금지합니다." },
+      { en: "The university proscribed the student group for violating ethical rules.", kr: "그 대학은 윤리 규칙 위반으로 그 학생 그룹을 추방했습니다." }
+    ]
+  },
+  {
+    id: "L5-175",
+    word: "propensity",
+    meaning: "성향, 경향",
+    examples: [
+      { en: "He has a natural propensity to exaggerate his achievements.", kr: "그는 자신의 성과를 과장하는 타고난 성향이 있습니다." },
+      { en: "The study analyzed the human propensity for risk-taking.", kr: "그 연구는 위험 감수를 향한 인간의 성향을 분석했습니다." }
+    ]
+  },
+  {
+    id: "L5-176",
+    word: "propitiate",
+    meaning: "달래다, 비위를 맞추다",
+    examples: [
+      { en: "They offered a sacrifice to propitiate the angry gods.", kr: "그들은 노한 신들의 비위를 맞추기 위해 희생 제물을 바쳤습니다." },
+      { en: "He tried to propitiate his boss by offering to take on extra work.", kr: "그는 추가 업무를 맡겠다고 제안하여 상사를 달래려고 노력했습니다." }
+    ]
+  },
+  {
+    id: "L5-177",
+    word: "pundit",
+    meaning: "전문가, 권위자",
+    examples: [
+      { en: "The news program featured a panel of political pundits.", kr: "그 뉴스 프로그램은 정치 전문가 패널을 특징으로 했습니다." },
+      { en: "He is regarded as a leading pundit in the field of cybersecurity.", kr: "그는 사이버 보안 분야의 선도적인 권위자로 간주됩니다." }
+    ]
+  },
+  {
+    id: "L5-178",
+    word: "pusillanimous",
+    meaning: "소심한, 겁 많은",
+    examples: [
+      { en: "The general was criticized for his pusillanimous decision to retreat.", kr: "그 장군은 후퇴하려는 소심한 결정으로 비판받았습니다." },
+      { en: "The politician made a pusillanimous attempt to avoid the controversial question.", kr: "그 정치인은 논란의 질문을 피하려는 겁 많은 시도를 했습니다." }
+    ]
+  },
+  {
+    id: "L5-179",
+    word: "quell",
+    meaning: "진압하다, 가라앉히다",
+    examples: [
+      { en: "The police were called in to quell the student protest.", kr: "경찰은 학생 시위를 진압하기 위해 호출되었습니다." },
+      { en: "A simple gesture was enough to quell her rising fears.", kr: "간단한 몸짓이 그녀의 커져가는 두려움을 가라앉히기에 충분했습니다." }
+    ]
+  },
+  {
+    id: "L5-180",
+    word: "quixotic",
+    meaning: "돈키호테식의, 비현실적인",
+    examples: [
+      { en: "His quixotic quest to eliminate all debt in the world was impractical.", kr: "세상의 모든 빚을 없애려는 그의 돈키호테식 탐구는 비현실적이었습니다." },
+      { en: "The board dismissed the proposal as a quixotic fantasy.", kr: "이사회는 그 제안을 비현실적인 환상으로 일축했습니다." }
+    ]
+  },
+  {
+    id: "L5-181",
+    word: "rapacious",
+    meaning: "탐욕스러운, 강탈하는",
+    examples: [
+      { en: "The rapacious landlords demanded exorbitant rent increases.", kr: "그 탐욕스러운 집주인들은 엄청난 임대료 인상을 요구했습니다." },
+      { en: "The company was accused of rapacious exploitation of natural resources.", kr: "그 회사는 천연자원의 강탈적인 착취 혐의로 고발되었습니다." }
+    ]
+  },
+  {
+    id: "L5-182",
+    word: "rapacity",
+    meaning: "탐욕, 강탈",
+    examples: [
+      { en: "The downfall of the regime was rooted in the rapacity of its leaders.", kr: "그 정권의 몰락은 지도자들의 탐욕에 뿌리를 두고 있었습니다." },
+      { en: "His insatiable rapacity for wealth led to his ruin.", kr: "그의 채울 수 없는 부에 대한 탐욕은 그를 파멸로 이끌었습니다." }
+    ]
+  },
+  {
+    id: "L5-183",
+    word: "rationalize",
+    meaning: "합리화하다",
+    examples: [
+      { en: "He tried to rationalize his impulsive spending by calling it a necessary expense.", kr: "그는 충동적인 지출을 필요 경비라고 부르며 합리화하려고 노력했습니다." },
+      { en: "It is hard to rationalize an unethical decision.", kr: "비윤리적인 결정을 합리화하기는 어렵습니다." }
+    ]
+  },
+  {
+    id: "L5-184",
+    word: "rebuttal",
+    meaning: "반박, 항변",
+    examples: [
+      { en: "The defendant's lawyer offered a powerful rebuttal to the prosecution's claims.", kr: "피고인의 변호사는 검찰 측 주장에 대한 강력한 반박을 제시했습니다." },
+      { en: "The scientist prepared a detailed rebuttal to the criticism of her research.", kr: "그 과학자는 자신의 연구에 대한 비판에 상세한 항변을 준비했습니다." }
+    ]
+  },
+  {
+    id: "L5-185",
+    word: "recluse",
+    meaning: "은둔자",
+    examples: [
+      { en: "The famous author lived as a recluse in the remote countryside.", kr: "그 유명한 작가는 외딴 시골에서 은둔자로 살았습니다." },
+      { en: "He became a recluse after retiring from public life.", kr: "그는 공직에서 은퇴한 후 은둔자가 되었습니다." }
+    ]
+  },
+  {
+    id: "L5-186",
+    word: "remorse",
+    meaning: "후회, 양심의 가책",
+    examples: [
+      { en: "He showed no remorse for the damage he had caused.", kr: "그는 자신이 초래한 피해에 대해 아무런 후회도 보이지 않았습니다." },
+      { en: "A deep sense of remorse finally led him to confess.", kr: "깊은 양심의 가책이 마침내 그를 고백하게 했습니다." }
+    ]
+  },
+  {
+    id: "L5-187",
+    word: "repartee",
+    meaning: "재치 있는 응답, 말재주",
+    examples: [
+      { en: "The dinner conversation was lively, full of witty repartee.", kr: "저녁 식사 대화는 재치 있는 응답으로 가득 차 활기찼습니다." },
+      { en: "The comedian's quick repartee made him a favorite on talk shows.", kr: "그 코미디언의 빠른 말재주는 그를 토크쇼에서 인기 있게 만들었습니다." }
+    ]
+  },
+  {
+    id: "L5-188",
+    word: "reprehensible",
+    meaning: "비난받을 만한",
+    examples: [
+      { en: "His behavior was utterly reprehensible and unacceptable.", kr: "그의 행동은 전적으로 비난받을 만하고 용납될 수 없었습니다." },
+      { en: "The company's reprehensible safety record led to severe fines.", kr: "그 회사의 비난받을 만한 안전 기록은 심각한 벌금으로 이어졌습니다." }
+    ]
+  },
+  {
+    id: "L5-189",
+    word: "reprove",
+    meaning: "꾸짖다, 책망하다",
+    examples: [
+      { en: "The manager had to reprove the employee for constant tardiness.", kr: "매니저는 끊임없는 지각 때문에 직원을 꾸짖어야 했습니다." },
+      { en: "I gently reproved the child for drawing on the walls.", kr: "나는 벽에 그림을 그린 아이를 부드럽게 책망했습니다." }
+    ]
+  },
+  {
+    id: "L5-190",
+    word: "rescind",
+    meaning: "철회하다, 폐지하다",
+    examples: [
+      { en: "The board voted to rescind the highly unpopular new policy.", kr: "이사회는 매우 인기 없는 새 정책을 철회하기 위해 투표했습니다." },
+      { en: "The university may rescind the degree if plagiarism is proven.", kr: "표절이 증명되면 대학은 학위를 폐지할 수 있습니다." }
+    ]
+  },
+  {
+    id: "L5-191",
+    word: "resolute",
+    meaning: "단호한, 확고한",
+    examples: [
+      { en: "She remained resolute in her commitment to the truth.", kr: "그녀는 진실에 대한 자신의 헌신에 단호한 태도를 유지했습니다." },
+      { en: "The leader showed resolute determination in the face of the challenge.", kr: "그 지도자는 도전에 직면하여 확고한 결단력을 보여주었습니다." }
+    ]
+  },
+  {
+    id: "L5-192",
+    word: "revere",
+    meaning: "존경하다, 숭배하다",
+    examples: [
+      { en: "The community continues to revere the founding fathers of the town.", kr: "그 공동체는 마을의 설립자들을 계속 존경합니다." },
+      { en: "Ancient cultures often revere the mountains as sacred places.", kr: "고대 문화들은 종종 산을 신성한 장소로 숭배합니다." }
+    ]
+  },
+  {
+    id: "L5-193",
+    word: "rhetoric",
+    meaning: "수사학, 미사여구",
+    examples: [
+      { en: "His speech was full of inspiring rhetoric but lacked practical solutions.", kr: "그의 연설은 영감을 주는 수사학으로 가득했지만 실질적인 해결책은 부족했습니다." },
+      { en: "The power of rhetoric can sway public opinion easily.", kr: "수사학의 힘은 대중의 의견을 쉽게 흔들 수 있습니다." }
+    ]
+  },
+  {
+    id: "L5-194",
+    word: "rife",
+    meaning: "가득한, 만연한",
+    examples: [
+      { en: "The documents were rife with errors and contradictions.", kr: "그 문서들은 오류와 모순으로 가득했습니다." },
+      { en: "The novel describes a city rife with corruption.", kr: "그 소설은 부패가 만연한 도시를 묘사합니다." }
+    ]
+  },
+  {
+    id: "L5-195",
+    word: "rudimentary",
+    meaning: "기본적인, 초보적인",
+    examples: [
+      { en: "He only has a rudimentary knowledge of the subject.", kr: "그는 그 주제에 대해 단지 기본적인 지식만 가지고 있습니다." },
+      { en: "The early versions of the software were quite rudimentary.", kr: "그 소프트웨어의 초기 버전들은 꽤 초보적이었습니다." }
+    ]
+  },
+  {
+    id: "L5-196",
+    word: "sally",
+    meaning: "돌격, 재치 있는 말",
+    examples: [
+      { en: "The besieged troops attempted a surprise sally out of the castle.", kr: "포위된 군대는 성 밖으로 깜짝 돌격을 시도했습니다." },
+      { en: "His quick sally into the conversation made everyone laugh.", kr: "그의 대화 속으로의 재치 있는 말은 모두를 웃게 만들었습니다." }
+    ]
+  },
+  {
+    id: "L5-197",
+    word: "sanction",
+    meaning: "승인, 제재",
+    examples: [
+      { en: "The plan requires formal sanction from the board.", kr: "그 계획은 이사회로부터 공식적인 승인을 필요로 합니다." },
+      { en: "The country faces economic sanctions due to its nuclear program.", kr: "그 나라는 핵 프로그램 때문에 경제 제재에 직면했습니다." }
+    ]
+  },
+  {
+    id: "L5-198",
+    word: "scrutiny",
+    meaning: "정밀 조사, 자세히 살펴봄",
+    examples: [
+      { en: "The politician's finances came under intense public scrutiny.", kr: "그 정치인의 재정은 강도 높은 대중의 정밀 조사를 받게 되었습니다." },
+      { en: "Every detail was subjected to close scrutiny by the auditor.", kr: "모든 세부 사항이 감사관의 자세히 살펴봄에 노출되었습니다." }
+    ]
+  },
+  {
+    id: "L5-199",
+    word: "skeptical",
+    meaning: "회의적인",
+    examples: [
+      { en: "I am skeptical about the promises of quick returns.", kr: "저는 빠른 수익의 약속에 대해 회의적입니다." },
+      { en: "The board was skeptical of the new manager's ambitious plan.", kr: "이사회는 새 관리자의 야심 찬 계획에 회의적이었습니다." }
+    ]
+  },
+  {
+    id: "L5-200",
+    word: "solicitous",
+    meaning: "염려하는, 걱정하는",
+    examples: [
+      { en: "The solicitous inquiries from his colleagues were comforting.", kr: "동료들의 염려하는 문의는 위안이 되었습니다." },
+      { en: "She was solicitous about her mother's health.", kr: "그녀는 어머니의 건강에 대해 걱정했습니다." }
+    ]
+  }
+];
+
+const wordsLevel5_Part3 = [
+  {
+    id: "L5-201",
+    word: "sanctimonious",
+    meaning: "독실한 척하는, 위선적인",
+    examples: [
+      { en: "He gave a sanctimonious lecture on morality while ignoring his own faults.", kr: "그는 자신의 잘못은 무시한 채 도덕에 대해 위선적인 훈계를 했습니다." },
+      { en: "I was annoyed by the politician's sanctimonious tone of false piety.", kr: "저는 그 정치인의 독실한 척하는 어조에 짜증이 났습니다." }
+    ]
+  },
+  {
+    id: "L5-202",
+    word: "sardonic",
+    meaning: "냉소적인, 비꼬는",
+    examples: [
+      { en: "The critic delivered a sardonic review that mocked the film's poor script.", kr: "그 비평가는 영화의 형편없는 각본을 조롱하는 냉소적인 평론을 했습니다." },
+      { en: "He responded to the naive question with a sardonic smile.", kr: "그는 순진한 질문에 비꼬는 미소로 응답했습니다." }
+    ]
+  },
+  {
+    id: "L5-203",
+    word: "scurrilous",
+    meaning: "상스러운, 욕설이 담긴",
+    examples: [
+      { en: "The tabloid published a scurrilous attack on the former CEO.", kr: "그 타블로이드지는 전직 최고 경영자에 대한 상스러운 공격을 보도했습니다." },
+      { en: "He was warned against using scurrilous language in the workplace.", kr: "그는 직장에서 욕설이 담긴 언어를 사용하지 말라는 경고를 받았습니다." }
+    ]
+  },
+  {
+    id: "L5-204",
+    word: "sedulous",
+    meaning: "근면한, 끈기 있는",
+    examples: [
+      { en: "She achieved her goals through sedulous effort, not luck.", kr: "그녀는 운이 아닌, 끈기 있는 노력을 통해 목표를 달성했습니다." },
+      { en: "The sedulous student spent every weekend studying complex theories.", kr: "그 근면한 학생은 매주 주말마다 복잡한 이론을 공부했습니다." }
+    ]
+  },
+  {
+    id: "L5-205",
+    word: "solipsism",
+    meaning: "유아론, 자기중심주의",
+    examples: [
+      { en: "His self-centered philosophy often bordered on intellectual solipsism.", kr: "그의 자기중심적인 철학은 종종 지적인 유아론에 가까웠습니다." },
+      { en: "The character’s belief that only he exists is an extreme form of solipsism.", kr: "그 등장인물의 자신만이 존재한다는 믿음은 유아론의 극단적인 형태입니다." }
+    ]
+  },
+  {
+    id: "L5-206",
+    word: "soporific",
+    meaning: "잠이 오게 하는",
+    examples: [
+      { en: "The monotonous tone of the lecture had a soporific effect on the class.", kr: "그 강의의 단조로운 어조는 수업에 잠이 오게 하는 효과를 주었습니다." },
+      { en: "The old remedy uses herbs with soporific qualities.", kr: "그 오래된 치료법은 수면을 유도하는(잠이 오게 하는) 성질을 가진 허브를 사용합니다." }
+    ]
+  },
+  {
+    id: "L5-207",
+    word: "sophistry",
+    meaning: "궤변",
+    examples: [
+      { en: "The lawyer won the case through clever sophistry rather than truth.", kr: "그 변호사는 진실보다는 영리한 궤변을 통해 사건에서 이겼습니다." },
+      { en: "We must distinguish between genuine logic and mere political sophistry.", kr: "우리는 진정한 논리와 단순한 정치적 궤변을 구별해야 합니다." }
+    ]
+  },
+  {
+    id: "L5-208",
+    word: "specious",
+    meaning: "겉만 번지르르한, 허울 좋은",
+    examples: [
+      { en: "The product was advertised with specious claims of guaranteed results.", kr: "그 제품은 결과 보장이라는 허울 좋은 주장으로 광고되었습니다." },
+      { en: "His specious argument sounded convincing but was fundamentally flawed.", kr: "그의 겉만 번지르르한 주장은 설득력 있게 들렸지만 근본적으로 결함이 있었습니다." }
+    ]
+  },
+  {
+    id: "L5-209",
+    word: "spurious",
+    meaning: "가짜의, 위조의",
+    examples: [
+      { en: "The court dismissed the documents as spurious evidence.", kr: "법원은 그 문서들을 가짜 증거로 기각했습니다." },
+      { en: "He was criticized for making spurious claims about his ancestry.", kr: "그는 자신의 혈통에 대해 위조된 주장을 한 혐의로 비판받았습니다." }
+    ]
+  },
+  {
+    id: "L5-210",
+    word: "stolid",
+    meaning: "둔감한, 무신경한",
+    examples: [
+      { en: "The stolid guard remained completely motionless throughout the shift.", kr: "그 둔감한 경비원은 근무 시간 내내 완전히 움직이지 않고 남아 있었습니다." },
+      { en: "His stolid reaction to the good news surprised everyone.", kr: "그의 무신경한 좋은 소식에 대한 반응은 모두를 놀라게 했습니다." }
+    ]
+  },
+  {
+    id: "L5-211",
+    word: "subliminal",
+    meaning: "잠재의식적인",
+    examples: [
+      { en: "The advertisement contained subliminal messages designed to influence consumer choice.", kr: "그 광고는 소비자 선택에 영향을 미치도록 고안된 잠재의식적인 메시지를 포함했습니다." },
+      { en: "He felt a vague, subliminal fear that he couldn't explain.", kr: "그는 설명할 수 없는 모호하고 잠재의식적인 두려움을 느꼈습니다." }
+    ]
+  },
+  {
+    id: "L5-212",
+    word: "subvert",
+    meaning: "전복시키다, 뒤엎다",
+    examples: [
+      { en: "The hacker group sought to subvert the established security protocols.", kr: "그 해커 그룹은 확립된 보안 규약을 전복시키려 했습니다." },
+      { en: "The film was criticized for trying to subvert traditional values.", kr: "그 영화는 전통적인 가치를 뒤엎으려고 시도했다는 비판을 받았습니다." }
+    ]
+  },
+  {
+    id: "L5-213",
+    word: "superfluous",
+    meaning: "불필요한, 과잉의",
+    examples: [
+      { en: "The manager cut all superfluous spending from the budget.", kr: "관리자는 예산에서 모든 불필요한 지출을 삭감했습니다." },
+      { en: "Adding an extra chapter to the book would be completely superfluous.", kr: "책에 장을 하나 더 추가하는 것은 완전히 불필요할 것입니다." }
+    ]
+  },
+  {
+    id: "L5-214",
+    word: "surfeit",
+    meaning: "과다, 지나친 양",
+    examples: [
+      { en: "The team suffered from a surfeit of advice but a paucity of practical help.", kr: "그 팀은 지나친 양의 조언은 받았지만, 실질적인 도움은 부족했습니다." },
+      { en: "A surfeit of rich food made him feel sick.", kr: "지나친 양의 기름진 음식은 그를 아프게 만들었습니다." }
+    ]
+  },
+  {
+    id: "L5-215",
+    word: "surreptitious",
+    meaning: "은밀한, 몰래 하는",
+    examples: [
+      { en: "They held a surreptitious meeting in the back room to discuss the merger.", kr: "그들은 합병을 논의하기 위해 뒷방에서 은밀한 회의를 가졌습니다." },
+      { en: "He made a surreptitious attempt to copy the exam answers.", kr: "그는 시험 답안을 베끼려는 몰래 하는 시도를 했습니다." }
+    ]
+  },
+  {
+    id: "L5-216",
+    word: "sycophant",
+    meaning: "아첨꾼",
+    examples: [
+      { en: "The celebrity was surrounded by sycophants who praised his every move.", kr: "그 유명인사는 그의 모든 움직임을 칭찬하는 아첨꾼들에게 둘러싸여 있었습니다." },
+      { en: "The director preferred honest critics to sycophants.", kr: "그 감독은 아첨꾼들보다 정직한 비평가들을 선호했습니다." }
+    ]
+  },
+  {
+    id: "L5-217",
+    word: "tacit",
+    meaning: "암묵적인",
+    examples: [
+      { en: "There was a tacit agreement to ignore the past conflict.", kr: "과거의 갈등을 무시하기로 하는 암묵적인 합의가 있었습니다." },
+      { en: "His silence gave a tacit approval to the plan.", kr: "그의 침묵은 계획에 대한 암묵적인 승인을 주었습니다." }
+    ]
+  },
+  {
+    id: "L5-218",
+    word: "taciturn",
+    meaning: "말수가 적은",
+    examples: [
+      { en: "The taciturn man rarely spoke during the long dinner.", kr: "그 말수가 적은 남자는 긴 저녁 식사 동안 거의 말하지 않았습니다." },
+      { en: "She is a shy and taciturn person.", kr: "그녀는 수줍고 말수가 적은 사람입니다." }
+    ]
+  },
+  {
+    id: "L5-219",
+    word: "tawdry",
+    meaning: "야한, 저속한",
+    examples: [
+      { en: "The carnival stand was decorated with tawdry, cheap prizes.", kr: "그 카니발 매점은 야하고 값싼 상품들로 장식되어 있었습니다." },
+      { en: "The movie was criticized for its tawdry plot.", kr: "그 영화는 저속한 줄거리로 비판받았습니다." }
+    ]
+  },
+  {
+    id: "L5-220",
+    word: "temerity",
+    meaning: "무모함, 만용",
+    examples: [
+      { en: "He had the temerity to challenge the world champion.", kr: "그는 세계 챔피언에게 도전하는 무모함(만용)을 부렸습니다." },
+      { en: "I was shocked by his temerity in lying to the police.", kr: "저는 경찰에게 거짓말을 하는 그의 만용에 충격을 받았습니다." }
+    ]
+  },
+  {
+    id: "L5-221",
+    word: "tenuous",
+    meaning: "미약한, 희박한",
+    examples: [
+      { en: "The connection between the two events is tenuous at best.", kr: "두 사건 사이의 연관성은 기껏해야 미약합니다." },
+      { en: "The mountain climber clung to the tenuous hold on the rock face.", kr: "그 등반가는 암벽에서 미약한 쥐는 힘에 매달렸습니다." }
+    ]
+  },
+  {
+    id: "L5-222",
+    word: "tirade",
+    meaning: "장황한 비난 연설",
+    examples: [
+      { en: "The customer launched into a tirade about the poor service.", kr: "그 고객은 형편없는 서비스에 대해 장황한 비난 연설을 시작했습니다." },
+      { en: "The politician's speech was more a tirade than a policy announcement.", kr: "그 정치인의 연설은 정책 발표라기보다는 비난 연설에 가까웠습니다." }
+    ]
+  },
+  {
+    id: "L5-223",
+    word: "torpor",
+    meaning: "무기력, 활기 없음",
+    examples: [
+      { en: "The economic crisis caused a general torpor in the business sector.", kr: "경제 위기는 기업 부문에 전반적인 무기력을 야기했습니다." },
+      { en: "The hot weather led to a state of mental torpor.", kr: "더운 날씨는 정신적 활기 없음(무기력) 상태로 이어졌습니다." }
+    ]
+  },
+  {
+    id: "L5-224",
+    word: "tout",
+    meaning: "크게 선전하다, 칭찬하다",
+    examples: [
+      { en: "The company constantly touts its product as the best in the market.", kr: "그 회사는 끊임없이 자신의 제품을 시장 최고라고 크게 선전합니다." },
+      { en: "Critics tout the young author as the voice of a new generation.", kr: "비평가들은 그 젊은 작가를 새 세대의 목소리라고 칭찬합니다." }
+    ]
+  },
+  {
+    id: "L5-225",
+    word: "tractable",
+    meaning: "다루기 쉬운, 유순한",
+    examples: [
+      { en: "The once rebellious team became surprisingly tractable under the new manager.", kr: "한때 반항적이었던 팀은 새 관리자 아래서 놀랍도록 유순해졌습니다." },
+      { en: "The new material is more tractable than the old one.", kr: "새로운 재료는 이전 재료보다 다루기 쉽습니다." }
+    ]
+  },
+  {
+    id: "L5-226",
+    word: "transient",
+    meaning: "일시적인, 덧없는",
+    examples: [
+      { en: "The beauty of the cherry blossoms is famously transient.", kr: "벚꽃의 아름다움은 덧없는 것으로 유명합니다." },
+      { en: "The city has a large population of transient workers.", kr: "그 도시는 많은 일시적인 노동자 인구를 가지고 있습니다." }
+    ]
+  },
+  {
+    id: "L5-227",
+    word: "travesty",
+    meaning: "서투른 모방, 희화화",
+    examples: [
+      { en: "The poorly organized trial was a travesty of justice.", kr: "엉성하게 조직된 재판은 정의의 서투른 모방(왜곡)이었습니다." },
+      { en: "The film was a travesty of the original great novel.", kr: "그 영화는 원래 위대한 소설의 희화화였습니다." }
+    ]
+  },
+  {
+    id: "L5-228",
+    word: "trenchant",
+    meaning: "정곡을 찌르는, 날카로운",
+    examples: [
+      { en: "She delivered a trenchant analysis of the company's failures.", kr: "그녀는 회사의 실패에 대한 정곡을 찌르는 분석을 전달했습니다." },
+      { en: "The editorial contained trenchant criticism of the government's policies.", kr: "그 사설은 정부 정책에 대한 날카로운 비판을 담고 있었습니다." }
+    ]
+  },
+  {
+    id: "L5-229",
+    word: "truculent",
+    meaning: "호전적인, 싸우기 좋아하는",
+    examples: [
+      { en: "The truculent customer refused to leave the store and started shouting.", kr: "그 호전적인 고객은 가게를 떠나기를 거부하고 소리치기 시작했습니다." },
+      { en: "The two sides engaged in a truculent exchange of insults.", kr: "양측은 모욕이 오가는 싸우기 좋아하는 설전에 참여했습니다." }
+    ]
+  },
+  {
+    id: "L5-230",
+    word: "truncate",
+    meaning: "길이를 자르다, 줄이다",
+    examples: [
+      { en: "The editor decided to truncate the article due to space limitations.", kr: "편집자는 공간 제한 때문에 기사의 길이를 자르기로 결정했습니다." },
+      { en: "The full performance was truncated for the television broadcast.", kr: "전체 공연은 텔레비전 방송을 위해 길이가 잘렸습니다." }
+    ]
+  },
+  {
+    id: "L5-231",
+    word: "ubiquitous",
+    meaning: "어디에나 있는",
+    examples: [
+      { en: "The company's logo is ubiquitous in major cities.", kr: "그 회사의 로고는 주요 도시에서 어디에나 있습니다." },
+      { en: "Smartphones have become an ubiquitous part of modern life.", kr: "스마트폰은 현대 생활의 어디에나 있는 부분이 되었습니다." }
+    ]
+  },
+  {
+    id: "L5-232",
+    word: "umbrage",
+    meaning: "불쾌감, 분개",
+    examples: [
+      { en: "He took umbrage at the suggestion that he was incompetent.", kr: "그는 자신이 무능하다는 제안에 불쾌감을 느꼈습니다." },
+      { en: "Her comments caused great umbrage among her conservative colleagues.", kr: "그녀의 발언은 그녀의 보수적인 동료들 사이에 큰 분개를 일으켰습니다." }
+    ]
+  },
+  {
+    id: "L5-233",
+    word: "unctuous",
+    meaning: "번지르르한, 기름진",
+    examples: [
+      { en: "The salesman's unctuous manner made the customers suspicious.", kr: "그 세일즈맨의 번지르르한 태도는 고객들을 의심하게 만들었습니다." },
+      { en: "I dislike his unctuous way of complimenting the boss.", kr: "저는 상사에게 아첨하는 그의 기름진 방식을 싫어합니다." }
+    ]
+  },
+  {
+    id: "L5-234",
+    word: "unscrupulous",
+    meaning: "부도덕한, 무원칙한",
+    examples: [
+      { en: "An unscrupulous dealer tried to sell me a fake product.", kr: "부도덕한 상인이 나에게 가짜 제품을 팔려고 했습니다." },
+      { en: "The company was shut down due to its unscrupulous business practices.", kr: "그 회사는 무원칙한 사업 관행 때문에 폐쇄되었습니다." }
+    ]
+  },
+  {
+    id: "L5-235",
+    word: "untenable",
+    meaning: "옹호할 수 없는, 지탱할 수 없는",
+    examples: [
+      { en: "The argument was legally untenable and easily refuted.", kr: "그 주장은 법적으로 옹호할 수 없었고 쉽게 반박되었습니다." },
+      { en: "The financial burden made the business model entirely untenable.", kr: "재정적 부담은 그 사업 모델을 완전히 지탱할 수 없게 만들었습니다." }
+    ]
+  },
+  {
+    id: "L5-236",
+    word: "upbraid",
+    meaning: "나무라다, 비난하다",
+    examples: [
+      { en: "The principal upbraided the student for vandalizing the school property.", kr: "교장은 학교 재산을 파손한 학생을 나무랐습니다." },
+      { en: "She upbraided herself for making such a careless mistake.", kr: "그녀는 그렇게 부주의한 실수를 한 자신을 비난했습니다." }
+    ]
+  },
+  {
+    id: "L5-237",
+    word: "usurp",
+    meaning: "빼앗다, 강탈하다",
+    examples: [
+      { en: "The ambitious duke attempted to usurp the throne from the rightful king.", kr: "그 야심 찬 공작은 정당한 왕으로부터 왕좌를 빼앗으려고 시도했습니다." },
+      { en: "The military leader usurped power from the civilian government.", kr: "그 군사 지도자는 민간 정부로부터 권력을 강탈했습니다." }
+    ]
+  },
+  {
+    id: "L5-238",
+    word: "vacillate",
+    meaning: "흔들리다, 망설이다",
+    examples: [
+      { en: "The market continues to vacillate in response to global news.", kr: "시장은 글로벌 뉴스에 반응하여 계속 흔들리고 있습니다." },
+      { en: "He tends to vacillate when asked to choose between two options.", kr: "그는 두 가지 옵션 중에서 선택하라는 요청을 받을 때 망설이는 경향이 있습니다." }
+    ]
+  },
+  {
+    id: "L5-239",
+    word: "vapid",
+    meaning: "지루한, 김빠진",
+    examples: [
+      { en: "The conversation was utterly vapid, focusing on trivial gossip.", kr: "그 대화는 사소한 가십에만 초점을 맞추어 완전히 지루했습니다." },
+      { en: "Critics dismissed the new movie as a vapid piece of cinema.", kr: "비평가들은 새 영화를 김빠진 영화 작품이라고 일축했습니다." }
+    ]
+  },
+  {
+    id: "L5-240",
+    word: "vehement",
+    meaning: "열렬한, 맹렬한",
+    examples: [
+      { en: "The proposal met with vehement opposition from the local community.", kr: "그 제안은 지역 사회로부터 열렬한 반대에 부딪혔습니다." },
+      { en: "He delivered a vehement denial of all the accusations.", kr: "그는 모든 비난에 대해 맹렬한 부인을 전달했습니다." }
+    ]
+  },
+  {
+    id: "L5-241",
+    word: "venal",
+    meaning: "매수되기 쉬운, 부패한",
+    examples: [
+      { en: "The police uncovered a network of venal officials accepting bribes.", kr: "경찰은 뇌물을 받는 부패한 공무원들의 네트워크를 밝혀냈습니다." },
+      { en: "The political system was criticized for being increasingly venal.", kr: "그 정치 시스템은 점점 더 매수되기 쉽다는 비판을 받았습니다." }
+    ]
+  },
+  {
+    id: "L5-242",
+    word: "venerable",
+    meaning: "존경할 만한, 숭고한",
+    examples: [
+      { en: "The venerable professor retired after decades of service to the university.", kr: "그 존경할 만한 교수는 대학에 수십 년 봉사한 후 은퇴했습니다." },
+      { en: "The ancient monument is a venerable place of history.", kr: "그 고대 기념비는 숭고한 역사의 장소입니다." }
+    ]
+  },
+  {
+    id: "L5-243",
+    word: "veracity",
+    meaning: "진실성, 정확성",
+    examples: [
+      { en: "The committee questioned the veracity of the witness's testimony.", kr: "위원회는 증인의 증언의 진실성에 의문을 제기했습니다." },
+      { en: "The study's results were accepted due to their high veracity.", kr: "그 연구의 결과는 높은 정확성 때문에 받아들여졌습니다." }
+    ]
+  },
+  {
+    id: "L5-244",
+    word: "verbose",
+    meaning: "장황한, 말이 많은",
+    examples: [
+      { en: "The report was overly verbose, repeating the same points multiple times.", kr: "그 보고서는 같은 요점을 여러 번 반복하여 지나치게 장황했습니다." },
+      { en: "The professor's lecture style is often too verbose.", kr: "그 교수의 강의 스타일은 종종 너무 말이 많습니다." }
+    ]
+  },
+  {
+    id: "L5-245",
+    word: "verisimilitude",
+    meaning: "진실 같음, 사실성",
+    examples: [
+      { en: "The detailed costumes added verisimilitude to the historical film.", kr: "그 상세한 의상은 역사 영화에 사실성을 더했습니다." },
+      { en: "The novel lacked verisimilitude because the characters acted unrealistically.", kr: "그 소설은 인물들이 비현실적으로 행동했기 때문에 진실 같음이 부족했습니다." }
+    ]
+  },
+  {
+    id: "L5-246",
+    word: "vicarious",
+    meaning: "대리의, 간접적인",
+    examples: [
+      { en: "She gained vicarious pleasure from watching her favorite team win.", kr: "그녀는 자신이 가장 좋아하는 팀이 이기는 것을 보면서 대리적인 즐거움을 얻었습니다." },
+      { en: "Reading travel blogs offers a vicarious experience of exploring the world.", kr: "여행 블로그를 읽는 것은 세상을 탐험하는 간접적인 경험을 제공합니다." }
+    ]
+  },
+  {
+    id: "L5-247",
+    word: "vilify",
+    meaning: "비방하다, 헐뜯다",
+    examples: [
+      { en: "The press sought to vilify the unpopular former mayor.", kr: "언론은 인기 없는 전 시장을 비방하려고 했습니다." },
+      { en: "It is unfair to vilify someone based on a single mistake.", kr: "단 하나의 실수 때문에 누군가를 헐뜯는 것은 불공평합니다." }
+    ]
+  },
+  {
+    id: "L5-248",
+    word: "vindictive",
+    meaning: "앙심 깊은, 복수심 있는",
+    examples: [
+      { en: "He was accused of making a vindictive move against his business rival.", kr: "그는 자신의 사업 라이벌에게 앙심 깊은 행동을 했다는 비난을 받았습니다." },
+      { en: "Her vindictive nature made it impossible for her to forgive betrayal.", kr: "그녀의 복수심 있는 천성은 그녀가 배신을 용서하는 것을 불가능하게 만들었습니다." }
+    ]
+  },
+  {
+    id: "L5-249",
+    word: "virulent",
+    meaning: "치명적인, 맹독성의",
+    examples: [
+      { en: "A virulent strain of the flu spread rapidly through the population.", kr: "독감의 치명적인 균주가 인구 전체에 빠르게 퍼졌습니다." },
+      { en: "The debate was characterized by virulent personal attacks.", kr: "그 토론은 맹독성의 개인적인 공격들로 특징지어졌습니다." }
+    ]
+  },
+  {
+    id: "L5-250",
+    word: "viscous",
+    meaning: "끈적끈적한, 점성이 있는",
+    examples: [
+      { en: "Honey is a highly viscous liquid.", kr: "꿀은 매우 끈적끈적한 액체입니다." },
+      { en: "The thick, viscous substance was difficult to pour.", kr: "그 두껍고 점성이 있는 물질은 붓기 어려웠습니다." }
+    ]
+  },
+  {
+    id: "L5-251",
+    word: "vituperate",
+    meaning: "욕설하다, 비난하다",
+    examples: [
+      { en: "The angry customer began to vituperate the service staff.", kr: "그 화난 고객은 서비스 직원들에게 욕설을 퍼붓기 시작했습니다." },
+      { en: "He was warned not to vituperate his opponent in public.", kr: "그는 공개적으로 상대방을 비난하지 말라는 경고를 받았습니다." }
+    ]
+  },
+  {
+    id: "L5-252",
+    word: "volatile",
+    meaning: "변동성이 심한, 불안정한",
+    examples: [
+      { en: "The stock market remained volatile after the major news announcement.", kr: "주식 시장은 주요 뉴스 발표 후 변동성이 심한 상태를 유지했습니다." },
+      { en: "He has a volatile temper that can flare up at any time.", kr: "그는 언제든지 폭발할 수 있는 불안정한 성질을 가지고 있습니다." }
+    ]
+  },
+  {
+    id: "L5-253",
+    word: "wanton",
+    meaning: "고의적인, 무자비한",
+    examples: [
+      { en: "The storm caused wanton destruction of property.", kr: "그 폭풍은 재산에 고의적인(극심한) 파괴를 야기했습니다." },
+      { en: "His youthful indiscretions were just acts of wanton arrogance.", kr: "그의 젊은 날의 경솔한 행동은 단지 무자비한 오만의 행위였습니다." }
+    ]
+  },
+  {
+    id: "L5-254",
+    word: "wistful",
+    meaning: "애석해 하는, 생각에 잠긴",
+    examples: [
+      { en: "She looked wistful as she recalled her childhood home.", kr: "그녀는 어린 시절의 집을 회상하며 애석해 하는 듯 보였습니다." },
+      { en: "The song has a wistful, melancholic melody.", kr: "그 노래는 생각에 잠긴 듯한, 우울한 멜로디를 가지고 있습니다." }
+    ]
+  },
+  {
+    id: "L5-255",
+    word: "wry",
+    meaning: "비꼬는, 씁쓸한",
+    examples: [
+      { en: "He gave a wry smile, acknowledging his own bad luck.", kr: "그는 자신의 불운을 인정하며 비꼬는 미소를 지었습니다." },
+      { en: "The author is known for his dry, wry sense of humor.", kr: "그 작가는 그의 건조하고 씁쓸한 유머 감각으로 알려져 있습니다." }
+    ]
+  },
+  {
+    id: "L5-256",
+    word: "xenophobia",
+    meaning: "외국인 혐오증",
+    examples: [
+      { en: "The rise of nationalism often leads to xenophobia.", kr: "민족주의의 증가는 종종 외국인 혐오증으로 이어집니다." },
+      { en: "The organization works to combat racism and xenophobia.", kr: "그 조직은 인종차별과 외국인 혐오증에 맞서 싸우기 위해 노력합니다." }
+    ]
+  },
+  {
+    id: "L5-257",
+    word: "zenith",
+    meaning: "정점, 절정",
+    examples: [
+      { en: "He reached the zenith of his career at age forty.", kr: "그는 40세에 경력의 정점에 도달했습니다." },
+      { en: "The sun was at its zenith at noon.", kr: "태양은 정오에 그 절정에 있었습니다." }
+    ]
+  },
+  {
+    id: "L5-258",
+    word: "acutely",
+    meaning: "강렬하게, 예리하게",
+    examples: [
+      { en: "The loss of the contract was acutely felt by the entire team.", kr: "계약 상실은 팀 전체에 강렬하게 느껴졌습니다." },
+      { en: "He is acutely aware of the risks involved in the investment.", kr: "그는 투자에 관련된 위험들을 예리하게 인식하고 있습니다." }
+    ]
+  },
+  {
+    id: "L5-259",
+    word: "adequately",
+    meaning: "적절하게, 충분히",
+    examples: [
+      { en: "The room was adequately heated for the cold weather.", kr: "그 방은 추운 날씨에 적절하게 난방되었습니다." },
+      { en: "She was adequately prepared for the difficult exam.", kr: "그녀는 어려운 시험에 충분히 준비되어 있었습니다." }
+    ]
+  },
+  {
+    id: "L5-260",
+    word: "adroitly",
+    meaning: "솜씨 있게, 능숙하게",
+    examples: [
+      { en: "The politician adroitly deflected the difficult question.", kr: "그 정치인은 어려운 질문을 솜씨 있게 피했습니다." },
+      { en: "She adroitly stitched the complex pattern onto the fabric.", kr: "그녀는 복잡한 패턴을 직물 위에 능숙하게 꿰매었습니다." }
+    ]
+  },
+  {
+    id: "L5-261",
+    word: "allegedly",
+    meaning: "주장하는 바에 의하면",
+    examples: [
+      { en: "He was allegedly involved in the cover-up.", kr: "그는 주장하는 바에 의하면 그 은폐에 연루되었습니다." },
+      { en: "The document allegedly contains secret military plans.", kr: "그 문서는 주장하는 바에 의하면 비밀 군사 계획을 포함하고 있습니다." }
+    ]
+  },
+  {
+    id: "L5-262",
+    word: "briefly",
+    meaning: "간결하게, 짧게",
+    examples: [
+      { en: "The chairman spoke briefly about the company's future.", kr: "의장은 회사의 미래에 대해 간결하게 말했습니다." },
+      { en: "I only saw her briefly in the hallway.", kr: "복도에서 그녀를 짧게(잠깐) 봤을 뿐입니다." }
+    ]
+  },
+  {
+    id: "L5-263",
+    word: "cohesively",
+    meaning: "응집력 있게, 일관성 있게",
+    examples: [
+      { en: "The team worked cohesively to meet the tight deadline.", kr: "그 팀은 촉박한 마감 기한을 맞추기 위해 응집력 있게 일했습니다." },
+      { en: "The argument was presented cohesively and logically.", kr: "그 주장은 일관성 있고 논리적으로 제시되었습니다." }
+    ]
+  },
+  {
+    id: "L5-264",
+    word: "conclusively",
+    meaning: "결정적으로, 확실히",
+    examples: [
+      { en: "The evidence conclusively proved his innocence.", kr: "그 증거는 그의 무죄를 결정적으로 입증했습니다." },
+      { en: "The study did not conclusively establish a link between the two factors.", kr: "그 연구는 두 요인 사이의 연관성을 확실히 확립하지 못했습니다." }
+    ]
+  },
+  {
+    id: "L5-265",
+    word: "consequently",
+    meaning: "결과적으로",
+    examples: [
+      { en: "The company cut costs; consequently, profits increased.", kr: "회사는 비용을 절감했습니다. 결과적으로, 수익이 증가했습니다." },
+      { en: "He missed the train, and consequently, he was hours late.", kr: "그는 기차를 놓쳤고, 결과적으로 몇 시간 늦었습니다." }
+    ]
+  },
+  {
+    id: "L5-266",
+    word: "currently",
+    meaning: "현재",
+    examples: [
+      { en: "She is currently working on a new novel.", kr: "그녀는 현재 새로운 소설을 작업하고 있습니다." },
+      { en: "The software is currently unavailable for download.", kr: "그 소프트웨어는 현재 다운로드가 불가능합니다." }
+    ]
+  },
+  {
+    id: "L5-267",
+    word: "deftly",
+    meaning: "능숙하게, 교묘하게",
+    examples: [
+      { en: "The magician deftly made the card disappear.", kr: "마술사는 카드를 능숙하게 사라지게 만들었습니다." },
+      { en: "He deftly avoided answering the difficult question.", kr: "그는 어려운 질문에 대답하는 것을 교묘하게 피했습니다." }
+    ]
+  },
+  {
+    id: "L5-268",
+    word: "delineately",
+    meaning: "정확하게, 분명히",
+    examples: [
+      { en: "The map delineately marked the boundaries of the property.", kr: "그 지도는 재산의 경계를 정확하게 표시했습니다." },
+      { en: "He spoke delineately about the scope of his responsibilities.", kr: "그는 자신의 책임 범위를 분명히 말했습니다." }
+    ]
+  },
+  {
+    id: "L5-269",
+    word: "distinctly",
+    meaning: "뚜렷하게, 명확하게",
+    examples: [
+      { en: "I distinctly remember meeting you at the conference last year.", kr: "저는 작년에 컨퍼런스에서 당신을 만났던 것을 뚜렷하게 기억합니다." },
+      { en: "The results of the two experiments were distinctly different.", kr: "두 실험의 결과는 명확하게 달랐습니다." }
+    ]
+  },
+  {
+    id: "L5-270",
+    word: "dubiously",
+    meaning: "의심스럽게",
+    examples: [
+      { en: "He looked dubiously at the expiration date on the old milk carton.", kr: "그는 오래된 우유 곽의 유통기한을 의심스럽게 보았습니다." },
+      { en: "The funds were obtained dubiously through several offshore accounts.", kr: "그 자금은 여러 역외 계좌를 통해 의심스럽게 획득되었습니다." }
+    ]
+  },
+  {
+    id: "L5-271",
+    word: "equally",
+    meaning: "동등하게",
+    examples: [
+      { en: "The profits were shared equally among the founders.", kr: "이익은 창립자들 사이에 동등하게 분배되었습니다." },
+      { en: "She is equally skilled in both marketing and sales.", kr: "그녀는 마케팅과 영업 모두에 동등하게 숙련되어 있습니다." }
+    ]
+  },
+  {
+    id: "L5-272",
+    word: "essentially",
+    meaning: "본질적으로",
+    examples: [
+      { en: "The two proposals are essentially the same, just phrased differently.", kr: "두 제안은 단지 다르게 표현되었을 뿐, 본질적으로 동일합니다." },
+      { en: "He is essentially a good person, despite his flaws.", kr: "그는 결점에도 불구하고 본질적으로 좋은 사람입니다." }
+    ]
+  },
+  {
+    id: "L5-273",
+    word: "eventually",
+    meaning: "결국, 마침내",
+    examples: [
+      { en: "After years of trying, he eventually succeeded in starting his own business.", kr: "수년간의 시도 끝에, 그는 결국 자신의 사업을 시작하는 데 성공했습니다." },
+      { en: "The long argument eventually led to a compromise.", kr: "그 긴 논쟁은 마침내 타협으로 이어졌습니다." }
+    ]
+  },
+  {
+    id: "L5-274",
+    word: "explicitly",
+    meaning: "명시적으로, 명확하게",
+    examples: [
+      { en: "The terms of payment were explicitly stated in the contract.", kr: "지불 조건이 계약서에 명시적으로 명확하게 진술되었습니다." },
+      { en: "He explicitly warned the team not to make the same mistake again.", kr: "그는 팀에게 같은 실수를 다시 하지 말라고 명확하게 경고했습니다." }
+    ]
+  },
+  {
+    id: "L5-275",
+    word: "externally",
+    meaning: "외부적으로",
+    examples: [
+      { en: "The damage appears externally to be minor, but the internal damage is severe.", kr: "피해는 외부적으로는 경미해 보이지만, 내부 손상은 심각합니다." },
+      { en: "The company relies heavily on recruiting externally.", kr: "그 회사는 외부적으로 인력을 채용하는 것에 크게 의존합니다." }
+    ]
+  },
+  {
+    id: "L5-276",
+    word: "feasibly",
+    meaning: "실행 가능하게",
+    examples: [
+      { en: "Can the project be feasibly completed by the end of the year?", kr: "그 프로젝트는 연말까지 실행 가능하게 완료될 수 있습니까?" },
+      { en: "We need to plan a schedule that is feasibly achievable.", kr: "우리는 실행 가능한 달성 가능한 일정을 계획해야 합니다." }
+    ]
+  },
+  {
+    id: "L5-277",
+    word: "fundamentally",
+    meaning: "근본적으로",
+    examples: [
+      { en: "The new system is fundamentally different from the old one.", kr: "새로운 시스템은 근본적으로 이전 시스템과 다릅니다." },
+      { en: "They disagreed fundamentally on the purpose of the organization.", kr: "그들은 조직의 목적에 대해 근본적으로 의견이 달랐습니다." }
+    ]
+  },
+  {
+    id: "L5-278",
+    word: "furthermore",
+    meaning: "게다가, 더욱이",
+    examples: [
+      { en: "The product is expensive; furthermore, it is difficult to use.", kr: "그 제품은 비쌉니다. 게다가, 사용하기 어렵습니다." },
+      { en: "She is highly qualified; furthermore, she has relevant experience.", kr: "그녀는 자격이 충분합니다. 더욱이, 관련 경험도 있습니다." }
+    ]
+  },
+  {
+    id: "L5-279",
+    word: "hence",
+    meaning: "그러므로, 따라서",
+    examples: [
+      { en: "The experiment failed; hence, the hypothesis must be revised.", kr: "실험이 실패했습니다. 그러므로, 가설은 수정되어야 합니다." },
+      { en: "He is moving to Paris; hence, he is learning French.", kr: "그는 파리로 이사하고 있습니다. 따라서, 그는 프랑스어를 배우고 있습니다." }
+    ]
+  },
+  {
+    id: "L5-280",
+    word: "inadvertently",
+    meaning: "무심코, 부주의로",
+    examples: [
+      { en: "He inadvertently revealed the secret during the phone call.", kr: "그는 전화 통화 중에 무심코 비밀을 밝혔습니다." },
+      { en: "The error was caused inadvertently by a sudden power surge.", kr: "그 오류는 갑작스러운 전력 서지로 인해 부주의로 발생했습니다." }
+    ]
+  },
+  {
+    id: "L5-281",
+    word: "infallibly",
+    meaning: "절대 틀림없이",
+    examples: [
+      { en: "The old clock kept time infallibly for over a century.", kr: "그 오래된 시계는 한 세기가 넘도록 절대 틀림없이 시간을 유지했습니다." },
+      { en: "He believes the data will infallibly prove his point.", kr: "그는 그 자료가 자신의 요점을 절대 틀림없이 증명할 것이라고 믿습니다." }
+    ]
+  },
+  {
+    id: "L5-282",
+    word: "initially",
+    meaning: "처음에",
+    examples: [
+      { en: "Initially, the project was met with resistance, but it is now popular.", kr: "처음에 그 프로젝트는 저항에 부딪혔지만, 지금은 인기가 있습니다." },
+      { en: "The cost was initially estimated to be much lower.", kr: "비용은 처음에 훨씬 더 낮게 추정되었습니다." }
+    ]
+  },
+  {
+    id: "L5-283",
+    word: "invariably",
+    meaning: "변함없이, 언제나",
+    examples: [
+      { en: "The bus is invariably late on Mondays.", kr: "그 버스는 월요일에는 변함없이 늦습니다." },
+      { en: "He invariably chooses the most difficult option when faced with a choice.", kr: "그는 선택에 직면했을 때 언제나 가장 어려운 옵션을 선택합니다." }
+    ]
+  },
+  {
+    id: "L5-284",
+    word: "invidiously",
+    meaning: "시기심 나게, 불쾌하게",
+    examples: [
+      { en: "The promotion was distributed invidiously among only a few senior staff.", kr: "그 승진은 소수의 고위 직원들 사이에서만 시기심 나게 분배되었습니다." },
+      { en: "He spoke invidiously about his colleague's rapid success.", kr: "그는 동료의 빠른 성공에 대해 불쾌하게 말했습니다." }
+    ]
+  },
+  {
+    id: "L5-285",
+    word: "laconicly",
+    meaning: "간결하게, 말 없이",
+    examples: [
+      { en: "The weary soldier replied laconicly to the general's questions.", kr: "그 지친 병사는 장군의 질문에 간결하게 대답했습니다." },
+      { en: "The instructions were given laconicly, but were easy to understand.", kr: "지침은 말 없이(간결하게) 주어졌지만, 이해하기 쉬웠습니다." }
+    ]
+  },
+  {
+    id: "L5-286",
+    word: "languidly",
+    meaning: "나른하게, 활기 없이",
+    examples: [
+      { en: "He waved languidly from the hammock in the hot sun.", kr: "그는 뜨거운 태양 아래 해먹에서 활기 없이 손을 흔들었습니다." },
+      { en: "The cat stretched languidly across the carpet.", kr: "고양이는 카펫 위로 나른하게 몸을 폈습니다." }
+    ]
+  },
+  {
+    id: "L5-287",
+    word: "largely",
+    meaning: "주로, 대체로",
+    examples: [
+      { en: "The success of the new product is largely due to the marketing team.", kr: "새 제품의 성공은 주로 마케팅 팀 덕분입니다." },
+      { en: "The project is now largely complete.", kr: "그 프로젝트는 이제 대체로 완성되었습니다." }
+    ]
+  },
+  {
+    id: "L5-288",
+    word: "legitimately",
+    meaning: "합법적으로, 정당하게",
+    examples: [
+      { en: "The funds were acquired legitimately through years of investment.", kr: "그 자금은 수년간의 투자를 통해 합법적으로 획득되었습니다." },
+      { en: "He can legitimately claim the title.", kr: "그는 정당하게 그 칭호를 요구할 수 있습니다." }
+    ]
+  },
+  {
+    id: "L5-289",
+    word: "meticulously",
+    meaning: "세심하게, 꼼꼼하게",
+    examples: [
+      { en: "The historian meticulously checked every detail of the ancient document.", kr: "그 역사가(史家)는 고대 문서의 모든 세부 사항을 세심하게 확인했습니다." },
+      { en: "She meticulously planned every step of the complex operation.", kr: "그녀는 복잡한 작전의 모든 단계를 꼼꼼하게 계획했습니다." }
+    ]
+  },
+  {
+    id: "L5-290",
+    word: "merely",
+    meaning: "단지, 그저",
+    examples: [
+      { en: "It was merely a coincidence, nothing more.", kr: "그것은 단지 우연이었을 뿐, 그 이상은 아닙니다." },
+      { en: "He achieved the rank merely through seniority.", kr: "그는 단지 연공서열을 통해서 그 직급을 달성했습니다." }
+    ]
+  },
+  {
+    id: "L5-291",
+    word: "minimal",
+    meaning: "최소한의",
+    examples: [
+      { en: "The accident caused minimal damage to the vehicle.", kr: "그 사고는 차량에 최소한의 손상만을 입혔습니다." },
+      { en: "We need a minimal amount of information to start the process.", kr: "우리는 과정을 시작하기 위해 최소한의 정보가 필요합니다." }
+    ]
+  },
+  {
+    id: "L5-292",
+    word: "notably",
+    meaning: "특히, 현저하게",
+    examples: [
+      { en: "The project succeeded in several key areas, notably cost reduction.", kr: "그 프로젝트는 몇 가지 핵심 영역, 특히 비용 절감에서 성공했습니다." },
+      { en: "The difference in quality was notably superior.", kr: "품질의 차이는 현저하게 우수했습니다." }
+    ]
+  },
+  {
+    id: "L5-293",
+    word: "objectively",
+    meaning: "객관적으로",
+    examples: [
+      { en: "Try to view the dispute objectively, without taking sides.", kr: "편을 들지 않고, 그 분쟁을 객관적으로 보려고 노력하세요." },
+      { en: "Scientists are trained to report results calmly and objectively.", kr: "과학자들은 결과를 침착하고 객관적으로 보고하도록 훈련받습니다." }
+    ]
+  },
+  {
+    id: "L5-294",
+    word: "ostensibly",
+    meaning: "표면상으로는",
+    examples: [
+      { en: "Ostensibly, he resigned for personal reasons, but the truth is different.", kr: "표면상으로는 그는 개인적인 이유로 사임했지만, 진실은 다릅니다." },
+      { en: "The visit was ostensibly to check the facilities.", kr: "그 방문은 표면상으로는 시설을 점검하기 위한 것이었습니다." }
+    ]
+  },
+  {
+    id: "L5-295",
+    word: "parsimoniously",
+    meaning: "인색하게",
+    examples: [
+      { en: "The wealthy owner managed his factory parsimoniously.", kr: "그 부유한 소유주는 자신의 공장을 인색하게 관리했습니다." },
+      { en: "She lived parsimoniously, saving every penny for her education.", kr: "그녀는 교육을 위해 모든 돈을 저축하며 인색하게 살았습니다." }
+    ]
+  },
+  {
+    id: "L5-296",
+    word: "perfidiously",
+    meaning: "배신적으로, 믿을 수 없게",
+    examples: [
+      { en: "The general acted perfidiously by revealing his army's positions to the enemy.", kr: "그 장군은 적에게 자신의 군대 위치를 밝힘으로써 배신적으로 행동했습니다." },
+      { en: "The former friend perfidiously undermined his business.", kr: "그 전 친구는 믿을 수 없게 그의 사업을 약화시켰습니다." }
+    ]
+  },
+  {
+    id: "L5-297",
+    word: "perspicaciously",
+    meaning: "통찰력 있게, 예리하게",
+    examples: [
+      { en: "The analyst perspicaciously predicted the shift in market demand.", kr: "그 분석가는 시장 수요의 변화를 통찰력 있게 예측했습니다." },
+      { en: "He observed the details perspicaciously and found the hidden clue.", kr: "그는 세부 사항을 예리하게 관찰하고 숨겨진 단서를 찾았습니다." }
+    ]
+  },
+  {
+    id: "L5-298",
+    word: "phlegmatically",
+    meaning: "침착하게, 냉정하게",
+    examples: [
+      { en: "The crisis manager responded phlegmatically to the barrage of questions.", kr: "그 위기 관리자는 쏟아지는 질문 세례에 침착하게 대응했습니다." },
+      { en: "He watched the chaos unfold phlegmatically, showing no distress.", kr: "그는 아무런 고통도 보이지 않고 냉정하게 혼란이 전개되는 것을 지켜보았습니다." }
+    ]
+  },
+  {
+    id: "L5-299",
+    word: "precipitously",
+    meaning: "성급하게, 갑자기",
+    examples: [
+      { en: "The stock price fell precipitously after the negative news.", kr: "부정적인 뉴스 후 주가가 갑자기 급락했습니다." },
+      { en: "He resigned precipitously without a clear plan for the future.", kr: "그는 미래에 대한 명확한 계획 없이 성급하게 사임했습니다." }
+    ]
+  },
+  {
+    id: "L5-300",
+    word: "presciently",
+    meaning: "선견지명 있게",
+    examples: [
+      { en: "The investor presciently sold all his shares just before the crash.", kr: "그 투자자는 폭락 직전에 선견지명 있게 모든 주식을 팔았습니다." },
+      { en: "The author's presciently written novel described the future accurately.", kr: "그 작가의 선견지명 있게 쓰인 소설은 미래를 정확하게 묘사했습니다." }
+   ]}
+];
+
+const wordsLevel5_Part4 = [
+  {
+    id: "L5-301",
+    word: "prolifically",
+    meaning: "다작으로, 풍부하게",
+    examples: [
+      { en: "She writes prolifically, publishing several novels each year.", kr: "그녀는 다작으로 글을 써서 매년 여러 소설을 출판합니다." },
+      { en: "The artist worked prolifically throughout his final decade.", kr: "그 예술가는 마지막 10년 동안 풍부하게(다작으로) 작업했습니다." }
+    ]
+  },
+  {
+    id: "L5-302",
+    word: "querulously",
+    meaning: "불평하듯이, 투덜거리며",
+    examples: [
+      { en: "The elderly patient complained querulously about the cold hospital food.", kr: "그 나이 든 환자는 차가운 병원 음식에 대해 불평하듯이 투덜거렸습니다." },
+      { en: "He querulously demanded a refund for the faulty product.", kr: "그는 투덜거리며 결함 있는 제품에 대한 환불을 요구했습니다." }
+    ]
+  },
+  {
+    id: "L5-303",
+    word: "recalcitrant",
+    meaning: "저항하는, 다루기 힘든",
+    examples: [
+      { en: "The recalcitrant student refused to follow the teacher's instructions.", kr: "그 저항하는 학생은 선생님의 지시를 따르기를 거부했습니다." },
+      { en: "The intractable problem proved recalcitrant to all known solutions.", kr: "그 다루기 힘든 문제는 모든 알려진 해결책에 대해 저항하는 것으로 입증되었습니다." }
+    ]
+  },
+  {
+    id: "L5-304",
+    word: "recapitulate",
+    meaning: "요약하다, 개요를 말하다",
+    examples: [
+      { en: "The speaker paused to briefly recapitulate the main points of the argument.", kr: "연사는 잠시 멈추고 주장의 요점을 간결하게 요약했습니다." },
+      { en: "The final chapter will recapitulate the themes introduced in the beginning.", kr: "마지막 장은 처음에 소개된 주제들을 개요를 말할 것입니다." }
+    ]
+  },
+  {
+    id: "L5-305",
+    word: "redoubtable",
+    meaning: "강력한, 존경할 만한",
+    examples: [
+      { en: "The chess player was a redoubtable opponent in international tournaments.", kr: "그 체스 선수는 국제 토너먼트에서 강력한 상대였습니다." },
+      { en: "She is a redoubtable figure in the field of quantum physics.", kr: "그녀는 양자 물리학 분야에서 존경할 만한 인물입니다." }
+    ]
+  },
+  {
+    id: "L5-306",
+    word: "reiterated",
+    meaning: "반복하여 말한, 되풀이한",
+    examples: [
+      { en: "The importance of safety was reiterated at the start of the meeting.", kr: "안전의 중요성은 회의 시작 시 반복하여 말해졌습니다." },
+      { en: "He reiterated his promise to lower taxes.", kr: "그는 세금을 낮추겠다는 자신의 약속을 되풀이했습니다." }
+    ]
+  },
+  {
+    id: "L5-307",
+    word: "relinquish",
+    meaning: "포기하다, 양도하다",
+    examples: [
+      { en: "The dictator was finally forced to relinquish power.", kr: "그 독재자는 마침내 권력을 포기하도록 강요받았습니다." },
+      { en: "He had to relinquish his claim to the inheritance.", kr: "그는 상속 재산에 대한 자신의 주장을 양도해야 했습니다." }
+    ]
+  },
+  {
+    id: "L5-308",
+    word: "reprobate",
+    meaning: "타락한 사람, 무뢰한",
+    examples: [
+      { en: "The novel's protagonist was a charming but morally corrupt reprobate.", kr: "그 소설의 주인공은 매력적이지만 도덕적으로 타락한 무뢰한이었습니다." },
+      { en: "He was considered a reprobate by his conservative family.", kr: "그는 그의 보수적인 가족에 의해 타락한 사람으로 간주되었습니다." }
+    ]
+  },
+  {
+    id: "L5-309",
+    word: "repudiate",
+    meaning: "거부하다, 부인하다",
+    examples: [
+      { en: "The politician repudiated the accusations made against him.", kr: "그 정치인은 자신에게 제기된 비난들을 거부했습니다." },
+      { en: "The company chose to repudiate the contract terms.", kr: "그 회사는 계약 조건을 부인하기로 결정했습니다." }
+    ]
+  },
+  {
+    id: "L5-310",
+    word: "requisite",
+    meaning: "필요한, 필수적인",
+    examples: [
+      { en: "Having a degree is a requisite for this position.", kr: "학위를 갖는 것은 이 직책에 필요한(필수적인) 것입니다." },
+      { en: "He lacked the requisite skills for the difficult task.", kr: "그는 어려운 임무에 필요한 기술이 부족했습니다." }
+    ]
+  },
+  {
+    id: "L5-311",
+    word: "reticent",
+    meaning: "과묵한, 말이 없는",
+    examples: [
+      { en: "She was reticent about her past, never mentioning her family.", kr: "그녀는 자신의 과거에 대해 과묵했고, 가족에 대해 전혀 언급하지 않았습니다." },
+      { en: "The reticent witness only gave brief, one-word answers.", kr: "그 말이 없는 증인은 단지 짧은 한 단어 답변만 했습니다." }
+    ]
+  },
+  {
+    id: "L5-312",
+    word: "ruminate",
+    meaning: "심사숙고하다, 곰곰이 생각하다",
+    examples: [
+      { en: "He sat by the fire, ruminating on the meaning of life.", kr: "그는 불 옆에 앉아 삶의 의미에 대해 심사숙고했습니다." },
+      { en: "She needed time to ruminate over the difficult decision.", kr: "그녀는 어려운 결정에 대해 곰곰이 생각할 시간이 필요했습니다." }
+    ]
+  },
+  {
+    id: "L5-313",
+    word: "salutary",
+    meaning: "건강에 좋은, 유익한",
+    examples: [
+      { en: "The defeat served as a salutary lesson for the arrogant team.", kr: "그 패배는 오만한 팀에게 유익한 교훈으로 작용했습니다." },
+      { en: "Fresh air and exercise are salutary for the mind and body.", kr: "신선한 공기와 운동은 몸과 마음에 건강에 좋습니다." }
+    ]
+  },
+  {
+    id: "L5-314",
+    word: "sanguine",
+    meaning: "낙관적인, 쾌활한",
+    examples: [
+      { en: "He is sanguine about the company's prospects for the coming year.", kr: "그는 다가오는 해의 회사 전망에 대해 낙관적입니다." },
+      { en: "Even in difficult times, she maintained a sanguine outlook.", kr: "어려운 시기에도 그녀는 쾌활한(낙관적인) 전망을 유지했습니다." }
+    ]
+  },
+  {
+    id: "L5-315",
+    word: "scintilla",
+    meaning: "아주 적은 양, 작은 불꽃",
+    examples: [
+      { en: "There was not a scintilla of evidence to support his wild claims.", kr: "그의 터무니없는 주장을 뒷받침할 아주 적은 양의 증거도 없었습니다." },
+      { en: "He showed a scintilla of interest in the proposal.", kr: "그는 그 제안에 작은 불꽃(아주 적은 양)의 관심을 보였습니다." }
+    ]
+  },
+  {
+    id: "L5-316",
+    word: "sycophancy",
+    meaning: "아첨, 아부",
+    examples: [
+      { en: "He rose through the ranks purely through sycophancy, not merit.", kr: "그는 실력이 아닌, 순전히 아첨을 통해 계급이 올랐습니다." },
+      { en: "The CEO was often surrounded by insincere sycophancy.", kr: "최고 경영자는 종종 불성실한 아부에 둘러싸여 있었습니다." }
+    ]
+  },
+  {
+    id: "L5-317",
+    word: "synthesis",
+    meaning: "종합, 통합",
+    examples: [
+      { en: "The book is a synthesis of many different philosophical traditions.", kr: "그 책은 많은 다른 철학적 전통들의 종합입니다." },
+      { en: "Chemical synthesis of the new compound was a complex process.", kr: "그 새로운 화합물의 화학적 통합(합성)은 복잡한 과정이었습니다." }
+    ]
+  },
+  {
+    id: "L5-318",
+    word: "tantamount",
+    meaning: "동등한, 같은",
+    examples: [
+      { en: "His refusal to answer was tantamount to an admission of guilt.", kr: "대답을 거부하는 것은 유죄를 인정하는 것과 동등했습니다." },
+      { en: "The director's constant criticism was tantamount to harassment.", kr: "그 감독의 끊임없는 비판은 괴롭힘과 같았습니다." }
+    ]
+  },
+  {
+    id: "L5-319",
+    word: "tergiversate",
+    meaning: "빙빙 돌리다, 변명하다",
+    examples: [
+      { en: "The witness began to tergiversate when pressed for specific details.", kr: "그 증인은 구체적인 세부 사항을 추궁당하자 빙빙 돌리기 시작했습니다." },
+      { en: "Stop tergiversating and give me a straight answer.", kr: "빙빙 돌리지 말고 솔직한 대답을 해 주세요." }
+    ]
+  },
+  {
+    id: "L5-320",
+    word: "transmute",
+    meaning: "변형시키다, 변화시키다",
+    examples: [
+      { en: "The alchemists attempted to transmute base metals into gold.", kr: "연금술사들은 비금속을 금으로 변형시키려고 시도했습니다." },
+      { en: "The terrible experience was transmuted into a source of inner strength.", kr: "그 끔찍한 경험은 내면의 힘의 근원으로 변화되었습니다." }
+    ]
+  },
+  {
+    id: "L5-321",
+    word: "unfettered",
+    meaning: "구속되지 않은, 자유로운",
+    examples: [
+      { en: "The artist was given unfettered creative control over the project.", kr: "그 예술가는 프로젝트에 대한 구속되지 않은 창작 통제권을 부여받았습니다." },
+      { en: "The country enjoys unfettered access to the sea.", kr: "그 나라는 바다에 대한 자유로운 접근을 누립니다." }
+    ]
+  },
+  {
+    id: "L5-322",
+    word: "unilateral",
+    meaning: "일방적인",
+    examples: [
+      { en: "The company's unilateral decision to cut benefits caused a strike.", kr: "회사의 혜택을 삭감하려는 일방적인 결정은 파업을 야기했습니다." },
+      { en: "We hope to avoid a unilateral declaration of independence.", kr: "우리는 일방적인 독립 선언을 피하기를 희망합니다." }
+    ]
+  },
+  {
+    id: "L5-323",
+    word: "unwittingly",
+    meaning: "자신도 모르게, 부지불식간에",
+    examples: [
+      { en: "He unwittingly gave away the secret by mentioning the dates.", kr: "그는 날짜를 언급함으로써 자신도 모르게 비밀을 누설했습니다." },
+      { en: "The agent unwittingly became involved in the smuggling operation.", kr: "그 요원은 부지불식간에 밀수 작전에 연루되었습니다." }
+    ]
+  },
+  {
+    id: "L5-324",
+    word: "vicissitude",
+    meaning: "변천, 우여곡절",
+    examples: [
+      { en: "The business survived the vicissitudes of the economic cycle.", kr: "그 사업은 경제 주기의 변천(우여곡절)을 이겨냈습니다." },
+      { en: "The book explores the vicissitudes of life and love.", kr: "그 책은 삶과 사랑의 우여곡절을 탐구합니다." }
+    ]
+  },
+  {
+    id: "L5-325",
+    word: "vituperative",
+    meaning: "욕설하는, 비난하는",
+    examples: [
+      { en: "The debate was marked by vituperative exchanges between the two candidates.", kr: "그 토론은 두 후보자 사이의 욕설하는 설전으로 특징지어졌습니다." },
+      { en: "The editorial contained a vituperative attack on the current administration.", kr: "그 사설은 현 행정부에 대한 비난하는 공격을 담고 있었습니다." }
+    ]
+  },
+  {
+    id: "L5-326",
+    word: "vociferous",
+    meaning: "소란스러운, 큰 소리로 외치는",
+    examples: [
+      { en: "The vociferous crowd demanded the resignation of the CEO.", kr: "그 소란스러운(큰 소리로 외치는) 군중은 최고 경영자의 사임을 요구했습니다." },
+      { en: "He made a vociferous objection to the proposal.", kr: "그는 그 제안에 대해 큰 소리로 외치는 반대를 했습니다." }
+    ]
+  },
+  {
+    id: "L5-327",
+    word: "welter",
+    meaning: "뒤죽박죽, 혼란",
+    examples: [
+      { en: "The documents were a welter of conflicting information.", kr: "그 문서들은 상충되는 정보의 뒤죽박죽이었습니다." },
+      { en: "The market was in a welter of confusion after the sudden announcement.", kr: "갑작스러운 발표 후 시장은 혼란에 빠졌습니다." }
+    ]
+  },
+  {
+    id: "L5-328",
+    word: "aberration",
+    meaning: "일탈, 정도를 벗어남",
+    examples: [
+      { en: "His momentary lapse in judgment was an aberration from his usual prudence.", kr: "그의 일시적인 판단 착오는 그의 평소 신중함으로부터의 일탈이었습니다." },
+      { en: "The unusual weather was a geographical aberration.", kr: "그 특이한 날씨는 지리적 정도를 벗어난 것이었습니다." }
+    ]
+  },
+  {
+    id: "L5-329",
+    word: "acumen",
+    meaning: "통찰력, 감각",
+    examples: [
+      { en: "He showed great business acumen by investing early in technology stocks.", kr: "그는 기술주에 일찍 투자함으로써 뛰어난 사업 통찰력을 보여주었습니다." },
+      { en: "Financial acumen is essential for a successful investor.", kr: "금융 감각은 성공적인 투자자에게 필수적입니다." }
+    ]
+  },
+  {
+    id: "L5-330",
+    word: "adumbrate",
+    meaning: "개요를 설명하다, 어렴풋이 나타내다",
+    examples: [
+      { en: "The committee will first adumbrate the major goals of the reform.", kr: "위원회는 먼저 개혁의 주요 목표들을 개요를 설명할 것입니다." },
+      { en: "The darkening clouds adumbrated a coming storm.", kr: "어두워지는 구름은 다가오는 폭풍을 어렴풋이 나타냈습니다." }
+    ]
+  },
+  {
+    id: "L5-331",
+    word: "alacrity",
+    meaning: "민첩함, 활발함",
+    examples: [
+      { en: "She accepted the invitation with alacrity.", kr: "그녀는 민첩함(활발함)으로 그 초대를 수락했습니다." },
+      { en: "The new staff completed their tasks with noticeable alacrity.", kr: "새 직원들은 눈에 띄는 활발함으로 그들의 임무를 완수했습니다." }
+    ]
+  },
+  {
+    id: "L5-332",
+    word: "anachronism",
+    meaning: "시대착오",
+    examples: [
+      { en: "A sword in modern warfare is an obvious anachronism.", kr: "현대 전쟁에서의 검은 명백한 시대착오입니다." },
+      { en: "The character’s use of a rotary phone felt like a deliberate anachronism.", kr: "그 등장인물이 로터리 전화를 사용하는 것은 의도적인 시대착오처럼 느껴졌습니다." }
+    ]
+  },
+  {
+    id: "L5-333",
+    word: "anathema",
+    meaning: "저주, 혐오스러운 것",
+    examples: [
+      { en: "Hate speech is anathema to the principles of a free society.", kr: "혐오 발언은 자유 사회의 원칙에 대한 혐오스러운 것입니다." },
+      { en: "The religious leaders pronounced an anathema on the heretics.", kr: "그 종교 지도자들은 이단자들에게 저주를 선포했습니다." }
+    ]
+  },
+  {
+    id: "L5-334",
+    word: "antagonism",
+    meaning: "적대감, 반목",
+    examples: [
+      { en: "There was open antagonism between the two rival teams.", kr: "두 라이벌 팀 사이에는 공개적인 적대감이 있었습니다." },
+      { en: "The political cartoon expressed public antagonism toward the new law.", kr: "그 정치 만화는 새 법에 대한 대중의 반목(적대감)을 표현했습니다." }
+    ]
+  },
+  {
+    id: "L5-335",
+    word: "antithesis",
+    meaning: "정반대",
+    examples: [
+      { en: "Love is the antithesis of hate.", kr: "사랑은 증오의 정반대입니다." },
+      { en: "The government's action was the antithesis of their campaign promise.", kr: "정부의 행동은 그들의 선거 공약의 정반대였습니다." }
+    ]
+  },
+  {
+    id: "L5-336",
+    word: "apotheosis",
+    meaning: "신격화, 절정",
+    examples: [
+      { en: "The film is considered the apotheosis of the science fiction genre.", kr: "그 영화는 공상 과학 장르의 절정으로 간주됩니다." },
+      { en: "The Roman emperors often sought apotheosis upon their death.", kr: "로마 황제들은 종종 죽은 후 신격화를 추구했습니다." }
+    ]
+  },
+  {
+    id: "L5-337",
+    word: "assiduous",
+    meaning: "근면한, 부지런한",
+    examples: [
+      { en: "The researcher's assiduous attention to detail yielded important discoveries.", kr: "그 연구원의 세부 사항에 대한 근면한 주의는 중요한 발견을 낳았습니다." },
+      { en: "She is known for being an assiduous student who always studies late.", kr: "그녀는 항상 늦게까지 공부하는 부지런한 학생으로 알려져 있습니다." }
+    ]
+  },
+  {
+    id: "L5-338",
+    word: "avarice",
+    meaning: "탐욕",
+    examples: [
+      { en: "Avarice drove the banker to commit illegal acts.", kr: "탐욕이 그 은행가를 불법 행위를 저지르게 만들었습니다." },
+      { en: "The downfall of the kingdom was attributed to the king's avarice.", kr: "그 왕국의 몰락은 왕의 탐욕에 기인했습니다." }
+    ]
+  },
+  {
+    id: "L5-339",
+    word: "bellicose",
+    meaning: "호전적인, 싸우기 좋아하는",
+    examples: [
+      { en: "The bellicose rhetoric of the leader threatened regional stability.", kr: "그 지도자의 호전적인 수사(말)는 지역 안정을 위협했습니다." },
+      { en: "He was warned to change his bellicose attitude in the workplace.", kr: "그는 직장에서 싸우기 좋아하는 태도를 바꾸라는 경고를 받았습니다." }
+    ]
+  },
+  {
+    id: "L5-340",
+    word: "cabal",
+    meaning: "음모단, 비밀 결사",
+    examples: [
+      { en: "A secret cabal of ministers plotted against the king.", kr: "장관들의 비밀 음모단이 왕을 상대로 음모를 꾸몄습니다." },
+      { en: "The investigation uncovered a powerful cabal operating within the corporation.", kr: "그 조사는 회사 내에서 운영되는 강력한 비밀 결사를 밝혀냈습니다." }
+    ]
+  },
+  {
+    id: "L5-341",
+    word: "cacophony",
+    meaning: "불협화음, 시끄러운 소리",
+    examples: [
+      { en: "The construction site produced a cacophony of banging and shouting.", kr: "그 건설 현장은 쿵쾅거리는 소리와 고함 소리의 불협화음(시끄러운 소리)을 냈습니다." },
+      { en: "The children's band created a tuneless cacophony.", kr: "그 아이들의 밴드는 음이 맞지 않는 불협화음을 만들었습니다." }
+    ]
+  },
+  {
+    id: "L5-342",
+    word: "capricious",
+    meaning: "변덕스러운",
+    examples: [
+      { en: "The weather in the mountains is notoriously capricious.", kr: "산의 날씨는 변덕스러운 것으로 악명이 높습니다." },
+      { en: "Her capricious spending habits often led to debt.", kr: "그녀의 변덕스러운 소비 습관은 종종 빚으로 이어졌습니다." }
+    ]
+  },
+  {
+    id: "L5-343",
+    word: "chicanery",
+    meaning: "속임수, 교활한 수법",
+    examples: [
+      { en: "The politician was notorious for his use of chicanery to win votes.", kr: "그 정치인은 표를 얻기 위해 속임수(교활한 수법)를 사용하는 것으로 악명이 높았습니다." },
+      { en: "The company was accused of financial chicanery.", kr: "그 회사는 재정적인 속임수 혐의로 고발되었습니다." }
+    ]
+  },
+  {
+    id: "L5-344",
+    word: "concomitant",
+    meaning: "수반하는, 동시에 일어나는",
+    examples: [
+      { en: "Increased economic growth is often a concomitant of lower interest rates.", kr: "증가된 경제 성장은 종종 낮은 이자율에 수반하는 것입니다." },
+      { en: "The excitement of the victory and the concomitant fatigue were overwhelming.", kr: "승리의 흥분과 동시에 일어나는 피로는 압도적이었습니다." }
+    ]
+  },
+  {
+    id: "L5-345",
+    word: "conflagration",
+    meaning: "대화재",
+    examples: [
+      { en: "The entire district was destroyed by the massive conflagration.", kr: "그 지역 전체가 대규모 대화재로 파괴되었습니다." },
+      { en: "The political crisis rapidly escalated into a metaphorical conflagration.", kr: "그 정치 위기는 비유적인 대화재로 빠르게 확대되었습니다." }
+    ]
+  },
+  {
+    id: "L5-346",
+    word: "contumacious",
+    meaning: "반항적인, 불복종하는",
+    examples: [
+      { en: "The court found the prisoner to be contumacious and resistant to authority.", kr: "법원은 그 죄수가 반항적이고 권위에 저항한다고 판결했습니다." },
+      { en: "The general dealt swiftly with the contumacious officers.", kr: "그 장군은 불복종하는 장교들을 신속하게 처리했습니다." }
+    ]
+  },
+  {
+    id: "L5-347",
+    word: "debacle",
+    meaning: "대실패, 붕괴",
+    examples: [
+      { en: "The launch of the new product was a complete debacle.", kr: "새 제품의 출시는 완전한 대실패였습니다." },
+      { en: "The sudden collapse of the empire was a historical debacle.", kr: "그 제국의 갑작스러운 붕괴는 역사적인 대실패였습니다." }
+    ]
+  },
+  {
+    id: "L5-348",
+    word: "defenestrate",
+    meaning: "창밖으로 던지다",
+    examples: [
+      { en: "Historical accounts mention a political figure who was defenestrated from a castle window.", kr: "역사 기록은 성 창문 밖으로 던져진(defenestrated) 정치인을 언급합니다." },
+      { en: "He felt like defenestrating the malfunctioning computer.", kr: "그는 오작동하는 컴퓨터를 창밖으로 던져버리고 싶었습니다." }
+    ]
+  },
+  {
+    id: "L5-349",
+    word: "demur",
+    meaning: "이의를 제기하다, 반대하다",
+    examples: [
+      { en: "The board members demurred at the proposed merger plan.", kr: "이사회 멤버들은 제안된 합병 계획에 이의를 제기했습니다." },
+      { en: "She accepted the task without demur.", kr: "그녀는 반대 없이 그 임무를 수락했습니다." }
+    ]
+  },
+  {
+    id: "L5-350",
+    word: "denouement",
+    meaning: "대단원, 결말",
+    examples: [
+      { en: "The novel’s denouement revealed the killer’s true identity.", kr: "그 소설의 대단원(결말)은 살인자의 진짜 정체를 밝혀냈습니다." },
+      { en: "The final scene served as the complex denouement of the political drama.", kr: "마지막 장면은 그 정치 드라마의 복잡한 결말 역할을 했습니다." }
+    ]
+  },
+  {
+    id: "L5-351",
+    word: "diaphanous",
+    meaning: "얇은, 속이 비치는",
+    examples: [
+      { en: "She wore a diaphanous silk scarf around her neck.", kr: "그녀는 목에 얇은 실크 스카프를 둘렀습니다." },
+      { en: "The diaphanous curtain allowed the morning light to softly filter in.", kr: "그 속이 비치는 커튼은 아침 햇살이 부드럽게 스며들게 했습니다." }
+    ]
+  },
+  {
+    id: "L5-352",
+    word: "dichotomy",
+    meaning: "양분, 이분법",
+    examples: [
+      { en: "The book explores the dichotomy between good and evil.", kr: "그 책은 선과 악 사이의 양분(이분법)을 탐구합니다." },
+      { en: "The organization suffered from a dichotomy between its stated goals and its actual practices.", kr: "그 조직은 공언된 목표와 실제 관행 사이의 이분법 때문에 고통받았습니다." }
+    ]
+  },
+  {
+    id: "L5-353",
+    word: "dilatory",
+    meaning: "꾸물거리는, 느린",
+    examples: [
+      { en: "The company was penalized for its dilatory payment of taxes.", kr: "그 회사는 세금의 꾸물거리는(느린) 납부 때문에 처벌받았습니다." },
+      { en: "His dilatory habits meant he always missed deadlines.", kr: "그의 느린 습관은 그가 항상 마감 기한을 놓친다는 것을 의미했습니다." }
+    ]
+  },
+  {
+    id: "L5-354",
+    word: "discursive",
+    meaning: "산만한, 주제를 벗어난",
+    examples: [
+      { en: "The professor's discursive lecture jumped from one topic to another.", kr: "그 교수의 산만한 강의는 한 주제에서 다른 주제로 건너뛰었습니다." },
+      { en: "The essay was criticized for its discursive style.", kr: "그 에세이는 주제를 벗어난 스타일로 비판받았습니다." }
+    ]
+  },
+  {
+    id: "L5-355",
+    word: "dissemble",
+    meaning: "숨기다, 위장하다",
+    examples: [
+      { en: "He tried to dissemble his true motives for taking the job.", kr: "그는 그 일자리를 맡는 것에 대한 자신의 진짜 동기를 숨기려고 노력했습니다." },
+      { en: "The spy was skilled at dissembling his identity.", kr: "그 스파이는 자신의 정체를 위장하는 데 능숙했습니다." }
+    ]
+  },
+  {
+    id: "L5-356",
+    word: "doleful",
+    meaning: "슬픈, 침울한",
+    examples: [
+      { en: "The dog gave a doleful look when its owner left the house.", kr: "주인이 집을 떠나자 개는 슬픈 표정을 지었습니다." },
+      { en: "The play ended with a doleful, tragic scene.", kr: "그 연극은 침울하고 비극적인 장면으로 끝났습니다." }
+    ]
+  },
+  {
+    id: "L5-357",
+    word: "egregious",
+    meaning: "지독한, 터무니없는",
+    examples: [
+      { en: "The committee called the accounting error an egregious mistake.", kr: "위원회는 그 회계 오류를 지독한 실수라고 불렀습니다." },
+      { en: "His behavior was an egregious breach of professional conduct.", kr: "그의 행동은 전문가의 행동 규범에 대한 터무니없는 위반이었습니다." }
+    ]
+  },
+  {
+    id: "L5-358",
+    word: "elucidate",
+    meaning: "설명하다, 명확히 하다",
+    examples: [
+      { en: "The professor was asked to elucidate the complex theory for the students.", kr: "교수는 학생들을 위해 복잡한 이론을 설명해 달라는 요청을 받았습니다." },
+      { en: "New evidence helped to elucidate the true cause of the accident.", kr: "새로운 증거는 사고의 진짜 원인을 명확히 하는 데 도움이 되었습니다." }
+    ]
+  },
+  {
+    id: "L5-359",
+    word: "encomium",
+    meaning: "찬사, 칭찬하는 말",
+    examples: [
+      { en: "The retiring CEO was presented with a glowing encomium for his years of service.", kr: "은퇴하는 최고 경영자는 그의 봉사 기간에 대한 빛나는 찬사를 받았습니다." },
+      { en: "His achievements deserve a greater encomium than I can offer.", kr: "그의 업적은 제가 제공할 수 있는 것보다 더 큰 칭찬하는 말을 받을 자격이 있습니다." }
+    ]
+  },
+  {
+    id: "L5-360",
+    word: "ephemeral",
+    meaning: "덧없는, 수명이 짧은",
+    examples: [
+      { en: "Fame in the modern era is often ephemeral.", kr: "현대 시대의 명성은 종종 덧없습니다." },
+      { en: "The fragile, ephemeral beauty of the ice sculpture quickly melted.", kr: "그 깨지기 쉽고 수명이 짧은 얼음 조각의 아름다움은 빠르게 녹았습니다." }
+    ]
+  },
+  {
+    id: "L5-361",
+    word: "equanimity",
+    meaning: "평정, 침착",
+    examples: [
+      { en: "She faced the disaster with remarkable equanimity.", kr: "그녀는 놀라운 평정(침착)을 가지고 그 재난에 직면했습니다." },
+      { en: "A good leader maintains equanimity even under intense pressure.", kr: "좋은 지도자는 강한 압박 속에서도 침착함을 유지합니다." }
+    ]
+  },
+  {
+    id: "L5-362",
+    word: "equivocal",
+    meaning: "애매모호한",
+    examples: [
+      { en: "The politician gave an equivocal answer that satisfied no one.", kr: "그 정치인은 아무도 만족시키지 못한 애매모호한 대답을 했습니다." },
+      { en: "The initial test results were equivocal and required further study.", kr: "초기 테스트 결과는 애매모호했고 추가 연구를 필요로 했습니다." }
+    ]
+  },
+  {
+    id: "L5-363",
+    word: "eschew",
+    meaning: "피하다, 삼가다",
+    examples: [
+      { en: "True ascetics eschew all forms of luxury and comfort.", kr: "진정한 금욕주의자들은 모든 형태의 사치와 편안함을 피합니다." },
+      { en: "The company chose to eschew complicated jargon in its advertising.", kr: "그 회사는 광고에서 복잡한 전문 용어를 삼가기로 결정했습니다." }
+    ]
+  },
+  {
+    id: "L5-364",
+    word: "eulogy",
+    meaning: "추도 연설, 찬사",
+    examples: [
+      { en: "The best friend delivered a heartfelt eulogy at the funeral.", kr: "가장 친한 친구는 장례식에서 진심 어린 추도 연설을 했습니다." },
+      { en: "The article was more a eulogy than a balanced critical review.", kr: "그 기사는 균형 잡힌 비판적인 평론이라기보다는 찬사에 가까웠습니다." }
+    ]
+  },
+  {
+    id: "L5-365",
+    word: "exacerbate",
+    meaning: "악화시키다",
+    examples: [
+      { en: "Lack of funding will only exacerbate the problem.", kr: "자금 부족은 문제를 악화시킬 뿐입니다." },
+      { en: "Trying to move the injured limb will exacerbate the pain.", kr: "부상당한 팔다리를 움직이려고 하는 것은 고통을 악화시킬 것입니다." }
+    ]
+  },
+  {
+    id: "L5-366",
+    word: "exigency",
+    meaning: "긴급 사태, 위급",
+    examples: [
+      { en: "The exigency of the situation required immediate action.", kr: "그 상황의 긴급 사태(위급)는 즉각적인 행동을 필요로 했습니다." },
+      { en: "The unexpected market crash created a financial exigency for the bank.", kr: "예상치 못한 시장 붕괴는 은행에 재정적 위급을 만들었습니다." }
+    ]
+  },
+  {
+    id: "L5-367",
+    word: "expatiate",
+    meaning: "상세히 설명하다, 길게 이야기하다",
+    examples: [
+      { en: "The author expatiated on his theories for hours at the book signing.", kr: "그 작가는 책 사인회에서 자신의 이론에 대해 몇 시간 동안 상세히 설명했습니다." },
+      { en: "She was reluctant to expatiate on her private life.", kr: "그녀는 자신의 사생활에 대해 길게 이야기하는 것을 꺼려했습니다." }
+    ]
+  },
+  {
+    id: "L5-368",
+    word: "extirpate",
+    meaning: "제거하다, 근절하다",
+    examples: [
+      { en: "The government launched a campaign to extirpate the invasive weed species.", kr: "정부는 침입성 잡초 종을 근절하기 위한 캠페인을 시작했습니다." },
+      { en: "We must work to extirpate corruption from the political system.", kr: "우리는 정치 시스템에서 부패를 제거하기 위해 노력해야 합니다." }
+    ]
+  },
+  {
+    id: "L5-369",
+    word: "fallacious",
+    meaning: "잘못된, 틀린",
+    examples: [
+      { en: "The report was based on fallacious assumptions and data.", kr: "그 보고서는 잘못된 가정과 데이터에 기반을 두고 있었습니다." },
+      { en: "It is a common but fallacious belief that money guarantees happiness.", kr: "돈이 행복을 보장한다는 것은 흔하지만 틀린 믿음입니다." }
+    ]
+  },
+  {
+    id: "L5-370",
+    word: "fastidious",
+    meaning: "까다로운, 세심한",
+    examples: [
+      { en: "The chef was fastidious about the presentation of the dishes.", kr: "그 요리사는 요리의 플레이팅에 대해 까다로웠습니다." },
+      { en: "She organized her notes with fastidious care.", kr: "그녀는 세심한 주의를 기울여 자신의 노트를 정리했습니다." }
+    ]
+  },
+  {
+    id: "L5-371",
+    word: "fatuous",
+    meaning: "어리석은, 얼빠진",
+    examples: [
+      { en: "He made a fatuous comment that completely missed the point.", kr: "그는 요점을 완전히 놓치는 어리석은 발언을 했습니다." },
+      { en: "The villain's fatuous grin showed his lack of intelligence.", kr: "그 악당의 얼빠진 웃음은 그의 지성 부족을 보여주었습니다." }
+    ]
+  },
+  {
+    id: "L5-372",
+    word: "feckless",
+    meaning: "무책임한, 쓸모없는",
+    examples: [
+      { en: "The company failed due to a series of feckless decisions by the management.", kr: "그 회사는 경영진의 일련의 무책임한 결정 때문에 실패했습니다." },
+      { en: "His feckless attitude towards his job angered his co-workers.", kr: "직장에 대한 그의 쓸모없는(무책임한) 태도는 동료들을 화나게 했습니다." }
+    ]
+  },
+  {
+    id: "L5-373",
+    word: "fiduciary",
+    meaning: "신탁의, 수탁자",
+    examples: [
+      { en: "As a board member, she has a fiduciary duty to act in the best interest of the shareholders.", kr: "이사회 멤버로서, 그녀는 주주들의 최선의 이익을 위해 행동할 신탁의 의무가 있습니다." },
+      { en: "The lawyer serves as a fiduciary for the client's assets.", kr: "그 변호사는 고객 자산의 수탁자 역할을 합니다." }
+    ]
+  },
+  {
+    id: "L5-374",
+    word: "fulsome",
+    meaning: "지나치게 아첨하는, 역겨운",
+    examples: [
+      { en: "The leader was embarrassed by the fulsome praise from his subordinates.", kr: "그 지도자는 부하 직원들의 지나치게 아첨하는 칭찬에 당황했습니다." },
+      { en: "I felt a fulsome attempt to flatter the host.", kr: "저는 주인을 아첨하려는 역겨운 시도를 느꼈습니다." }
+    ]
+  },
+  {
+    id: "L5-375",
+    word: "garrulous",
+    meaning: "수다스러운",
+    examples: [
+      { en: "The garrulous travel guide never stopped talking during the bus tour.", kr: "그 수다스러운 여행 가이드는 버스 투어 동안 말을 멈추지 않았습니다." },
+      { en: "His garrulous nature sometimes made him reveal secrets inadvertently.", kr: "그의 수다스러운 천성은 때때로 그가 부지불식간에 비밀을 누설하게 만들었습니다." }
+    ]
+  },
+  {
+    id: "L5-376",
+    word: "hegemony",
+    meaning: "패권, 지배권",
+    examples: [
+      { en: "The small state resisted the cultural hegemony of its larger neighbor.", kr: "그 작은 나라는 더 큰 이웃 나라의 문화적 패권에 저항했습니다." },
+      { en: "The company aims to establish global hegemony in the smartphone market.", kr: "그 회사는 스마트폰 시장에서 세계적인 지배권을 확립하는 것을 목표로 합니다." }
+    ]
+  },
+  {
+    id: "L5-377",
+    word: "heterodox",
+    meaning: "이교의, 이단의",
+    examples: [
+      { en: "His heterodox views on economics were controversial among traditional scholars.", kr: "경제학에 대한 그의 이교의(비정통적인) 견해는 전통적인 학자들 사이에서 논란이 되었습니다." },
+      { en: "She was known for her heterodox approach to painting.", kr: "그녀는 그림에 대한 이단의(틀에 박히지 않은) 접근 방식으로 알려져 있었습니다." }
+    ]
+  },
+  {
+    id: "L5-378",
+    word: "homogenous",
+    meaning: "동종의, 균질의",
+    examples: [
+      { en: "The soup was a perfectly homogenous mixture of vegetables and broth.", kr: "그 수프는 채소와 국물이 완벽하게 균질의 혼합물이었습니다." },
+      { en: "The country has a relatively homogenous population.", kr: "그 나라는 비교적 동종의 인구를 가지고 있습니다." }
+    ]
+  },
+  {
+    id: "L5-379",
+    word: "immanent",
+    meaning: "내재하는, 잠재하는",
+    examples: [
+      { en: "The philosopher discussed the concept of a divine presence immanent in all creation.", kr: "그 철학자는 모든 창조물에 내재하는 신성한 존재의 개념을 논했습니다." },
+      { en: "There is an immanent risk in any form of investment.", kr: "모든 형태의 투자에는 내재하는 위험이 있습니다." }
+    ]
+  },
+  {
+    id: "L5-380",
+    word: "imminent",
+    meaning: "임박한, 절박한",
+    examples: [
+      { en: "The weather service warned of an imminent storm heading toward the coast.", kr: "기상청은 해안으로 향하는 임박한 폭풍을 경고했습니다." },
+      { en: "The patient's imminent death was expected by the medical team.", kr: "그 환자의 절박한 죽음은 의료팀에 의해 예상되었습니다." }
+    ]
+  },
+  {
+    id: "L5-381",
+    word: "impalpable",
+    meaning: "만질 수 없는, 이해하기 어려운",
+    examples: [
+      { en: "The tension in the air was impalpable yet clearly felt by everyone.", kr: "공기 중의 긴장감은 만질 수 없었지만 모두에게 분명히 느껴졌습니다." },
+      { en: "The subtle difference in flavor was impalpable to the average diner.", kr: "맛의 미묘한 차이는 보통의 식사하는 사람에게는 이해하기 어려웠습니다." }
+    ]
+  },
+  {
+    id: "L5-382",
+    word: "inchoate",
+    meaning: "초기의, 이제 막 시작된",
+    examples: [
+      { en: "The new political movement is still in an inchoate stage.", kr: "새로운 정치 운동은 아직 초기의 단계에 있습니다." },
+      { en: "She presented an inchoate idea that needed much more development.", kr: "그녀는 훨씬 더 많은 발전이 필요한 이제 막 시작된 아이디어를 제시했습니다." }
+    ]
+  },
+  {
+    id: "L5-383",
+    word: "incongruous",
+    meaning: "어울리지 않는, 부조화한",
+    examples: [
+      { en: "His bright sports car seemed incongruous parked next to the old farmhouse.", kr: "그의 밝은 스포츠카는 오래된 농가 옆에 주차되어 있어 어울리지 않는 것처럼 보였습니다." },
+      { en: "The happy music was incongruous with the sad ending of the film.", kr: "그 행복한 음악은 영화의 슬픈 결말과 부조화했습니다." }
+    ]
+  },
+  {
+    id: "L5-384",
+    word: "incendiary",
+    meaning: "선동적인, 방화의",
+    examples: [
+      { en: "The politician made several incendiary comments that sparked outrage.", kr: "그 정치인은 분노를 촉발시키는 여러 선동적인 발언을 했습니다." },
+      { en: "The police suspected the fire was caused by an incendiary device.", kr: "경찰은 그 화재가 방화의 장치 때문에 발생했다고 의심했습니다." }
+    ]
+  },
+  {
+    id: "L5-385",
+    word: "inculcate",
+    meaning: "주입하다, 심어주다",
+    examples: [
+      { en: "The school tries to inculcate a sense of responsibility in its students.", kr: "그 학교는 학생들에게 책임감을 주입(심어)주려고 노력합니다." },
+      { en: "The importance of hard work was inculcated in him from a young age.", kr: "열심히 일하는 것의 중요성은 어린 나이부터 그에게 심어졌습니다." }
+    ]
+  },
+  {
+    id: "L5-386",
+    word: "indolence",
+    meaning: "게으름, 나태",
+    examples: [
+      { en: "His indolence prevented him from ever completing a long-term project.", kr: "그의 게으름은 그가 장기적인 프로젝트를 완료하는 것을 막았습니다." },
+      { en: "The heat of the afternoon encouraged a mood of indolence.", kr: "오후의 더위는 나태의 분위기를 조장했습니다." }
+    ]
+  },
+  {
+    id: "L5-387",
+    word: "innocuousness",
+    meaning: "무해함, 악의 없음",
+    examples: [
+      { en: "The expert confirmed the innocuousness of the chemical compound.", kr: "전문가는 그 화학 화합물의 무해함을 확인했습니다." },
+      { en: "The apparent innocuousness of the insect made its bite all the more surprising.", kr: "그 곤충의 명백한 무해함은 그 물림을 더욱 놀라게 만들었습니다." }
+    ]
+  },
+  {
+    id: "L5-388",
+    word: "internecine",
+    meaning: "동족상잔의, 상호 파괴적인",
+    examples: [
+      { en: "The civil war became a bitter internecine conflict.", kr: "그 내전은 쓰라린 동족상잔의 갈등이 되었습니다." },
+      { en: "Internecine squabbling within the board led to the company's collapse.", kr: "이사회 내의 상호 파괴적인 다툼이 회사의 붕괴로 이어졌습니다." }
+    ]
+  },
+  {
+    id: "L5-389",
+    word: "invidiousness",
+    meaning: "시기심, 불쾌감",
+    examples: [
+      { en: "The invidiousness of the award process caused resentment among the staff.", kr: "그 시상 과정의 시기심(불쾌감)은 직원들 사이에 분노를 야기했습니다." },
+      { en: "He recognized the invidiousness of his position as the judge of the contest.", kr: "그는 대회의 심사위원으로서 자신의 위치의 불쾌감을 인식했습니다." }
+    ]
+  },
+  {
+    id: "L5-390",
+    word: "juggernaut",
+    meaning: "대형 트럭, 불가항력적인 힘",
+    examples: [
+      { en: "The company's expansion became an unstoppable global juggernaut.", kr: "그 회사의 확장은 멈출 수 없는 세계적인 불가항력적인 힘이 되었습니다." },
+      { en: "The football team was an absolute juggernaut this season.", kr: "그 축구팀은 이번 시즌에 절대적인 불가항력적인 힘이었습니다." }
+    ]
+  },
+  {
+    id: "L5-391",
+    word: "lament",
+    meaning: "한탄하다, 슬퍼하다",
+    examples: [
+      { en: "The villagers lamented the destruction of their ancient temple.", kr: "마을 사람들은 그들의 고대 사원의 파괴를 한탄했습니다." },
+      { en: "The poem is a lament for lost youth.", kr: "그 시는 잃어버린 젊음에 대한 슬픔(한탄)입니다." }
+    ]
+  },
+  {
+    id: "L5-392",
+    word: "lascivious",
+    meaning: "음란한, 색정적인",
+    examples: [
+      { en: "The magazine was censored for its lascivious content.", kr: "그 잡지는 음란한 내용으로 인해 검열되었습니다." },
+      { en: "He gave a lascivious wink across the room.", kr: "그는 방 건너편으로 색정적인 윙크를 했습니다." }
+    ]
+  },
+  {
+    id: "L5-393",
+    word: "limpid",
+    meaning: "맑은, 투명한",
+    examples: [
+      { en: "The diver marveled at the limpid waters of the tropical lagoon.", kr: "그 다이버는 열대 석호의 맑은 물에 감탄했습니다." },
+      { en: "Her writing style is known for its limpid clarity.", kr: "그녀의 글쓰기 스타일은 투명한 명료함으로 알려져 있습니다." }
+    ]
+  },
+  {
+    id: "L5-394",
+    word: "loquacious",
+    meaning: "수다스러운",
+    examples: [
+      { en: "The old woman was loquacious, telling everyone her life story.", kr: "그 노파는 수다스러워서 모두에게 자신의 인생 이야기를 들려주었습니다." },
+      { en: "He contrasted the taciturn scientist with his loquacious assistant.", kr: "그는 과묵한 과학자와 그의 수다스러운 조수를 대조했습니다." }
+    ]
+  },
+  {
+    id: "L5-395",
+    word: "luminous",
+    meaning: "빛나는, 밝은",
+    examples: [
+      { en: "The clock face was painted with luminous material so it could be seen in the dark.", kr: "시계판은 어둠 속에서도 볼 수 있도록 빛나는 물질로 칠해졌습니다." },
+      { en: "She has a luminous personality that brightens the room.", kr: "그녀는 방을 밝게 만드는 빛나는 성격을 가지고 있습니다." }
+    ]
+  },
+  {
+    id: "L5-396",
+    word: "mendacious",
+    meaning: "허위의, 거짓말하는",
+    examples: [
+      { en: "The witness gave mendacious testimony to protect the criminal.", kr: "그 증인은 범죄자를 보호하기 위해 허위의 증언을 했습니다." },
+      { en: "The reporter was fired for publishing a mendacious article.", kr: "그 기자는 거짓말하는 기사를 출판했다는 이유로 해고되었습니다." }
+    ]
+  },
+  {
+    id: "L5-397",
+    word: "misanthropy",
+    meaning: "인간 혐오",
+    examples: [
+      { en: "His bitter experiences led him to a life of misanthropy and isolation.", kr: "그의 쓰라린 경험은 그를 인간 혐오와 고립의 삶으로 이끌었습니다." },
+      { en: "The author’s dark humor often verged on misanthropy.", kr: "그 작가의 어두운 유머는 종종 인간 혐오에 가까웠습니다." }
+    ]
+  },
+  {
+    id: "L5-398",
+    word: "nefariously",
+    meaning: "사악하게, 흉악하게",
+    examples: [
+      { en: "The villain nefariously plotted the downfall of the hero.", kr: "그 악당은 사악하게 영웅의 몰락을 계획했습니다." },
+      { en: "The documents were obtained nefariously through illegal hacking.", kr: "그 문서들은 불법 해킹을 통해 흉악하게 획득되었습니다." }
+    ]
+  },
+  {
+    id: "L5-399",
+    word: "obfuscate",
+    meaning: "혼란스럽게 하다, 모호하게 하다",
+    examples: [
+      { en: "The politician tried to obfuscate the issue with complex jargon.", kr: "그 정치인은 복잡한 전문 용어로 그 문제를 혼란스럽게 하려고 노력했습니다." },
+      { en: "The dense writing style tends to obfuscate the author's meaning.", kr: "그 밀도 높은 글쓰기 스타일은 저자의 의미를 모호하게 하는 경향이 있습니다." }
+    ]
+  },
+  {
+    id: "L5-400",
+    word: "obviated",
+    meaning: "미연에 방지된, 제거된",
+    examples: [
+      { en: "The need for a third meeting was obviated by the efficient email exchange.", kr: "세 번째 회의의 필요성은 효율적인 이메일 교환으로 미연에 방지되었습니다." },
+      { en: "The potential for error was obviated by the double-check system.", kr: "오류의 잠재성은 이중 확인 시스템으로 제거되었습니다." }
+    ]
+  }
+];
 
 
 
