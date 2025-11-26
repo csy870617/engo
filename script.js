@@ -1,3 +1,53 @@
+// ==========================================
+// 🚨 카카오톡 인앱 브라우저 탈출 스크립트
+// ==========================================
+(function() {
+  const userAgent = navigator.userAgent.toLowerCase();
+  const targetUrl = location.href;
+
+  // 카카오톡 인앱 브라우저인지 확인
+  if (userAgent.indexOf('kakaotalk') > -1) {
+    
+    // 1. 안드로이드: 크롬으로 강제 전환 시도
+    if (userAgent.indexOf('android') > -1) {
+      location.href = 'intent://' + targetUrl.replace(/https?:\/\//i, '') + '#Intent;scheme=https;package=com.android.chrome;end';
+    } 
+    // 2. 아이폰(iOS): 강제로 못 띄우므로 안내 메시지 표시
+    else if (userAgent.indexOf('iphone') > -1 || userAgent.indexOf('ipad') > -1 || userAgent.indexOf('ipod') > -1) {
+      // 안내 화면을 위한 스타일 생성
+      const style = document.createElement('style');
+      style.innerHTML = `
+        body { margin: 0; padding: 0; overflow: hidden; }
+        #kakao-guide {
+          position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+          background: rgba(0,0,0,0.9); z-index: 99999;
+          display: flex; flex-direction: column; align-items: center; justify-content: center;
+          color: white; text-align: center; font-family: sans-serif;
+        }
+        #kakao-guide p { margin: 10px 0; font-size: 18px; line-height: 1.5; }
+        .arrow { font-size: 40px; animation: bounce 1s infinite; }
+        @keyframes bounce { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
+      `;
+      document.head.appendChild(style);
+
+      // 안내 화면 HTML 생성
+      const guide = document.createElement('div');
+      guide.id = 'kakao-guide';
+      guide.innerHTML = `
+        <div class="arrow">↗️</div>
+        <p><strong>카카오톡 브라우저에서는<br>저장 기능이 작동하지 않습니다.</strong></p>
+        <p>오른쪽 하단(또는 상단)의<br><strong>[점 3개 ...]</strong> 메뉴를 누르고</p>
+        <p><span style="color:#FEE500; font-weight:bold;">[다른 브라우저로 열기]</span>를<br>선택해주세요.</p>
+        <div style="margin-top:20px; font-size:14px; color:#aaa;">(Safari 또는 Chrome 권장)</div>
+      `;
+      document.body.appendChild(guide);
+      
+      // 기존 화면 터치 방지
+      document.body.addEventListener('touchmove', function(e){e.preventDefault()}, { passive: false });
+    }
+  }
+})();
+
 // --------------------------
 // 1. 전역 변수 및 데이터 준비
 // --------------------------
