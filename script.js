@@ -58,6 +58,7 @@ let isBackAction = false;
 // 2. 네비게이션 (히스토리 API 적용)
 // ==========================================
 window.onpopstate = function(event) {
+  // 뒤로 가기 시 열려있는 모달이 있으면 닫기
   const openModals = document.querySelectorAll('.modal:not(.hidden)');
   if (openModals.length > 0) {
     openModals.forEach(modal => modal.classList.add('hidden'));
@@ -669,9 +670,7 @@ function prevShadowing() {
   }
 }
 
-// [수정됨] 랜덤 쉐도잉 주제 선택 (오류 수정 및 확실한 랜덤 처리)
 function nextRandomShadowingTopic() {
-  // 1. 음성 재생 중단
   if ("speechSynthesis" in window) {
     window.speechSynthesis.cancel();
   }
@@ -679,21 +678,18 @@ function nextRandomShadowingTopic() {
   if (!conversationData || conversationData.length === 0) return;
   
   let nextConv;
-  // 2. 현재와 다른 주제가 나올 때까지 반복 선택 (데이터가 1개뿐이면 예외 처리)
   if (conversationData.length > 1) {
     do {
       const randomIndex = Math.floor(Math.random() * conversationData.length);
       nextConv = conversationData[randomIndex];
     } while (nextConv.id === currentShadowingId);
   } else {
-    nextConv = conversationData[0]; // 데이터가 1개면 그냥 그거 선택
+    nextConv = conversationData[0];
   }
   
-  // 3. 상태 업데이트
   currentShadowingId = nextConv.id;
   shadowingLineIndex = 0;
   
-  // 4. UI 갱신 (새 문장 표시 및 자동 재생)
   updateShadowingUI();
 }
 
@@ -736,6 +732,7 @@ function renderPuzzle() {
   document.getElementById("puzzle-question").textContent = target.kr;
   document.getElementById("puzzle-feedback").textContent = "";
   document.getElementById("puzzle-feedback").className = "feedback-msg";
+  document.getElementById("puzzle-feedback").style.color = ""; // 스타일 초기화
   puzzleTargetTokens = [];
   puzzleShuffledTokens = currentPuzzleAnswer.split(" ").sort(() => Math.random() - 0.5);
   updatePuzzleBoard();
@@ -771,6 +768,7 @@ function updatePuzzleBoard() {
 function checkPuzzle() {
   const user = puzzleTargetTokens.join(" ");
   const fb = document.getElementById("puzzle-feedback");
+  fb.style.color = ""; // 색상 초기화
   if (user === currentPuzzleAnswer) {
     fb.textContent = "정답입니다! 🎉";
     fb.className = "feedback ok";
@@ -783,16 +781,18 @@ function checkPuzzle() {
 
 function resetPuzzle() {
   puzzleTargetTokens = [];
-  document.getElementById("puzzle-feedback").textContent = "";
+  const fb = document.getElementById("puzzle-feedback");
+  fb.textContent = "";
+  fb.style.color = "";
   updatePuzzleBoard();
 }
 
-// [신규] 퍼즐 정답 보기 함수
+// [신규] 퍼즐 정답 보기
 function showPuzzleAnswer() {
   const fb = document.getElementById("puzzle-feedback");
   fb.textContent = `정답: ${currentPuzzleAnswer}`;
-  fb.className = "feedback-msg"; // 기본 스타일로 초기화
-  fb.style.color = "#38bdf8"; // 강조 색상 (네온 블루)
+  fb.className = "feedback-msg";
+  fb.style.color = "#38bdf8"; // 정답 표시 색상
 }
 
 function movePuzzle(offset) {
@@ -1130,6 +1130,101 @@ window.addEventListener('beforeunload', (e) => {
   // (사용자가 '취소'를 눌러서 페이지에 남을 경우 바로 저장을 할 수 있도록)
   openSyncModal();
 });
+
+// ==========================================
+// 14. PWA 설치 배너 로직
+// ==========================================
+let deferredPrompt;
+const installBanner = document.getElementById('install-banner');
+
+window.addEventListener('beforeinstallprompt', (e) => {
+  e.preventDefault();
+  deferredPrompt = e;
+  if (!localStorage.getItem('installBannerDismissed')) {
+    installBanner.classList.remove('hidden');
+  }
+});
+
+async function installPWA() {
+  if (!deferredPrompt) return;
+  deferredPrompt.prompt();
+  const { outcome } = await deferredPrompt.userChoice;
+  deferredPrompt = null;
+  installBanner.classList.add('hidden');
+}
+
+function hideInstallBanner() {
+  installBanner.classList.add('hidden');
+  localStorage.setItem('installBannerDismissed', 'true');
+}
+
+window.addEventListener('appinstalled', () => {
+  installBanner.classList.add('hidden');
+  deferredPrompt = null;
+});
+
+// ==========================================
+// 15. 공유 기능
+// ==========================================
+const KAKAO_JS_KEY = '7e17cb2ba4738f9e3cd710879d487959'; 
+
+if (typeof Kakao !== 'undefined' && KAKAO_JS_KEY !== '7e17cb2ba4738f9e3cd710879d487959') {
+  try {
+    if (!Kakao.isInitialized()) {
+      Kakao.init(KAKAO_JS_KEY);
+    }
+  } catch(e) {
+    console.log("Kakao init failed", e);
+  }
+}
+
+function shareApp() {
+  if (typeof Kakao !== 'undefined' && Kakao.isInitialized()) {
+    try {
+      Kakao.Share.sendDefault({
+        objectType: 'feed',
+        content: {
+          title: 'ENGO - 영어회화의 시작과 끝',
+          description: '패턴, 단어, 숙어, 쉐도잉까지! 영어회화의 모든 것!',
+          imageUrl: window.location.origin + '/icon.png',
+          link: {
+            mobileWebUrl: window.location.href,
+            webUrl: window.location.href,
+          },
+        },
+        buttons: [
+          {
+            title: '함께 공부하기',
+            link: {
+              mobileWebUrl: window.location.href,
+              webUrl: window.location.href,
+            },
+          },
+        ],
+      });
+      return;
+    } catch(e) {
+      console.log("Kakao share failed, trying native share...");
+    }
+  }
+
+  if (navigator.share) {
+    navigator.share({
+      title: 'ENGO - 영어회화의 시작과 끝',
+      text: '함께 영어 공부해요!',
+      url: window.location.href,
+    }).catch(console.log);
+  } 
+  else {
+    const dummy = document.createElement('input');
+    document.body.appendChild(dummy);
+    dummy.value = window.location.href;
+    dummy.select();
+    document.execCommand('copy');
+    document.body.removeChild(dummy);
+    alert("링크가 복사되었습니다! 친구에게 붙여넣기 해보세요.");
+  }
+}
 
 loadMemorizedData();
 loadVoices();
