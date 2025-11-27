@@ -358,3 +358,125 @@ main {
   transform: translateY(-2px);
   box-shadow: 0 5px 15px rgba(139, 92, 246, 0.4);
 }
+
+/* ... 기존 CSS 유지 ... */
+
+/* [신규] 영어 카드 뉴스 스타일 */
+.news-container {
+  margin-top: 25px;
+  margin-bottom: 10px;
+}
+
+.news-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+  padding: 0 4px;
+}
+
+.news-header h3 {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: #fff;
+  background: linear-gradient(90deg, #fff, #cbd5e1);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  display: inline-block;
+}
+
+.update-badge {
+  font-size: 0.75rem;
+  color: var(--accent);
+  background: rgba(56, 189, 248, 0.1);
+  padding: 4px 8px;
+  border-radius: 12px;
+  border: 1px solid rgba(56, 189, 248, 0.2);
+}
+
+/* 가로 스크롤 영역 */
+.news-scroll-area {
+  display: flex;
+  gap: 12px;
+  overflow-x: auto;
+  padding-bottom: 10px;
+  scroll-behavior: smooth;
+  -webkit-overflow-scrolling: touch; /* 모바일 부드러운 스크롤 */
+}
+
+.news-scroll-area::-webkit-scrollbar {
+  height: 4px;
+}
+.news-scroll-area::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 2px;
+}
+
+/* 뉴스 카드 디자인 */
+.news-card {
+  min-width: 260px;
+  max-width: 260px;
+  background: var(--bg-card);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 16px;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  transition: transform 0.2s;
+  cursor: pointer;
+}
+
+.news-card:hover {
+  transform: translateY(-3px);
+  border-color: var(--primary);
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.news-tag {
+  font-size: 0.7rem;
+  font-weight: 700;
+  color: var(--primary);
+  text-transform: uppercase;
+  margin-bottom: 8px;
+  display: inline-block;
+}
+
+/* [수정됨] 뉴스 카드 텍스트 스타일 (경고 해결) */
+.news-title {
+  font-size: 1rem;
+  font-weight: 600;
+  color: #fff;
+  line-height: 1.4;
+  margin-bottom: 8px;
+  
+  /* 멀티라인 말줄임표(...) 설정 */
+  display: -webkit-box;
+  -webkit-line-clamp: 2;  /* 주요 브라우저용 */
+  line-clamp: 2;          /* 표준 호환성용 (경고 해결) */
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.news-summary {
+  font-size: 0.85rem;
+  color: var(--text-sub);
+  line-height: 1.4;
+  margin-bottom: 12px;
+  
+  /* 멀티라인 말줄임표(...) 설정 */
+  display: -webkit-box;
+  -webkit-line-clamp: 3;  /* 주요 브라우저용 */
+  line-clamp: 3;          /* 표준 호환성용 (경고 해결) */
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.news-footer {
+  font-size: 0.75rem;
+  color: #64748b;
+  text-align: right;
+}
