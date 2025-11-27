@@ -441,3 +441,41 @@ main {
 #speaking-play-btn svg {
   margin-left: 2px; /* 시각적으로 중앙에 오도록 살짝 조정 */
 }
+
+/* style.css 맨 아래에 추가 */
+
+/* 쉐도잉 블라인드 모드 효과 */
+.blind-text {
+  filter: blur(8px);
+  user-select: none; /* 드래그 방지 */
+  transition: filter 0.3s ease;
+  cursor: pointer;
+}
+
+.blind-text:hover, .blind-text.revealed {
+  filter: blur(0);
+}
+
+.shadowing-controls-row {
+  display: flex;
+  justify-content: center;
+  gap: 15px;
+  margin-bottom: 20px;
+}
+
+.toggle-btn {
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: var(--text-sub);
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.toggle-btn.active {
+  background: var(--primary);
+  color: #fff;
+  border-color: var(--primary);
+}
