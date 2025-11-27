@@ -1244,9 +1244,9 @@ function shareApp() {
 // 16. [수정됨] 실시간 영어 뉴스 로더 (API 연동)
 // ==========================================
 
-// 구글 뉴스 RSS (검색어: South Korea + Culture/Tech/Travel)
-// -> 긍정적이고 흥미로운 주제 위주로 필터링된 최신 기사를 가져옵니다.
-const RSS_URL = "https://news.google.com/rss/search?q=South+Korea+(culture+OR+technology+OR+travel)+when:7d&hl=en-US&gl=US&ceid=US:en";
+// [수정됨] 검색어 강화: 긍정적 키워드(success, popular 등)와 인기 주제(K-pop, Tech, Food) 결합
+// 검색어: South Korea + (K-pop OR Tech OR Food OR Travel) + (Success OR New OR Popular)
+const RSS_URL = "https://news.google.com/rss/search?q=South+Korea+(k-pop+OR+technology+OR+food+OR+travel)+(success+OR+popular+OR+record)+when:7d&hl=en-US&gl=US&ceid=US:en";
 const API_URL = `https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent(RSS_URL)}`;
 
 async function fetchRealNews() {
@@ -1254,8 +1254,8 @@ async function fetchRealNews() {
   const badge = document.querySelector('.update-badge');
   if (!container) return;
 
-  // 로딩 중 표시
-  container.innerHTML = `<div style="padding:20px; color:#aaa; font-size:0.9rem;">🔄 Loading latest news...</div>`;
+  // 로딩 표시
+  container.innerHTML = `<div style="padding:20px; color:#aaa; font-size:0.9rem;">🔄 Curator is picking top 3 news...</div>`;
 
   try {
     const response = await fetch(API_URL);
@@ -1264,12 +1264,11 @@ async function fetchRealNews() {
     if (data.status === 'ok') {
       container.innerHTML = ""; // 초기화
       
-      // 최신 5개 기사만 가져오기
-      const articles = data.items.slice(0, 5);
+      // [수정됨] 최신 기사 딱 3개만 가져오기
+      const articles = data.items.slice(0, 3);
 
       articles.forEach(item => {
-        // 이미지 태그가 없는 경우를 대비한 기본 썸네일 처리 (구글 RSS는 썸네일이 잘 안 옴)
-        // 제목 정리 (매체명 제거 등)
+        // 제목 정리 (지저분한 매체명 등 제거)
         const cleanTitle = item.title.split(" - ")[0];
         const sourceName = item.title.split(" - ")[1] || "News";
         
@@ -1283,10 +1282,10 @@ async function fetchRealNews() {
 
         card.innerHTML = `
           <div>
-            <span class="news-tag">#Korea_Trending</span>
+            <span class="news-tag">#Trending_Korea</span>
             <div class="news-title">${cleanTitle}</div>
             <div class="news-summary" style="font-size:0.8rem; color:#94a3b8;">
-              ${item.description ? item.description.replace(/<[^>]*>?/gm, '').substring(0, 80) + "..." : "Click to read the full story about this topic."}
+              ${item.description ? item.description.replace(/<[^>]*>?/gm, '').substring(0, 70) + "..." : "Click to read the full positive story."}
             </div>
           </div>
           <div class="news-footer">
@@ -1296,25 +1295,44 @@ async function fetchRealNews() {
         container.appendChild(card);
       });
 
-      // 배지 시간 갱신
-      if(badge) badge.textContent = "Just Updated";
+      // 배지 갱신
+      if(badge) badge.textContent = "Top 3 Updated";
 
     } else {
       throw new Error("API Error");
     }
   } catch (error) {
     console.error("News fetch failed:", error);
-    // 실패 시 기본(백업) 데이터 표시
-    loadBackupNews();
+    loadBackupNews(); // 실패 시 백업 실행
   }
 }
 
-// 백업 데이터 (API 실패 시 보여줄 고정 뉴스)
+// [수정됨] 백업 데이터도 3개로 맞춤 (API 실패 시 보여줄 내용)
 function loadBackupNews() {
   const container = document.getElementById('news-card-list');
+  
   const newsData = [
-    { tag: "Backup", title: "Han Kang wins Nobel Prize", summary: "Acclaimed author Han Kang makes history for Korean literature.", source: "CNN", url: "https://edition.cnn.com/" },
-    { tag: "Backup", title: "K-Food goes viral in US", summary: "Frozen kimbap sells out nationwide in America.", source: "NBC", url: "https://www.nbcnews.com/" }
+    { 
+      tag: "K-Culture", 
+      title: "Han Kang wins Nobel Prize in Literature", 
+      summary: "South Korean author Han Kang brings home the Nobel Prize, marking a historic moment for K-Literature.", 
+      source: "CNN", 
+      url: "https://edition.cnn.com/" 
+    },
+    { 
+      tag: "K-Food", 
+      title: "Frozen Kimbap becomes a massive hit in the US", 
+      summary: "Trader Joe's sold out of Korean frozen kimbap instantly, showing the global power of K-Food.", 
+      source: "NBC News", 
+      url: "https://www.nbcnews.com/" 
+    },
+    { 
+      tag: "Tech", 
+      title: "Korea to launch new space rocket next month", 
+      summary: "South Korea continues its journey into space with the upcoming launch of its homegrown Nuri rocket.", 
+      source: "Korea Herald", 
+      url: "http://www.koreaherald.com/" 
+    }
   ];
   
   container.innerHTML = "";
@@ -1322,15 +1340,20 @@ function loadBackupNews() {
     const card = document.createElement('div');
     card.className = 'news-card';
     card.onclick = () => window.open(news.url, '_blank');
+    
     card.innerHTML = `
-      <div><span class="news-tag">#${news.tag}</span><div class="news-title">${news.title}</div><div class="news-summary">${news.summary}</div></div>
+      <div>
+        <span class="news-tag">#${news.tag}</span>
+        <div class="news-title">${news.title}</div>
+        <div class="news-summary">${news.summary}</div>
+      </div>
       <div class="news-footer">Source: ${news.source}</div>
     `;
     container.appendChild(card);
   });
 }
 
-// 시간 계산 함수 (예: 2 hours ago)
+// 시간 계산 함수
 function getTimeAgo(date) {
   const seconds = Math.floor((new Date() - date) / 1000);
   let interval = seconds / 3600;
@@ -1342,12 +1365,12 @@ function getTimeAgo(date) {
 
 // 뉴스 자동 갱신 시스템
 function initNewsUpdater() {
-  fetchRealNews(); // 최초 실행
+  fetchRealNews(); 
 
-  // 1시간(3600초 * 1000밀리초)마다 갱신
+  // 1시간마다 갱신
   setInterval(() => {
     fetchRealNews();
-    console.log("📰 News updated automatically.");
+    console.log("📰 Top 3 News updated.");
   }, 3600000);
 }
 
@@ -1362,3 +1385,4 @@ if (typeof patternData !== "undefined") updatePatternProgress();
 if (typeof wordData !== "undefined") updateWordProgress();
 if (typeof idiomData !== "undefined") updateIdiomProgress();
 goTo("home");
+
