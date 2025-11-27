@@ -704,10 +704,19 @@ function nextSpeaking() {
     playSpeakingQuestion();
   }
 }
+// 기존 toggleSpeakingAnswer 함수를 찾아서 아래 코드로 교체해주세요.
+
 function toggleSpeakingAnswer() {
   const chk = document.getElementById("speaking-answer-toggle");
   const area = document.getElementById("speaking-answer-area");
-  if (chk.checked) area.classList.remove("hidden"); else area.classList.add("hidden");
+  
+  if (chk.checked) {
+    area.classList.remove("hidden");
+    // 🔽 [추가됨] 체크박스가 켜지면 바로 답안 읽어주기
+    playSpeakingAnswer(); 
+  } else {
+    area.classList.add("hidden");
+  }
 }
 function playSpeakingQuestion() { if(currentSpeaking) speakText(currentSpeaking.q.en); }
 function playSpeakingAnswer() { if(currentSpeaking) speakText(currentSpeaking.a.en); }
