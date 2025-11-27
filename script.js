@@ -8,7 +8,6 @@
     if (ua.indexOf('android') > -1) {
       location.href = 'intent://' + url.replace(/https?:\/\//i, '') + '#Intent;scheme=https;end';
     }
-    // 아이폰은 인앱 유지 (안내 불필요)
   }
 })();
 
@@ -18,7 +17,7 @@
 const pages = [
   "home", "patterns", "pattern-detail", "words", "word-detail",
   "idioms", "idiom-detail", "conversations", "conv-detail",
-  "shadowing", "puzzle", "speaking"
+  "shadowing-list", "shadowing", "puzzle"
 ];
 
 const idiomData = [
@@ -50,33 +49,33 @@ let idiomStudyingOnly = false;
 let memorizedPatterns = new Set();
 let patternStudyingOnly = false;
 
-// 🔽 [추가] 뒤로 가기 감지용 플래그
+let currentShadowingId = null;
+let shadowingLineIndex = 0;
+
 let isBackAction = false; 
 
 // ==========================================
 // 2. 네비게이션 (히스토리 API 적용)
 // ==========================================
-
-// 🔽 [추가] 브라우저 뒤로 가기 버튼 감지 (popstate 이벤트)
 window.onpopstate = function(event) {
-  // 히스토리 상태가 있으면 그 페이지로, 없으면 홈으로
   const page = (event.state && event.state.page) ? event.state.page : 'home';
-  
-  isBackAction = true; // goTo 함수에서 history.pushState 중복 방지
+  isBackAction = true;
   goTo(page);
-  isBackAction = false; // 플래그 초기화
+  isBackAction = false;
 };
 
 function goTo(page) {
-  // 🔽 [추가] 히스토리 스택 쌓기 (뒤로 가기가 아닐 때만)
+  // [수정됨] 화면 이동 시 재생 중인 TTS 즉시 중지 🛑
+  if ("speechSynthesis" in window) {
+    window.speechSynthesis.cancel();
+  }
+
   if (!isBackAction) {
-    // 현재 페이지와 같지 않을 때만 기록 추가
     if (!history.state || history.state.page !== page) {
       history.pushState({ page: page }, "", "#" + page);
     }
   }
 
-  // 화면 전환 로직
   pages.forEach((p) => {
     const el = document.getElementById("page-" + p);
     if (!el) return;
@@ -88,9 +87,8 @@ function goTo(page) {
   if (page === "words") renderWordList();
   if (page === "idioms") renderIdiomList();
   if (page === "conversations") renderConversationList();
+  if (page === "shadowing-list") renderShadowingList();
   if (page === "puzzle") initPuzzle();
-  if (page === "speaking") initSpeaking();
-  if (page === "shadowing") initShadowing();
 }
 
 // ==========================================
@@ -133,8 +131,7 @@ function saveData(type) {
 // ==========================================
 function renderPatternList() {
   const container = document.getElementById("pattern-list");
-  if (!container) return;
-  if (typeof patternData === "undefined") return;
+  if (!container || typeof patternData === "undefined") return;
 
   const keyword = (document.getElementById("pattern-search")?.value || "").toLowerCase();
   container.innerHTML = "";
@@ -199,7 +196,6 @@ function openPattern(id) {
   renderPatternExamples();
   goTo("pattern-detail");
 
-  // 🔊 [수정] 딜레이 없이 즉시 실행 (브라우저 차단 방지)
   if (autoPlayEnabled) {
       playPatternExamples();
     }
@@ -216,7 +212,7 @@ function renderPatternExamples() {
     row.className = "sentence-row";
     row.innerHTML = `<div class="sentence-text"><div>${ex.en}</div>${showKr ? `<div class="sentence-kr">${ex.kr}</div>` : ''}</div>`;
     const btn = document.createElement("button");
-    btn.className = "btn small";
+    btn.className = "btn-small";
     btn.textContent = "▶";
     btn.onclick = () => speakText(ex.en);
     row.appendChild(btn);
@@ -318,7 +314,6 @@ function openWord(id) {
   renderWordExamples();
   goTo("word-detail");
 
-  // 🔊 [수정] 즉시 실행
   if (autoPlayEnabled) {
       const textToRead = `${w.word}. ${w.examples.map(e => e.en).join(". ")}`;
       speakText(textToRead);
@@ -336,7 +331,7 @@ function renderWordExamples() {
     row.className = "sentence-row";
     row.innerHTML = `<div class="sentence-text"><div>${ex.en}</div>${showKr ? `<div class="sentence-kr">${ex.kr}</div>` : ''}</div>`;
     const btn = document.createElement("button");
-    btn.className = "btn small";
+    btn.className = "btn-small";
     btn.textContent = "▶";
     btn.onclick = () => speakText(ex.en);
     row.appendChild(btn);
@@ -426,7 +421,6 @@ function openIdiom(id) {
   renderIdiomExamples();
   goTo("idiom-detail");
 
-  // 🔊 [수정] 즉시 실행
   if (autoPlayEnabled) {
       const textToRead = `${item.idiom}. ${item.examples.map(e => e.en).join(". ")}`;
       speakText(textToRead);
@@ -444,7 +438,7 @@ function renderIdiomExamples() {
     row.className = "sentence-row";
     row.innerHTML = `<div class="sentence-text"><div>${ex.en}</div>${showKr ? `<div class="sentence-kr">${ex.kr}</div>` : ''}</div>`;
     const btn = document.createElement("button");
-    btn.className = "btn small";
+    btn.className = "btn-small";
     btn.textContent = "▶";
     btn.onclick = () => speakText(ex.en);
     row.appendChild(btn);
@@ -465,7 +459,7 @@ function playIdiomExamples() {
 }
 
 // ==========================================
-// 7. 대화 (Conversation) & 섀도잉
+// 7. 대화 (Conversation) & 쉐도잉 진입
 // ==========================================
 function renderConversationList() {
   const container = document.getElementById("conv-list");
@@ -493,7 +487,6 @@ function openConversation(id) {
   renderConversationDetail();
   goTo("conv-detail");
 
-  // 🔊 [수정] 즉시 실행
   if (autoPlayEnabled) {
       playConversationAll();
     }
@@ -510,7 +503,7 @@ function renderConversationDetail() {
     row.className = "sentence-row";
     row.innerHTML = `<div class="sentence-text"><div><b>${line.speaker}:</b> ${line.en}</div>${showKr ? `<div class="sentence-kr">${line.kr}</div>` : ''}</div>`;
     const btn = document.createElement("button");
-    btn.className = "btn small";
+    btn.className = "btn-small";
     btn.textContent = "▶";
     btn.onclick = () => speakText(line.en);
     row.appendChild(btn);
@@ -523,27 +516,18 @@ function playConversationAll() {
   if (conv) speakText(conv.lines.map(l => l.en).join(" "));
 }
 
-let shadowingIndex = 0;
-function initShadowing() { shadowingIndex = 0; updateShadowingText(); }
-function updateShadowingText() {
-  const conv = conversationData.find(c => c.id === currentConvId);
-  const el = document.getElementById("shadowing-text");
-  if (!conv) return;
-  const line = conv.lines[shadowingIndex];
-  el.textContent = `${line.speaker}: ${line.en}`;
-}
-function playShadowingCurrent() {
-  const conv = conversationData.find(c => c.id === currentConvId);
-  if (conv) speakText(conv.lines[shadowingIndex].en);
-}
-function nextShadowing() {
-  const conv = conversationData.find(c => c.id === currentConvId);
-  if (!conv) return;
-  shadowingIndex = (shadowingIndex + 1) % conv.lines.length;
-  updateShadowingText();
+// 대화 상세 화면에서 쉐도잉 시작
+function startShadowingFromConv(id) {
+  currentShadowingId = id;
+  shadowingLineIndex = 0;
+  goTo("shadowing");
+  
+  isBlindMode = true; 
+  isHideKr = false;
+  updateShadowingOptionsUI();
+  updateShadowingUI();
 }
 
-// 이동 헬퍼
 function moveItemInList(currentId, list, offset, openFunc) {
   if (!list || list.length === 0) return;
   const idx = list.findIndex(item => item.id === currentId);
@@ -559,7 +543,163 @@ function moveConv(o) { moveItemInList(currentConvId, currentConvList, o, openCon
 
 
 // ==========================================
-// 8. 문장 퍼즐 & 말하기 (Speaking)
+// 8. 쉐도잉 (Shadowing) - 메인 기능화 (업그레이드)
+// ==========================================
+
+// 쉐도잉 옵션 상태
+let isBlindMode = false;
+let isHideKr = false;
+
+// 쉐도잉 목록 렌더링
+function renderShadowingList() {
+  const container = document.getElementById("shadowing-list-container");
+  if (!container || typeof conversationData === "undefined") return;
+  
+  const keyword = (document.getElementById("shadowing-search")?.value || "").toLowerCase();
+  container.innerHTML = "";
+  
+  const filtered = conversationData.filter(c => 
+    (c.title + c.lines.map(l => l.en).join(" ")).toLowerCase().includes(keyword)
+  );
+
+  filtered.forEach(c => {
+    const div = document.createElement("div");
+    div.className = "list-item";
+    div.onclick = () => {
+      currentShadowingId = c.id;
+      shadowingLineIndex = 0;
+      goTo("shadowing");
+      
+      // 진입 시 기본값 설정
+      isBlindMode = true; 
+      isHideKr = false;
+      updateShadowingOptionsUI();
+      updateShadowingUI();
+    };
+    div.innerHTML = `
+      <div>
+        <div class="list-item-title">🗣️ ${c.title}</div>
+        <div class="list-item-sub">총 ${c.lines.length}문장</div>
+      </div>
+      <div style="color:var(--accent); font-size:0.9rem;">Start ▶</div>
+    `;
+    container.appendChild(div);
+  });
+
+  if (filtered.length === 0) {
+    container.innerHTML = '<div class="list-item"><div>검색 결과가 없습니다.</div></div>';
+  }
+}
+
+// 쉐도잉 옵션 토글
+function toggleShadowingOption(type) {
+  if (type === 'blind') isBlindMode = !isBlindMode;
+  if (type === 'hideKr') isHideKr = !isHideKr;
+  updateShadowingOptionsUI();
+  updateShadowingUI();
+}
+
+// 옵션 버튼 스타일 업데이트
+function updateShadowingOptionsUI() {
+  const btnBlind = document.getElementById("btn-blind-mode");
+  const btnHideKr = document.getElementById("btn-hide-kr");
+  
+  if(btnBlind) btnBlind.classList.toggle("active", isBlindMode);
+  if(btnHideKr) btnHideKr.classList.toggle("active", isHideKr);
+}
+
+// 쉐도잉 화면 내용 업데이트
+function updateShadowingUI() {
+  const conv = conversationData.find(c => c.id === currentShadowingId);
+  if (!conv) return;
+
+  const line = conv.lines[shadowingLineIndex];
+  
+  // 카운터 업데이트
+  document.getElementById("shadowing-counter").textContent = `${shadowingLineIndex + 1} / ${conv.lines.length}`;
+
+  // 화자
+  document.getElementById("shadowing-speaker").textContent = `Speaker ${line.speaker}`;
+  
+  // 영어 문장 (블라인드 모드 처리)
+  const enText = document.getElementById("shadowing-text");
+  enText.textContent = line.en;
+  
+  if (isBlindMode) {
+    enText.classList.add("blind-text");
+    enText.classList.remove("revealed");
+    document.getElementById("shadowing-hint").classList.remove("hidden");
+  } else {
+    enText.classList.remove("blind-text");
+    enText.classList.add("revealed");
+    document.getElementById("shadowing-hint").classList.add("hidden");
+  }
+
+  // 한글 해석 (숨김 처리)
+  const krText = document.getElementById("shadowing-kr");
+  krText.textContent = line.kr;
+  krText.style.visibility = isHideKr ? "hidden" : "visible";
+
+  // 자동 재생 (페이지 진입하거나 다음 문장 넘어갈 때)
+  if (autoPlayEnabled) {
+    speakText(line.en);
+  }
+}
+
+// 문장 잠시 보기 (블라인드 모드에서 클릭 시)
+function revealTextTemp() {
+  const enText = document.getElementById("shadowing-text");
+  if (isBlindMode) {
+    enText.classList.add("revealed");
+    // 2초 후 다시 가리기
+    setTimeout(() => {
+      enText.classList.remove("revealed");
+    }, 2000);
+  }
+}
+
+// 현재 문장 다시 듣기 (버튼 클릭 효과 포함)
+function playShadowingCurrent() {
+  const btn = document.getElementById("shadowing-play-btn");
+  
+  // 클릭 애니메이션 효과
+  btn.style.transform = "scale(0.95)";
+  setTimeout(() => btn.style.transform = "scale(1)", 100);
+
+  const conv = conversationData.find(c => c.id === currentShadowingId);
+  if (!conv) return;
+  speakText(conv.lines[shadowingLineIndex].en);
+}
+
+// 다음 문장
+function nextShadowing() {
+  const conv = conversationData.find(c => c.id === currentShadowingId);
+  if (!conv) return;
+
+  if (shadowingLineIndex < conv.lines.length - 1) {
+    shadowingLineIndex++;
+    updateShadowingUI();
+  } else {
+    if(confirm("대화가 끝났습니다. 목록으로 돌아갈까요?")) {
+      goTo("shadowing-list");
+    } else {
+      // 처음부터 다시 하기
+      shadowingLineIndex = 0;
+      updateShadowingUI();
+    }
+  }
+}
+
+// 이전 문장
+function prevShadowing() {
+  if (shadowingLineIndex > 0) {
+    shadowingLineIndex--;
+    updateShadowingUI();
+  }
+}
+
+// ==========================================
+// 9. 문장 퍼즐 (Puzzle)
 // ==========================================
 let currentPuzzleAnswer = "";
 let puzzleTargetTokens = [];
@@ -585,7 +725,6 @@ function nextPuzzle() {
   if (pool.length === 0) return document.getElementById("puzzle-question").textContent = "데이터 부족";
   const target = pool[Math.floor(Math.random() * pool.length)];
   currentPuzzleAnswer = target.en.trim();
-  // 🔽 [수정] 출처 숨기고 한글 문제만 표시
   document.getElementById("puzzle-question").textContent = target.kr;
 
   puzzleTargetTokens = [];
@@ -635,102 +774,8 @@ function checkPuzzle() {
 }
 function resetPuzzle() { puzzleTargetTokens = []; document.getElementById("puzzle-feedback").textContent = ""; renderPuzzle(); }
 
-// Speaking
-let speakingData = [];
-let currentSpeaking = null;
-let recognition = null;
-let isRecording = false;
-
-function initSpeaking() {
-  speakingData = [];
-  if (typeof conversationData !== "undefined") {
-    conversationData.forEach(c => {
-      for (let i=0; i<c.lines.length-1; i++) {
-        if (c.lines[i].en.trim().endsWith("?")) speakingData.push({ q: c.lines[i], a: c.lines[i+1] });
-      }
-    });
-  }
-  initSpeechRecognition();
-  nextSpeaking();
-}
-
-function initSpeechRecognition() {
-  const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
-  if (!SR) return;
-  recognition = new SR();
-  recognition.lang = "en-US";
-  recognition.interimResults = false;
-  recognition.onstart = () => { isRecording = true; updateMicUI(); };
-  recognition.onend = () => { isRecording = false; updateMicUI(); };
-  recognition.onresult = (e) => {
-    const txt = e.results[0][0].transcript;
-    document.getElementById("user-speech-result").textContent = `🗣 내 답변: "${txt}"`;
-    document.getElementById("user-speech-result").classList.remove("hidden");
-  };
-}
-function toggleRecording() {
-  if (!recognition) return alert("PC 크롬 브라우저를 사용해주세요.");
-  if (isRecording) recognition.stop();
-  else {
-    document.getElementById("user-speech-result").textContent = "";
-    recognition.start();
-  }
-}
-function updateMicUI() {
-  const btn = document.getElementById("mic-btn");
-  const st = document.getElementById("mic-status");
-  if (isRecording) { btn.classList.add("recording"); st.textContent = "듣고 있습니다..."; }
-  else { btn.classList.remove("recording"); st.textContent = "눌러서 말하기"; }
-}
-function nextSpeaking() {
-  if (speakingData.length === 0) return;
-  
-  // 랜덤으로 질문 선택
-  currentSpeaking = speakingData[Math.floor(Math.random() * speakingData.length)];
-  
-  // 화면에 질문/답변 텍스트 업데이트
-  document.getElementById("speaking-q-en").textContent = currentSpeaking.q.en;
-  document.getElementById("speaking-q-kr").textContent = currentSpeaking.q.kr;
-  document.getElementById("speaking-a-en").textContent = currentSpeaking.a.en;
-  document.getElementById("speaking-a-kr").textContent = currentSpeaking.a.kr;
-  
-  // 정답 가리기 및 초기화
-  document.getElementById("speaking-answer-toggle").checked = false;
-  toggleSpeakingAnswer();
-  document.getElementById("user-speech-result").classList.add("hidden");
-
-  // ▼ [수정됨] 자동 재생 체크박스 상태 확인 후 재생
-  const autoPlay = document.getElementById("speaking-autoplay-toggle").checked;
-  if (autoPlay) {
-    playSpeakingQuestion();
-  }
-
-
-  // 🔊 [추가] 질문 자동 재생 (설정이 켜져 있을 때만)
-  if (autoPlayEnabled) {
-    playSpeakingQuestion();
-  }
-}
-// 기존 toggleSpeakingAnswer 함수를 찾아서 아래 코드로 교체해주세요.
-
-function toggleSpeakingAnswer() {
-  const chk = document.getElementById("speaking-answer-toggle");
-  const area = document.getElementById("speaking-answer-area");
-  
-  if (chk.checked) {
-    area.classList.remove("hidden");
-    // 🔽 [추가됨] 체크박스가 켜지면 바로 답안 읽어주기
-    playSpeakingAnswer(); 
-  } else {
-    area.classList.add("hidden");
-  }
-}
-function playSpeakingQuestion() { if(currentSpeaking) speakText(currentSpeaking.q.en); }
-function playSpeakingAnswer() { if(currentSpeaking) speakText(currentSpeaking.a.en); }
-
-
 // ==========================================
-// 9. TTS 설정 및 학습내용 저장/불러오기
+// 10. TTS 설정 및 학습내용 저장/불러오기
 // ==========================================
 let ttsVoices = [];
 let userVoiceIndex = null;
@@ -810,10 +855,8 @@ function saveSettings() {
 }
 
 // ---------------------------------------------------------
-// [수정됨] 학습내용 저장/불러오기 (수동 ID/PW 방식)
+// 학습내용 저장/불러오기 (Firebase)
 // ---------------------------------------------------------
-
-// ⚠️ 본인의 Firebase 키로 유지하세요!
 const firebaseConfig = {
   apiKey: "AIzaSyCdr88Bomc9SQzZBj03iih3epxivhPL63I",
   authDomain: "engo-9c8e3.firebaseapp.com",
@@ -831,13 +874,11 @@ if (typeof firebase !== "undefined") {
 
 function openSyncModal() {
   document.getElementById("sync-modal").classList.remove("hidden");
-  // 이전에 입력한 아이디가 있으면 자동 입력
   const lastId = localStorage.getItem("lastSyncId");
   if(lastId) document.getElementById("sync-id").value = lastId;
 }
 function closeSyncModal() { document.getElementById("sync-modal").classList.add("hidden"); }
 
-// 데이터 업로드 (저장)
 async function uploadData() {
   const id = document.getElementById("sync-id").value.trim();
   const pw = document.getElementById("sync-pw").value.trim();
@@ -849,20 +890,17 @@ async function uploadData() {
     const ref = db.collection("users").doc(id);
     const doc = await ref.get();
 
-    // 이미 존재하는 아이디면 비번 확인
     if(doc.exists) {
       if(doc.data().password !== pw) {
         return alert("비밀번호가 틀렸습니다.\n(다른 사람이 사용 중인 아이디일 수 있습니다.)");
       }
       if(!confirm("기존 데이터를 덮어쓰고 저장하시겠습니까?")) return;
     } else {
-      // 새로운 아이디면 생성 확인
       if(!confirm(`'${id}' 계정을 새로 만들고 저장하시겠습니까?`)) return;
     }
 
-    // 저장할 데이터 구성
     await ref.set({
-      password: pw, // 비번 저장 (간단한 방식)
+      password: pw,
       updatedAt: new Date().toISOString(),
       patterns: Array.from(memorizedPatterns),
       words: Array.from(memorizedWords),
@@ -870,7 +908,7 @@ async function uploadData() {
       settings: { voiceIndex: userVoiceIndex, rate: userRate, autoPlay: autoPlayEnabled }
     });
 
-    localStorage.setItem("lastSyncId", id); // 아이디 기억
+    localStorage.setItem("lastSyncId", id);
     alert("✅ 학습내용이 안전하게 저장되었습니다.");
     closeSyncModal();
   } catch(e) {
@@ -879,7 +917,6 @@ async function uploadData() {
   }
 }
 
-// 데이터 다운로드 (불러오기)
 async function downloadData() {
   const id = document.getElementById("sync-id").value.trim();
   const pw = document.getElementById("sync-pw").value.trim();
@@ -898,7 +935,6 @@ async function downloadData() {
 
     const d = doc.data();
     
-    // 데이터 복원
     if(d.patterns) memorizedPatterns = new Set(d.patterns);
     if(d.words) memorizedWords = new Set(d.words);
     if(d.idioms) memorizedIdioms = new Set(d.idioms);
@@ -908,17 +944,14 @@ async function downloadData() {
       if(d.settings.autoPlay !== undefined) autoPlayEnabled = d.settings.autoPlay;
     }
     
-    // 로컬 스토리지 업데이트
     saveDataLocally('pattern'); 
     saveDataLocally('word'); 
     saveDataLocally('idiom');
     localStorage.setItem("ttsSettings", JSON.stringify({ voiceIndex: userVoiceIndex, rate: userRate, autoPlay: autoPlayEnabled }));
     localStorage.setItem("lastSyncId", id);
     
-    // 화면 갱신
     updatePatternProgress(); updateWordProgress(); updateIdiomProgress();
     
-    // 현재 보고 있는 리스트가 있다면 새로고침
     const currPage = history.state ? history.state.page : 'home';
     if (currPage === 'patterns') renderPatternList();
     if (currPage === 'words') renderWordList();
@@ -930,11 +963,6 @@ async function downloadData() {
     console.error(e);
     alert("오류 발생: " + e.message);
   }
-}
-
-// 로컬 저장 전용 함수 (체크박스 클릭 시 호출됨)
-function saveData(type) {
-  saveDataLocally(type);
 }
 
 function saveDataLocally(type) {
