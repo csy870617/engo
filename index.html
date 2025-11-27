@@ -22,7 +22,7 @@
   
   <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
   <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
-  
+
   <script src="https://t1.kakaocdn.net/kakao_js_sdk/2.6.0/kakao.min.js" integrity="sha384-6MFdIr0zOira1CHQkedUqJVqe0ryQTCtjeE6WPqDwqnhNOhIOGKotpbY71EUDCaz" crossorigin="anonymous"></script>
   
   <script>
@@ -51,7 +51,7 @@
     <section id="page-home">
       <div class="hero-card">
         <h1>English & Go!</h1>
-        <p>오늘도 영어 정복을 시작해볼까요?</p>
+        <p>오늘의 영어 정복을 시작해볼까요?</p>
         
         <button class="share-btn" onclick="shareApp()">
           📢 영어 공부 함께하기 (공유)
@@ -70,13 +70,13 @@
           <div class="tile-icon">📙</div>
           <div class="tile-content">
             <span class="label">단어 학습</span>
-            <span class="desc">필수 단어 암기</span>
+            <span class="desc">우선순위 필수 단어 암기</span>
           </div>
         </div>
         <div class="home-tile tile-idiom" onclick="goTo('idioms')">
           <div class="tile-icon">📗</div>
           <div class="tile-content">
-            <span class="label">숙어 학습</span>
+            <span class="label">숙어/구동사 학습</span>
             <span class="desc">관용구 마스터</span>
           </div>
         </div>
@@ -91,7 +91,7 @@
           <div class="tile-icon">🗣️</div>
           <div class="tile-content">
             <span class="label">쉐도잉 훈련</span>
-            <span class="desc">원어민 따라하기</span>
+            <span class="desc">영어 회화 따라하기</span>
           </div>
         </div>
         <div class="home-tile tile-puzzle" onclick="goTo('puzzle')">
@@ -296,7 +296,7 @@
 
         <div class="game-controls" style="display:flex; gap:10px;">
           <button class="btn-sub" onclick="prevShadowing()" style="flex:1;">❮ 이전</button>
-          <button class="btn-sub" onclick="nextRandomShadowingTopic()" style="flex:1;">🎲 다른 주제</button>
+          <button class="btn-sub" onclick="nextRandomShadowingTopic()" style="flex:1;">🎲 다음 주제</button>
           <button class="btn-main" onclick="nextShadowing()" style="flex:2;">다음 문장 ❯</button>
         </div>
       </div>
@@ -352,7 +352,7 @@
       <h3>설정</h3>
       
       <div class="setting-item" style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
-        <label for="tts-autoplay-toggle" style="color:#fff; cursor:pointer;">상세화면 자동 재생</label>
+        <label for="tts-autoplay-toggle" style="color:#fff; cursor:pointer;">영어 문장 자동 재생</label>
         <input type="checkbox" id="tts-autoplay-toggle" style="width:20px; height:20px; accent-color:var(--primary); cursor:pointer;">
       </div>
 
@@ -405,8 +405,8 @@
       </div>
 
       <div class="modal-btns vertical">
-        <button class="btn-main" onclick="uploadData()">☁ 서버에 저장하기</button>
-        <button class="btn-sub" onclick="downloadData()">📥 서버에서 불러오기</button>
+        <button class="btn-main" onclick="uploadData()">☁ 저장하기</button>
+        <button class="btn-sub" onclick="downloadData()">📥 불러오기</button>
         <button class="btn-text" onclick="closeSyncModal()">닫기</button>
       </div>
     </div>
