@@ -1132,36 +1132,57 @@ window.addEventListener('beforeunload', (e) => {
 });
 
 // ==========================================
-// 14. PWA 설치 배너 로직
+// 14. PWA 설치 배너 로직 (디버깅 기능 추가됨)
 // ==========================================
 let deferredPrompt;
 const installBanner = document.getElementById('install-banner');
 
+// 1. 설치 가능한 상태가 되면 브라우저가 이 이벤트를 보냅니다.
 window.addEventListener('beforeinstallprompt', (e) => {
+  console.log("✅ PWA 설치 이벤트 감지됨!"); // F12 콘솔에서 확인 가능
   e.preventDefault();
   deferredPrompt = e;
+  
+  // 닫기 버튼을 누른 적이 없다면 배너 표시
   if (!localStorage.getItem('installBannerDismissed')) {
     installBanner.classList.remove('hidden');
+  } else {
+    console.log("ℹ️ 사용자가 이전에 배너를 닫았습니다. (localStorage)");
   }
 });
 
+// 2. 설치 버튼 클릭 시
 async function installPWA() {
-  if (!deferredPrompt) return;
+  if (!deferredPrompt) {
+    // 아이폰 등 이벤트 지원 안 하는 경우 안내
+    alert("브라우저 메뉴의 [홈 화면에 추가]나 [앱 설치]를 이용해주세요.");
+    return;
+  }
+  
   deferredPrompt.prompt();
   const { outcome } = await deferredPrompt.userChoice;
+  console.log(`사용자 선택 결과: ${outcome}`);
+  
   deferredPrompt = null;
   installBanner.classList.add('hidden');
 }
 
+// 3. 닫기 버튼 (영구적으로 닫기)
 function hideInstallBanner() {
   installBanner.classList.add('hidden');
   localStorage.setItem('installBannerDismissed', 'true');
 }
 
+// 4. 이미 설치된 경우 배너 숨김
 window.addEventListener('appinstalled', () => {
+  console.log("🎉 앱이 설치되었습니다.");
   installBanner.classList.add('hidden');
   deferredPrompt = null;
 });
+
+// 5. (테스트용) 강제로 배너 보여주기 (로컬호스트가 아닐 때 확인용)
+// 배너 디자인만 확인하고 싶으면 아래 주석을 해제하세요.
+// installBanner.classList.remove('hidden');
 
 // ==========================================
 // 15. 공유 기능
