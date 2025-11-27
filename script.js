@@ -1196,7 +1196,7 @@ function shareApp() {
       Kakao.Share.sendDefault({
         objectType: 'feed',
         content: {
-          title: 'English & Go - 오늘의 영어 정복을 시작해볼까요?',
+          title: 'English & Go',
           description: '영어회화 공부 ENGO와 함께해요.',
           imageUrl: window.location.origin + '/icon.png', 
           link: {
@@ -1224,7 +1224,7 @@ function shareApp() {
   if (navigator.share) {
     navigator.share({
       title: 'English & Go',
-      text: '오늘의 영어 정복을 시작해볼까요? 영어회화 공부 ENGO와 함께해요.',
+      text: '영어회화 공부 ENGO와 함께해요.',
       url: window.location.href,
     }).catch(console.log);
   } 
@@ -1385,4 +1385,5 @@ if (typeof patternData !== "undefined") updatePatternProgress();
 if (typeof wordData !== "undefined") updateWordProgress();
 if (typeof idiomData !== "undefined") updateIdiomProgress();
 goTo("home");
+
 
