@@ -699,79 +699,165 @@ function prevShadowing() {
 }
 
 // ==========================================
-// 9. 문장 퍼즐 (Puzzle)
+// 9. 문장 퍼즐 (Puzzle) - 리스트 기반 네비게이션
 // ==========================================
-let currentPuzzleAnswer = "";
-let puzzleTargetTokens = [];
-let puzzleShuffledTokens = [];
+let puzzleList = [];          // 전체 퍼즐 문제 리스트
+let currentPuzzleIndex = 0;   // 현재 문제 번호
+let currentPuzzleAnswer = ""; // 현재 정답 (영어 문장)
+let puzzleTargetTokens = [];  // 사용자가 맞춘 단어들
+let puzzleShuffledTokens = []; // 섞인 단어들 (보기)
 
+// 퍼즐 초기화 (데이터 로드 및 섞기)
 function initPuzzle() {
-  if (!currentPuzzleAnswer) nextPuzzle();
-  else renderPuzzle();
-}
+  // 데이터가 아직 없으면 생성
+  if (puzzleList.length === 0) {
+    let pool = [];
+    
+    // 대화 데이터에서 추출
+    if (typeof conversationData !== "undefined") {
+      conversationData.forEach(c => c.lines.forEach(l => {
+        // 3단어 이상인 문장만 문제로 사용
+        if (l.en.trim().split(" ").length > 2) {
+          pool.push({ en: l.en, kr: l.kr });
+        }
+      }));
+    }
+    // 패턴 데이터에서 추출
+    if (typeof patternData !== "undefined") {
+      patternData.forEach(p => p.examples.forEach(ex => {
+        if (ex.en.trim().split(" ").length > 2) {
+          pool.push({ en: ex.en, kr: ex.kr });
+        }
+      }));
+    }
 
-function nextPuzzle() {
-  let pool = [];
-  if (typeof conversationData !== "undefined") {
-    conversationData.forEach(c => c.lines.forEach(l => {
-      if (l.en.split(" ").length > 2) pool.push({ en: l.en, kr: l.kr, src: "대화" });
-    }));
+    // 전체 문제를 무작위로 섞음 (한 번만)
+    puzzleList = pool.sort(() => Math.random() - 0.5);
+    currentPuzzleIndex = 0;
   }
-  if (typeof patternData !== "undefined") {
-    patternData.forEach(p => p.examples.forEach(ex => {
-      if (ex.en.split(" ").length > 2) pool.push({ en: ex.en, kr: ex.kr, src: "패턴" });
-    }));
-  }
-  if (pool.length === 0) return document.getElementById("puzzle-question").textContent = "데이터 부족";
-  const target = pool[Math.floor(Math.random() * pool.length)];
-  currentPuzzleAnswer = target.en.trim();
-  document.getElementById("puzzle-question").textContent = target.kr;
 
-  puzzleTargetTokens = [];
-  puzzleShuffledTokens = currentPuzzleAnswer.split(" ").sort(() => Math.random() - 0.5);
-  document.getElementById("puzzle-feedback").textContent = "";
   renderPuzzle();
 }
 
+// 화면 그리기
 function renderPuzzle() {
+  if (puzzleList.length === 0) {
+    document.getElementById("puzzle-question").textContent = "데이터 부족";
+    return;
+  }
+
+  // 현재 인덱스의 문제 가져오기
+  const target = puzzleList[currentPuzzleIndex];
+  currentPuzzleAnswer = target.en.trim(); // 마침표 등 정리는 필요 시 추가
+
+  // 카운터 업데이트
+  document.getElementById("puzzle-counter").textContent = `${currentPuzzleIndex + 1} / ${puzzleList.length}`;
+  
+  // 한글 문제 표시
+  document.getElementById("puzzle-question").textContent = target.kr;
+
+  // 단어 토큰 초기화 (이미 진행 중인 상태가 아니라면)
+  // 이전/다음 이동 시에는 초기화, '다시' 버튼 시에도 초기화
+  // 여기서는 단순히 렌더링만 하므로, 데이터 로직은 movePuzzle에서 처리하거나
+  // 상태 변수 관리가 필요함. 간단하게 매번 리셋하는 구조로 감.
+  
+  // 피드백 초기화
+  document.getElementById("puzzle-feedback").textContent = "";
+  document.getElementById("puzzle-feedback").className = "feedback-msg";
+
+  // 단어 섞기 (새로운 문제일 때만 수행해야 하지만, 편의상 렌더링 시 수행)
+  // 단, 정답을 맞춘 상태가 유지되길 원하면 로직이 복잡해짐.
+  // 여기서는 페이지 이동 시 무조건 새로 푸는 것으로 구현.
+  
+  puzzleTargetTokens = [];
+  // 단어 단위로 쪼개고 섞기
+  // 구두점 처리를 위해 간단한 정규식 사용 가능하지만, 일단 공백 기준 분리
+  puzzleShuffledTokens = currentPuzzleAnswer.split(" ").sort(() => Math.random() - 0.5);
+
+  updatePuzzleBoard();
+}
+
+// 슬롯 및 보기 영역 업데이트 (단어 클릭 시 호출됨)
+function updatePuzzleBoard() {
   const bank = document.getElementById("puzzle-bank");
   const target = document.getElementById("puzzle-target");
-  bank.innerHTML = ""; target.innerHTML = "";
+  bank.innerHTML = ""; 
+  target.innerHTML = "";
   
+  // 보기 영역 (남은 단어들)
+  // 섞인 전체 토큰 중, 타겟에 들어간 개수만큼 뺌 (중복 단어 처리 로직)
   const currentBank = [...puzzleShuffledTokens];
   puzzleTargetTokens.forEach(t => {
     const idx = currentBank.indexOf(t);
     if (idx > -1) currentBank.splice(idx, 1);
   });
   
+  // 보기 렌더링
   currentBank.forEach(t => {
     const span = document.createElement("span");
     span.className = "token";
     span.textContent = t;
-    span.onclick = () => { puzzleTargetTokens.push(t); renderPuzzle(); };
+    span.onclick = () => { 
+      puzzleTargetTokens.push(t); 
+      updatePuzzleBoard(); 
+      
+      // 자동 정답 체크 (선택 사항 - 편의성 위해 끔)
+      // if (puzzleTargetTokens.length === puzzleShuffledTokens.length) checkPuzzle();
+    };
     bank.appendChild(span);
   });
+
+  // 정답 슬롯 렌더링
   puzzleTargetTokens.forEach((t, i) => {
     const span = document.createElement("span");
     span.className = "token";
     span.textContent = t;
-    span.onclick = () => { puzzleTargetTokens.splice(i, 1); renderPuzzle(); };
+    // 클릭 시 다시 보기로 돌아감
+    span.onclick = () => { 
+      puzzleTargetTokens.splice(i, 1); 
+      updatePuzzleBoard(); 
+    };
     target.appendChild(span);
   });
 }
 
+// 정답 확인
 function checkPuzzle() {
   const user = puzzleTargetTokens.join(" ");
+  // 구두점(.,?) 등은 단순 비교를 위해 제거하거나 포함할 수 있음. 
+  // 여기서는 엄격하게 비교 (공백 기준 split 했으므로 그대로 join)
+  
   const fb = document.getElementById("puzzle-feedback");
+  
   if (user === currentPuzzleAnswer) {
     fb.textContent = "정답입니다! 🎉";
     fb.className = "feedback ok";
-    speakText(currentPuzzleAnswer);
+    speakText(currentPuzzleAnswer); // 정답 시 읽어주기
   } else {
-    fb.textContent = "오답입니다.";
+    fb.textContent = "오답입니다. 다시 시도해보세요.";
     fb.className = "feedback error";
   }
 }
+
+// 초기화 (현재 문제 다시 풀기)
+function resetPuzzle() {
+  puzzleTargetTokens = [];
+  document.getElementById("puzzle-feedback").textContent = "";
+  updatePuzzleBoard();
+}
+
+// 이전/다음 이동
+function movePuzzle(offset) {
+  const newIndex = currentPuzzleIndex + offset;
+  
+  if (newIndex >= 0 && newIndex < puzzleList.length) {
+    currentPuzzleIndex = newIndex;
+    renderPuzzle(); // 새 문제 렌더링 (이때 토큰도 리셋됨)
+  } else {
+    alert(offset > 0 ? "마지막 문제입니다." : "첫 번째 문제입니다.");
+  }
+}
+
 function resetPuzzle() { puzzleTargetTokens = []; document.getElementById("puzzle-feedback").textContent = ""; renderPuzzle(); }
 
 // ==========================================
