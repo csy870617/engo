@@ -285,21 +285,34 @@
       </div>
     </section>
 
-    <section id="page-puzzle" class="hidden">
+<section id="page-puzzle" class="hidden">
       <div class="nav-header"><span class="back-btn" onclick="goTo('home')">❮ 나가기</span></div>
+      
       <div class="game-card">
-        <div class="game-header">
+        <div class="game-header" style="justify-content:center; position:relative;">
           <h2>🧩 문장 퍼즐</h2>
-          <button class="btn-text" onclick="nextPuzzle()">건너뛰기 ❯</button>
+          </div>
+        
+        <div style="text-align:center; margin-bottom:15px; color:var(--text-sub); font-size:0.9rem;">
+          <span id="puzzle-counter">1 / 100</span>
         </div>
-        <p class="puzzle-kr" id="puzzle-question">문제가 나옵니다...</p>
+
+        <p class="puzzle-kr" id="puzzle-question" style="min-height:3rem;">문제가 나옵니다...</p>
+        
         <div id="puzzle-target" class="puzzle-slot"></div>
         <div id="puzzle-bank" class="puzzle-pieces"></div>
+        
         <div id="puzzle-feedback" class="feedback-msg"></div>
-        <div class="game-bottom">
-          <button class="btn-sub" onclick="resetPuzzle()">↺ 초기화</button>
-          <button class="btn-main" onclick="checkPuzzle()">정답 확인</button>
+        
+        <div class="game-bottom" style="margin-top:20px; display:flex; gap:10px;">
+          <button class="btn-sub" onclick="resetPuzzle()" style="flex:1;">↺ 다시</button>
+          <button class="btn-main" onclick="checkPuzzle()" style="flex:2;">정답 확인</button>
         </div>
+      </div>
+
+      <div class="nav-buttons">
+        <button onclick="movePuzzle(-1)">이전 문제</button>
+        <button onclick="movePuzzle(1)">다음 문제</button>
       </div>
     </section>
 
