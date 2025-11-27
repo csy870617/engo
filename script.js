@@ -58,6 +58,11 @@ let isBackAction = false;
 // 2. 네비게이션 (히스토리 API 적용)
 // ==========================================
 window.onpopstate = function(event) {
+  const openModals = document.querySelectorAll('.modal:not(.hidden)');
+  if (openModals.length > 0) {
+    openModals.forEach(modal => modal.classList.add('hidden'));
+  }
+
   const page = (event.state && event.state.page) ? event.state.page : 'home';
   isBackAction = true;
   goTo(page);
@@ -65,7 +70,6 @@ window.onpopstate = function(event) {
 };
 
 function goTo(page) {
-  // [수정됨] 화면 이동 시 재생 중인 TTS 즉시 중지 🛑
   if ("speechSynthesis" in window) {
     window.speechSynthesis.cancel();
   }
@@ -112,18 +116,7 @@ function loadMemorizedData() {
 }
 
 function saveData(type) {
-  if (type === 'pattern') {
-    localStorage.setItem("patternMemorizedIds", JSON.stringify(Array.from(memorizedPatterns)));
-    updatePatternProgress();
-  }
-  if (type === 'word') {
-    localStorage.setItem("wordMemorizedIds", JSON.stringify(Array.from(memorizedWords)));
-    updateWordProgress();
-  }
-  if (type === 'idiom') {
-    localStorage.setItem("idiomMemorizedIds", JSON.stringify(Array.from(memorizedIdioms)));
-    updateIdiomProgress();
-  }
+  saveDataLocally(type);
 }
 
 // ==========================================
@@ -459,7 +452,7 @@ function playIdiomExamples() {
 }
 
 // ==========================================
-// 7. 대화 (Conversation) & 쉐도잉 진입
+// 7. 대화 (Conversation)
 // ==========================================
 function renderConversationList() {
   const container = document.getElementById("conv-list");
@@ -516,7 +509,6 @@ function playConversationAll() {
   if (conv) speakText(conv.lines.map(l => l.en).join(" "));
 }
 
-// 대화 상세 화면에서 쉐도잉 시작
 function startShadowingFromConv(id) {
   currentShadowingId = id;
   shadowingLineIndex = 0;
@@ -543,14 +535,11 @@ function moveConv(o) { moveItemInList(currentConvId, currentConvList, o, openCon
 
 
 // ==========================================
-// 8. 쉐도잉 (Shadowing) - 메인 기능화 (업그레이드)
+// 8. 쉐도잉 (Shadowing)
 // ==========================================
-
-// 쉐도잉 옵션 상태
 let isBlindMode = false;
 let isHideKr = false;
 
-// 쉐도잉 목록 렌더링
 function renderShadowingList() {
   const container = document.getElementById("shadowing-list-container");
   if (!container || typeof conversationData === "undefined") return;
@@ -570,7 +559,6 @@ function renderShadowingList() {
       shadowingLineIndex = 0;
       goTo("shadowing");
       
-      // 진입 시 기본값 설정
       isBlindMode = true; 
       isHideKr = false;
       updateShadowingOptionsUI();
@@ -591,7 +579,6 @@ function renderShadowingList() {
   }
 }
 
-// 쉐도잉 옵션 토글
 function toggleShadowingOption(type) {
   if (type === 'blind') isBlindMode = !isBlindMode;
   if (type === 'hideKr') isHideKr = !isHideKr;
@@ -599,7 +586,6 @@ function toggleShadowingOption(type) {
   updateShadowingUI();
 }
 
-// 옵션 버튼 스타일 업데이트
 function updateShadowingOptionsUI() {
   const btnBlind = document.getElementById("btn-blind-mode");
   const btnHideKr = document.getElementById("btn-hide-kr");
@@ -608,20 +594,15 @@ function updateShadowingOptionsUI() {
   if(btnHideKr) btnHideKr.classList.toggle("active", isHideKr);
 }
 
-// 쉐도잉 화면 내용 업데이트
 function updateShadowingUI() {
   const conv = conversationData.find(c => c.id === currentShadowingId);
   if (!conv) return;
 
   const line = conv.lines[shadowingLineIndex];
   
-  // 카운터 업데이트
   document.getElementById("shadowing-counter").textContent = `${shadowingLineIndex + 1} / ${conv.lines.length}`;
-
-  // 화자
   document.getElementById("shadowing-speaker").textContent = `Speaker ${line.speaker}`;
   
-  // 영어 문장 (블라인드 모드 처리)
   const enText = document.getElementById("shadowing-text");
   enText.textContent = line.en;
   
@@ -635,34 +616,27 @@ function updateShadowingUI() {
     document.getElementById("shadowing-hint").classList.add("hidden");
   }
 
-  // 한글 해석 (숨김 처리)
   const krText = document.getElementById("shadowing-kr");
   krText.textContent = line.kr;
   krText.style.visibility = isHideKr ? "hidden" : "visible";
 
-  // 자동 재생 (페이지 진입하거나 다음 문장 넘어갈 때)
   if (autoPlayEnabled) {
     speakText(line.en);
   }
 }
 
-// 문장 잠시 보기 (블라인드 모드에서 클릭 시)
 function revealTextTemp() {
   const enText = document.getElementById("shadowing-text");
   if (isBlindMode) {
     enText.classList.add("revealed");
-    // 2초 후 다시 가리기
     setTimeout(() => {
       enText.classList.remove("revealed");
     }, 2000);
   }
 }
 
-// 현재 문장 다시 듣기 (버튼 클릭 효과 포함)
 function playShadowingCurrent() {
   const btn = document.getElementById("shadowing-play-btn");
-  
-  // 클릭 애니메이션 효과
   btn.style.transform = "scale(0.95)";
   setTimeout(() => btn.style.transform = "scale(1)", 100);
 
@@ -671,7 +645,6 @@ function playShadowingCurrent() {
   speakText(conv.lines[shadowingLineIndex].en);
 }
 
-// 다음 문장
 function nextShadowing() {
   const conv = conversationData.find(c => c.id === currentShadowingId);
   if (!conv) return;
@@ -683,14 +656,12 @@ function nextShadowing() {
     if(confirm("대화가 끝났습니다. 목록으로 돌아갈까요?")) {
       goTo("shadowing-list");
     } else {
-      // 처음부터 다시 하기
       shadowingLineIndex = 0;
       updateShadowingUI();
     }
   }
 }
 
-// 이전 문장
 function prevShadowing() {
   if (shadowingLineIndex > 0) {
     shadowingLineIndex--;
@@ -698,174 +669,149 @@ function prevShadowing() {
   }
 }
 
-// ==========================================
-// 9. 문장 퍼즐 (Puzzle) - 리스트 기반 네비게이션
-// ==========================================
-let puzzleList = [];          // 전체 퍼즐 문제 리스트
-let currentPuzzleIndex = 0;   // 현재 문제 번호
-let currentPuzzleAnswer = ""; // 현재 정답 (영어 문장)
-let puzzleTargetTokens = [];  // 사용자가 맞춘 단어들
-let puzzleShuffledTokens = []; // 섞인 단어들 (보기)
+// [수정됨] 랜덤 쉐도잉 주제 선택 (오류 수정 및 확실한 랜덤 처리)
+function nextRandomShadowingTopic() {
+  // 1. 음성 재생 중단
+  if ("speechSynthesis" in window) {
+    window.speechSynthesis.cancel();
+  }
 
-// 퍼즐 초기화 (데이터 로드 및 섞기)
+  if (!conversationData || conversationData.length === 0) return;
+  
+  let nextConv;
+  // 2. 현재와 다른 주제가 나올 때까지 반복 선택 (데이터가 1개뿐이면 예외 처리)
+  if (conversationData.length > 1) {
+    do {
+      const randomIndex = Math.floor(Math.random() * conversationData.length);
+      nextConv = conversationData[randomIndex];
+    } while (nextConv.id === currentShadowingId);
+  } else {
+    nextConv = conversationData[0]; // 데이터가 1개면 그냥 그거 선택
+  }
+  
+  // 3. 상태 업데이트
+  currentShadowingId = nextConv.id;
+  shadowingLineIndex = 0;
+  
+  // 4. UI 갱신 (새 문장 표시 및 자동 재생)
+  updateShadowingUI();
+}
+
+// ==========================================
+// 9. 문장 퍼즐 (Puzzle)
+// ==========================================
+let puzzleList = [];
+let currentPuzzleIndex = 0;
+let currentPuzzleAnswer = "";
+let puzzleTargetTokens = [];
+let puzzleShuffledTokens = [];
+
 function initPuzzle() {
-  // 데이터가 아직 없으면 생성
   if (puzzleList.length === 0) {
     let pool = [];
-    
-    // 대화 데이터에서 추출
     if (typeof conversationData !== "undefined") {
       conversationData.forEach(c => c.lines.forEach(l => {
-        // 3단어 이상인 문장만 문제로 사용
-        if (l.en.trim().split(" ").length > 2) {
-          pool.push({ en: l.en, kr: l.kr });
-        }
+        if (l.en.trim().split(" ").length > 2) pool.push({ en: l.en, kr: l.kr });
       }));
     }
-    // 패턴 데이터에서 추출
     if (typeof patternData !== "undefined") {
       patternData.forEach(p => p.examples.forEach(ex => {
-        if (ex.en.trim().split(" ").length > 2) {
-          pool.push({ en: ex.en, kr: ex.kr });
-        }
+        if (ex.en.trim().split(" ").length > 2) pool.push({ en: ex.en, kr: ex.kr });
       }));
     }
-
-    // 전체 문제를 무작위로 섞음 (한 번만)
     puzzleList = pool.sort(() => Math.random() - 0.5);
     currentPuzzleIndex = 0;
   }
-
   renderPuzzle();
 }
 
-// 화면 그리기
 function renderPuzzle() {
   if (puzzleList.length === 0) {
     document.getElementById("puzzle-question").textContent = "데이터 부족";
     return;
   }
-
-  // 현재 인덱스의 문제 가져오기
   const target = puzzleList[currentPuzzleIndex];
-  currentPuzzleAnswer = target.en.trim(); // 마침표 등 정리는 필요 시 추가
-
-  // 카운터 업데이트
+  currentPuzzleAnswer = target.en.trim();
   document.getElementById("puzzle-counter").textContent = `${currentPuzzleIndex + 1} / ${puzzleList.length}`;
-  
-  // 한글 문제 표시
   document.getElementById("puzzle-question").textContent = target.kr;
-
-  // 단어 토큰 초기화 (이미 진행 중인 상태가 아니라면)
-  // 이전/다음 이동 시에는 초기화, '다시' 버튼 시에도 초기화
-  // 여기서는 단순히 렌더링만 하므로, 데이터 로직은 movePuzzle에서 처리하거나
-  // 상태 변수 관리가 필요함. 간단하게 매번 리셋하는 구조로 감.
-  
-  // 피드백 초기화
   document.getElementById("puzzle-feedback").textContent = "";
   document.getElementById("puzzle-feedback").className = "feedback-msg";
-
-  // 단어 섞기 (새로운 문제일 때만 수행해야 하지만, 편의상 렌더링 시 수행)
-  // 단, 정답을 맞춘 상태가 유지되길 원하면 로직이 복잡해짐.
-  // 여기서는 페이지 이동 시 무조건 새로 푸는 것으로 구현.
-  
   puzzleTargetTokens = [];
-  // 단어 단위로 쪼개고 섞기
-  // 구두점 처리를 위해 간단한 정규식 사용 가능하지만, 일단 공백 기준 분리
   puzzleShuffledTokens = currentPuzzleAnswer.split(" ").sort(() => Math.random() - 0.5);
-
   updatePuzzleBoard();
 }
 
-// 슬롯 및 보기 영역 업데이트 (단어 클릭 시 호출됨)
 function updatePuzzleBoard() {
   const bank = document.getElementById("puzzle-bank");
   const target = document.getElementById("puzzle-target");
-  bank.innerHTML = ""; 
-  target.innerHTML = "";
+  bank.innerHTML = ""; target.innerHTML = "";
   
-  // 보기 영역 (남은 단어들)
-  // 섞인 전체 토큰 중, 타겟에 들어간 개수만큼 뺌 (중복 단어 처리 로직)
   const currentBank = [...puzzleShuffledTokens];
   puzzleTargetTokens.forEach(t => {
     const idx = currentBank.indexOf(t);
     if (idx > -1) currentBank.splice(idx, 1);
   });
   
-  // 보기 렌더링
   currentBank.forEach(t => {
     const span = document.createElement("span");
     span.className = "token";
     span.textContent = t;
-    span.onclick = () => { 
-      puzzleTargetTokens.push(t); 
-      updatePuzzleBoard(); 
-      
-      // 자동 정답 체크 (선택 사항 - 편의성 위해 끔)
-      // if (puzzleTargetTokens.length === puzzleShuffledTokens.length) checkPuzzle();
-    };
+    span.onclick = () => { puzzleTargetTokens.push(t); updatePuzzleBoard(); };
     bank.appendChild(span);
   });
-
-  // 정답 슬롯 렌더링
   puzzleTargetTokens.forEach((t, i) => {
     const span = document.createElement("span");
     span.className = "token";
     span.textContent = t;
-    // 클릭 시 다시 보기로 돌아감
-    span.onclick = () => { 
-      puzzleTargetTokens.splice(i, 1); 
-      updatePuzzleBoard(); 
-    };
+    span.onclick = () => { puzzleTargetTokens.splice(i, 1); updatePuzzleBoard(); };
     target.appendChild(span);
   });
 }
 
-// 정답 확인
 function checkPuzzle() {
   const user = puzzleTargetTokens.join(" ");
-  // 구두점(.,?) 등은 단순 비교를 위해 제거하거나 포함할 수 있음. 
-  // 여기서는 엄격하게 비교 (공백 기준 split 했으므로 그대로 join)
-  
   const fb = document.getElementById("puzzle-feedback");
-  
   if (user === currentPuzzleAnswer) {
     fb.textContent = "정답입니다! 🎉";
     fb.className = "feedback ok";
-    speakText(currentPuzzleAnswer); // 정답 시 읽어주기
+    speakText(currentPuzzleAnswer);
   } else {
-    fb.textContent = "오답입니다. 다시 시도해보세요.";
+    fb.textContent = "오답입니다.";
     fb.className = "feedback error";
   }
 }
 
-// 초기화 (현재 문제 다시 풀기)
 function resetPuzzle() {
   puzzleTargetTokens = [];
   document.getElementById("puzzle-feedback").textContent = "";
   updatePuzzleBoard();
 }
 
-// 이전/다음 이동
+// [신규] 퍼즐 정답 보기 함수
+function showPuzzleAnswer() {
+  const fb = document.getElementById("puzzle-feedback");
+  fb.textContent = `정답: ${currentPuzzleAnswer}`;
+  fb.className = "feedback-msg"; // 기본 스타일로 초기화
+  fb.style.color = "#38bdf8"; // 강조 색상 (네온 블루)
+}
+
 function movePuzzle(offset) {
   const newIndex = currentPuzzleIndex + offset;
-  
   if (newIndex >= 0 && newIndex < puzzleList.length) {
     currentPuzzleIndex = newIndex;
-    renderPuzzle(); // 새 문제 렌더링 (이때 토큰도 리셋됨)
+    renderPuzzle();
   } else {
     alert(offset > 0 ? "마지막 문제입니다." : "첫 번째 문제입니다.");
   }
 }
 
-function resetPuzzle() { puzzleTargetTokens = []; document.getElementById("puzzle-feedback").textContent = ""; renderPuzzle(); }
-
 // ==========================================
-// 10. TTS 설정 및 학습내용 저장/불러오기
+// 10. TTS 설정, 글자 크기 및 저장
 // ==========================================
 let ttsVoices = [];
 let userVoiceIndex = null;
 let userRate = 1.0;
+let userFontSize = 'medium'; // small, medium, large
 let autoPlayEnabled = true;
 
 function loadVoices() {
@@ -881,13 +827,17 @@ function loadVoices() {
       }
     });
   }
+  
   const raw = localStorage.getItem("ttsSettings");
   if(raw) {
     const d = JSON.parse(raw);
     userVoiceIndex = d.voiceIndex;
     userRate = d.rate || 1.0;
     if (d.autoPlay !== undefined) autoPlayEnabled = d.autoPlay;
+    if (d.fontSize) userFontSize = d.fontSize;
   }
+  
+  applyFontSizeToBody(userFontSize);
 }
 if("speechSynthesis" in window) window.speechSynthesis.onvoiceschanged = loadVoices;
 
@@ -906,37 +856,85 @@ function speakText(text) {
 }
 
 function openSettingsModal() {
+  const currentPage = history.state ? history.state.page : 'home';
+  history.pushState({ page: currentPage, modal: 'settings' }, "", "#settings");
+
   document.getElementById("settings-modal").classList.remove("hidden");
+  
   const sel = document.getElementById("tts-voice-select");
-  const rng = document.getElementById("tts-rate-range");
   const chk = document.getElementById("tts-autoplay-toggle");
+  
   if(sel) sel.value = userVoiceIndex !== null ? userVoiceIndex : "";
-  if(rng) rng.value = userRate;
   if(chk) chk.checked = autoPlayEnabled;
-  updateRateLabel();
+
+  updateButtonGroup('speed-btn-group', userRate);
+  updateButtonGroup('font-btn-group', userFontSize);
 }
-function closeSettingsModal() { document.getElementById("settings-modal").classList.add("hidden"); }
-function updateRateLabel() { document.getElementById("tts-rate-label").textContent = document.getElementById("tts-rate-range").value + "x"; }
+
+function closeSettingsModal() { 
+  if (history.state && history.state.modal === 'settings') {
+    history.back();
+  } else {
+    document.getElementById("settings-modal").classList.add("hidden"); 
+  }
+}
+
+function updateButtonGroup(groupId, activeValue) {
+  const group = document.getElementById(groupId);
+  if(!group) return;
+  const btns = group.querySelectorAll('button');
+  btns.forEach(btn => {
+    const btnVal = btn.getAttribute('data-value');
+    if (btnVal == activeValue) {
+      btn.classList.add('active');
+    } else {
+      btn.classList.remove('active');
+    }
+  });
+}
+
+function setTtsRate(rate, btn) {
+  userRate = parseFloat(rate);
+  const group = document.getElementById("speed-btn-group");
+  group.querySelectorAll("button").forEach(b => b.classList.remove("active"));
+  btn.classList.add("active");
+  previewVoiceSettings();
+}
+
+function setAppFontSize(size, btn) {
+  userFontSize = size;
+  const group = document.getElementById("font-btn-group");
+  group.querySelectorAll("button").forEach(b => b.classList.remove("active"));
+  btn.classList.add("active");
+  applyFontSizeToBody(size);
+}
+
+function applyFontSizeToBody(size) {
+  const root = document.documentElement; 
+  root.classList.remove('font-small', 'font-medium', 'font-large');
+  root.classList.add(`font-${size}`);
+}
+
 function previewVoiceSettings() {
-  updateRateLabel();
-  const tempVoice = document.getElementById("tts-voice-select").value;
-  const tempRate = document.getElementById("tts-rate-range").value;
   window.speechSynthesis.cancel();
-  const u = new SpeechSynthesisUtterance("Hello, voice test.");
+  const u = new SpeechSynthesisUtterance("Hello.");
   u.lang = "en-US";
-  u.rate = parseFloat(tempRate);
+  u.rate = userRate;
+  const tempVoice = document.getElementById("tts-voice-select").value;
   if(tempVoice && ttsVoices[tempVoice]) u.voice = ttsVoices[tempVoice];
   window.speechSynthesis.speak(u);
 }
+
 function saveSettings() {
   userVoiceIndex = document.getElementById("tts-voice-select").value || null;
-  userRate = parseFloat(document.getElementById("tts-rate-range").value);
   autoPlayEnabled = document.getElementById("tts-autoplay-toggle").checked;
   localStorage.setItem("ttsSettings", JSON.stringify({ 
     voiceIndex: userVoiceIndex, 
-    rate: userRate,
-    autoPlay: autoPlayEnabled 
+    rate: userRate, 
+    autoPlay: autoPlayEnabled,
+    fontSize: userFontSize
   }));
+  
   closeSettingsModal();
 }
 
@@ -959,11 +957,36 @@ if (typeof firebase !== "undefined") {
 }
 
 function openSyncModal() {
+  const currentPage = history.state ? history.state.page : 'home';
+  history.pushState({ page: currentPage, modal: 'sync' }, "", "#sync");
+
   document.getElementById("sync-modal").classList.remove("hidden");
-  const lastId = localStorage.getItem("lastSyncId");
-  if(lastId) document.getElementById("sync-id").value = lastId;
+  
+  const savedAuth = localStorage.getItem("syncAuth");
+  if (savedAuth) {
+    const authData = JSON.parse(savedAuth);
+    document.getElementById("sync-id").value = authData.id;
+    document.getElementById("sync-pw").value = authData.pw;
+    document.getElementById("sync-remember").checked = true;
+  }
 }
-function closeSyncModal() { document.getElementById("sync-modal").classList.add("hidden"); }
+
+function closeSyncModal() { 
+  if (history.state && history.state.modal === 'sync') {
+    history.back();
+  } else {
+    document.getElementById("sync-modal").classList.add("hidden"); 
+  }
+}
+
+function handleRememberAuth(id, pw) {
+  const isRemember = document.getElementById("sync-remember").checked;
+  if (isRemember) {
+    localStorage.setItem("syncAuth", JSON.stringify({ id: id, pw: pw }));
+  } else {
+    localStorage.removeItem("syncAuth");
+  }
+}
 
 async function uploadData() {
   const id = document.getElementById("sync-id").value.trim();
@@ -971,6 +994,8 @@ async function uploadData() {
   
   if(!id || !pw) return alert("아이디와 비밀번호를 모두 입력해주세요.");
   if(!db) return alert("데이터베이스 연결 실패");
+
+  handleRememberAuth(id, pw);
 
   try {
     const ref = db.collection("users").doc(id);
@@ -991,10 +1016,14 @@ async function uploadData() {
       patterns: Array.from(memorizedPatterns),
       words: Array.from(memorizedWords),
       idioms: Array.from(memorizedIdioms),
-      settings: { voiceIndex: userVoiceIndex, rate: userRate, autoPlay: autoPlayEnabled }
+      settings: { 
+        voiceIndex: userVoiceIndex, 
+        rate: userRate, 
+        autoPlay: autoPlayEnabled,
+        fontSize: userFontSize
+      }
     });
 
-    localStorage.setItem("lastSyncId", id);
     alert("✅ 학습내용이 안전하게 저장되었습니다.");
     closeSyncModal();
   } catch(e) {
@@ -1010,6 +1039,8 @@ async function downloadData() {
   if(!id || !pw) return alert("아이디와 비밀번호를 입력해주세요.");
   if(!db) return alert("데이터베이스 연결 실패");
 
+  handleRememberAuth(id, pw);
+
   try {
     const ref = db.collection("users").doc(id);
     const doc = await ref.get();
@@ -1024,17 +1055,26 @@ async function downloadData() {
     if(d.patterns) memorizedPatterns = new Set(d.patterns);
     if(d.words) memorizedWords = new Set(d.words);
     if(d.idioms) memorizedIdioms = new Set(d.idioms);
+    
     if(d.settings) {
       userVoiceIndex = d.settings.voiceIndex;
-      userRate = d.settings.rate;
+      userRate = d.settings.rate || 1.0;
       if(d.settings.autoPlay !== undefined) autoPlayEnabled = d.settings.autoPlay;
+      if(d.settings.fontSize) {
+        userFontSize = d.settings.fontSize;
+        applyFontSizeToBody(userFontSize);
+      }
     }
     
     saveDataLocally('pattern'); 
     saveDataLocally('word'); 
     saveDataLocally('idiom');
-    localStorage.setItem("ttsSettings", JSON.stringify({ voiceIndex: userVoiceIndex, rate: userRate, autoPlay: autoPlayEnabled }));
-    localStorage.setItem("lastSyncId", id);
+    localStorage.setItem("ttsSettings", JSON.stringify({ 
+      voiceIndex: userVoiceIndex, 
+      rate: userRate, 
+      autoPlay: autoPlayEnabled,
+      fontSize: userFontSize
+    }));
     
     updatePatternProgress(); updateWordProgress(); updateIdiomProgress();
     
@@ -1077,6 +1117,19 @@ document.body.addEventListener('click', function unlockTTS() {
   }
   document.body.removeEventListener('click', unlockTTS);
 }, { once: true });
+
+// ==========================================
+// 13. 페이지 종료 전 저장 유도 (수정됨)
+// ==========================================
+window.addEventListener('beforeunload', (e) => {
+  // 1. 시스템 경고창을 띄우기 위한 설정 (브라우저마다 문구는 다르거나 고정됨)
+  e.preventDefault();
+  e.returnValue = ''; 
+  
+  // 2. 뒷배경에 '저장 모달'을 미리 열어둠
+  // (사용자가 '취소'를 눌러서 페이지에 남을 경우 바로 저장을 할 수 있도록)
+  openSyncModal();
+});
 
 loadMemorizedData();
 loadVoices();
