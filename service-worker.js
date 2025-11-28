@@ -1,4 +1,4 @@
-const CACHE_NAME = 'engo-cache-v26';
+const CACHE_NAME = 'engo-cache-v27';
 const ASSETS_TO_CACHE = [
   './',
   './index.html',
@@ -43,6 +43,7 @@ self.addEventListener('activate', (event) => {
   );
 
 });
+
 
 
 
