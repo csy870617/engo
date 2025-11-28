@@ -55,7 +55,7 @@ let shadowingLineIndex = 0;
 let isBackAction = false; 
 
 // ==========================================
-// 2. 네비게이션 (히스토리 API 최적화)
+// 2. 네비게이션 (히스토리 API 최적화 - 뒤로가기 해결)
 // ==========================================
 window.onpopstate = function(event) {
   const openModals = document.querySelectorAll('.modal:not(.hidden)');
@@ -67,19 +67,31 @@ window.onpopstate = function(event) {
   const page = (event.state && event.state.page) ? event.state.page : 'home';
   
   isBackAction = true;
-  goTo(page, false); // [중요] 뒤로가기 시에는 히스토리를 추가하지 않음(false)
+  // 뒤로 가기 때는 히스토리를 추가하지 않음 ('none')
+  goTo(page, 'none'); 
   isBackAction = false;
 };
 
-// [수정됨] pushHistory 매개변수 추가 (기본값 true)
-function goTo(page, pushHistory = true) {
+/**
+ * 페이지 이동 함수
+ * @param {string} page - 이동할 페이지 ID
+ * @param {string} mode - 'push' (기록 추가), 'replace' (기록 교체/초기화), 'none' (기록 없음)
+ */
+function goTo(page, mode = 'push') {
   if ("speechSynthesis" in window) {
     window.speechSynthesis.cancel();
   }
 
-  // 뒤로가기 액션이 아니고, pushHistory가 true일 때만 기록 추가
-  if (!isBackAction && pushHistory) {
-    history.pushState({ page: page }, "", "#" + page);
+  if (!isBackAction) {
+    if (mode === 'replace') {
+      // [핵심] 초기화 시 현재 기록을 덮어씌움 -> 뒤로 가기 시 앱 종료됨
+      history.replaceState({ page: page }, "", "#" + page);
+    } else if (mode === 'push') {
+      // 일반 이동 시 기록 추가 (중복 방지)
+      if (!history.state || history.state.page !== page) {
+        history.pushState({ page: page }, "", "#" + page);
+      }
+    }
   }
 
   pages.forEach((p) => {
@@ -1440,4 +1452,5 @@ initNewsUpdater();
 
 // 4. 초기 화면 렌더링 (중복 히스토리 방지: replace)
 const initialPage = location.hash.replace('#', '') || 'home';
-goTo(initialPage, false); // [중요] 앱 시작 시에는 history를 쌓지 않고 replace로 처리
+// [중요] 처음 로드 시에는 replace 모드로 이동
+goTo(initialPage, 'replace');
