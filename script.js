@@ -71,20 +71,20 @@ window.onpopstate = function(event) {
   isBackAction = false;
 };
 
-// [수정됨] isReplace 옵션 추가: 초기 로딩 시 히스토리를 쌓지 않기 위함
-function goTo(page, isReplace = false) {
+// [수정됨] isInitialLoad 옵션 추가: 초기 로딩 시 히스토리를 쌓지 않고 '교체'함
+function goTo(page, isInitialLoad = false) {
   if ("speechSynthesis" in window) {
     window.speechSynthesis.cancel();
   }
 
   // 뒤로가기 버튼으로 온 게 아닐 때만 히스토리 처리
   if (!isBackAction) {
-    // 1. 강제 교체 모드이거나 (초기화용)
-    // 2. 현재 페이지와 다를 경우에만 히스토리 조작
-    if (isReplace) {
+    if (isInitialLoad) {
+      // [핵심] 처음 켤 때는 pushState(쌓기) 대신 replaceState(교체) 사용
+      // 이렇게 해야 뒤로 가기 시 이전 기록(빈 페이지)이 아닌 브라우저 밖으로 나감
       history.replaceState({ page: page }, "", "#" + page);
     } else {
-      // 현재 페이지와 동일하면 중복해서 쌓지 않음
+      // 일반 이동 시에는 기록 쌓기 (단, 중복 방지)
       if (!history.state || history.state.page !== page) {
         history.pushState({ page: page }, "", "#" + page);
       }
@@ -1165,7 +1165,7 @@ async function downloadData() {
     
     updatePatternProgress(); updateWordProgress(); updateIdiomProgress();
     
-    // 현재 페이지 리렌더링
+    // 현재 페이지 갱신
     const currPage = history.state ? history.state.page : 'home';
     if (currPage === 'patterns') renderPatternList();
     if (currPage === 'words') renderWordList();
@@ -1205,6 +1205,11 @@ document.body.addEventListener('click', function unlockTTS() {
   }
   document.body.removeEventListener('click', unlockTTS);
 }, { once: true });
+
+// ==========================================
+// 13. 페이지 종료 전 저장 유도 (바로 종료)
+// ==========================================
+// 기존 beforeunload 이벤트 리스너 제거됨
 
 // ==========================================
 // 14. PWA 설치 배너 로직
@@ -1450,7 +1455,6 @@ loadVoices();
 // 3. 뉴스 초기화
 initNewsUpdater(); 
 
-// 4. 초기 화면 렌더링 (중복 히스토리 방지)
+// 4. 초기 화면 렌더링 (중복 히스토리 방지: replace)
 const initialPage = location.hash.replace('#', '') || 'home';
-// 처음 로드 시에는 replace 모드로 이동
 goTo(initialPage, true);
