@@ -129,6 +129,7 @@ function renderPatternList() {
   const keyword = (document.getElementById("pattern-search")?.value || "").toLowerCase();
   container.innerHTML = "";
 
+  // [중요] 현재 필터링된 리스트를 전역 변수에 저장 (네비게이션용)
   const filtered = patternData.filter((p) => {
     const matchText = (p.title + p.desc).toLowerCase().includes(keyword);
     const matchStudy = !patternStudyingOnly || !memorizedPatterns.has(p.id);
@@ -225,7 +226,9 @@ function togglePatternMemorizedDetail() {
   if (chk.checked) memorizedPatterns.add(currentPatternId);
   else memorizedPatterns.delete(currentPatternId);
   saveData('pattern');
-  renderPatternList();
+  
+  // [수정됨] 상세 화면에서는 리스트를 다시 그리지 않음 (네비게이션 순서 유지)
+  // renderPatternList();  <-- 삭제
 }
 
 function playPatternExamples() {
@@ -234,13 +237,15 @@ function playPatternExamples() {
 }
 
 // ==========================================
-// 5. 단어 (Words)
+// 5. 단어 (Words) 로직
 // ==========================================
 function renderWordList() {
   const container = document.getElementById("word-list");
   if (!container || typeof wordData === "undefined") return;
   const keyword = (document.getElementById("word-search")?.value || "").toLowerCase();
   container.innerHTML = "";
+  
+  // [중요] 현재 필터링된 리스트를 전역 변수에 저장
   const filtered = wordData.filter(w => {
     const matchText = (w.word + w.meaning).toLowerCase().includes(keyword);
     const level = parseInt(w.id.match(/^L(\d)-/)?.[1] || 0);
@@ -248,7 +253,9 @@ function renderWordList() {
     const matchStudy = !wordStudyingOnly || !memorizedWords.has(w.id);
     return matchText && matchLevel && matchStudy;
   });
+
   currentWordList = filtered;
+
   filtered.forEach(w => {
     const div = document.createElement("div");
     div.className = "list-item";
@@ -336,7 +343,9 @@ function toggleWordMemorizedDetail() {
   const chk = document.getElementById("word-memorized-checkbox");
   if (chk.checked) memorizedWords.add(currentWordId); else memorizedWords.delete(currentWordId);
   saveData('word');
-  renderWordList();
+  
+  // [수정됨] 상세 화면에서는 리스트를 갱신하지 않음
+  // renderWordList(); <-- 삭제
 }
 
 function playWordExamples() {
@@ -345,20 +354,24 @@ function playWordExamples() {
 }
 
 // ==========================================
-// 6. 숙어 (Idioms)
+// 6. 숙어 (Idioms) 로직
 // ==========================================
 function renderIdiomList() {
   const container = document.getElementById("idiom-list");
   if (!container) return;
   const keyword = (document.getElementById("idiom-search")?.value || "").toLowerCase();
   container.innerHTML = "";
+  
+  // [중요] 현재 필터링된 리스트를 전역 변수에 저장
   const filtered = idiomData.filter(i => {
     const matchText = (i.idiom + i.meaning).toLowerCase().includes(keyword);
     const matchLevel = selectedIdiomLevel === 0 || i.level === selectedIdiomLevel;
     const matchStudy = !idiomStudyingOnly || !memorizedIdioms.has(i.id);
     return matchText && matchLevel && matchStudy;
   });
+
   currentIdiomList = filtered;
+
   filtered.forEach(i => {
     const div = document.createElement("div");
     div.className = "list-item";
@@ -443,7 +456,9 @@ function toggleIdiomMemorizedDetail() {
   const chk = document.getElementById("idiom-memorized-checkbox");
   if (chk.checked) memorizedIdioms.add(currentIdiomId); else memorizedIdioms.delete(currentIdiomId);
   saveData('idiom');
-  renderIdiomList();
+  
+  // [수정됨] 상세 화면에서는 리스트를 갱신하지 않음
+  // renderIdiomList(); <-- 삭제
 }
 
 function playIdiomExamples() {
@@ -523,11 +538,20 @@ function startShadowingFromConv(id) {
 function moveItemInList(currentId, list, offset, openFunc) {
   if (!list || list.length === 0) return;
   const idx = list.findIndex(item => item.id === currentId);
-  if (idx === -1) return;
+  
+  // [수정됨] 현재 항목이 리스트에 없으면(필터링으로 인해) 아무것도 안 하거나 경고
+  // 하지만 상세 화면에서 체크를 바꿔도 list 변수 자체는 변경되지 않았으므로 idx를 찾을 수 있어야 정상.
+  if (idx === -1) {
+     // 만약 정말 못 찾으면 첫 번째나 마지막으로 이동하는 대신, 그냥 알림
+     alert("목록에서 항목을 찾을 수 없습니다.");
+     return;
+  }
+  
   const nextIdx = idx + offset;
   if (nextIdx >= 0 && nextIdx < list.length) openFunc(list[nextIdx].id);
   else alert(offset > 0 ? "마지막 항목입니다." : "첫 번째 항목입니다.");
 }
+
 function movePattern(o) { moveItemInList(currentPatternId, currentPatternList, o, openPattern); }
 function moveWord(o) { moveItemInList(currentWordId, currentWordList, o, openWord); }
 function moveIdiom(o) { moveItemInList(currentIdiomId, currentIdiomList, o, openIdiom); }
@@ -780,17 +804,16 @@ function checkPuzzle() {
 
 function resetPuzzle() {
   puzzleTargetTokens = [];
-  const fb = document.getElementById("puzzle-feedback");
-  fb.textContent = "";
-  fb.style.color = "";
+  document.getElementById("puzzle-feedback").textContent = "";
   updatePuzzleBoard();
 }
 
+// [신규] 퍼즐 정답 보기 함수
 function showPuzzleAnswer() {
   const fb = document.getElementById("puzzle-feedback");
   fb.textContent = `정답: ${currentPuzzleAnswer}`;
   fb.className = "feedback-msg";
-  fb.style.color = "#38bdf8";
+  fb.style.color = "#38bdf8"; // 정답 표시 색상
 }
 
 function movePuzzle(offset) {
