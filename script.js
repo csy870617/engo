@@ -63,14 +63,13 @@ let isBackAction = false;
 
 // [뒤로가기 감지]
 window.onpopstate = function(event) {
-  // 1. 모달이 떠있으면 닫기만 함
   const openModals = document.querySelectorAll('.modal:not(.hidden)');
   if (openModals.length > 0) {
     openModals.forEach(modal => modal.classList.add('hidden'));
     return;
   }
 
-  // 2. 히스토리 state가 있으면 해당 페이지로, 없으면(null) 홈으로
+  // 히스토리 state가 있으면 해당 페이지로, 없으면(null) 홈으로
   const page = (event.state && event.state.page) ? event.state.page : 'home';
   
   isBackAction = true;
@@ -84,15 +83,13 @@ function goTo(page) {
     window.speechSynthesis.cancel();
   }
 
-  // 현재 페이지와 같으면 이동 안 함
   if (history.state && history.state.page === page) return;
 
-  // 기록 추가
   history.pushState({ page: page }, "", "#" + page);
   renderPageOnly(page);
 }
 
-// [화면 그리기 전용] - 뉴스 로딩 로직 없음!
+// [화면 그리기 전용]
 function renderPageOnly(page) {
   pages.forEach((p) => {
     const el = document.getElementById("page-" + p);
@@ -101,7 +98,6 @@ function renderPageOnly(page) {
     else el.classList.add("hidden");
   });
 
-  // 각 페이지별 렌더링 함수 호출
   if (page === "patterns") renderPatternList();
   if (page === "words") renderWordList();
   if (page === "idioms") renderIdiomList();
@@ -114,25 +110,18 @@ function renderPageOnly(page) {
 // 3. 앱 초기화 (DOMContentLoaded)
 // ==========================================
 window.addEventListener('DOMContentLoaded', () => {
-  // 1. 데이터 로드
   loadMemorizedData();
   loadVoices();
 
-  // 2. 뉴스 로드 (앱 실행 시 단 1회만 실행됨)
   if (!isNewsLoaded) {
     fetchRealNews();
     isNewsLoaded = true;
   }
 
-  // 3. 초기 화면 설정 (히스토리 스택 1개로 고정)
-  // 현재 URL의 해시가 있으면 그 페이지로, 없으면 홈으로
   const hashPage = location.hash.replace('#', '');
   const startPage = pages.includes(hashPage) ? hashPage : 'home';
 
-  // [핵심] replaceState를 사용하여 현재 기록을 덮어씀 -> 뒤로가기 시 종료됨
   history.replaceState({ page: startPage }, "", "#" + startPage);
-  
-  // 화면 그리기
   renderPageOnly(startPage);
 });
 
@@ -268,18 +257,16 @@ function togglePatternMemorizedDetail() {
   updatePatternProgress();
 }
 
-// [수정됨] 패턴 제목 + 예문 함께 읽기
 function playPatternExamples() {
   const p = patternData.find(x => x.id === currentPatternId);
   if (p) {
-    // 제목과 예문을 연결해서 읽어줌
     const textToRead = `${p.title}. ${p.examples.map(e => e.en).join(". ")}`;
     speakText(textToRead);
   }
 }
 
 // ==========================================
-// 6. 단어 (Words)
+// 6. 단어 (Words) - [수정됨] 상세 화면 UI 변경
 // ==========================================
 function renderWordList() {
   const container = document.getElementById("word-list");
@@ -355,8 +342,11 @@ function openWord(id) {
   currentWordId = id;
   const w = wordData.find(x => x.id === id);
   if (!w) return;
-  document.getElementById("word-title").textContent = `${w.word} - ${w.meaning}`;
-  document.getElementById("word-desc").textContent = w.examples?.[0]?.kr || w.meaning;
+
+  // [수정] 제목에는 단어만, 설명에는 뜻만 표시
+  document.getElementById("word-title").textContent = w.word; 
+  document.getElementById("word-desc").textContent = w.meaning;
+  
   document.getElementById("word-memorized-checkbox").checked = memorizedWords.has(id);
   document.getElementById("word-toggle-kr").checked = true;
   renderWordExamples();
@@ -480,7 +470,7 @@ function openIdiom(id) {
   if (autoPlayEnabled) {
       const textToRead = `${item.idiom}. ${item.examples.map(e => e.en).join(". ")}`;
       speakText(textToRead);
-  }
+    }
 }
 
 function renderIdiomExamples() {
@@ -1055,7 +1045,7 @@ function shareApp() {
     navigator.share({ title: 'English & Go', text: '오늘의 영어 정복을 시작해볼까요? 영어회화 공부 ENGO와 함께해요.', url: window.location.href }).catch(console.log);
   } else {
     const dummy = document.createElement('input'); document.body.appendChild(dummy); dummy.value = window.location.href; dummy.select(); document.execCommand('copy'); document.body.removeChild(dummy);
-    alert("링크가 복사되었습니다! 친구에게 붙여넣기 해보세요.");
+    alert("링크가 복사되었습니다!");
   }
 }
 
