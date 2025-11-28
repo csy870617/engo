@@ -38,7 +38,6 @@ let currentWordList = [];
 let currentIdiomList = [];
 let currentConvList = [];
 
-// 저장 대상 변수들 초기화
 let selectedWordLevel = 0;
 let memorizedWords = new Set();
 let wordStudyingOnly = false;
@@ -97,11 +96,11 @@ function goTo(page) {
 }
 
 // ==========================================
-// 3. 데이터 저장/로드 (LocalStorage) - [중요: 레벨 저장 복구됨]
+// 3. 데이터 저장/로드 (LocalStorage)
 // ==========================================
 function loadMemorizedData() {
   try {
-    // 1. 암기 데이터 로드
+    // 암기 데이터 로드
     const pRaw = localStorage.getItem("patternMemorizedIds");
     if (pRaw) memorizedPatterns = new Set(JSON.parse(pRaw));
 
@@ -111,7 +110,7 @@ function loadMemorizedData() {
     const iRaw = localStorage.getItem("idiomMemorizedIds");
     if (iRaw) memorizedIdioms = new Set(JSON.parse(iRaw));
 
-    // 2. 필터 상태 로드 (미암기만 보기 등)
+    // 필터 상태 로드
     const pStudy = localStorage.getItem("patternStudyingOnly");
     if(pStudy !== null) patternStudyingOnly = (pStudy === 'true');
 
@@ -121,7 +120,7 @@ function loadMemorizedData() {
     const iStudy = localStorage.getItem("idiomStudyingOnly");
     if(iStudy !== null) idiomStudyingOnly = (iStudy === 'true');
 
-    // 3. [복구됨] 레벨 선택 상태 로드
+    // 레벨 상태 로드
     const wLevel = localStorage.getItem("selectedWordLevel");
     if(wLevel !== null) selectedWordLevel = parseInt(wLevel);
 
@@ -262,13 +261,11 @@ function renderWordList() {
   const container = document.getElementById("word-list");
   if (!container || typeof wordData === "undefined") return;
   
-  // 필터 버튼 UI
   const filterBtn = document.getElementById("word-studying-btn");
   if (filterBtn) {
     filterBtn.classList.toggle("active", wordStudyingOnly);
   }
 
-  // [중요] 레벨 버튼 UI 동기화 (저장된 selectedWordLevel 값 반영)
   document.querySelectorAll("[data-word-level-btn]").forEach(b => {
     b.classList.toggle("active", parseInt(b.dataset.wordLevelBtn) === selectedWordLevel);
   });
@@ -323,7 +320,6 @@ function updateWordProgress() {
 
 function setWordLevel(lvl) {
   selectedWordLevel = lvl;
-  // [중요] 레벨 변경 시 즉시 저장
   localStorage.setItem("selectedWordLevel", lvl);
   renderWordList();
 }
@@ -394,7 +390,6 @@ function renderIdiomList() {
     filterBtn.classList.toggle("active", idiomStudyingOnly);
   }
 
-  // [중요] 레벨 버튼 UI 동기화
   document.querySelectorAll("[data-idiom-level-btn]").forEach(b => {
     b.classList.toggle("active", parseInt(b.dataset.idiomLevelBtn) === selectedIdiomLevel);
   });
@@ -445,7 +440,6 @@ function updateIdiomProgress() {
 
 function setIdiomLevel(lvl) {
   selectedIdiomLevel = lvl;
-  // [중요] 레벨 저장
   localStorage.setItem("selectedIdiomLevel", lvl);
   renderIdiomList();
 }
@@ -1003,7 +997,7 @@ function saveSettings() {
 }
 
 // ---------------------------------------------------------
-// 학습내용 저장/불러오기 (Firebase)
+// 학습내용 저장/불러오기 (Firebase) - [중요: 레벨 및 필터 동기화 추가됨]
 // ---------------------------------------------------------
 const firebaseConfig = {
   apiKey: "AIzaSyCdr88Bomc9SQzZBj03iih3epxivhPL63I",
@@ -1076,6 +1070,7 @@ async function uploadData() {
       if(!confirm(`'${id}' 계정을 새로 만들고 저장하시겠습니까?`)) return;
     }
 
+    // [중요] 레벨 및 필터 상태까지 함께 저장
     await ref.set({
       password: pw,
       updatedAt: new Date().toISOString(),
@@ -1086,7 +1081,13 @@ async function uploadData() {
         voiceIndex: userVoiceIndex, 
         rate: userRate, 
         autoPlay: autoPlayEnabled,
-        fontSize: userFontSize
+        fontSize: userFontSize,
+        // 추가된 상태들
+        wordLevel: selectedWordLevel,
+        idiomLevel: selectedIdiomLevel,
+        filterPattern: patternStudyingOnly,
+        filterWord: wordStudyingOnly,
+        filterIdiom: idiomStudyingOnly
       }
     });
 
@@ -1130,8 +1131,21 @@ async function downloadData() {
         userFontSize = d.settings.fontSize;
         applyFontSizeToBody(userFontSize);
       }
+      // [중요] 레벨 및 필터 상태 복원
+      if(d.settings.wordLevel !== undefined) selectedWordLevel = d.settings.wordLevel;
+      if(d.settings.idiomLevel !== undefined) selectedIdiomLevel = d.settings.idiomLevel;
+      if(d.settings.filterPattern !== undefined) patternStudyingOnly = d.settings.filterPattern;
+      if(d.settings.filterWord !== undefined) wordStudyingOnly = d.settings.filterWord;
+      if(d.settings.filterIdiom !== undefined) idiomStudyingOnly = d.settings.filterIdiom;
     }
     
+    // 로컬 스토리지 동기화 (재접속 시 유지용)
+    localStorage.setItem("selectedWordLevel", selectedWordLevel);
+    localStorage.setItem("selectedIdiomLevel", selectedIdiomLevel);
+    localStorage.setItem("patternStudyingOnly", patternStudyingOnly);
+    localStorage.setItem("wordStudyingOnly", wordStudyingOnly);
+    localStorage.setItem("idiomStudyingOnly", idiomStudyingOnly);
+
     saveDataLocally('pattern'); 
     saveDataLocally('word'); 
     saveDataLocally('idiom');
@@ -1144,6 +1158,7 @@ async function downloadData() {
     
     updatePatternProgress(); updateWordProgress(); updateIdiomProgress();
     
+    // 현재 페이지 갱신
     const currPage = history.state ? history.state.page : 'home';
     if (currPage === 'patterns') renderPatternList();
     if (currPage === 'words') renderWordList();
