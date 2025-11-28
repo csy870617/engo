@@ -58,7 +58,6 @@ let isBackAction = false;
 // 2. 네비게이션 (히스토리 API 적용)
 // ==========================================
 window.onpopstate = function(event) {
-  // 뒤로 가기 시 열려있는 모달이 있으면 닫기
   const openModals = document.querySelectorAll('.modal:not(.hidden)');
   if (openModals.length > 0) {
     openModals.forEach(modal => modal.classList.add('hidden'));
@@ -787,12 +786,11 @@ function resetPuzzle() {
   updatePuzzleBoard();
 }
 
-// [신규] 퍼즐 정답 보기
 function showPuzzleAnswer() {
   const fb = document.getElementById("puzzle-feedback");
   fb.textContent = `정답: ${currentPuzzleAnswer}`;
   fb.className = "feedback-msg";
-  fb.style.color = "#38bdf8"; // 정답 표시 색상
+  fb.style.color = "#38bdf8";
 }
 
 function movePuzzle(offset) {
@@ -1122,83 +1120,74 @@ document.body.addEventListener('click', function unlockTTS() {
 // 13. 페이지 종료 전 저장 유도 (수정됨)
 // ==========================================
 window.addEventListener('beforeunload', (e) => {
-  // 1. 시스템 경고창을 띄우기 위한 설정 (브라우저마다 문구는 다르거나 고정됨)
   e.preventDefault();
   e.returnValue = ''; 
-  
-  // 2. 뒷배경에 '저장 모달'을 미리 열어둠
-  // (사용자가 '취소'를 눌러서 페이지에 남을 경우 바로 저장을 할 수 있도록)
   openSyncModal();
 });
 
 // ==========================================
-// 14. PWA 설치 배너 로직 (디버깅 기능 추가됨)
+// 14. PWA 설치 배너 로직
 // ==========================================
 let deferredPrompt;
 const installBanner = document.getElementById('install-banner');
 
-// 1. 설치 가능한 상태가 되면 브라우저가 이 이벤트를 보냅니다.
 window.addEventListener('beforeinstallprompt', (e) => {
-  console.log("✅ PWA 설치 이벤트 감지됨!"); // F12 콘솔에서 확인 가능
+  console.log("✅ PWA 설치 이벤트 감지됨!"); 
   e.preventDefault();
   deferredPrompt = e;
   
-  // 닫기 버튼을 누른 적이 없다면 배너 표시
   if (!localStorage.getItem('installBannerDismissed')) {
     installBanner.classList.remove('hidden');
-  } else {
-    console.log("ℹ️ 사용자가 이전에 배너를 닫았습니다. (localStorage)");
   }
 });
 
-// 2. 설치 버튼 클릭 시
 async function installPWA() {
   if (!deferredPrompt) {
-    // 아이폰 등 이벤트 지원 안 하는 경우 안내
     alert("브라우저 메뉴의 [홈 화면에 추가]나 [앱 설치]를 이용해주세요.");
     return;
   }
   
   deferredPrompt.prompt();
   const { outcome } = await deferredPrompt.userChoice;
-  console.log(`사용자 선택 결과: ${outcome}`);
   
   deferredPrompt = null;
   installBanner.classList.add('hidden');
 }
 
-// 3. 닫기 버튼 (영구적으로 닫기)
 function hideInstallBanner() {
   installBanner.classList.add('hidden');
   localStorage.setItem('installBannerDismissed', 'true');
 }
 
-// 4. 이미 설치된 경우 배너 숨김
 window.addEventListener('appinstalled', () => {
-  console.log("🎉 앱이 설치되었습니다.");
   installBanner.classList.add('hidden');
   deferredPrompt = null;
 });
 
-// 5. (테스트용) 강제로 배너 보여주기 (로컬호스트가 아닐 때 확인용)
-// 배너 디자인만 확인하고 싶으면 아래 주석을 해제하세요.
-// installBanner.classList.remove('hidden');
-
 // ==========================================
 // 15. 공유 기능
 // ==========================================
-const KAKAO_JS_KEY = '7e17cb2ba4738f9e3cd710879d487959'; 
+const KAKAO_JS_KEY = 'YOUR_KAKAO_JS_KEY'; 
+
+if (typeof Kakao !== 'undefined' && KAKAO_JS_KEY !== 'YOUR_KAKAO_JS_KEY') {
+  try {
+    if (!Kakao.isInitialized()) {
+      Kakao.init(KAKAO_JS_KEY);
+    }
+  } catch(e) {
+    console.log("Kakao init failed", e);
+  }
+}
 
 function shareApp() {
-  // 1. 카카오톡 공유
   if (typeof Kakao !== 'undefined' && Kakao.isInitialized()) {
     try {
       Kakao.Share.sendDefault({
         objectType: 'feed',
         content: {
           title: 'English & Go',
-          description: '영어회화 공부 ENGO와 함께',
-          imageUrl: window.location.origin + '/icon.png', 
+          description: '오늘의 영어 정복을 시작해볼까요? 영어회화 공부 ENGO와 함께해요.',
+          imageUrl: window.location.origin + '/icon.png',
           link: {
             mobileWebUrl: window.location.href,
             webUrl: window.location.href,
@@ -1214,21 +1203,19 @@ function shareApp() {
           },
         ],
       });
-      return; 
+      return;
     } catch(e) {
       console.log("Kakao share failed, trying native share...");
     }
   }
 
-  // 2. 기본 공유
   if (navigator.share) {
     navigator.share({
       title: 'English & Go',
-      text: '영어회화 공부 ENGO와 함께',
+      text: '오늘의 영어 정복을 시작해볼까요? 영어회화 공부 ENGO와 함께해요.',
       url: window.location.href,
     }).catch(console.log);
   } 
-  // 3. 클립보드 복사
   else {
     const dummy = document.createElement('input');
     document.body.appendChild(dummy);
@@ -1244,35 +1231,43 @@ function shareApp() {
 // 16. [수정됨] 실시간 영어 뉴스 로더 (API 연동)
 // ==========================================
 
-// [수정됨] 검색어 강화: 긍정적 키워드(success, popular 등)와 인기 주제(K-pop, Tech, Food) 결합
-// 검색어: South Korea + (K-pop OR Tech OR Food OR Travel) + (Success OR New OR Popular)
-const RSS_URL = "https://news.google.com/rss/search?q=South+Korea+(k-pop+OR+technology+OR+food+OR+travel)+(success+OR+popular+OR+record)+when:7d&hl=en-US&gl=US&ceid=US:en";
-const API_URL = `https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent(RSS_URL)}`;
+// [수정됨] 3가지 다른 주제의 RSS 피드 URL (3시간마다 순환용)
+const NEWS_TOPICS = [
+  // Topic 1: K-Culture (K-pop, Drama, Movie)
+  "https://news.google.com/rss/search?q=South+Korea+(k-pop+OR+k-drama+OR+movie)+(popular+OR+success)&hl=en-US&gl=US&ceid=US:en",
+  // Topic 2: Technology & Economy (Samsung, Tech, Business)
+  "https://news.google.com/rss/search?q=South+Korea+(technology+OR+samsung+OR+economy)+(growth+OR+innovation)&hl=en-US&gl=US&ceid=US:en",
+  // Topic 3: Lifestyle & Society (Food, Travel, Trend)
+  "https://news.google.com/rss/search?q=South+Korea+(food+OR+travel+OR+trend)+(viral+OR+famous)&hl=en-US&gl=US&ceid=US:en"
+];
 
+let currentTopicIndex = 0; // 현재 주제 인덱스 (0, 1, 2 순환)
+
+// API 호출 함수
 async function fetchRealNews() {
   const container = document.getElementById('news-card-list');
   const badge = document.querySelector('.update-badge');
   if (!container) return;
 
-  // 로딩 표시
-  container.innerHTML = `<div style="padding:20px; color:#aaa; font-size:0.9rem;">🔄 Curator is picking top 3 news...</div>`;
+  container.innerHTML = `<div style="padding:20px; color:#aaa; font-size:0.9rem;">🔄 Loading fresh news...</div>`;
+
+  // 현재 순서의 RSS URL 선택
+  const currentRssUrl = NEWS_TOPICS[currentTopicIndex];
+  const apiUrl = `https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent(currentRssUrl)}`;
 
   try {
-    const response = await fetch(API_URL);
+    const response = await fetch(apiUrl);
     const data = await response.json();
 
     if (data.status === 'ok') {
       container.innerHTML = ""; // 초기화
       
-      // [수정됨] 최신 기사 딱 3개만 가져오기
+      // 최신 기사 3개만 가져오기
       const articles = data.items.slice(0, 3);
 
       articles.forEach(item => {
-        // 제목 정리 (지저분한 매체명 등 제거)
         const cleanTitle = item.title.split(" - ")[0];
         const sourceName = item.title.split(" - ")[1] || "News";
-        
-        // 날짜 포맷팅
         const date = new Date(item.pubDate);
         const timeAgo = getTimeAgo(date);
 
@@ -1282,10 +1277,10 @@ async function fetchRealNews() {
 
         card.innerHTML = `
           <div>
-            <span class="news-tag">#Trending_Korea</span>
+            <span class="news-tag">#Topic_${currentTopicIndex + 1}</span>
             <div class="news-title">${cleanTitle}</div>
             <div class="news-summary" style="font-size:0.8rem; color:#94a3b8;">
-              ${item.description ? item.description.replace(/<[^>]*>?/gm, '').substring(0, 70) + "..." : "Click to read the full positive story."}
+              ${item.description ? item.description.replace(/<[^>]*>?/gm, '').substring(0, 70) + "..." : "Click to read more."}
             </div>
           </div>
           <div class="news-footer">
@@ -1295,36 +1290,36 @@ async function fetchRealNews() {
         container.appendChild(card);
       });
 
-      // 배지 갱신
-      if(badge) badge.textContent = "Top 3 Updated";
+      if(badge) badge.textContent = "Freshly Updated";
+
+      // 다음 호출을 위해 인덱스 변경 (0 -> 1 -> 2 -> 0)
+      currentTopicIndex = (currentTopicIndex + 1) % NEWS_TOPICS.length;
 
     } else {
       throw new Error("API Error");
     }
   } catch (error) {
     console.error("News fetch failed:", error);
-    loadBackupNews(); // 실패 시 백업 실행
+    loadBackupNews();
   }
 }
 
-// [수정됨] 백업 데이터도 3개로 맞춤 (API 실패 시 보여줄 내용)
 function loadBackupNews() {
   const container = document.getElementById('news-card-list');
-  
   const newsData = [
     { 
       tag: "K-Culture", 
       title: "Han Kang wins Nobel Prize in Literature", 
       summary: "South Korean author Han Kang brings home the Nobel Prize, marking a historic moment for K-Literature.", 
       source: "CNN", 
-      url: "https://edition.cnn.com/" 
+      url: "https://edition.cnn.com/2024/10/10/style/han-kang-nobel-prize-literature-intl/index.html" 
     },
     { 
       tag: "K-Food", 
       title: "Frozen Kimbap becomes a massive hit in the US", 
       summary: "Trader Joe's sold out of Korean frozen kimbap instantly, showing the global power of K-Food.", 
       source: "NBC News", 
-      url: "https://www.nbcnews.com/" 
+      url: "https://www.nbcnews.com/news/asian-america/frozen-kimbap-korean-food-trader-joes-viral-tiktok-rcna101247" 
     },
     { 
       tag: "Tech", 
@@ -1353,7 +1348,6 @@ function loadBackupNews() {
   });
 }
 
-// 시간 계산 함수
 function getTimeAgo(date) {
   const seconds = Math.floor((new Date() - date) / 1000);
   let interval = seconds / 3600;
@@ -1363,28 +1357,23 @@ function getTimeAgo(date) {
   return "Just now";
 }
 
-// 뉴스 자동 갱신 시스템
+// 뉴스 자동 갱신 시스템 (3시간마다 주제 변경)
 function initNewsUpdater() {
-  fetchRealNews(); 
+  fetchRealNews(); // 최초 실행
 
-  // 1시간마다 갱신
+  // 3시간(10800000ms)마다 갱신 및 주제 변경
   setInterval(() => {
     fetchRealNews();
-    console.log("📰 Top 3 News updated.");
-  }, 3600000);
+    console.log("📰 News topic rotated and updated.");
+  }, 10800000);
 }
 
-// 초기화 실행 부분에 추가
 loadMemorizedData();
 loadVoices();
-initNewsUpdater(); // [신규] 뉴스 로더 실행
+initNewsUpdater(); 
 
 if (!history.state) history.replaceState({ page: 'home' }, "", "#home");
-
 if (typeof patternData !== "undefined") updatePatternProgress();
 if (typeof wordData !== "undefined") updateWordProgress();
 if (typeof idiomData !== "undefined") updateIdiomProgress();
 goTo("home");
-
-
-
