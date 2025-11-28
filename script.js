@@ -1286,7 +1286,7 @@ function shareApp() {
 }
 
 // ==========================================
-// 16. 실시간 영어 뉴스 로더 (API 연동)
+// 16. [수정됨] 실시간 영어 뉴스 로더 (수동 새로고침)
 // ==========================================
 const NEWS_TOPICS = [
   "https://news.google.com/rss/search?q=South+Korea+(k-pop+OR+k-drama+OR+movie)+(popular+OR+success)&hl=en-US&gl=US&ceid=US:en",
@@ -1296,12 +1296,20 @@ const NEWS_TOPICS = [
 
 let currentTopicIndex = 0; 
 
+// [신규] 사용자가 버튼을 누르면 호출되는 함수
+function refreshNews() {
+  // 버튼에 회전 애니메이션 효과 등을 주고 싶다면 여기서 처리 가능
+  fetchRealNews();
+}
+
 async function fetchRealNews() {
   const container = document.getElementById('news-card-list');
-  const badge = document.querySelector('.update-badge');
   if (!container) return;
 
-  container.innerHTML = `<div style="padding:20px; color:#aaa; font-size:0.9rem;">🔄 Loading fresh news...</div>`;
+  // 로딩 표시
+  container.innerHTML = `<div style="padding:30px; text-align:center; color:#94a3b8; font-size:0.9rem; width:100%;">
+    🔄 Fetching new stories...<br><span style="font-size:0.8rem; opacity:0.7">Topic ${currentTopicIndex + 1} Loading</span>
+  </div>`;
 
   const currentRssUrl = NEWS_TOPICS[currentTopicIndex];
   const apiUrl = `https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent(currentRssUrl)}`;
@@ -1311,7 +1319,7 @@ async function fetchRealNews() {
     const data = await response.json();
 
     if (data.status === 'ok') {
-      container.innerHTML = ""; 
+      container.innerHTML = ""; // 초기화
       
       const articles = data.items.slice(0, 3);
 
@@ -1325,9 +1333,15 @@ async function fetchRealNews() {
         card.className = 'news-card';
         card.onclick = () => window.open(item.link, '_blank');
 
+        // 주제별 태그 이름 설정
+        let topicTag = "#Trending";
+        if (currentTopicIndex === 0) topicTag = "#K-Culture";
+        else if (currentTopicIndex === 1) topicTag = "#Tech&Biz";
+        else if (currentTopicIndex === 2) topicTag = "#Lifestyle";
+
         card.innerHTML = `
           <div>
-            <span class="news-tag">#Topic_${currentTopicIndex + 1}</span>
+            <span class="news-tag">${topicTag}</span>
             <div class="news-title">${cleanTitle}</div>
             <div class="news-summary" style="font-size:0.8rem; color:#94a3b8;">
               ${item.description ? item.description.replace(/<[^>]*>?/gm, '').substring(0, 70) + "..." : "Click to read more."}
@@ -1340,8 +1354,7 @@ async function fetchRealNews() {
         container.appendChild(card);
       });
 
-      if(badge) badge.textContent = "Freshly Updated";
-
+      // 다음 클릭 시 다른 주제가 나오도록 인덱스 변경 (0 -> 1 -> 2 -> 0)
       currentTopicIndex = (currentTopicIndex + 1) % NEWS_TOPICS.length;
 
     } else {
@@ -1406,13 +1419,9 @@ function getTimeAgo(date) {
   return "Just now";
 }
 
+// [수정됨] 자동 갱신(setInterval) 제거, 최초 1회만 실행
 function initNewsUpdater() {
   fetchRealNews(); 
-
-  setInterval(() => {
-    fetchRealNews();
-    console.log("📰 News topic rotated and updated.");
-  }, 10800000);
 }
 
 loadMemorizedData();
@@ -1424,3 +1433,4 @@ if (typeof patternData !== "undefined") updatePatternProgress();
 if (typeof wordData !== "undefined") updateWordProgress();
 if (typeof idiomData !== "undefined") updateIdiomProgress();
 goTo("home");
+
