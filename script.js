@@ -40,14 +40,14 @@ let currentConvList = [];
 
 let selectedWordLevel = 0;
 let memorizedWords = new Set();
-let wordStudyingOnly = false;
+let wordStudyingOnly = false; // [저장 대상]
 
 let selectedIdiomLevel = 0;
 let memorizedIdioms = new Set();
-let idiomStudyingOnly = false;
+let idiomStudyingOnly = false; // [저장 대상]
 
 let memorizedPatterns = new Set();
-let patternStudyingOnly = false;
+let patternStudyingOnly = false; // [저장 대상]
 
 let currentShadowingId = null;
 let shadowingLineIndex = 0;
@@ -87,7 +87,6 @@ function goTo(page) {
     else el.classList.add("hidden");
   });
 
-  // 목록 화면으로 돌아올 때만 리스트를 갱신합니다.
   if (page === "patterns") renderPatternList();
   if (page === "words") renderWordList();
   if (page === "idioms") renderIdiomList();
@@ -101,18 +100,26 @@ function goTo(page) {
 // ==========================================
 function loadMemorizedData() {
   try {
+    // 암기 데이터 로드
     const pRaw = localStorage.getItem("patternMemorizedIds");
     if (pRaw) memorizedPatterns = new Set(JSON.parse(pRaw));
-  } catch (e) { console.warn(e); }
 
-  try {
     const wRaw = localStorage.getItem("wordMemorizedIds");
     if (wRaw) memorizedWords = new Set(JSON.parse(wRaw));
-  } catch (e) { console.warn(e); }
 
-  try {
     const iRaw = localStorage.getItem("idiomMemorizedIds");
     if (iRaw) memorizedIdioms = new Set(JSON.parse(iRaw));
+
+    // [수정됨] 필터 상태(미암기만 보기) 로드
+    const pStudyRaw = localStorage.getItem("patternStudyingOnly");
+    if (pStudyRaw !== null) patternStudyingOnly = (pStudyRaw === 'true');
+
+    const wStudyRaw = localStorage.getItem("wordStudyingOnly");
+    if (wStudyRaw !== null) wordStudyingOnly = (wStudyRaw === 'true');
+
+    const iStudyRaw = localStorage.getItem("idiomStudyingOnly");
+    if (iStudyRaw !== null) idiomStudyingOnly = (iStudyRaw === 'true');
+
   } catch (e) { console.warn(e); }
 }
 
@@ -126,6 +133,12 @@ function saveData(type) {
 function renderPatternList() {
   const container = document.getElementById("pattern-list");
   if (!container || typeof patternData === "undefined") return;
+
+  // [수정됨] 필터 버튼 UI 상태 동기화
+  const filterBtn = document.getElementById("pattern-studying-btn");
+  if (filterBtn) {
+    filterBtn.classList.toggle("active", patternStudyingOnly);
+  }
 
   const keyword = (document.getElementById("pattern-search")?.value || "").toLowerCase();
   container.innerHTML = "";
@@ -156,9 +169,9 @@ function renderPatternList() {
       if (check.checked) memorizedPatterns.add(p.id);
       else memorizedPatterns.delete(p.id);
       saveData('pattern');
-      // 목록에서는 즉시 반영을 위해 재렌더링
+      // 목록에서는 즉시 반영
       if (patternStudyingOnly) renderPatternList(); 
-      else updatePatternProgress(); // 전체 보기일 때는 UI만 갱신 (선택적)
+      else updatePatternProgress();
     };
 
     div.appendChild(left);
@@ -219,8 +232,10 @@ function renderPatternExamples() {
 
 function togglePatternStudying() {
   patternStudyingOnly = !patternStudyingOnly;
-  const btn = document.getElementById("pattern-studying-btn");
-  if (btn) btn.classList.toggle("active", patternStudyingOnly);
+  
+  // [수정됨] 필터 상태 저장
+  localStorage.setItem("patternStudyingOnly", patternStudyingOnly);
+  
   renderPatternList();
 }
 
@@ -228,11 +243,7 @@ function togglePatternMemorizedDetail() {
   const chk = document.getElementById("pattern-memorized-checkbox");
   if (chk.checked) memorizedPatterns.add(currentPatternId);
   else memorizedPatterns.delete(currentPatternId);
-  
   saveData('pattern');
-  
-  // [수정됨] 상세 화면에서는 절대 리스트를 재렌더링하지 않습니다.
-  // 이렇게 해야 '다음/이전' 버튼이 현재 리스트(currentPatternList)를 기준으로 정상 작동합니다.
   updatePatternProgress(); 
 }
 
@@ -247,6 +258,13 @@ function playPatternExamples() {
 function renderWordList() {
   const container = document.getElementById("word-list");
   if (!container || typeof wordData === "undefined") return;
+  
+  // [수정됨] 필터 버튼 UI 상태 동기화
+  const filterBtn = document.getElementById("word-studying-btn");
+  if (filterBtn) {
+    filterBtn.classList.toggle("active", wordStudyingOnly);
+  }
+
   const keyword = (document.getElementById("word-search")?.value || "").toLowerCase();
   container.innerHTML = "";
   
@@ -303,7 +321,10 @@ function setWordLevel(lvl) {
 
 function toggleWordStudying() {
   wordStudyingOnly = !wordStudyingOnly;
-  document.getElementById("word-studying-btn").classList.toggle("active", wordStudyingOnly);
+  
+  // [수정됨] 필터 상태 저장
+  localStorage.setItem("wordStudyingOnly", wordStudyingOnly);
+  
   renderWordList();
 }
 
@@ -347,8 +368,6 @@ function toggleWordMemorizedDetail() {
   const chk = document.getElementById("word-memorized-checkbox");
   if (chk.checked) memorizedWords.add(currentWordId); else memorizedWords.delete(currentWordId);
   saveData('word');
-  
-  // [수정됨] 리스트 갱신 제거
   updateWordProgress();
 }
 
@@ -363,6 +382,13 @@ function playWordExamples() {
 function renderIdiomList() {
   const container = document.getElementById("idiom-list");
   if (!container) return;
+  
+  // [수정됨] 필터 버튼 UI 상태 동기화
+  const filterBtn = document.getElementById("idiom-studying-btn");
+  if (filterBtn) {
+    filterBtn.classList.toggle("active", idiomStudyingOnly);
+  }
+
   const keyword = (document.getElementById("idiom-search")?.value || "").toLowerCase();
   container.innerHTML = "";
   
@@ -415,7 +441,10 @@ function setIdiomLevel(lvl) {
 
 function toggleIdiomStudying() {
   idiomStudyingOnly = !idiomStudyingOnly;
-  document.getElementById("idiom-studying-btn").classList.toggle("active", idiomStudyingOnly);
+  
+  // [수정됨] 필터 상태 저장
+  localStorage.setItem("idiomStudyingOnly", idiomStudyingOnly);
+  
   renderIdiomList();
 }
 
@@ -459,8 +488,6 @@ function toggleIdiomMemorizedDetail() {
   const chk = document.getElementById("idiom-memorized-checkbox");
   if (chk.checked) memorizedIdioms.add(currentIdiomId); else memorizedIdioms.delete(currentIdiomId);
   saveData('idiom');
-  
-  // [수정됨] 리스트 갱신 제거
   updateIdiomProgress();
 }
 
@@ -538,7 +565,6 @@ function startShadowingFromConv(id) {
   updateShadowingUI();
 }
 
-// [수정됨] 이동 로직 안전장치 강화
 function moveItemInList(currentId, list, offset, openFunc) {
   if (!list || list.length === 0) {
     alert("목록이 비어있습니다.");
@@ -548,10 +574,6 @@ function moveItemInList(currentId, list, offset, openFunc) {
   const idx = list.findIndex(item => item.id === currentId);
   
   if (idx === -1) {
-    // 만약 필터링으로 인해 현재 항목이 리스트에서 사라진 경우라도,
-    // 원래 순서를 유지하기 위해 전체 데이터에서 찾는 등의 처리가 필요할 수 있지만,
-    // 현재 로직에서는 리스트 갱신을 막았으므로 이 경우는 거의 발생하지 않아야 합니다.
-    // 혹시 발생한다면 첫 번째 항목으로 이동하도록 처리
     openFunc(list[0].id);
     return;
   }
@@ -816,7 +838,9 @@ function checkPuzzle() {
 
 function resetPuzzle() {
   puzzleTargetTokens = [];
-  document.getElementById("puzzle-feedback").textContent = "";
+  const fb = document.getElementById("puzzle-feedback");
+  fb.textContent = "";
+  fb.style.color = "";
   updatePuzzleBoard();
 }
 
