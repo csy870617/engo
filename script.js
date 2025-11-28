@@ -55,7 +55,7 @@ let shadowingLineIndex = 0;
 let isBackAction = false; 
 
 // ==========================================
-// 2. 네비게이션 (히스토리 API 적용 - 뒤로가기 최적화)
+// 2. 네비게이션 (히스토리 API 최적화)
 // ==========================================
 window.onpopstate = function(event) {
   const openModals = document.querySelectorAll('.modal:not(.hidden)');
@@ -67,28 +67,19 @@ window.onpopstate = function(event) {
   const page = (event.state && event.state.page) ? event.state.page : 'home';
   
   isBackAction = true;
-  goTo(page);
+  goTo(page, false); // [중요] 뒤로가기 시에는 히스토리를 추가하지 않음(false)
   isBackAction = false;
 };
 
-// [수정됨] isInitialLoad 옵션 추가: 초기 로딩 시 히스토리를 쌓지 않고 '교체'함
-function goTo(page, isInitialLoad = false) {
+// [수정됨] pushHistory 매개변수 추가 (기본값 true)
+function goTo(page, pushHistory = true) {
   if ("speechSynthesis" in window) {
     window.speechSynthesis.cancel();
   }
 
-  // 뒤로가기 버튼으로 온 게 아닐 때만 히스토리 처리
-  if (!isBackAction) {
-    if (isInitialLoad) {
-      // [핵심] 처음 켤 때는 pushState(쌓기) 대신 replaceState(교체) 사용
-      // 이렇게 해야 뒤로 가기 시 이전 기록(빈 페이지)이 아닌 브라우저 밖으로 나감
-      history.replaceState({ page: page }, "", "#" + page);
-    } else {
-      // 일반 이동 시에는 기록 쌓기 (단, 중복 방지)
-      if (!history.state || history.state.page !== page) {
-        history.pushState({ page: page }, "", "#" + page);
-      }
-    }
+  // 뒤로가기 액션이 아니고, pushHistory가 true일 때만 기록 추가
+  if (!isBackAction && pushHistory) {
+    history.pushState({ page: page }, "", "#" + page);
   }
 
   pages.forEach((p) => {
@@ -1089,7 +1080,6 @@ async function uploadData() {
         rate: userRate, 
         autoPlay: autoPlayEnabled,
         fontSize: userFontSize,
-        // [중요] 레벨/필터 상태 저장
         wordLevel: selectedWordLevel,
         idiomLevel: selectedIdiomLevel,
         filterPattern: patternStudyingOnly,
@@ -1138,7 +1128,6 @@ async function downloadData() {
         userFontSize = d.settings.fontSize;
         applyFontSizeToBody(userFontSize);
       }
-      // [중요] 레벨/필터 상태 복원
       if(d.settings.wordLevel !== undefined) selectedWordLevel = d.settings.wordLevel;
       if(d.settings.idiomLevel !== undefined) selectedIdiomLevel = d.settings.idiomLevel;
       if(d.settings.filterPattern !== undefined) patternStudyingOnly = d.settings.filterPattern;
@@ -1146,7 +1135,7 @@ async function downloadData() {
       if(d.settings.filterIdiom !== undefined) idiomStudyingOnly = d.settings.filterIdiom;
     }
     
-    // 로컬 스토리지 동기화 (재접속 시 유지용)
+    // 로컬 스토리지 동기화
     localStorage.setItem("selectedWordLevel", selectedWordLevel);
     localStorage.setItem("selectedIdiomLevel", selectedIdiomLevel);
     localStorage.setItem("patternStudyingOnly", patternStudyingOnly);
@@ -1165,7 +1154,6 @@ async function downloadData() {
     
     updatePatternProgress(); updateWordProgress(); updateIdiomProgress();
     
-    // 현재 페이지 갱신
     const currPage = history.state ? history.state.page : 'home';
     if (currPage === 'patterns') renderPatternList();
     if (currPage === 'words') renderWordList();
@@ -1205,11 +1193,6 @@ document.body.addEventListener('click', function unlockTTS() {
   }
   document.body.removeEventListener('click', unlockTTS);
 }, { once: true });
-
-// ==========================================
-// 13. 페이지 종료 전 저장 유도 (바로 종료)
-// ==========================================
-// 기존 beforeunload 이벤트 리스너 제거됨
 
 // ==========================================
 // 14. PWA 설치 배너 로직
@@ -1457,4 +1440,4 @@ initNewsUpdater();
 
 // 4. 초기 화면 렌더링 (중복 히스토리 방지: replace)
 const initialPage = location.hash.replace('#', '') || 'home';
-goTo(initialPage, true);
+goTo(initialPage, false); // [중요] 앱 시작 시에는 history를 쌓지 않고 replace로 처리
