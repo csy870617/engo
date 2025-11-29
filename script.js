@@ -1475,7 +1475,7 @@ function sendInquiry() {
 
   // ⚠️ YOUR_SERVICE_ID, YOUR_TEMPLATE_ID 부분 수정 필요
   if (typeof emailjs !== 'undefined') {
-    emailjs.send('YOUR_SERVICE_ID', 'YOUR_TEMPLATE_ID', templateParams)
+    emailjs.send('service_c7njd5n', 'template_7tws5sz', templateParams)
       .then(function(response) {
          console.log('SUCCESS!', response.status, response.text);
          alert("✅ 소중한 의견이 전송되었습니다!");
