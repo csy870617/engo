@@ -17,7 +17,7 @@
 const pages = [
   "home", "patterns", "pattern-detail", "words", "word-detail",
   "idioms", "idiom-detail", "conversations", "conv-detail",
-  "shadowing-list", "shadowing", "puzzle"
+  "shadowing-list", "shadowing", "puzzle", "speaking"
 ];
 
 const idiomData = [
@@ -55,6 +55,9 @@ let shadowingLineIndex = 0;
 let isBackAction = false; 
 let isConversationPlaying = false;
 
+// 오디오 세션 ID
+let currentAudioSessionId = 0;
+
 // ==========================================
 // 2. 네비게이션 (히스토리 API 적용)
 // ==========================================
@@ -64,10 +67,7 @@ window.onpopstate = function(event) {
     openModals.forEach(modal => modal.classList.add('hidden'));
   }
 
-  if ("speechSynthesis" in window) {
-    window.speechSynthesis.cancel();
-  }
-  isConversationPlaying = false;
+  stopAudio(); 
 
   const page = (event.state && event.state.page) ? event.state.page : 'home';
   isBackAction = true;
@@ -76,10 +76,7 @@ window.onpopstate = function(event) {
 };
 
 function goTo(page, isReplace = false) {
-  if ("speechSynthesis" in window) {
-    window.speechSynthesis.cancel();
-  }
-  isConversationPlaying = false;
+  stopAudio();
 
   if (!isBackAction) {
     if (isReplace) {
@@ -98,12 +95,45 @@ function goTo(page, isReplace = false) {
     else el.classList.add("hidden");
   });
 
+  // [핵심 수정] 페이지별 렌더링 및 데이터 복구 로직
+  // 상세 페이지일 경우, 목록을 먼저 생성(render...List)해야 '이전/다음' 버튼이 작동함
   if (page === "patterns") renderPatternList();
+  if (page === "pattern-detail") {
+    renderPatternList(); // 목록 재생성 (네비게이션용)
+    renderPatternDetail(); // 상세 내용 표시
+  }
+
   if (page === "words") renderWordList();
+  if (page === "word-detail") {
+    renderWordList();
+    renderWordDetail();
+  }
+
   if (page === "idioms") renderIdiomList();
+  if (page === "idiom-detail") {
+    renderIdiomList();
+    renderIdiomDetail();
+  }
+
   if (page === "conversations") renderConversationList();
+  if (page === "conv-detail") {
+    renderConversationList();
+    renderConversationDetail();
+  }
+
   if (page === "shadowing-list") renderShadowingList();
   if (page === "puzzle") initPuzzle();
+  if (page === "speaking") initSpeaking();
+  if (page === "shadowing") initShadowing();
+}
+
+// 오디오 중단
+function stopAudio() {
+  if ("speechSynthesis" in window) {
+    window.speechSynthesis.cancel();
+  }
+  isConversationPlaying = false;
+  currentAudioSessionId++; 
 }
 
 // ==========================================
@@ -134,6 +164,12 @@ function loadMemorizedData() {
 
     const iLevelRaw = localStorage.getItem("selectedIdiomLevel");
     if (iLevelRaw !== null) selectedIdiomLevel = parseInt(iLevelRaw);
+
+    // [신규] 마지막으로 본 항목 ID 복구 (새로고침 대응)
+    currentPatternId = localStorage.getItem("currentPatternId");
+    currentWordId = localStorage.getItem("currentWordId");
+    currentIdiomId = localStorage.getItem("currentIdiomId");
+    currentConvId = localStorage.getItem("currentConvId");
 
   } catch (e) { console.warn(e); }
 }
@@ -209,19 +245,26 @@ function updatePatternProgress() {
 
 function openPattern(id) {
   currentPatternId = id;
-  const pattern = patternData.find(p => p.id === id);
-  if (!pattern) return;
-  document.getElementById("pattern-title").textContent = pattern.title;
-  document.getElementById("pattern-desc").textContent = pattern.desc;
-  const memCheck = document.getElementById("pattern-memorized-checkbox");
-  if (memCheck) memCheck.checked = memorizedPatterns.has(id);
-  document.getElementById("pattern-toggle-kr").checked = true;
-  renderPatternExamples();
-  goTo("pattern-detail");
+  localStorage.setItem("currentPatternId", id); // ID 저장
+  goTo("pattern-detail"); // 화면 이동 (renderPatternDetail 호출됨)
 
   if (autoPlayEnabled) {
       playPatternExamples();
-    }
+  }
+}
+
+// [신규] 상세 화면 그리기 함수 분리
+function renderPatternDetail() {
+  const pattern = patternData.find(p => p.id === currentPatternId);
+  if (!pattern) return;
+
+  document.getElementById("pattern-title").textContent = pattern.title;
+  document.getElementById("pattern-desc").textContent = pattern.desc;
+  const memCheck = document.getElementById("pattern-memorized-checkbox");
+  if (memCheck) memCheck.checked = memorizedPatterns.has(currentPatternId);
+  document.getElementById("pattern-toggle-kr").checked = true;
+  
+  renderPatternExamples();
 }
 
 function renderPatternExamples() {
@@ -257,13 +300,29 @@ function togglePatternMemorizedDetail() {
   updatePatternProgress(); 
 }
 
-// [수정됨] 패턴 제목(제시어) 먼저 읽고 예문 읽기
-function playPatternExamples() {
+async function playPatternExamples() {
+  stopAudio();
+  currentAudioSessionId++;
+  const mySessionId = currentAudioSessionId;
+  isConversationPlaying = true;
+
   const p = patternData.find(x => x.id === currentPatternId);
-  if (p) {
-    const textToRead = `${p.title}. ${p.examples.map(e => e.en).join(". ")}`;
-    speakText(textToRead);
+  if (!p) return;
+
+  await speakWithPromise(p.title);
+  
+  if (currentAudioSessionId !== mySessionId || !isConversationPlaying) return;
+  await new Promise(resolve => setTimeout(resolve, 800));
+
+  for (const ex of p.examples) {
+    if (currentAudioSessionId !== mySessionId || !isConversationPlaying) break;
+    await speakWithPromise(ex.en);
+    
+    if (currentAudioSessionId !== mySessionId || !isConversationPlaying) break;
+    await new Promise(resolve => setTimeout(resolve, 800));
   }
+  
+  if (currentAudioSessionId === mySessionId) isConversationPlaying = false;
 }
 
 // ==========================================
@@ -346,19 +405,23 @@ function toggleWordStudying() {
 
 function openWord(id) {
   currentWordId = id;
-  const w = wordData.find(x => x.id === id);
-  if (!w) return;
-  document.getElementById("word-title").textContent = `${w.word} - ${w.meaning}`;
-  document.getElementById("word-desc").textContent = w.examples?.[0]?.kr || w.meaning;
-  document.getElementById("word-memorized-checkbox").checked = memorizedWords.has(id);
-  document.getElementById("word-toggle-kr").checked = true;
-  renderWordExamples();
+  localStorage.setItem("currentWordId", id);
   goTo("word-detail");
 
   if (autoPlayEnabled) {
-      const textToRead = `${w.word}. ${w.examples.map(e => e.en).join(". ")}`;
-      speakText(textToRead);
+      playWordExamples();
     }
+}
+
+// [신규] 단어 상세 화면 그리기
+function renderWordDetail() {
+  const w = wordData.find(x => x.id === currentWordId);
+  if (!w) return;
+  document.getElementById("word-title").textContent = `${w.word} - ${w.meaning}`;
+  document.getElementById("word-desc").textContent = w.examples?.[0]?.kr || w.meaning;
+  document.getElementById("word-memorized-checkbox").checked = memorizedWords.has(currentWordId);
+  document.getElementById("word-toggle-kr").checked = true;
+  renderWordExamples();
 }
 
 function renderWordExamples() {
@@ -387,9 +450,29 @@ function toggleWordMemorizedDetail() {
   updateWordProgress();
 }
 
-function playWordExamples() {
+async function playWordExamples() {
+  stopAudio();
+  currentAudioSessionId++;
+  const mySessionId = currentAudioSessionId;
+  isConversationPlaying = true;
+
   const w = wordData.find(x => x.id === currentWordId);
-  if (w) speakText(w.examples.map(e => e.en).join(". "));
+  if (!w) return;
+
+  await speakWithPromise(w.word);
+
+  if (currentAudioSessionId !== mySessionId || !isConversationPlaying) return;
+  await new Promise(resolve => setTimeout(resolve, 800));
+
+  for (const ex of w.examples) {
+    if (currentAudioSessionId !== mySessionId || !isConversationPlaying) break;
+    await speakWithPromise(ex.en);
+    
+    if (currentAudioSessionId !== mySessionId || !isConversationPlaying) break;
+    await new Promise(resolve => setTimeout(resolve, 800));
+  }
+
+  if (currentAudioSessionId === mySessionId) isConversationPlaying = false;
 }
 
 // ==========================================
@@ -466,19 +549,23 @@ function toggleIdiomStudying() {
 
 function openIdiom(id) {
   currentIdiomId = id;
-  const item = idiomData.find(x => x.id === id);
-  if (!item) return;
-  document.getElementById("idiom-title").textContent = `${item.idiom} - ${item.meaning}`;
-  document.getElementById("idiom-desc").textContent = item.desc;
-  document.getElementById("idiom-memorized-checkbox").checked = memorizedIdioms.has(id);
-  document.getElementById("idiom-toggle-kr").checked = true;
-  renderIdiomExamples();
+  localStorage.setItem("currentIdiomId", id);
   goTo("idiom-detail");
 
   if (autoPlayEnabled) {
-      const textToRead = `${item.idiom}. ${item.examples.map(e => e.en).join(". ")}`;
-      speakText(textToRead);
+      playIdiomExamples();
     }
+}
+
+// [신규] 숙어 상세 화면 그리기
+function renderIdiomDetail() {
+  const item = idiomData.find(x => x.id === currentIdiomId);
+  if (!item) return;
+  document.getElementById("idiom-title").textContent = `${item.idiom} - ${item.meaning}`;
+  document.getElementById("idiom-desc").textContent = item.desc;
+  document.getElementById("idiom-memorized-checkbox").checked = memorizedIdioms.has(currentIdiomId);
+  document.getElementById("idiom-toggle-kr").checked = true;
+  renderIdiomExamples();
 }
 
 function renderIdiomExamples() {
@@ -507,9 +594,29 @@ function toggleIdiomMemorizedDetail() {
   updateIdiomProgress();
 }
 
-function playIdiomExamples() {
+async function playIdiomExamples() {
+  stopAudio();
+  currentAudioSessionId++;
+  const mySessionId = currentAudioSessionId;
+  isConversationPlaying = true;
+
   const item = idiomData.find(x => x.id === currentIdiomId);
-  if (item) speakText(item.examples.map(e => e.en).join(". "));
+  if (!item) return;
+
+  await speakWithPromise(item.idiom);
+
+  if (currentAudioSessionId !== mySessionId || !isConversationPlaying) return;
+  await new Promise(resolve => setTimeout(resolve, 800));
+
+  for (const ex of item.examples) {
+    if (currentAudioSessionId !== mySessionId || !isConversationPlaying) break;
+    await speakWithPromise(ex.en);
+    
+    if (currentAudioSessionId !== mySessionId || !isConversationPlaying) break;
+    await new Promise(resolve => setTimeout(resolve, 800));
+  }
+
+  if (currentAudioSessionId === mySessionId) isConversationPlaying = false;
 }
 
 // ==========================================
@@ -534,11 +641,7 @@ function renderConversationList() {
 
 function openConversation(id) {
   currentConvId = id;
-  const conv = conversationData.find(c => c.id === id);
-  if (!conv) return;
-  document.getElementById("conv-title").textContent = conv.title;
-  document.getElementById("conv-toggle-kr").checked = true;
-  renderConversationDetail();
+  localStorage.setItem("currentConvId", id);
   goTo("conv-detail");
 
   if (autoPlayEnabled) {
@@ -546,9 +649,14 @@ function openConversation(id) {
   }
 }
 
+// [수정됨] 대화 상세 화면 그리기 (제목 포함)
 function renderConversationDetail() {
   const conv = conversationData.find(c => c.id === currentConvId);
   if (!conv) return;
+  
+  document.getElementById("conv-title").textContent = conv.title;
+  document.getElementById("conv-toggle-kr").checked = true;
+
   const showKr = document.getElementById("conv-toggle-kr").checked;
   const container = document.getElementById("conv-lines");
   container.innerHTML = "";
@@ -565,25 +673,27 @@ function renderConversationDetail() {
   });
 }
 
-// 대화 전체 듣기 (Promise & Await 적용)
 async function playConversationAll() {
-  if ("speechSynthesis" in window) window.speechSynthesis.cancel();
+  stopAudio();
+  currentAudioSessionId++;
+  const mySessionId = currentAudioSessionId;
   isConversationPlaying = true; 
 
   const conv = conversationData.find(c => c.id === currentConvId);
   if (!conv) return;
 
   for (const line of conv.lines) {
-    if (!isConversationPlaying) break; 
+    if (currentAudioSessionId !== mySessionId || !isConversationPlaying) break; 
     
     await speakWithPromise(line.en, line.speaker);
     
-    if (isConversationPlaying) {
-      await new Promise(resolve => setTimeout(resolve, 800));
-    }
+    if (currentAudioSessionId !== mySessionId || !isConversationPlaying) break;
+    await new Promise(resolve => setTimeout(resolve, 800));
   }
   
-  isConversationPlaying = false;
+  if (currentAudioSessionId === mySessionId) {
+    isConversationPlaying = false;
+  }
 }
 
 function startShadowingFromConv(id) {
@@ -835,39 +945,27 @@ function initPuzzle() {
     puzzleList = pool.sort(() => Math.random() - 0.5);
     currentPuzzleIndex = 0;
   }
-  
-  if (!currentPuzzleAnswer) nextPuzzle();
-  else renderPuzzle();
-}
-
-function nextPuzzle() {
-  if (puzzleList.length === 0) {
-    initPuzzle();
-    return;
-  }
-  
-  if (currentPuzzleIndex >= puzzleList.length) {
-    currentPuzzleIndex = 0; 
-    puzzleList.sort(() => Math.random() - 0.5);
-  }
-  
-  const target = puzzleList[currentPuzzleIndex];
-  currentPuzzleIndex++;
-
-  currentPuzzleAnswer = target.en.trim();
-  document.getElementById("puzzle-counter").textContent = `${currentPuzzleIndex} / ${puzzleList.length}`;
-  document.getElementById("puzzle-question").textContent = target.kr;
-  document.getElementById("puzzle-feedback").textContent = "";
-  document.getElementById("puzzle-feedback").className = "feedback-msg";
-  document.getElementById("puzzle-feedback").style.color = ""; 
-  
-  puzzleTargetTokens = [];
-  puzzleShuffledTokens = currentPuzzleAnswer.split(" ").sort(() => Math.random() - 0.5);
-  
   renderPuzzle();
 }
 
 function renderPuzzle() {
+  if (puzzleList.length === 0) {
+    document.getElementById("puzzle-question").textContent = "데이터 부족";
+    return;
+  }
+  const target = puzzleList[currentPuzzleIndex];
+  currentPuzzleAnswer = target.en.trim();
+  document.getElementById("puzzle-counter").textContent = `${currentPuzzleIndex + 1} / ${puzzleList.length}`;
+  document.getElementById("puzzle-question").textContent = target.kr;
+  document.getElementById("puzzle-feedback").textContent = "";
+  document.getElementById("puzzle-feedback").className = "feedback-msg";
+  document.getElementById("puzzle-feedback").style.color = ""; 
+  puzzleTargetTokens = [];
+  puzzleShuffledTokens = currentPuzzleAnswer.split(" ").sort(() => Math.random() - 0.5);
+  updatePuzzleBoard();
+}
+
+function updatePuzzleBoard() {
   const bank = document.getElementById("puzzle-bank");
   const target = document.getElementById("puzzle-target");
   bank.innerHTML = ""; target.innerHTML = "";
@@ -882,15 +980,14 @@ function renderPuzzle() {
     const span = document.createElement("span");
     span.className = "token";
     span.textContent = t;
-    span.onclick = () => { puzzleTargetTokens.push(t); renderPuzzle(); };
+    span.onclick = () => { puzzleTargetTokens.push(t); updatePuzzleBoard(); };
     bank.appendChild(span);
   });
-  
   puzzleTargetTokens.forEach((t, i) => {
     const span = document.createElement("span");
     span.className = "token";
     span.textContent = t;
-    span.onclick = () => { puzzleTargetTokens.splice(i, 1); renderPuzzle(); };
+    span.onclick = () => { puzzleTargetTokens.splice(i, 1); updatePuzzleBoard(); };
     target.appendChild(span);
   });
 }
@@ -914,7 +1011,7 @@ function resetPuzzle() {
   const fb = document.getElementById("puzzle-feedback");
   fb.textContent = "";
   fb.style.color = "";
-  renderPuzzle();
+  updatePuzzleBoard();
 }
 
 function showPuzzleAnswer() {
@@ -925,9 +1022,12 @@ function showPuzzleAnswer() {
 }
 
 function movePuzzle(offset) {
-  if (offset === 1) nextPuzzle();
-  else {
-     alert("이전 문제는 지원하지 않습니다. (랜덤 방식)");
+  const newIndex = currentPuzzleIndex + offset;
+  if (newIndex >= 0 && newIndex < puzzleList.length) {
+    currentPuzzleIndex = newIndex;
+    renderPuzzle();
+  } else {
+    alert(offset > 0 ? "마지막 문제입니다." : "첫 번째 문제입니다.");
   }
 }
 
@@ -957,6 +1057,7 @@ function loadVoices() {
   }
   
   const enVoices = ttsVoices.filter(v => v.lang.includes("en"));
+  
   const preferredVoices = enVoices.filter(v => v.name.includes("Google") || v.name.includes("Samantha") || v.name.includes("Siri"));
   
   if (preferredVoices.length >= 2) {
@@ -1422,7 +1523,7 @@ function shareApp() {
 }
 
 // ==========================================
-// 16. 실시간 영어 뉴스 로더 (수동 새로고침 + 랜덤 셔플)
+// 16. 실시간 영어 뉴스 로더 (수동 새로고침)
 // ==========================================
 const NEWS_TOPICS = [
   "https://news.google.com/rss/search?q=South+Korea+(k-pop+OR+k-drama+OR+movie)+(popular+OR+success)&hl=en-US&gl=US&ceid=US:en",
