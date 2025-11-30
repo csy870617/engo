@@ -111,7 +111,6 @@ function goTo(page, isReplace = false) {
 // ==========================================
 function loadMemorizedData() {
   try {
-    // 암기 데이터 로드
     const pRaw = localStorage.getItem("patternMemorizedIds");
     if (pRaw) memorizedPatterns = new Set(JSON.parse(pRaw));
 
@@ -121,7 +120,6 @@ function loadMemorizedData() {
     const iRaw = localStorage.getItem("idiomMemorizedIds");
     if (iRaw) memorizedIdioms = new Set(JSON.parse(iRaw));
 
-    // 필터 상태 로드
     const pStudyRaw = localStorage.getItem("patternStudyingOnly");
     if (pStudyRaw !== null) patternStudyingOnly = (pStudyRaw === 'true');
 
@@ -131,7 +129,6 @@ function loadMemorizedData() {
     const iStudyRaw = localStorage.getItem("idiomStudyingOnly");
     if (iStudyRaw !== null) idiomStudyingOnly = (iStudyRaw === 'true');
 
-    // 레벨 상태 로드
     const wLevelRaw = localStorage.getItem("selectedWordLevel");
     if (wLevelRaw !== null) selectedWordLevel = parseInt(wLevelRaw);
 
@@ -238,7 +235,7 @@ function renderPatternExamples() {
     row.className = "sentence-row";
     row.innerHTML = `<div class="sentence-text"><div>${ex.en}</div>${showKr ? `<div class="sentence-kr">${ex.kr}</div>` : ''}</div>`;
     const btn = document.createElement("button");
-    btn.className = "btn-small";
+    btn.className = "btn small";
     btn.textContent = "▶";
     btn.onclick = () => speakText(ex.en);
     row.appendChild(btn);
@@ -260,9 +257,13 @@ function togglePatternMemorizedDetail() {
   updatePatternProgress(); 
 }
 
+// [수정됨] 패턴 제목(제시어) 먼저 읽고 예문 읽기
 function playPatternExamples() {
   const p = patternData.find(x => x.id === currentPatternId);
-  if (p) speakText(p.examples.map(e => e.en).join(". "));
+  if (p) {
+    const textToRead = `${p.title}. ${p.examples.map(e => e.en).join(". ")}`;
+    speakText(textToRead);
+  }
 }
 
 // ==========================================
@@ -371,7 +372,7 @@ function renderWordExamples() {
     row.className = "sentence-row";
     row.innerHTML = `<div class="sentence-text"><div>${ex.en}</div>${showKr ? `<div class="sentence-kr">${ex.kr}</div>` : ''}</div>`;
     const btn = document.createElement("button");
-    btn.className = "btn-small";
+    btn.className = "btn small";
     btn.textContent = "▶";
     btn.onclick = () => speakText(ex.en);
     row.appendChild(btn);
@@ -491,7 +492,7 @@ function renderIdiomExamples() {
     row.className = "sentence-row";
     row.innerHTML = `<div class="sentence-text"><div>${ex.en}</div>${showKr ? `<div class="sentence-kr">${ex.kr}</div>` : ''}</div>`;
     const btn = document.createElement("button");
-    btn.className = "btn-small";
+    btn.className = "btn small";
     btn.textContent = "▶";
     btn.onclick = () => speakText(ex.en);
     row.appendChild(btn);
@@ -556,7 +557,7 @@ function renderConversationDetail() {
     row.className = "sentence-row";
     row.innerHTML = `<div class="sentence-text"><div><b>${line.speaker}:</b> ${line.en}</div>${showKr ? `<div class="sentence-kr">${line.kr}</div>` : ''}</div>`;
     const btn = document.createElement("button");
-    btn.className = "btn-small";
+    btn.className = "btn small";
     btn.textContent = "▶";
     btn.onclick = () => speakText(line.en, line.speaker);
     row.appendChild(btn);
@@ -782,7 +783,7 @@ function nextRandomShadowingTopic() {
 }
 
 // ==========================================
-// 9. 문장 퍼즐 (Puzzle) (수정됨: 5단어 이상 & 레벨 1-3 필터링)
+// 9. 문장 퍼즐 (Puzzle)
 // ==========================================
 let puzzleList = [];
 let currentPuzzleIndex = 0;
@@ -794,25 +795,22 @@ function initPuzzle() {
   if (puzzleList.length === 0) {
     let pool = [];
     
-    // 5단어 이상인지 체크
     const addIfValid = (en, kr) => {
+      if (!en) return;
       const cleanEn = en.trim();
       if (cleanEn.split(/\s+/).length >= 5) {
         pool.push({ en: cleanEn, kr: kr });
       }
     };
 
-    // 1. 대화 (전체)
     if (typeof conversationData !== "undefined") {
       conversationData.forEach(c => c.lines.forEach(l => addIfValid(l.en, l.kr)));
     }
     
-    // 2. 패턴 (전체)
     if (typeof patternData !== "undefined") {
       patternData.forEach(p => p.examples.forEach(ex => addIfValid(ex.en, ex.kr)));
     }
 
-    // 3. 단어 (레벨 1~3만)
     if (typeof wordData !== "undefined") {
       wordData.forEach(w => {
         const idStr = w.id || "";
@@ -822,7 +820,6 @@ function initPuzzle() {
       });
     }
 
-    // 4. 숙어 (레벨 1~3만)
     if (typeof idiomData !== "undefined") {
       idiomData.forEach(i => {
         if (i.level && i.level <= 3) {
@@ -832,33 +829,45 @@ function initPuzzle() {
     }
 
     if (pool.length === 0) {
-       pool.push({ en: "Welcome to the English sentence puzzle game.", kr: "영어 문장 퍼즐 게임에 오신 것을 환영합니다." });
+       pool.push({ en: "Welcome to the English puzzle game.", kr: "영어 퍼즐 게임에 오신 것을 환영합니다." });
     }
 
     puzzleList = pool.sort(() => Math.random() - 0.5);
     currentPuzzleIndex = 0;
   }
-  renderPuzzle();
+  
+  if (!currentPuzzleAnswer) nextPuzzle();
+  else renderPuzzle();
 }
 
-function renderPuzzle() {
+function nextPuzzle() {
   if (puzzleList.length === 0) {
-    document.getElementById("puzzle-question").textContent = "데이터 부족";
+    initPuzzle();
     return;
   }
+  
+  if (currentPuzzleIndex >= puzzleList.length) {
+    currentPuzzleIndex = 0; 
+    puzzleList.sort(() => Math.random() - 0.5);
+  }
+  
   const target = puzzleList[currentPuzzleIndex];
+  currentPuzzleIndex++;
+
   currentPuzzleAnswer = target.en.trim();
-  document.getElementById("puzzle-counter").textContent = `${currentPuzzleIndex + 1} / ${puzzleList.length}`;
+  document.getElementById("puzzle-counter").textContent = `${currentPuzzleIndex} / ${puzzleList.length}`;
   document.getElementById("puzzle-question").textContent = target.kr;
   document.getElementById("puzzle-feedback").textContent = "";
   document.getElementById("puzzle-feedback").className = "feedback-msg";
   document.getElementById("puzzle-feedback").style.color = ""; 
+  
   puzzleTargetTokens = [];
   puzzleShuffledTokens = currentPuzzleAnswer.split(" ").sort(() => Math.random() - 0.5);
-  updatePuzzleBoard();
+  
+  renderPuzzle();
 }
 
-function updatePuzzleBoard() {
+function renderPuzzle() {
   const bank = document.getElementById("puzzle-bank");
   const target = document.getElementById("puzzle-target");
   bank.innerHTML = ""; target.innerHTML = "";
@@ -873,14 +882,15 @@ function updatePuzzleBoard() {
     const span = document.createElement("span");
     span.className = "token";
     span.textContent = t;
-    span.onclick = () => { puzzleTargetTokens.push(t); updatePuzzleBoard(); };
+    span.onclick = () => { puzzleTargetTokens.push(t); renderPuzzle(); };
     bank.appendChild(span);
   });
+  
   puzzleTargetTokens.forEach((t, i) => {
     const span = document.createElement("span");
     span.className = "token";
     span.textContent = t;
-    span.onclick = () => { puzzleTargetTokens.splice(i, 1); updatePuzzleBoard(); };
+    span.onclick = () => { puzzleTargetTokens.splice(i, 1); renderPuzzle(); };
     target.appendChild(span);
   });
 }
@@ -904,7 +914,7 @@ function resetPuzzle() {
   const fb = document.getElementById("puzzle-feedback");
   fb.textContent = "";
   fb.style.color = "";
-  updatePuzzleBoard();
+  renderPuzzle();
 }
 
 function showPuzzleAnswer() {
@@ -915,17 +925,14 @@ function showPuzzleAnswer() {
 }
 
 function movePuzzle(offset) {
-  const newIndex = currentPuzzleIndex + offset;
-  if (newIndex >= 0 && newIndex < puzzleList.length) {
-    currentPuzzleIndex = newIndex;
-    renderPuzzle();
-  } else {
-    alert(offset > 0 ? "마지막 문제입니다." : "첫 번째 문제입니다.");
+  if (offset === 1) nextPuzzle();
+  else {
+     alert("이전 문제는 지원하지 않습니다. (랜덤 방식)");
   }
 }
 
 // ==========================================
-// 10. TTS 설정 (목소리 구분 및 저장)
+// 10. TTS 설정
 // ==========================================
 let ttsVoices = [];
 let userVoiceIndex = null;
@@ -950,7 +957,6 @@ function loadVoices() {
   }
   
   const enVoices = ttsVoices.filter(v => v.lang.includes("en"));
-  
   const preferredVoices = enVoices.filter(v => v.name.includes("Google") || v.name.includes("Samantha") || v.name.includes("Siri"));
   
   if (preferredVoices.length >= 2) {
@@ -1309,7 +1315,7 @@ document.body.addEventListener('click', function unlockTTS() {
 }, { once: true });
 
 // ==========================================
-// 14. [수정됨] PWA 설치 배너 로직 (설치됨 감지 강화)
+// 14. PWA 설치 배너 로직
 // ==========================================
 let deferredPrompt;
 const installBanner = document.getElementById('install-banner');
@@ -1321,8 +1327,6 @@ window.addEventListener('beforeinstallprompt', (e) => {
   e.preventDefault();
   deferredPrompt = e;
   
-  // 1. 이미 배너를 닫았거나(설치했거나)
-  // 2. 현재 앱으로 실행 중이라면 배너를 띄우지 않음
   if (!localStorage.getItem('installBannerDismissed') && !isStandalone) {
     installBanner.classList.remove('hidden');
     console.log("✅ PWA 설치 배너 표시됨");
@@ -1337,7 +1341,6 @@ async function installPWA() {
   
   deferredPrompt.prompt();
   const { outcome } = await deferredPrompt.userChoice;
-  console.log(`설치 응답 결과: ${outcome}`);
   
   deferredPrompt = null;
   installBanner.classList.add('hidden');
@@ -1345,17 +1348,13 @@ async function installPWA() {
 
 function hideInstallBanner() {
   installBanner.classList.add('hidden');
-  // '닫기'를 누르면 다시는 안 뜨게 저장
   localStorage.setItem('installBannerDismissed', 'true');
 }
 
-// [신규] 설치가 완료되면 -> '닫기' 누른 것처럼 처리하여 배너 영구 숨김
 window.addEventListener('appinstalled', () => {
   console.log("🎉 앱이 설치되었습니다.");
   installBanner.classList.add('hidden');
   deferredPrompt = null;
-  
-  // 설치 완료 정보를 저장 (재접속 시 배너 안 뜨게 함)
   localStorage.setItem('installBannerDismissed', 'true');
 });
 
@@ -1423,7 +1422,7 @@ function shareApp() {
 }
 
 // ==========================================
-// 16. 실시간 영어 뉴스 로더 (수동 새로고침)
+// 16. 실시간 영어 뉴스 로더 (수동 새로고침 + 랜덤 셔플)
 // ==========================================
 const NEWS_TOPICS = [
   "https://news.google.com/rss/search?q=South+Korea+(k-pop+OR+k-drama+OR+movie)+(popular+OR+success)&hl=en-US&gl=US&ceid=US:en",
@@ -1618,4 +1617,3 @@ initNewsUpdater();
 // 초기 화면 렌더링 (중복 히스토리 방지)
 const initialPage = location.hash.replace('#', '') || 'home';
 goTo(initialPage, true);
-
