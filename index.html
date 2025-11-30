@@ -377,12 +377,12 @@
       </div>
 
       <div class="setting-group">
-        <label class="setting-label">목소리 선택</label>
+        <label class="setting-label">목소리 선택 (for Browser TTS)</label>
         <select id="tts-voice-select" class="dropdown" onchange="previewVoiceSettings()"><option>기본</option></select>
       </div>
 
       <div class="setting-group">
-        <label class="setting-label">말하기 속도</label>
+        <span class="setting-label">말하기 속도</span>
         <div class="btn-group" id="speed-btn-group">
           <button type="button" data-value="0.6" onclick="setTtsRate(0.6, this)">0.6x</button>
           <button type="button" data-value="0.8" onclick="setTtsRate(0.8, this)">0.8x</button>
@@ -393,7 +393,7 @@
       </div>
 
       <div class="setting-group">
-        <label class="setting-label">글자 크기</label>
+        <span class="setting-label">글자 크기</span>
         <div class="btn-group" id="font-btn-group">
           <button type="button" data-value="small"  onclick="setAppFontSize('small', this)">작게</button>
           <button type="button" data-value="medium" onclick="setAppFontSize('medium', this)" class="active">중간</button>
@@ -402,7 +402,7 @@
       </div>
 
       <div class="setting-group" style="margin-top: 20px; padding-top: 20px; border-top: 1px solid rgba(255,255,255,0.1);">
-        <label class="setting-label">지원 및 피드백</label>
+        <span class="setting-label">지원 및 피드백</span>
         <button class="btn-sub" onclick="openContactModal()" style="width:100%;">📧 개발자에게 문의하기</button>
       </div>
 
