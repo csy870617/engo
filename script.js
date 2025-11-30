@@ -111,6 +111,7 @@ function goTo(page, isReplace = false) {
 // ==========================================
 function loadMemorizedData() {
   try {
+    // 암기 데이터 로드
     const pRaw = localStorage.getItem("patternMemorizedIds");
     if (pRaw) memorizedPatterns = new Set(JSON.parse(pRaw));
 
@@ -120,6 +121,7 @@ function loadMemorizedData() {
     const iRaw = localStorage.getItem("idiomMemorizedIds");
     if (iRaw) memorizedIdioms = new Set(JSON.parse(iRaw));
 
+    // 필터 상태 로드
     const pStudyRaw = localStorage.getItem("patternStudyingOnly");
     if (pStudyRaw !== null) patternStudyingOnly = (pStudyRaw === 'true');
 
@@ -129,6 +131,7 @@ function loadMemorizedData() {
     const iStudyRaw = localStorage.getItem("idiomStudyingOnly");
     if (iStudyRaw !== null) idiomStudyingOnly = (iStudyRaw === 'true');
 
+    // 레벨 상태 로드
     const wLevelRaw = localStorage.getItem("selectedWordLevel");
     if (wLevelRaw !== null) selectedWordLevel = parseInt(wLevelRaw);
 
@@ -779,7 +782,7 @@ function nextRandomShadowingTopic() {
 }
 
 // ==========================================
-// 9. 문장 퍼즐 (Puzzle) (수정됨: 5단어 이상만 & 레벨 1-3 필터링)
+// 9. 문장 퍼즐 (Puzzle) (수정됨: 5단어 이상 & 레벨 1-3 필터링)
 // ==========================================
 let puzzleList = [];
 let currentPuzzleIndex = 0;
@@ -791,21 +794,20 @@ function initPuzzle() {
   if (puzzleList.length === 0) {
     let pool = [];
     
-    // 헬퍼 함수: 5단어 이상인지 체크하고 추가
+    // 5단어 이상인지 체크
     const addIfValid = (en, kr) => {
       const cleanEn = en.trim();
-      // 단어 수 5개 이상인 문장만
       if (cleanEn.split(/\s+/).length >= 5) {
         pool.push({ en: cleanEn, kr: kr });
       }
     };
 
-    // 1. 대화 (전체 사용)
+    // 1. 대화 (전체)
     if (typeof conversationData !== "undefined") {
       conversationData.forEach(c => c.lines.forEach(l => addIfValid(l.en, l.kr)));
     }
     
-    // 2. 패턴 (전체 사용)
+    // 2. 패턴 (전체)
     if (typeof patternData !== "undefined") {
       patternData.forEach(p => p.examples.forEach(ex => addIfValid(ex.en, ex.kr)));
     }
@@ -813,7 +815,6 @@ function initPuzzle() {
     // 3. 단어 (레벨 1~3만)
     if (typeof wordData !== "undefined") {
       wordData.forEach(w => {
-        // ID 패턴 예: "L1-001", "L2-050" ... -> L1, L2, L3로 시작하는 것만
         const idStr = w.id || "";
         if (idStr.startsWith("L1") || idStr.startsWith("L2") || idStr.startsWith("L3")) {
           if (w.examples) w.examples.forEach(ex => addIfValid(ex.en, ex.kr));
@@ -824,14 +825,12 @@ function initPuzzle() {
     // 4. 숙어 (레벨 1~3만)
     if (typeof idiomData !== "undefined") {
       idiomData.forEach(i => {
-        // idiomData 객체에 level 속성(숫자)이 있다고 가정 (idiom.js 참고)
         if (i.level && i.level <= 3) {
           if (i.examples) i.examples.forEach(ex => addIfValid(ex.en, ex.kr));
         }
       });
     }
 
-    // 만약 데이터가 하나도 없으면 기본 예제 추가 (방어 코드)
     if (pool.length === 0) {
        pool.push({ en: "Welcome to the English sentence puzzle game.", kr: "영어 문장 퍼즐 게임에 오신 것을 환영합니다." });
     }
