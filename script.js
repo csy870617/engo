@@ -779,7 +779,7 @@ function nextRandomShadowingTopic() {
 }
 
 // ==========================================
-// 9. 문장 퍼즐 (Puzzle) (수정됨: 예문 포함 & 5단어 이상)
+// 9. 문장 퍼즐 (Puzzle) (수정됨: 5단어 이상만 & 레벨 1-3 필터링)
 // ==========================================
 let puzzleList = [];
 let currentPuzzleIndex = 0;
@@ -791,41 +791,49 @@ function initPuzzle() {
   if (puzzleList.length === 0) {
     let pool = [];
     
-    // 헬퍼 함수: 유효한 문장(5단어 이상)만 추가
+    // 헬퍼 함수: 5단어 이상인지 체크하고 추가
     const addIfValid = (en, kr) => {
       const cleanEn = en.trim();
+      // 단어 수 5개 이상인 문장만
       if (cleanEn.split(/\s+/).length >= 5) {
         pool.push({ en: cleanEn, kr: kr });
       }
     };
 
-    // 1. 대화
+    // 1. 대화 (전체 사용)
     if (typeof conversationData !== "undefined") {
       conversationData.forEach(c => c.lines.forEach(l => addIfValid(l.en, l.kr)));
     }
     
-    // 2. 패턴
+    // 2. 패턴 (전체 사용)
     if (typeof patternData !== "undefined") {
       patternData.forEach(p => p.examples.forEach(ex => addIfValid(ex.en, ex.kr)));
     }
 
-    // 3. 단어 (추가됨)
+    // 3. 단어 (레벨 1~3만)
     if (typeof wordData !== "undefined") {
       wordData.forEach(w => {
-        if (w.examples) w.examples.forEach(ex => addIfValid(ex.en, ex.kr));
+        // ID 패턴 예: "L1-001", "L2-050" ... -> L1, L2, L3로 시작하는 것만
+        const idStr = w.id || "";
+        if (idStr.startsWith("L1") || idStr.startsWith("L2") || idStr.startsWith("L3")) {
+          if (w.examples) w.examples.forEach(ex => addIfValid(ex.en, ex.kr));
+        }
       });
     }
 
-    // 4. 숙어 (추가됨)
+    // 4. 숙어 (레벨 1~3만)
     if (typeof idiomData !== "undefined") {
       idiomData.forEach(i => {
-        if (i.examples) i.examples.forEach(ex => addIfValid(ex.en, ex.kr));
+        // idiomData 객체에 level 속성(숫자)이 있다고 가정 (idiom.js 참고)
+        if (i.level && i.level <= 3) {
+          if (i.examples) i.examples.forEach(ex => addIfValid(ex.en, ex.kr));
+        }
       });
     }
 
-    // 데이터가 없을 경우 대비
+    // 만약 데이터가 하나도 없으면 기본 예제 추가 (방어 코드)
     if (pool.length === 0) {
-       pool.push({ en: "Welcome to English learning puzzle game.", kr: "영어 학습 퍼즐 게임에 오신 것을 환영합니다." });
+       pool.push({ en: "Welcome to the English sentence puzzle game.", kr: "영어 문장 퍼즐 게임에 오신 것을 환영합니다." });
     }
 
     puzzleList = pool.sort(() => Math.random() - 0.5);
@@ -845,7 +853,7 @@ function renderPuzzle() {
   document.getElementById("puzzle-question").textContent = target.kr;
   document.getElementById("puzzle-feedback").textContent = "";
   document.getElementById("puzzle-feedback").className = "feedback-msg";
-  document.getElementById("puzzle-feedback").style.color = ""; // 스타일 초기화
+  document.getElementById("puzzle-feedback").style.color = ""; 
   puzzleTargetTokens = [];
   puzzleShuffledTokens = currentPuzzleAnswer.split(" ").sort(() => Math.random() - 0.5);
   updatePuzzleBoard();
@@ -881,7 +889,7 @@ function updatePuzzleBoard() {
 function checkPuzzle() {
   const user = puzzleTargetTokens.join(" ");
   const fb = document.getElementById("puzzle-feedback");
-  fb.style.color = ""; // 색상 초기화
+  fb.style.color = ""; 
   if (user === currentPuzzleAnswer) {
     fb.textContent = "정답입니다! 🎉";
     fb.className = "feedback ok";
@@ -944,7 +952,6 @@ function loadVoices() {
   
   const enVoices = ttsVoices.filter(v => v.lang.includes("en"));
   
-  // 스마트폰 우선순위 목소리 찾기
   const preferredVoices = enVoices.filter(v => v.name.includes("Google") || v.name.includes("Samantha") || v.name.includes("Siri"));
   
   if (preferredVoices.length >= 2) {
