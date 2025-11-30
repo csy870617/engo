@@ -53,6 +53,7 @@ let currentShadowingId = null;
 let shadowingLineIndex = 0;
 
 let isBackAction = false; 
+let isConversationPlaying = false; // [신규] 대화 연속 재생 상태 플래그
 
 // ==========================================
 // 2. 네비게이션 (히스토리 API 적용)
@@ -63,10 +64,10 @@ window.onpopstate = function(event) {
     openModals.forEach(modal => modal.classList.add('hidden'));
   }
 
-  // 뒤로 가기 시 오디오 즉시 중지
   if ("speechSynthesis" in window) {
     window.speechSynthesis.cancel();
   }
+  isConversationPlaying = false; // 뒤로 가기 시 재생 중단
 
   const page = (event.state && event.state.page) ? event.state.page : 'home';
   isBackAction = true;
@@ -78,6 +79,7 @@ function goTo(page, isReplace = false) {
   if ("speechSynthesis" in window) {
     window.speechSynthesis.cancel();
   }
+  isConversationPlaying = false; // 페이지 이동 시 재생 중단
 
   if (!isBackAction) {
     if (isReplace) {
@@ -261,7 +263,7 @@ function playPatternExamples() {
 }
 
 // ==========================================
-// 5. 단어 (Words) 로직 (원상복구: 예문 표시)
+// 5. 단어 (Words) 로직
 // ==========================================
 function renderWordList() {
   const container = document.getElementById("word-list");
@@ -295,7 +297,6 @@ function renderWordList() {
     if (memorizedWords.has(w.id)) div.classList.add("memorized");
     div.onclick = () => openWord(w.id);
     
-    // 단어 - 뜻 / 예문 표시 (원래대로)
     div.innerHTML = `<div><div class="list-item-title">${w.word} - ${w.meaning}</div><div class="list-item-sub">${w.examples?.[0]?.kr || ""}</div></div>`;
     
     const check = document.createElement("input");
@@ -537,8 +538,8 @@ function openConversation(id) {
   goTo("conv-detail");
 
   if (autoPlayEnabled) {
-      playConversationAll();
-    }
+    playConversationAll();
+  }
 }
 
 function renderConversationDetail() {
@@ -554,15 +555,33 @@ function renderConversationDetail() {
     const btn = document.createElement("button");
     btn.className = "btn-small";
     btn.textContent = "▶";
-    btn.onclick = () => speakText(line.en);
+    btn.onclick = () => speakText(line.en, line.speaker);
     row.appendChild(btn);
     container.appendChild(row);
   });
 }
 
-function playConversationAll() {
+// [수정됨] 대화 전체 듣기 (Promise & Await 적용하여 순차 재생)
+async function playConversationAll() {
+  if ("speechSynthesis" in window) window.speechSynthesis.cancel();
+  isConversationPlaying = true; // 재생 상태 시작
+
   const conv = conversationData.find(c => c.id === currentConvId);
-  if (conv) speakText(conv.lines.map(l => l.en).join(" "));
+  if (!conv) return;
+
+  for (const line of conv.lines) {
+    if (!isConversationPlaying) break; // 뒤로 가기 시 중단
+    
+    // 화자에 맞는 목소리로 재생하고 끝날 때까지 기다림
+    await speakWithPromise(line.en, line.speaker);
+    
+    // 다음 대화 전 0.8초 텀 (자연스러움)
+    if (isConversationPlaying) {
+      await new Promise(resolve => setTimeout(resolve, 800));
+    }
+  }
+  
+  isConversationPlaying = false;
 }
 
 function startShadowingFromConv(id) {
@@ -690,7 +709,7 @@ function updateShadowingUI() {
   krText.style.visibility = isHideKr ? "hidden" : "visible";
 
   if (autoPlayEnabled) {
-    speakText(line.en);
+    speakText(line.en, line.speaker);
   }
 }
 
@@ -711,7 +730,7 @@ function playShadowingCurrent() {
 
   const conv = conversationData.find(c => c.id === currentShadowingId);
   if (!conv) return;
-  speakText(conv.lines[shadowingLineIndex].en);
+  speakText(conv.lines[shadowingLineIndex].en, conv.lines[shadowingLineIndex].speaker);
 }
 
 function nextShadowing() {
@@ -873,13 +892,17 @@ function movePuzzle(offset) {
 }
 
 // ==========================================
-// 10. TTS 설정, 글자 크기 및 저장
+// 10. TTS 설정 (목소리 구분 로직 추가)
 // ==========================================
 let ttsVoices = [];
 let userVoiceIndex = null;
 let userRate = 1.0;
-let userFontSize = 'medium'; // small, medium, large
+let userFontSize = 'medium'; 
 let autoPlayEnabled = true;
+
+// [신규] A와 B 화자용 목소리 저장
+let voiceA = null;
+let voiceB = null;
 
 function loadVoices() {
   ttsVoices = window.speechSynthesis.getVoices();
@@ -895,6 +918,16 @@ function loadVoices() {
     });
   }
   
+  // [신규] 영어 목소리 2개 찾아서 A/B에 할당 (없으면 null)
+  const enVoices = ttsVoices.filter(v => v.lang.includes("en"));
+  if (enVoices.length >= 2) {
+    voiceA = enVoices[0];
+    voiceB = enVoices[1];
+  } else if (enVoices.length === 1) {
+    voiceA = enVoices[0];
+    voiceB = enVoices[0]; // 하나뿐이면 같은 목소리로 톤 조절
+  }
+
   const raw = localStorage.getItem("ttsSettings");
   if(raw) {
     const d = JSON.parse(raw);
@@ -908,18 +941,60 @@ function loadVoices() {
 }
 if("speechSynthesis" in window) window.speechSynthesis.onvoiceschanged = loadVoices;
 
-function speakText(text) {
+// [수정됨] speaker 인자 추가 (A 또는 B)
+function speakText(text, speaker = null) {
   if (!("speechSynthesis" in window)) {
     alert("이 브라우저는 음성 합성을 지원하지 않습니다.");
     return;
   }
   window.speechSynthesis.cancel();
+  
   const u = new SpeechSynthesisUtterance(text);
   u.lang = "en-US";
   u.rate = userRate || 1.0;
-  if (ttsVoices.length === 0) ttsVoices = window.speechSynthesis.getVoices();
-  if (userVoiceIndex !== null && ttsVoices[userVoiceIndex]) u.voice = ttsVoices[userVoiceIndex];
+  
+  // 사용자 지정 목소리가 있으면 우선 사용
+  if (userVoiceIndex !== null && ttsVoices[userVoiceIndex]) {
+    u.voice = ttsVoices[userVoiceIndex];
+  } 
+  // 지정 목소리 없고, 화자(A/B) 정보가 있으면 자동 할당
+  else if (speaker === 'A' && voiceA) {
+    u.voice = voiceA;
+    u.pitch = 1.0; // 기본 톤
+  } else if (speaker === 'B' && voiceB) {
+    u.voice = voiceB;
+    if (voiceA === voiceB) u.pitch = 0.8; // 목소리 같으면 B는 톤을 낮춤
+    else u.pitch = 1.0;
+  }
+
   window.speechSynthesis.speak(u);
+}
+
+// [신규] 대화 전체 듣기용 Promise 래퍼
+function speakWithPromise(text, speaker) {
+  return new Promise(resolve => {
+    const u = new SpeechSynthesisUtterance(text);
+    u.lang = "en-US";
+    u.rate = userRate || 1.0;
+
+    if (userVoiceIndex !== null && ttsVoices[userVoiceIndex]) {
+      u.voice = ttsVoices[userVoiceIndex];
+    } else if (speaker === 'A' && voiceA) {
+      u.voice = voiceA;
+      u.pitch = 1.0;
+    } else if (speaker === 'B' && voiceB) {
+      u.voice = voiceB;
+      if (voiceA === voiceB) u.pitch = 0.8;
+      else u.pitch = 1.0;
+    }
+
+    // 말하기 끝나면 resolve 호출
+    u.onend = resolve;
+    // 에러 나도 멈추지 않게 처리
+    u.onerror = resolve;
+
+    window.speechSynthesis.speak(u);
+  });
 }
 
 function openSettingsModal() {
@@ -1204,10 +1279,6 @@ document.body.addEventListener('click', function unlockTTS() {
 }, { once: true });
 
 // ==========================================
-// 13. 페이지 종료 전 저장 유도 (제거됨)
-// ==========================================
-
-// ==========================================
 // 14. PWA 설치 배너 로직
 // ==========================================
 let deferredPrompt;
@@ -1268,7 +1339,7 @@ function shareApp() {
         objectType: 'feed',
         content: {
           title: 'English & Go',
-          description: '오늘의 영어 정복을 시작해볼까요? 영어회화 공부 ENGO와 함께해요.',
+          description: '영어회화 공부 ENGO와 함께해요.',
           imageUrl: window.location.origin + '/icon.png',
           link: {
             mobileWebUrl: window.location.href,
@@ -1294,7 +1365,7 @@ function shareApp() {
   if (navigator.share) {
     navigator.share({
       title: 'English & Go',
-      text: '오늘의 영어 정복을 시작해볼까요? 영어회화 공부 ENGO와 함께해요.',
+      text: '영어회화 공부 ENGO와 함께해요.',
       url: window.location.href,
     }).catch(console.log);
   } 
@@ -1310,7 +1381,7 @@ function shareApp() {
 }
 
 // ==========================================
-// 16. 실시간 영어 뉴스 로더 (수동 새로고침 + 랜덤 셔플)
+// 16. 실시간 영어 뉴스 로더 (수동 새로고침)
 // ==========================================
 const NEWS_TOPICS = [
   "https://news.google.com/rss/search?q=South+Korea+(k-pop+OR+k-drama+OR+movie)+(popular+OR+success)&hl=en-US&gl=US&ceid=US:en",
@@ -1438,10 +1509,6 @@ function getTimeAgo(date) {
   interval = seconds / 60;
   if (interval > 1) return Math.floor(interval) + " mins ago";
   return "Just now";
-}
-
-function initNewsUpdater() {
-  fetchRealNews(); 
 }
 
 // 17. [신규] 문의하기 기능 (EmailJS로 직접 전송)
