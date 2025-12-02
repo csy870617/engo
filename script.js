@@ -17,7 +17,7 @@
 const pages = [
   "home", "patterns", "pattern-detail", "words", "word-detail",
   "idioms", "idiom-detail", "conversations", "conv-detail",
-  "shadowing-list", "shadowing", "puzzle", "speaking"
+  "shadowing-list", "shadowing", "puzzle"
 ];
 
 const idiomData = [
@@ -95,12 +95,11 @@ function goTo(page, isReplace = false) {
     else el.classList.add("hidden");
   });
 
-  // [핵심 수정] 페이지별 렌더링 및 데이터 복구 로직
-  // 상세 페이지일 경우, 목록을 먼저 생성(render...List)해야 '이전/다음' 버튼이 작동함
+  // 페이지별 렌더링 및 데이터 복구
   if (page === "patterns") renderPatternList();
   if (page === "pattern-detail") {
-    renderPatternList(); // 목록 재생성 (네비게이션용)
-    renderPatternDetail(); // 상세 내용 표시
+    renderPatternList();
+    renderPatternDetail();
   }
 
   if (page === "words") renderWordList();
@@ -123,8 +122,6 @@ function goTo(page, isReplace = false) {
 
   if (page === "shadowing-list") renderShadowingList();
   if (page === "puzzle") initPuzzle();
-  if (page === "speaking") initSpeaking();
-  if (page === "shadowing") initShadowing();
 }
 
 // 오디오 중단
@@ -165,7 +162,7 @@ function loadMemorizedData() {
     const iLevelRaw = localStorage.getItem("selectedIdiomLevel");
     if (iLevelRaw !== null) selectedIdiomLevel = parseInt(iLevelRaw);
 
-    // [신규] 마지막으로 본 항목 ID 복구 (새로고침 대응)
+    // 마지막으로 본 항목 ID 복구
     currentPatternId = localStorage.getItem("currentPatternId");
     currentWordId = localStorage.getItem("currentWordId");
     currentIdiomId = localStorage.getItem("currentIdiomId");
@@ -245,15 +242,14 @@ function updatePatternProgress() {
 
 function openPattern(id) {
   currentPatternId = id;
-  localStorage.setItem("currentPatternId", id); // ID 저장
-  goTo("pattern-detail"); // 화면 이동 (renderPatternDetail 호출됨)
+  localStorage.setItem("currentPatternId", id); 
+  goTo("pattern-detail"); 
 
   if (autoPlayEnabled) {
       playPatternExamples();
   }
 }
 
-// [신규] 상세 화면 그리기 함수 분리
 function renderPatternDetail() {
   const pattern = patternData.find(p => p.id === currentPatternId);
   if (!pattern) return;
@@ -413,7 +409,6 @@ function openWord(id) {
     }
 }
 
-// [신규] 단어 상세 화면 그리기
 function renderWordDetail() {
   const w = wordData.find(x => x.id === currentWordId);
   if (!w) return;
@@ -557,7 +552,6 @@ function openIdiom(id) {
     }
 }
 
-// [신규] 숙어 상세 화면 그리기
 function renderIdiomDetail() {
   const item = idiomData.find(x => x.id === currentIdiomId);
   if (!item) return;
@@ -649,14 +643,13 @@ function openConversation(id) {
   }
 }
 
-// [수정됨] 대화 상세 화면 그리기 (제목 포함)
 function renderConversationDetail() {
   const conv = conversationData.find(c => c.id === currentConvId);
   if (!conv) return;
   
   document.getElementById("conv-title").textContent = conv.title;
   document.getElementById("conv-toggle-kr").checked = true;
-
+  
   const showKr = document.getElementById("conv-toggle-kr").checked;
   const container = document.getElementById("conv-lines");
   container.innerHTML = "";
@@ -673,6 +666,7 @@ function renderConversationDetail() {
   });
 }
 
+// 대화 전체 듣기 (세션 체크로 중복 방지)
 async function playConversationAll() {
   stopAudio();
   currentAudioSessionId++;
@@ -704,7 +698,11 @@ function startShadowingFromConv(id) {
   isBlindMode = true; 
   isHideKr = false;
   updateShadowingOptionsUI();
-  updateShadowingUI();
+  
+  setTimeout(() => {
+    updateShadowingUI();
+    playShadowingCurrent(); 
+  }, 100);
 }
 
 function moveItemInList(currentId, list, offset, openFunc) {
@@ -762,7 +760,11 @@ function renderShadowingList() {
       isBlindMode = true; 
       isHideKr = false;
       updateShadowingOptionsUI();
-      updateShadowingUI();
+      
+      setTimeout(() => {
+        updateShadowingUI();
+        playShadowingCurrent(); 
+      }, 100);
     };
     div.innerHTML = `
       <div>
@@ -820,9 +822,7 @@ function updateShadowingUI() {
   krText.textContent = line.kr;
   krText.style.visibility = isHideKr ? "hidden" : "visible";
 
-  if (autoPlayEnabled) {
-    speakText(line.en, line.speaker);
-  }
+  // 여기서는 자동 재생을 하지 않고, setTimeout으로 호출되는 playShadowingCurrent에서 처리
 }
 
 function revealTextTemp() {
@@ -837,8 +837,10 @@ function revealTextTemp() {
 
 function playShadowingCurrent() {
   const btn = document.getElementById("shadowing-play-btn");
-  btn.style.transform = "scale(0.95)";
-  setTimeout(() => btn.style.transform = "scale(1)", 100);
+  if(btn) {
+    btn.style.transform = "scale(0.95)";
+    setTimeout(() => btn.style.transform = "scale(1)", 100);
+  }
 
   const conv = conversationData.find(c => c.id === currentShadowingId);
   if (!conv) return;
@@ -852,6 +854,10 @@ function nextShadowing() {
   if (shadowingLineIndex < conv.lines.length - 1) {
     shadowingLineIndex++;
     updateShadowingUI();
+    // 다음 문장으로 넘어갈 때 자동 재생
+    if (autoPlayEnabled) {
+      playShadowingCurrent();
+    }
   } else {
     if(confirm("대화가 끝났습니다. 목록으로 돌아갈까요?")) {
       goTo("shadowing-list");
@@ -866,6 +872,9 @@ function prevShadowing() {
   if (shadowingLineIndex > 0) {
     shadowingLineIndex--;
     updateShadowingUI();
+    if (autoPlayEnabled) {
+      playShadowingCurrent();
+    }
   }
 }
 
@@ -890,6 +899,9 @@ function nextRandomShadowingTopic() {
   shadowingLineIndex = 0;
   
   updateShadowingUI();
+  if (autoPlayEnabled) {
+    setTimeout(() => playShadowingCurrent(), 100);
+  }
 }
 
 // ==========================================
@@ -1057,7 +1069,6 @@ function loadVoices() {
   }
   
   const enVoices = ttsVoices.filter(v => v.lang.includes("en"));
-  
   const preferredVoices = enVoices.filter(v => v.name.includes("Google") || v.name.includes("Samantha") || v.name.includes("Siri"));
   
   if (preferredVoices.length >= 2) {
@@ -1421,16 +1432,15 @@ document.body.addEventListener('click', function unlockTTS() {
 let deferredPrompt;
 const installBanner = document.getElementById('install-banner');
 
-// [신규] 이미 앱으로 실행 중인지 확인 (Standalone 모드)
 const isStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone;
 
 window.addEventListener('beforeinstallprompt', (e) => {
+  console.log("✅ PWA 설치 이벤트 감지됨!"); 
   e.preventDefault();
   deferredPrompt = e;
   
   if (!localStorage.getItem('installBannerDismissed') && !isStandalone) {
     installBanner.classList.remove('hidden');
-    console.log("✅ PWA 설치 배너 표시됨");
   }
 });
 
