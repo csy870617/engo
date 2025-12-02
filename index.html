@@ -21,11 +21,14 @@
   <meta property="og:site_name" content="ENGO">
 
   <link rel="stylesheet" href="style.css" />
+
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2078760660134095"
+     crossorigin="anonymous"></script>
   
   <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
   <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
 
-  <script src="https://t1.kakaocdn.net/kakao_js_sdk/2.6.0/kakao.min.js"></script>
+  <script src="https://t1.kakaocdn.net/kakao_js_sdk/2.6.0/kakao.min.js" integrity="sha384-6MFdIr0zOira1CHQkedUqJVqe0ryQTCtjeE6WPqDwqnhNOhIOGKotpbY71EUDCaz" crossorigin="anonymous"></script>
   
   <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
   <script type="text/javascript">
@@ -119,10 +122,11 @@
             🔄 다른 뉴스 보기
           </button>
         </div>
-        <div class="news-scroll-area" id="news-card-list"></div>
+        <div class="news-scroll-area" id="news-card-list">
+          </div>
       </div>
 
-  <div class="youtube-section">
+      <div class="youtube-section">
         <h3>📺 반복해서 듣고 따라하기</h3>
         
         <div class="youtube-scroll-area">
@@ -156,7 +160,7 @@
             <div class="video-wrapper">
               <iframe 
                 src="https://www.youtube.com/embed/videoseries?list=PLzefhHvgKfYrkx6WiArVNg57ggV2GZHg3" 
-                title="기초 유용한 표현" 
+                title="기초 표현" 
                 frameborder="0" 
                 allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
                 allowfullscreen>
@@ -164,6 +168,7 @@
             </div>
             <div class="video-title">기초 유용한 표현 200개</div>
           </div>
+
         </div>
       </div>
 
@@ -422,7 +427,7 @@
       </div>
 
       <div class="setting-group">
-        <label class="setting-label" for="tts-voice-select">목소리 선택</label>
+        <label class="setting-label" for="tts-voice-select">목소리 선택 (for Browser TTS)</label>
         <select id="tts-voice-select" class="dropdown" onchange="previewVoiceSettings()"><option>기본</option></select>
       </div>
 
@@ -504,4 +509,3 @@
   <script src="script.js"></script>
 </body>
 </html>
-
