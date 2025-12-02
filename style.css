@@ -562,32 +562,30 @@ main {
   padding-left: 4px;
 }
 
-/* ... (기존 CSS 유지) ... */
+/* ... (위쪽 기존 CSS 유지) ... */
 
-/* [신규] 인쇄 전용 스타일 (Ctrl+P 눌렀을 때 적용됨) */
+/* [수정됨] 인쇄 전용 스타일 (A4 최적화 + 25개씩 끊기) */
 @media print {
-  /* 1. 인쇄할 때 숨길 것들 (헤더, 버튼, 배경 등) */
+  /* 1. 숨김 처리 */
   header, .nav-header, .no-print, .bg-glow, #install-banner, .modal {
     display: none !important;
   }
 
-  /* 2. 배경 및 폰트 설정 */
+  /* 2. 기본 설정 */
   body {
-    background: #fff !important; /* 배경 흰색 */
-    color: #000 !important; /* 글자 검은색 */
+    background: #fff !important;
+    color: #000 !important;
     padding: 0 !important;
     margin: 0 !important;
-    overflow: visible !important;
+    font-size: 11pt; /* 글자 크기 최적화 */
   }
 
   main {
     margin: 0 !important;
     padding: 0 !important;
     max-width: 100% !important;
-    min-height: auto !important;
   }
 
-  /* 3. 다른 페이지 숨기고 현재 페이퍼만 표시 */
   section { display: none !important; }
   #page-blog-detail { 
     display: block !important; 
@@ -596,43 +594,43 @@ main {
     top: 0 !important;
   }
 
-  /* 4. 페이퍼(종이) 스타일 최적화 */
+  /* 3. 페이퍼 스타일 */
   .paper-container {
     background: #fff !important;
     box-shadow: none !important;
     border: none !important;
-    padding: 0 !important;
+    padding: 20px !important;
     margin: 0 !important;
     width: 100% !important;
   }
-  
-  /* 장식용 세로줄 제거 */
   .paper-container::before { display: none; }
 
-  /* 텍스트 가독성 높이기 */
   .paper-title {
-    font-size: 24pt !important;
+    font-size: 20pt !important;
     border-bottom: 2px solid #000 !important;
-    margin-bottom: 20px !important;
+    margin-bottom: 15px !important;
     color: #000 !important;
-  }
-  
-  .paper-section h3 {
-    font-size: 16pt !important;
-    border-left: 5px solid #000 !important; /* 컬러 대신 흑백 */
-    color: #000 !important;
-    margin-top: 20px !important;
+    padding-bottom: 5px !important;
   }
 
-  .paper-text {
-    font-size: 12pt !important;
-    line-height: 1.5 !important;
-    color: #000 !important;
+  /* 4. 강제 페이지 나누기 (핵심) */
+  .print-page-break {
+    page-break-after: always; /* 구형 브라우저 호환 */
+    break-after: page;        /* 표준 */
+    height: 1px;
+    display: block;
+    margin: 0;
+    padding: 0;
   }
 
-  /* 5. 페이지 나누기 설정 (내용이 잘리지 않게) */
-  .paper-section {
+  /* 항목이 페이지 중간에 잘리지 않도록 설정 */
+  .paper-item {
     page-break-inside: avoid;
+    break-inside: avoid;
+    margin-bottom: 10px !important;
+    border-bottom: 1px dashed #ccc;
+    padding-bottom: 5px;
   }
 }
+
 
