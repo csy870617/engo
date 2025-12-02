@@ -1722,19 +1722,20 @@ function sendInquiry() {
   }
 }
 
-// ... (위쪽 코드는 그대로 유지) ...
-
 // ==========================================
-// 18. [수정됨] 영어 블로그 (50개 단위 요약 노트 - Cheat Sheet)
+// 18. [수정됨] 영어 블로그 (패턴/숙어/단어 - 50개 단위 노트)
 // ==========================================
-let currentBlogType = 'all'; 
-let currentBlogIndex = 0; // 50개 단위의 페이지 인덱스 (0, 1, 2...)
+let currentBlogType = 'pattern'; // 기본값: 패턴
+let currentBlogIndex = 0; // 페이지 번호 (0부터 시작)
 
 function filterBlog(type, btn) {
   currentBlogType = type;
+  
+  // 버튼 UI 업데이트
   const btns = document.querySelectorAll('#page-blog-list .chip-btn');
   btns.forEach(b => b.classList.remove('active'));
   btn.classList.add('active');
+  
   renderBlogList();
 }
 
@@ -1742,51 +1743,55 @@ function renderBlogList() {
   const container = document.getElementById('blog-list-container');
   container.innerHTML = "";
 
-  // 1. 패턴 요약 노트 생성 (50개씩 묶음)
-  if (currentBlogType === 'all' || currentBlogType === 'pattern') {
-    if (typeof patternData !== 'undefined' && patternData.length > 0) {
-      const chunkSize = 50;
-      const totalChunks = Math.ceil(patternData.length / chunkSize);
+  let targetData = [];
+  let label = "";
+  let tagClass = "";
 
-      for (let i = 0; i < totalChunks; i++) {
-        const start = i * chunkSize + 1;
-        const end = Math.min((i + 1) * chunkSize, patternData.length);
-        
-        const div = document.createElement("div");
-        div.className = "blog-card";
-        div.onclick = () => openBlogPost('pattern', i); // i는 페이지 번호(0부터 시작)
-        div.innerHTML = `
-          <span class="blog-tag tag-pattern">Pattern Note</span>
-          <div class="blog-title">핵심 패턴 모음 (Vol.${i + 1})</div>
-          <div class="blog-desc">패턴 ${start}번 ~ ${end}번 한눈에 보기</div>
-        `;
-        container.appendChild(div);
-      }
-    }
+  // 데이터 선택
+  if (currentBlogType === 'pattern') {
+    targetData = (typeof patternData !== 'undefined') ? patternData : [];
+    label = "Pattern Note";
+    tagClass = "tag-pattern";
+  } else if (currentBlogType === 'idiom') {
+    targetData = (typeof idiomData !== 'undefined') ? idiomData : [];
+    label = "Idiom Note";
+    tagClass = "tag-conv"; // 핑크색 재활용
+  } else if (currentBlogType === 'word') {
+    targetData = (typeof wordData !== 'undefined') ? wordData : [];
+    label = "Vocabulary";
+    tagClass = "tag-word";
   }
 
-  // 2. 숙어 요약 노트 생성 (50개씩 묶음)
-  if (currentBlogType === 'all' || currentBlogType === 'idiom') { // 'conv'나 'word'는 제외
-    if (typeof idiomData !== 'undefined' && idiomData.length > 0) {
-      const chunkSize = 50;
-      const totalChunks = Math.ceil(idiomData.length / chunkSize);
-
-      for (let i = 0; i < totalChunks; i++) {
-        const start = i * chunkSize + 1;
-        const end = Math.min((i + 1) * chunkSize, idiomData.length);
-        
-        const div = document.createElement("div");
-        div.className = "blog-card";
-        div.onclick = () => openBlogPost('idiom', i);
-        div.innerHTML = `
-          <span class="blog-tag tag-conv">Idiom Note</span>
-          <div class="blog-title">필수 숙어/구동사 (Vol.${i + 1})</div>
-          <div class="blog-desc">숙어 ${start}번 ~ ${end}번 한눈에 보기</div>
-        `;
-        container.appendChild(div);
-      }
-    }
+  if (targetData.length === 0) {
+    container.innerHTML = "<div style='text-align:center; padding:20px; color:#888;'>데이터가 없습니다.</div>";
+    return;
   }
+
+  // 50개씩 묶어서 카드 생성
+  const chunkSize = 50;
+  const totalChunks = Math.ceil(targetData.length / chunkSize);
+
+  for (let i = 0; i < totalChunks; i++) {
+    const start = i * chunkSize + 1;
+    const end = Math.min((i + 1) * chunkSize, targetData.length);
+    
+    const div = document.createElement("div");
+    div.className = "blog-card";
+    div.onclick = () => openBlogPost(currentBlogType, i);
+    div.innerHTML = `
+      <span class="blog-tag ${tagClass}">${label}</span>
+      <div class="blog-title">${getBlogTitle(currentBlogType)} Vol.${i + 1}</div>
+      <div class="blog-desc">No. ${start} ~ ${end} 핵심 정리</div>
+    `;
+    container.appendChild(div);
+  }
+}
+
+function getBlogTitle(type) {
+  if (type === 'pattern') return "필수 영어 패턴";
+  if (type === 'idiom') return "숙어 & 구동사";
+  if (type === 'word') return "우선순위 영단어";
+  return "학습 노트";
 }
 
 function openBlogPost(type, index) {
@@ -1801,26 +1806,34 @@ function renderBlogDetail() {
   
   const chunkSize = 50;
   const startIndex = currentBlogIndex * chunkSize;
-  let html = "";
-  let dataSlice = [];
+  
+  let targetData = [];
   let titlePrefix = "";
 
-  // 데이터 가져오기
   if (currentBlogType === 'pattern') {
-    dataSlice = patternData.slice(startIndex, startIndex + chunkSize);
+    targetData = patternData;
     titlePrefix = "Pattern Note";
   } else if (currentBlogType === 'idiom') {
-    dataSlice = idiomData.slice(startIndex, startIndex + chunkSize);
+    targetData = idiomData;
     titlePrefix = "Idiom Note";
+  } else if (currentBlogType === 'word') {
+    targetData = wordData;
+    titlePrefix = "Vocabulary";
   }
 
-  // 타이틀 표시
+  // 해당 페이지(Vol)의 데이터 자르기
+  const dataSlice = targetData.slice(startIndex, startIndex + chunkSize);
+
+  // --- 페이퍼(종이) 내용 생성 ---
+  let html = "";
+  
+  // 1. 제목
   html += `<div class="paper-title">${titlePrefix} Vol.${currentBlogIndex + 1}</div>`;
-  html += `<p class="paper-sub" style="text-align:center; border-bottom:1px solid #ddd; padding-bottom:15px; margin-bottom:20px;">
-    총 ${dataSlice.length}개의 표현을 한 번에 복습하세요.
+  html += `<p class="paper-sub" style="text-align:center; border-bottom:1px solid #ddd; padding-bottom:15px; margin-bottom:30px;">
+    Study hard, play hard! (총 ${dataSlice.length}개)
   </p>`;
 
-  // 리스트 생성
+  // 2. 리스트 아이템
   dataSlice.forEach((item, idx) => {
     const globalNum = startIndex + idx + 1;
     let mainText = "";
@@ -1828,35 +1841,38 @@ function renderBlogDetail() {
     let example = "";
 
     if (currentBlogType === 'pattern') {
-      mainText = item.title; // 패턴 (예: I'm looking for...)
-      subText = item.desc;   // 설명
-      example = item.examples && item.examples.length > 0 ? item.examples[0].en : "";
-    } else {
-      mainText = item.idiom; // 숙어
-      subText = item.meaning; // 뜻
-      example = item.examples && item.examples.length > 0 ? item.examples[0].en : "";
+      mainText = item.title; 
+      subText = item.desc;   
+      example = (item.examples && item.examples[0]) ? item.examples[0].en : "";
+    } else if (currentBlogType === 'idiom') {
+      mainText = item.idiom; 
+      subText = item.meaning; 
+      example = (item.examples && item.examples[0]) ? item.examples[0].en : "";
+    } else if (currentBlogType === 'word') {
+      mainText = item.word;
+      subText = item.meaning;
+      // 단어는 예문이 있으면 보여줌
+      example = (item.examples && item.examples[0]) ? item.examples[0].en : "";
     }
 
     html += `
-      <div style="margin-bottom: 20px;">
-        <div style="font-size: 1.1rem; font-weight: 700; color: #1e293b;">
-          <span style="color: #8b5cf6; margin-right: 5px;">${globalNum}.</span> ${mainText}
+      <div style="margin-bottom: 25px;">
+        <div style="font-size: 1.15rem; font-weight: 700; color: #1e293b; display:flex; align-items:baseline;">
+          <span style="color: #8b5cf6; margin-right: 8px; font-size:1rem;">${globalNum}.</span> 
+          ${mainText}
         </div>
-        <div style="font-size: 0.95rem; color: #475569; margin-top: 4px; margin-left: 25px;">
+        
+        <div style="font-size: 1rem; color: #475569; margin-top: 6px; margin-left: 28px; font-weight:500;">
           ${subText}
         </div>
-        ${example ? `<div style="font-size: 0.85rem; color: #94a3b8; margin-top: 4px; margin-left: 25px; font-style: italic;">Ex) ${example}</div>` : ''}
+        
+        ${example ? `<div style="font-size: 0.9rem; color: #64748b; margin-top: 6px; margin-left: 28px; font-style: italic; background:rgba(0,0,0,0.03); padding:5px 10px; border-radius:6px;">Ex) ${example}</div>` : ''}
       </div>
-      <hr style="border: 0; border-top: 1px dashed #e2e8f0; margin: 15px 0;">
+      <hr style="border: 0; border-top: 1px dashed #cbd5e1; margin: 20px 0;">
     `;
   });
 
   contentBox.innerHTML = html;
-}
-
-// [신규] 인쇄 기능 함수
-function printPaperContent() {
-  window.print();
 }
 
 // ------------------------------------------
@@ -1869,5 +1885,6 @@ initNewsUpdater();
 // 초기 화면 렌더링 (중복 히스토리 방지)
 const initialPage = location.hash.replace('#', '') || 'home';
 goTo(initialPage, true);
+
 
 
