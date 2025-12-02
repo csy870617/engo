@@ -195,13 +195,15 @@
     </section>
 
     <section id="page-blog-detail" class="hidden">
-      <div class="nav-header"><span class="back-btn" onclick="goTo('blog-list')">❮ 목록으로</span></div>
+      <div class="nav-header no-print"><span class="back-btn" onclick="goTo('blog-list')">❮ 목록으로</span></div>
+      
       <div class="paper-container">
         <div id="paper-content">
           </div>
       </div>
-      <div style="text-align:center; margin-top:20px;">
-        <button class="btn-main" onclick="speakPaperContent()">🔊 전체 읽어주기</button>
+      
+      <div class="no-print" style="text-align:center; margin-top:20px; margin-bottom:40px;">
+        <button class="btn-main" onclick="printPaperContent()" style="background: #334155; color: #fff;">🖨️ 자료 인쇄하기 (Print)</button>
       </div>
     </section>
 
@@ -545,3 +547,4 @@
   <script src="script.js"></script>
 </body>
 </html>
+
