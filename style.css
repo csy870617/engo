@@ -479,8 +479,117 @@ main {
   font-size: 0.75rem;
   color: #64748b;
   text-align: right;
-
 }
+
+/* ... (기존 CSS 유지) ... */
+
+/* [신규] 유튜브 섹션 스타일 */
+.youtube-section {
+  margin-top: 30px;
+  margin-bottom: 40px; /* 하단 여백 */
+  padding: 0 4px;
+}
+
+.youtube-section h3 {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: #fff;
+  margin-bottom: 12px;
+  background: linear-gradient(90deg, #fff, #cbd5e1);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  display: inline-block;
+}
+
+/* ... (기존 CSS 유지) ... */
+
+/* [수정됨] 유튜브 섹션 스타일 (가로 배치) */
+.youtube-section {
+  margin-top: 30px;
+  margin-bottom: 40px;
+  padding: 0 4px;
+}
+
+.youtube-section h3 {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: #fff;
+  margin-bottom: 15px;
+  background: linear-gradient(90deg, #fff, #cbd5e1);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  display: inline-block;
+}
+
+/* 가로 2열 그리드 레이아웃 */
+.youtube-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr; /* 1:1 비율로 가로 배치 */
+  gap: 12px; /* 사이 간격 */
+}
+
+.youtube-item {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+/* ... (기존 CSS 유지) ... */
+
+/* [수정됨] 유튜브 섹션 스타일 (슬라이드형) */
+.youtube-section {
+  margin-top: 30px;
+  margin-bottom: 50px; /* 하단 여백 넉넉히 */
+  padding: 0 4px;
+}
+
+.youtube-section h3 {
+  font-size: 1.2rem; /* 제목 크기 약간 키움 */
+  font-weight: 700;
+  color: #fff;
+  margin-bottom: 15px;
+  background: linear-gradient(90deg, #fff, #cbd5e1);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  display: inline-block;
+  margin-left: 4px;
+}
+
+/* 가로 스크롤(슬라이드) 컨테이너 */
+.youtube-scroll-area {
+  display: flex;
+  gap: 16px; /* 영상 사이 간격 */
+  overflow-x: auto; /* 가로 스크롤 활성화 */
+  padding-bottom: 15px;
+  scroll-behavior: smooth;
+  -webkit-overflow-scrolling: touch; /* 모바일에서 부드러운 스크롤 */
+  padding-left: 4px; 
+  padding-right: 4px;
+}
+
+/* 스크롤바 스타일 (선택 사항) */
+.youtube-scroll-area::-webkit-scrollbar {
+  height: 4px;
+}
+.youtube-scroll-area::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 2px;
+}
+
+/* 개별 영상 아이템 (크기 키움) */
+.youtube-item {
+  min-width: 85%; /* 모바일 화면의 85% 차지 (크게 보임) */
+  max-width: 400px; /* PC에서는 너무 커지지 않게 제한 */
+  flex-shrink: 0; /* 줄어들지 않게 고정 */
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+/* ... (기존 CSS 유지) ... */
 
 /* [수정됨] 유튜브 섹션 스타일 (슬라이드형) */
 .youtube-section {
@@ -562,75 +671,183 @@ main {
   padding-left: 4px;
 }
 
-/* ... (위쪽 기존 CSS 유지) ... */
+/* ... 기존 CSS 아래에 추가 ... */
 
-/* [수정됨] 인쇄 전용 스타일 (A4 최적화 + 25개씩 끊기) */
+/* 블로그 타일 스타일 (네온 핑크/오렌지 그라데이션) */
+.tile-blog::before {
+  content:''; position:absolute; top:0; left:0; width:4px; height:100%; 
+  background: linear-gradient(to bottom, #f472b6, #fb923c);
+}
+
+/* 블로그 리스트 카드 */
+.blog-card {
+  background: var(--bg-card);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 16px;
+  padding: 20px;
+  cursor: pointer;
+  transition: transform 0.2s;
+}
+.blog-card:hover {
+  transform: translateY(-3px);
+  border-color: var(--primary);
+}
+.blog-tag {
+  display: inline-block;
+  padding: 4px 8px;
+  border-radius: 8px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  margin-bottom: 8px;
+}
+.tag-pattern { background: rgba(59, 130, 246, 0.2); color: #60a5fa; } /* 파랑 */
+.tag-conv { background: rgba(236, 72, 153, 0.2); color: #f472b6; }   /* 핑크 */
+.tag-word { background: rgba(245, 158, 11, 0.2); color: #fbbf24; }   /* 노랑 */
+
+.blog-title { font-size: 1.1rem; font-weight: 700; color: #fff; margin-bottom: 6px; }
+.blog-desc { font-size: 0.9rem; color: var(--text-sub); line-height: 1.5; }
+
+/* 페이퍼(노트) 스타일 (상세 화면) */
+.paper-container {
+  background: #fdfbf7; /* 따뜻한 종이 색상 */
+  color: #333;
+  padding: 30px;
+  border-radius: 4px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+  min-height: 60vh;
+  position: relative;
+  font-family: 'Merriweather', serif; /* 명조체 느낌 (없으면 기본 serif) */
+}
+/* 종이 구멍 효과 */
+.paper-container::before {
+  content: "";
+  position: absolute;
+  top: 0; left: 40px;
+  height: 100%;
+  border-right: 2px solid rgba(255,0,0,0.1); /* 빨간 줄 */
+}
+
+.paper-title {
+  font-size: 1.8rem;
+  font-weight: 900;
+  color: #1e293b;
+  border-bottom: 3px solid #333;
+  padding-bottom: 10px;
+  margin-bottom: 20px;
+}
+
+.paper-section { margin-bottom: 25px; }
+.paper-section h3 {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: #475569;
+  border-left: 4px solid #8b5cf6;
+  padding-left: 10px;
+  margin-bottom: 10px;
+}
+
+.paper-text { font-size: 1rem; line-height: 1.8; margin-bottom: 8px; }
+.paper-sub { font-size: 0.9rem; color: #64748b; margin-bottom: 15px; }
+.paper-highlight { background: linear-gradient(180deg, transparent 60%, #fef08a 60%); }
+
+/* ... (기존 CSS 위쪽 유지) ... */
+
+/* [수정됨] 인쇄 전용 스타일 (A4 완벽 대응 + 2단 편집) */
 @media print {
-  /* 1. 숨김 처리 */
-  header, .nav-header, .no-print, .bg-glow, #install-banner, .modal {
+  @page {
+    size: A4;
+    margin: 10mm; /* 여백 최소화 */
+  }
+
+  /* 1. 불필요한 요소 숨김 */
+  header, .nav-header, .no-print, .bg-glow, #install-banner, .modal, 
+  .home-grid, .hero-card, #news-section, .youtube-section, #pattern-studying-btn,
+  button {
     display: none !important;
   }
 
-  /* 2. 기본 설정 */
-  body {
-    background: #fff !important;
-    color: #000 !important;
-    padding: 0 !important;
-    margin: 0 !important;
-    font-size: 11pt; /* 글자 크기 최적화 */
-  }
-
-  main {
+  /* 2. 기본 레이아웃 초기화 */
+  body, main, #page-blog-detail, .paper-container {
+    background: white !important;
+    color: black !important;
     margin: 0 !important;
     padding: 0 !important;
-    max-width: 100% !important;
-  }
-
-  section { display: none !important; }
-  #page-blog-detail { 
-    display: block !important; 
-    position: relative !important;
-    left: 0 !important;
-    top: 0 !important;
-  }
-
-  /* 3. 페이퍼 스타일 */
-  .paper-container {
-    background: #fff !important;
     box-shadow: none !important;
     border: none !important;
-    padding: 20px !important;
-    margin: 0 !important;
     width: 100% !important;
+    height: auto !important;
+    overflow: visible !important;
   }
-  .paper-container::before { display: none; }
 
+  /* 3. 페이지 단위 설정 (JS에서 만든 .print-page) */
+  .print-page {
+    width: 100%;
+    height: 100vh; /* 한 페이지 꽉 채움 */
+    page-break-after: always; /* 페이지 끝날 때마다 종이 넘김 */
+    break-after: page;
+    position: relative;
+    padding-top: 10px;
+  }
+
+  /* 4. 헤더 디자인 */
+  .paper-header-area {
+    border-bottom: 2px solid #333;
+    margin-bottom: 15px;
+    padding-bottom: 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+  }
   .paper-title {
-    font-size: 20pt !important;
-    border-bottom: 2px solid #000 !important;
-    margin-bottom: 15px !important;
-    color: #000 !important;
-    padding-bottom: 5px !important;
+    font-size: 18pt !important;
+    font-weight: bold;
+    margin: 0 !important;
+    border: none !important; /* 기존 border 제거 */
+  }
+  .paper-page-num {
+    font-size: 10pt;
+    color: #555;
   }
 
-  /* 4. 강제 페이지 나누기 (핵심) */
-  .print-page-break {
-    page-break-after: always; /* 구형 브라우저 호환 */
-    break-after: page;        /* 표준 */
-    height: 1px;
-    display: block;
-    margin: 0;
-    padding: 0;
+  /* 5. 2단 그리드 레이아웃 (핵심: 공간 절약) */
+  .paper-list-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr; /* 2단 배치 */
+    column-gap: 30px; /* 단 사이 간격 */
+    row-gap: 10px;    /* 줄 사이 간격 */
   }
 
-  /* 항목이 페이지 중간에 잘리지 않도록 설정 */
-  .paper-item {
-    page-break-inside: avoid;
-    break-inside: avoid;
-    margin-bottom: 10px !important;
-    border-bottom: 1px dashed #ccc;
+  /* 6. 개별 아이템 디자인 (컴팩트) */
+  .paper-item-compact {
+    display: flex;
+    align-items: flex-start;
+    border-bottom: 1px dotted #ccc;
     padding-bottom: 5px;
+    page-break-inside: avoid; /* 아이템 중간에 잘림 방지 */
+  }
+
+  .pi-num {
+    font-size: 11pt;
+    font-weight: bold;
+    color: #333;
+    width: 35px; /* 번호 영역 고정 */
+    flex-shrink: 0;
+  }
+
+  .pi-content {
+    flex-grow: 1;
+  }
+
+  .pi-main {
+    font-size: 12pt;
+    font-weight: bold;
+    color: #000;
+    margin-bottom: 2px;
+  }
+
+  .pi-sub {
+    font-size: 10pt;
+    color: #444;
+    line-height: 1.3;
   }
 }
-
-
