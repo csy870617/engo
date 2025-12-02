@@ -773,7 +773,8 @@ function renderBlogList() {
 }
 function getBlogTitle(type) { if (type === 'pattern') return "필수 영어 패턴"; if (type === 'idiom') return "숙어 & 구동사"; if (type === 'word') return "우선순위 영단어"; return "학습 노트"; }
 function openBlogPost(type, index) { currentBlogType = type; currentBlogIndex = index; goTo('blog-detail'); }
-// [수정됨] 블로그 상세(페이퍼) 렌더링 - 디자인 최적화
+
+// [수정됨] 블로그 상세(페이퍼) 렌더링 - "Full List" 문구 제거
 function renderBlogDetail() {
   const contentBox = document.getElementById('paper-content');
   contentBox.innerHTML = "";
@@ -784,15 +785,13 @@ function renderBlogDetail() {
   let targetData = [];
   let titlePrefix = "";
 
-  if (currentBlogType === 'pattern') { targetData = patternData; titlePrefix = "Pattern Book"; }
-  else if (currentBlogType === 'idiom') { targetData = idiomData; titlePrefix = "Idioms & Verbs"; }
-  else if (currentBlogType === 'word') { targetData = wordData; titlePrefix = "Word List"; }
+  if (currentBlogType === 'pattern') { targetData = patternData; titlePrefix = "Pattern Note"; }
+  else if (currentBlogType === 'idiom') { targetData = idiomData; titlePrefix = "Idiom Note"; }
+  else if (currentBlogType === 'word') { targetData = wordData; titlePrefix = "Vocabulary"; }
 
-  // 현재 페이지의 50개 데이터
   const dataSlice = targetData.slice(startIndex, startIndex + chunkSize);
   
-  // 인쇄를 위해 25개씩 페이지(종이)로 나눔
-  const itemsPerPage = 25;
+  const itemsPerPage = 50; 
   const totalPages = Math.ceil(dataSlice.length / itemsPerPage);
 
   for (let p = 0; p < totalPages; p++) {
@@ -800,20 +799,19 @@ function renderBlogDetail() {
     const pageEnd = Math.min((p + 1) * itemsPerPage, dataSlice.length);
     const pageItems = dataSlice.slice(pageStart, pageEnd);
     
-    // 종이(Page) 컨테이너
     const pageDiv = document.createElement('div');
     pageDiv.className = 'print-page';
 
-    // 헤더
+    // [수정됨] "Full List" 제거 -> "(No. 1 - 50)" 형태로 변경
     const headerHtml = `
       <div class="paper-header-area">
         <div class="paper-title">${titlePrefix} Vol.${currentBlogIndex + 1}</div>
-        <div class="paper-page-num">Sheet ${p + 1} / ${totalPages}</div>
+        <div class="paper-page-num">(No. ${startIndex + 1} - ${startIndex + pageEnd})</div>
       </div>
     `;
     
-    // 리스트
     let listHtml = '<div class="paper-list-grid">';
+    
     pageItems.forEach((item, idx) => {
       const globalNum = startIndex + pageStart + idx + 1;
       let mainText = ""; 
@@ -825,7 +823,6 @@ function renderBlogDetail() {
       
       listHtml += `
         <div class="paper-item-compact">
-          <div class="pi-num">${globalNum}.</div>
           <div class="pi-content">
             <div class="pi-main">${mainText}</div>
             <div class="pi-sub">${subText}</div>
@@ -833,12 +830,14 @@ function renderBlogDetail() {
         </div>
       `;
     });
-    listHtml += '</div>'; // grid end
+    
+    listHtml += '</div>'; 
 
     pageDiv.innerHTML = headerHtml + listHtml;
     contentBox.appendChild(pageDiv);
   }
 }
+
 function printPaperContent() { window.print(); }
 
 // Firebase & EmailJS & News
@@ -935,5 +934,3 @@ async function downloadData() {
 // Init Execution
 loadMemorizedData(); loadVoices(); initNewsUpdater();
 const initialPage = location.hash.replace('#', '') || 'home'; goTo(initialPage, true);
-
-

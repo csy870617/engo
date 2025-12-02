@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ENGO 학습 자료 아카이브 - 전체 목록</title>
+  <meta name="description" content="ENGO 영어회화 학습의 모든 패턴, 단어, 숙어 자료를 모아놓은 페이지입니다.">
+  
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2078760660134095"
+     crossorigin="anonymous"></script>
+
+  <style>
+    body { font-family: 'Pretendard', sans-serif; padding: 20px; line-height: 1.6; color: #333; max-width: 800px; margin: 0 auto; }
+    h1 { border-bottom: 2px solid #8b5cf6; padding-bottom: 10px; }
+    h2 { margin-top: 40px; background: #f1f5f9; padding: 10px; border-left: 5px solid #8b5cf6; }
+    .item { margin-bottom: 15px; border-bottom: 1px dotted #ccc; padding-bottom: 10px; }
+    .en { font-weight: bold; color: #0f172a; font-size: 1.1rem; }
+    .kr { color: #64748b; }
+    .ex { display: block; font-size: 0.9rem; color: #888; margin-top: 4px; font-style: italic; }
+    a { text-decoration: none; color: #8b5cf6; font-weight: bold; }
+  </style>
+</head>
+<body>
+  <p><a href="index.html">← 메인 앱으로 돌아가기</a></p>
+  
+  <h1>ENGO 학습 자료 전체 목록</h1>
+  <p>이 페이지는 검색 엔진 최적화 및 학습 복습을 위해 제공되는 전체 텍스트 자료실입니다.</p>
+
+  <h2>1. 핵심 패턴 (Patterns)</h2>
+  <div id="pattern-list"></div>
+
+  <h2>2. 필수 숙어/구동사 (Idioms)</h2>
+  <div id="idiom-list"></div>
+
+  <h2>3. 우선순위 영단어 (Vocabulary)</h2>
+  <div id="word-list"></div>
+
+  <h2>4. 실전 대화 (Conversations)</h2>
+  <div id="conv-list"></div>
+
+  <script src="pattern.js"></script>
+  <script src="idiom.js"></script>
+  <script src="word.js"></script>
+  <script src="conversation.js"></script>
+  
+  <script>
+    window.onload = function() {
+      if(typeof patternData !== 'undefined') {
+        const pDiv = document.getElementById('pattern-list');
+        patternData.forEach((p, i) => {
+          let exHtml = p.examples.map(e => `<span class="ex">Ex) ${e.en} (${e.kr})</span>`).join('');
+          pDiv.innerHTML += `<div class="item"><div class="en">${i+1}. ${p.title}</div><div class="kr">${p.desc}</div>${exHtml}</div>`;
+        });
+      }
+      if(typeof idiomData !== 'undefined') {
+        const iDiv = document.getElementById('idiom-list');
+        idiomData.forEach((i, idx) => {
+          let exHtml = i.examples.map(e => `<span class="ex">Ex) ${e.en} (${e.kr})</span>`).join('');
+          iDiv.innerHTML += `<div class="item"><div class="en">${idx+1}. ${i.idiom}</div><div class="kr">${i.meaning}</div>${exHtml}</div>`;
+        });
+      }
+      if(typeof wordData !== 'undefined') {
+        const wDiv = document.getElementById('word-list');
+        wordData.forEach((w, idx) => {
+          let exHtml = w.examples ? w.examples.map(e => `<span class="ex">Ex) ${e.en} (${e.kr})</span>`).join('') : '';
+          wDiv.innerHTML += `<div class="item"><div class="en">${idx+1}. ${w.word}</div><div class="kr">${w.meaning}</div>${exHtml}</div>`;
+        });
+      }
+      if(typeof conversationData !== 'undefined') {
+        const cDiv = document.getElementById('conv-list');
+        conversationData.forEach((c, idx) => {
+          let linesHtml = c.lines.map(l => `<span class="ex"><strong>${l.speaker}:</strong> ${l.en} (${l.kr})</span>`).join('');
+          cDiv.innerHTML += `<div class="item"><div class="en">${idx+1}. ${c.title}</div>${linesHtml}</div>`;
+        });
+      }
+    };
+  </script>
+</body>
+</html>

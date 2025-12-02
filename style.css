@@ -26,7 +26,7 @@
   --nav-height: 60px;
 }
 
-/* [수정됨] 글자 크기 시스템 (html 기준) */
+/* 글자 크기 시스템 */
 html { font-size: 16px; transition: font-size 0.2s ease-in-out; }
 html.font-small { font-size: 14px; }
 html.font-medium { font-size: 16px; }
@@ -36,28 +36,19 @@ html.font-large { font-size: 20px; }
 
 body {
   font-family: 'Pretendard', sans-serif;
-  
-  /* [수정됨] 배경을 깔끔한 단색으로 고정 */
   background-color: var(--bg-dark); 
-  /* 만약 아주 은은한 그라데이션을 원하시면 아래 주석을 해제하고 위를 지우세요 */
-  /* background: linear-gradient(180deg, #0f172a 0%, #1e293b 100%); */
-
   color: var(--text-main);
   min-height: 100vh;
   overflow-x: hidden;
   padding-top: var(--nav-height); 
 }
 
-/* [수정됨] 배경 빛 효과 제거 (투톤 현상 해결) */
-.bg-glow {
-  display: none; 
-}
+.bg-glow { display: none; }
 
 /* Header */
 header {
   position: fixed; top: 0; left: 0; width: 100%; height: var(--nav-height);
-  background: rgba(15, 23, 42, 0.8);
-  backdrop-filter: var(--glass-blur);
+  background: rgba(15, 23, 42, 0.95); /* 배경 불투명도 높임 */
   border-bottom: var(--glass-border);
   display: flex; align-items: center; justify-content: space-between;
   padding: 0 20px; z-index: 1000;
@@ -114,6 +105,8 @@ main {
 .tile-conv::before { content:''; position:absolute; top:0; left:0; width:4px; height:100%; background: #ec4899; }
 .tile-speaking::before { content:''; position:absolute; top:0; left:0; width:4px; height:100%; background: #8b5cf6; }
 .tile-puzzle::before { content:''; position:absolute; top:0; left:0; width:4px; height:100%; background: #ef4444; }
+.tile-blog::before { content:''; position:absolute; top:0; left:0; width:4px; height:100%; background: linear-gradient(to bottom, #f472b6, #fb923c); }
+
 
 /* Navigation */
 .nav-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; }
@@ -269,7 +262,6 @@ main {
 
 .chat-list { display: flex; flex-direction: column; gap: 12px; }
 
-/* [신규] 설정 화면용 버튼 그룹 (Segmented Control) */
 .setting-group { margin-bottom: 20px; }
 .setting-label { display: block; color: var(--text-sub); margin-bottom: 8px; font-size: 0.9rem; }
 .btn-group {
@@ -285,7 +277,6 @@ main {
   background: var(--primary); color: #fff; box-shadow: 0 2px 5px rgba(0,0,0,0.2);
 }
 
-/* 쉐도잉 블라인드 효과 */
 .blind-text { filter: blur(8px); user-select: none; transition: filter 0.3s ease; cursor: pointer; }
 .blind-text:hover, .blind-text.revealed { filter: blur(0); }
 .shadowing-controls-row { display: flex; justify-content: center; gap: 15px; margin-bottom: 20px; }
@@ -296,9 +287,7 @@ main {
 }
 .toggle-btn.active { background: var(--primary); color: #fff; border-color: var(--primary); }
 
-/* ... (기존 CSS 내용 유지) ... */
-
-/* [신규] 앱 설치 배너 스타일 */
+/* 앱 설치 배너 */
 .install-banner {
   position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%);
   width: 90%; max-width: 400px;
@@ -310,566 +299,96 @@ main {
   z-index: 3000; box-shadow: 0 10px 30px rgba(0,0,0,0.6);
   animation: slideUp 0.5s ease-out;
 }
-
-@keyframes slideUp {
-  from { transform: translate(-50%, 100px); opacity: 0; }
-  to { transform: translate(-50%, 0); opacity: 1; }
-}
-
-.install-content {
-  display: flex; flex-direction: column; gap: 4px;
-}
-
+@keyframes slideUp { from { transform: translate(-50%, 100px); opacity: 0; } to { transform: translate(-50%, 0); opacity: 1; } }
+.install-content { display: flex; flex-direction: column; gap: 4px; }
 .install-title { font-weight: 700; color: #fff; font-size: 1rem; }
 .install-desc { color: var(--text-sub); font-size: 0.8rem; }
+.install-btn { background: linear-gradient(135deg, var(--primary), var(--accent)); border: none; color: #fff; padding: 8px 16px; border-radius: 20px; font-weight: 600; font-size: 0.9rem; cursor: pointer; box-shadow: 0 4px 10px rgba(139, 92, 246, 0.3); }
+.install-close { background: none; border: none; color: var(--text-sub); font-size: 1.2rem; cursor: pointer; margin-left: 10px; }
 
-.install-btn {
-  background: linear-gradient(135deg, var(--primary), var(--accent));
-  border: none; color: #fff; padding: 8px 16px; border-radius: 20px;
-  font-weight: 600; font-size: 0.9rem; cursor: pointer;
-  box-shadow: 0 4px 10px rgba(139, 92, 246, 0.3);
-}
+/* 공유 버튼 */
+.share-btn { margin-top: 15px; background: rgba(255, 255, 255, 0.1); border: 1px solid var(--primary); color: var(--accent); padding: 10px 20px; border-radius: 25px; cursor: pointer; font-size: 0.95rem; font-weight: 600; display: inline-flex; align-items: center; gap: 6px; transition: 0.3s; }
+.share-btn:hover { background: var(--primary); color: #fff; transform: translateY(-2px); box-shadow: 0 5px 15px rgba(139, 92, 246, 0.4); }
 
-.install-close {
-  background: none; border: none; color: var(--text-sub);
-  font-size: 1.2rem; cursor: pointer; margin-left: 10px;
-}
+/* 뉴스 카드 */
+.news-container { margin-top: 25px; margin-bottom: 10px; }
+.news-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; padding: 0 4px; }
+.news-header h3 { font-size: 1.1rem; font-weight: 700; color: #fff; background: linear-gradient(90deg, #fff, #cbd5e1); -webkit-background-clip: text; background-clip: text; color: transparent; display: inline-block; }
+.update-badge { font-size: 0.75rem; color: var(--accent); background: rgba(56, 189, 248, 0.1); padding: 4px 8px; border-radius: 12px; border: 1px solid rgba(56, 189, 248, 0.2); }
+.news-scroll-area { display: flex; gap: 12px; overflow-x: auto; padding-bottom: 10px; scroll-behavior: smooth; -webkit-overflow-scrolling: touch; }
+.news-scroll-area::-webkit-scrollbar { height: 4px; }
+.news-scroll-area::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.2); border-radius: 2px; }
+.news-card { min-width: 260px; max-width: 260px; background: var(--bg-card); border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 16px; padding: 16px; display: flex; flex-direction: column; justify-content: space-between; transition: transform 0.2s; cursor: pointer; }
+.news-card:hover { transform: translateY(-3px); border-color: var(--primary); background: rgba(255, 255, 255, 0.05); }
+.news-tag { font-size: 0.7rem; font-weight: 700; color: var(--primary); text-transform: uppercase; margin-bottom: 8px; display: inline-block; }
+.news-title { font-size: 1rem; font-weight: 600; color: #fff; line-height: 1.4; margin-bottom: 8px; display: -webkit-box; -webkit-line-clamp: 2; line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; text-overflow: ellipsis; }
+.news-summary { font-size: 0.85rem; color: var(--text-sub); line-height: 1.4; margin-bottom: 12px; display: -webkit-box; -webkit-line-clamp: 3; line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; text-overflow: ellipsis; }
+.news-footer { font-size: 0.75rem; color: #64748b; text-align: right; }
 
-/* ... 기존 CSS 유지 ... */
+/* 유튜브 섹션 */
+.youtube-section { margin-top: 30px; margin-bottom: 50px; padding: 0 4px; }
+.youtube-section h3 { font-size: 1.2rem; font-weight: 700; color: #fff; margin-bottom: 15px; background: linear-gradient(90deg, #fff, #cbd5e1); -webkit-background-clip: text; background-clip: text; color: transparent; display: inline-block; margin-left: 4px; }
+.youtube-scroll-area { display: flex; gap: 16px; overflow-x: auto; padding-bottom: 15px; scroll-behavior: smooth; -webkit-overflow-scrolling: touch; padding-left: 4px; padding-right: 4px; }
+.youtube-scroll-area::-webkit-scrollbar { height: 4px; }
+.youtube-scroll-area::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.2); border-radius: 2px; }
+.youtube-item { min-width: 70%; max-width: 400px; flex-shrink: 0; display: flex; flex-direction: column; gap: 10px; }
+.video-wrapper { position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden; border-radius: 16px; border: 1px solid rgba(255, 255, 255, 0.1); background: #000; box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4); }
+.video-wrapper iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; }
+.video-title { font-size: 1rem; font-weight: 600; color: #e2e8f0; line-height: 1.4; padding-left: 4px; }
 
-/* [신규] 공유 버튼 스타일 */
-.share-btn {
-  margin-top: 15px;
-  background: rgba(255, 255, 255, 0.1);
-  border: 1px solid var(--primary);
-  color: var(--accent);
-  padding: 10px 20px;
-  border-radius: 25px;
-  cursor: pointer;
-  font-size: 0.95rem;
-  font-weight: 600;
-  display: inline-flex; align-items: center; gap: 6px;
-  transition: 0.3s;
-}
 
-.share-btn:hover {
-  background: var(--primary);
-  color: #fff;
-  transform: translateY(-2px);
-  box-shadow: 0 5px 15px rgba(139, 92, 246, 0.4);
-}
+/* =========================================
+   [수정됨] 블로그 상세 (페이퍼 뷰) 디자인
+   ========================================= */
+.paper-container { width: 100%; max-width: 800px; margin: 0 auto; padding: 20px; box-sizing: border-box; }
+.print-page { background-color: transparent; box-shadow: none; border-radius: 0; padding: 0; margin-bottom: 50px; position: relative; font-family: 'Pretendard', sans-serif; }
+.paper-header-area { border-bottom: 2px solid #cbd5e1; padding-bottom: 15px; margin-bottom: 25px; display: flex; justify-content: space-between; align-items: flex-end; }
+.paper-title { font-size: 1.6rem; font-weight: 800; color: #fff; letter-spacing: -0.5px; }
+.paper-page-num { font-size: 0.9rem; color: #94a3b8; font-weight: 600; background: rgba(255,255,255,0.05); padding: 4px 8px; border-radius: 4px; }
+.paper-list-grid { display: flex; flex-direction: column; gap: 0; }
+.paper-item-compact { display: flex; align-items: baseline; padding: 15px 10px; border-radius: 0; transition: background 0.2s; border-bottom: 1px solid rgba(255,255,255,0.1); }
+.paper-item-compact:hover { background-color: rgba(255,255,255,0.05); }
+.pi-num { font-size: 1rem; font-weight: 800; color: var(--primary); width: 35px; flex-shrink: 0; }
+.pi-content { flex: 1; display: flex; justify-content: space-between; align-items: baseline; gap: 20px; }
+.pi-main { font-size: 1.15rem; font-weight: 700; color: #e2e8f0; text-align: left; }
+.pi-sub { font-size: 1rem; color: #94a3b8; text-align: right; word-break: keep-all; max-width: 55%; }
 
-/* ... 기존 CSS 유지 ... */
-
-/* [신규] 영어 카드 뉴스 스타일 */
-.news-container {
-  margin-top: 25px;
-  margin-bottom: 10px;
-}
-
-.news-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 12px;
-  padding: 0 4px;
-}
-
-.news-header h3 {
-  font-size: 1.1rem;
-  font-weight: 700;
-  color: #fff;
-  background: linear-gradient(90deg, #fff, #cbd5e1);
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
-  display: inline-block;
-}
-
-.update-badge {
-  font-size: 0.75rem;
-  color: var(--accent);
-  background: rgba(56, 189, 248, 0.1);
-  padding: 4px 8px;
-  border-radius: 12px;
-  border: 1px solid rgba(56, 189, 248, 0.2);
-}
-
-/* 가로 스크롤 영역 */
-.news-scroll-area {
-  display: flex;
-  gap: 12px;
-  overflow-x: auto;
-  padding-bottom: 10px;
-  scroll-behavior: smooth;
-  -webkit-overflow-scrolling: touch; /* 모바일 부드러운 스크롤 */
-}
-
-.news-scroll-area::-webkit-scrollbar {
-  height: 4px;
-}
-.news-scroll-area::-webkit-scrollbar-thumb {
-  background: rgba(255, 255, 255, 0.2);
-  border-radius: 2px;
-}
-
-/* 뉴스 카드 디자인 */
-.news-card {
-  min-width: 260px;
-  max-width: 260px;
-  background: var(--bg-card);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  border-radius: 16px;
-  padding: 16px;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  transition: transform 0.2s;
-  cursor: pointer;
-}
-
-.news-card:hover {
-  transform: translateY(-3px);
-  border-color: var(--primary);
-  background: rgba(255, 255, 255, 0.05);
-}
-
-.news-tag {
-  font-size: 0.7rem;
-  font-weight: 700;
-  color: var(--primary);
-  text-transform: uppercase;
-  margin-bottom: 8px;
-  display: inline-block;
-}
-
-/* [수정됨] 뉴스 카드 텍스트 스타일 (경고 해결) */
-.news-title {
-  font-size: 1rem;
-  font-weight: 600;
-  color: #fff;
-  line-height: 1.4;
-  margin-bottom: 8px;
-  
-  /* 멀티라인 말줄임표(...) 설정 */
-  display: -webkit-box;
-  -webkit-line-clamp: 2;  /* 주요 브라우저용 */
-  line-clamp: 2;          /* 표준 호환성용 (경고 해결) */
-  -webkit-box-orient: vertical;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-.news-summary {
-  font-size: 0.85rem;
-  color: var(--text-sub);
-  line-height: 1.4;
-  margin-bottom: 12px;
-  
-  /* 멀티라인 말줄임표(...) 설정 */
-  display: -webkit-box;
-  -webkit-line-clamp: 3;  /* 주요 브라우저용 */
-  line-clamp: 3;          /* 표준 호환성용 (경고 해결) */
-  -webkit-box-orient: vertical;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-.news-footer {
-  font-size: 0.75rem;
-  color: #64748b;
-  text-align: right;
-}
-
-/* ... (기존 CSS 유지) ... */
-
-/* [신규] 유튜브 섹션 스타일 */
-.youtube-section {
-  margin-top: 30px;
-  margin-bottom: 40px; /* 하단 여백 */
-  padding: 0 4px;
-}
-
-.youtube-section h3 {
-  font-size: 1.1rem;
-  font-weight: 700;
-  color: #fff;
-  margin-bottom: 12px;
-  background: linear-gradient(90deg, #fff, #cbd5e1);
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
-  display: inline-block;
-}
-
-/* ... (기존 CSS 유지) ... */
-
-/* [수정됨] 유튜브 섹션 스타일 (가로 배치) */
-.youtube-section {
-  margin-top: 30px;
-  margin-bottom: 40px;
-  padding: 0 4px;
-}
-
-.youtube-section h3 {
-  font-size: 1.1rem;
-  font-weight: 700;
-  color: #fff;
-  margin-bottom: 15px;
-  background: linear-gradient(90deg, #fff, #cbd5e1);
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
-  display: inline-block;
-}
-
-/* 가로 2열 그리드 레이아웃 */
-.youtube-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr; /* 1:1 비율로 가로 배치 */
-  gap: 12px; /* 사이 간격 */
-}
-
-.youtube-item {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-}
-
-/* ... (기존 CSS 유지) ... */
-
-/* [수정됨] 유튜브 섹션 스타일 (슬라이드형) */
-.youtube-section {
-  margin-top: 30px;
-  margin-bottom: 50px; /* 하단 여백 넉넉히 */
-  padding: 0 4px;
-}
-
-.youtube-section h3 {
-  font-size: 1.2rem; /* 제목 크기 약간 키움 */
-  font-weight: 700;
-  color: #fff;
-  margin-bottom: 15px;
-  background: linear-gradient(90deg, #fff, #cbd5e1);
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
-  display: inline-block;
-  margin-left: 4px;
-}
-
-/* 가로 스크롤(슬라이드) 컨테이너 */
-.youtube-scroll-area {
-  display: flex;
-  gap: 16px; /* 영상 사이 간격 */
-  overflow-x: auto; /* 가로 스크롤 활성화 */
-  padding-bottom: 15px;
-  scroll-behavior: smooth;
-  -webkit-overflow-scrolling: touch; /* 모바일에서 부드러운 스크롤 */
-  padding-left: 4px; 
-  padding-right: 4px;
-}
-
-/* 스크롤바 스타일 (선택 사항) */
-.youtube-scroll-area::-webkit-scrollbar {
-  height: 4px;
-}
-.youtube-scroll-area::-webkit-scrollbar-thumb {
-  background: rgba(255, 255, 255, 0.2);
-  border-radius: 2px;
-}
-
-/* 개별 영상 아이템 (크기 키움) */
-.youtube-item {
-  min-width: 85%; /* 모바일 화면의 85% 차지 (크게 보임) */
-  max-width: 400px; /* PC에서는 너무 커지지 않게 제한 */
-  flex-shrink: 0; /* 줄어들지 않게 고정 */
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-}
-
-/* ... (기존 CSS 유지) ... */
-
-/* [수정됨] 유튜브 섹션 스타일 (슬라이드형) */
-.youtube-section {
-  margin-top: 30px;
-  margin-bottom: 50px; /* 하단 여백 넉넉히 */
-  padding: 0 4px;
-}
-
-.youtube-section h3 {
-  font-size: 1.2rem; /* 제목 크기 약간 키움 */
-  font-weight: 700;
-  color: #fff;
-  margin-bottom: 15px;
-  background: linear-gradient(90deg, #fff, #cbd5e1);
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
-  display: inline-block;
-  margin-left: 4px;
-}
-
-/* 가로 스크롤(슬라이드) 컨테이너 */
-.youtube-scroll-area {
-  display: flex;
-  gap: 16px; /* 영상 사이 간격 */
-  overflow-x: auto; /* 가로 스크롤 활성화 */
-  padding-bottom: 15px;
-  scroll-behavior: smooth;
-  -webkit-overflow-scrolling: touch; /* 모바일에서 부드러운 스크롤 */
-  padding-left: 4px; 
-  padding-right: 4px;
-}
-
-/* 스크롤바 스타일 (선택 사항) */
-.youtube-scroll-area::-webkit-scrollbar {
-  height: 4px;
-}
-.youtube-scroll-area::-webkit-scrollbar-thumb {
-  background: rgba(255, 255, 255, 0.2);
-  border-radius: 2px;
-}
-
-/* 개별 영상 아이템 (크기 키움) */
-.youtube-item {
-  min-width: 70%; /* 모바일 화면의 85% 차지 (크게 보임) */
-  max-width: 400px; /* PC에서는 너무 커지지 않게 제한 */
-  flex-shrink: 0; /* 줄어들지 않게 고정 */
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-}
-
-/* 반응형 비디오 컨테이너 (16:9 비율 유지) */
-.video-wrapper {
-  position: relative;
-  padding-bottom: 56.25%; /* 16:9 비율 */
-  height: 0;
-  overflow: hidden;
-  border-radius: 16px;
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  background: #000;
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
-}
-
-.video-wrapper iframe {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-}
-
-/* 영상 제목 스타일 */
-.video-title {
-  font-size: 1rem; /* 글자 크기 키움 */
-  font-weight: 600;
-  color: #e2e8f0;
-  line-height: 1.4;
-  padding-left: 4px;
-}
-
-/* ... 기존 CSS 아래에 추가 ... */
-
-/* 블로그 타일 스타일 (네온 핑크/오렌지 그라데이션) */
-.tile-blog::before {
-  content:''; position:absolute; top:0; left:0; width:4px; height:100%; 
-  background: linear-gradient(to bottom, #f472b6, #fb923c);
-}
-
-/* 블로그 리스트 카드 */
-.blog-card {
-  background: var(--bg-card);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 16px;
-  padding: 20px;
-  cursor: pointer;
-  transition: transform 0.2s;
-}
-.blog-card:hover {
-  transform: translateY(-3px);
-  border-color: var(--primary);
-}
-.blog-tag {
-  display: inline-block;
-  padding: 4px 8px;
-  border-radius: 8px;
-  font-size: 0.75rem;
-  font-weight: 600;
-  margin-bottom: 8px;
-}
-.tag-pattern { background: rgba(59, 130, 246, 0.2); color: #60a5fa; } /* 파랑 */
-.tag-conv { background: rgba(236, 72, 153, 0.2); color: #f472b6; }   /* 핑크 */
-.tag-word { background: rgba(245, 158, 11, 0.2); color: #fbbf24; }   /* 노랑 */
-
+/* 블로그 카드 */
+.blog-card { background: var(--bg-card); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 16px; padding: 20px; cursor: pointer; transition: transform 0.2s; }
+.blog-card:hover { transform: translateY(-3px); border-color: var(--primary); }
+.blog-tag { display: inline-block; padding: 4px 8px; border-radius: 8px; font-size: 0.75rem; font-weight: 600; margin-bottom: 8px; }
+.tag-pattern { background: rgba(59, 130, 246, 0.2); color: #60a5fa; }
+.tag-conv { background: rgba(236, 72, 153, 0.2); color: #f472b6; }
+.tag-word { background: rgba(245, 158, 11, 0.2); color: #fbbf24; }
 .blog-title { font-size: 1.1rem; font-weight: 700; color: #fff; margin-bottom: 6px; }
 .blog-desc { font-size: 0.9rem; color: var(--text-sub); line-height: 1.5; }
 
-/* 페이퍼(노트) 스타일 (상세 화면) */
-.paper-container {
-  background: #fdfbf7; /* 따뜻한 종이 색상 */
-  color: #333;
-  padding: 30px;
-  border-radius: 4px;
-  box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-  min-height: 60vh;
-  position: relative;
-  font-family: 'Merriweather', serif; /* 명조체 느낌 (없으면 기본 serif) */
-}
-/* 종이 구멍 효과 */
-.paper-container::before {
-  content: "";
-  position: absolute;
-  top: 0; left: 40px;
-  height: 100%;
-  border-right: 2px solid rgba(255,0,0,0.1); /* 빨간 줄 */
-}
-
-.paper-title {
-  font-size: 1.8rem;
-  font-weight: 900;
-  color: #1e293b;
-  border-bottom: 3px solid #333;
-  padding-bottom: 10px;
-  margin-bottom: 20px;
-}
-
-.paper-section { margin-bottom: 25px; }
-.paper-section h3 {
-  font-size: 1.1rem;
-  font-weight: 700;
-  color: #475569;
-  border-left: 4px solid #8b5cf6;
-  padding-left: 10px;
-  margin-bottom: 10px;
-}
-
-.paper-text { font-size: 1rem; line-height: 1.8; margin-bottom: 8px; }
-.paper-sub { font-size: 0.9rem; color: #64748b; margin-bottom: 15px; }
-.paper-highlight { background: linear-gradient(180deg, transparent 60%, #fef08a 60%); }
-
-/* ... (기존 상단 CSS 유지) ... */
 
 /* =========================================
-   [신규] 블로그 상세 (페이퍼 뷰) 디자인
-   ========================================= */
-
-/* 1. 화면에서 보이는 디자인 (고급 노트 느낌) */
-.paper-container {
-  width: 100%;
-  max-width: 800px; /* 너무 넓게 퍼지지 않도록 제한 */
-  margin: 0 auto;
-  padding-bottom: 40px;
-}
-
-/* 종이 한 장의 스타일 (화면용) */
-.print-page {
-  background-color: #fff;
-  color: #334155; /* 진한 회색 텍스트 */
-  padding: 40px;
-  margin-bottom: 30px; /* 페이지 사이 간격 */
-  border-radius: 8px;
-  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3); /* 붕 뜬 입체감 */
-  position: relative;
-  font-family: 'Pretendard', sans-serif;
-}
-
-/* 종이 상단 헤더 (화면용) */
-.paper-header-area {
-  border-bottom: 2px solid #e2e8f0;
-  padding-bottom: 15px;
-  margin-bottom: 20px;
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-end;
-}
-
-.paper-title {
-  font-size: 1.5rem;
-  font-weight: 800;
-  color: #1e293b;
-  letter-spacing: -0.5px;
-}
-
-.paper-page-num {
-  font-size: 0.85rem;
-  color: #94a3b8;
-  font-weight: 600;
-}
-
-/* 리스트 아이템 (화면용: 1단 배열, 여유로운 간격) */
-.paper-list-grid {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-}
-
-.paper-item-compact {
-  display: flex;
-  align-items: flex-start;
-  padding: 12px 10px;
-  border-radius: 8px;
-  transition: background 0.2s;
-  border-bottom: 1px dashed #f1f5f9;
-}
-
-.paper-item-compact:hover {
-  background-color: #f8fafc; /* 마우스 올리면 살짝 밝아짐 */
-}
-
-.pi-num {
-  font-size: 1rem;
-  font-weight: 800;
-  color: var(--primary); /* 앱 포인트 컬러 사용 */
-  width: 40px;
-  flex-shrink: 0;
-  padding-top: 2px;
-}
-
-.pi-content {
-  flex: 1;
-}
-
-.pi-main {
-  font-size: 1.1rem;
-  font-weight: 700;
-  color: #334155;
-  margin-bottom: 4px;
-  line-height: 1.4;
-}
-
-.pi-sub {
-  font-size: 0.95rem;
-  color: #64748b;
-  line-height: 1.4;
-}
-
-
-/* =========================================
-   [수정됨] 인쇄 전용 스타일 (Ctrl+P)
+   [수정됨] 인쇄 전용 스타일 (A4 꽉 채우기 - 줄 간격 확대)
    ========================================= */
 @media print {
   @page {
     size: A4;
-    margin: 10mm;
+    margin: 10mm; /* 여백 최소화 */
   }
 
-  /* 1. 화면의 모든 장식 요소 숨김 */
+  /* 1. 화면 요소 숨김 */
   header, .nav-header, .no-print, .bg-glow, #install-banner, .modal, 
   .home-grid, .hero-card, #news-section, .youtube-section, .filter-area,
   #page-home, #page-blog-list, button {
     display: none !important;
   }
 
-  /* 2. 배경 및 레이아웃 초기화 */
-  body {
+  /* 2. 레이아웃 초기화 */
+  html, body {
     background: #fff !important;
     color: #000 !important;
     margin: 0 !important;
     padding: 0 !important;
-    font-size: 10.5pt;
+    font-size: 10pt;
+    height: auto !important;
+    overflow: visible !important;
   }
 
   main {
@@ -877,27 +396,27 @@ main {
     padding: 0 !important;
     max-width: 100% !important;
     display: block !important;
+    height: auto !important;
   }
 
   section { display: none !important; }
   
-  /* 상세 페이지만 표시 */
   #page-blog-detail { 
     display: block !important; 
     width: 100% !important;
     margin: 0 !important;
     padding: 0 !important;
+    height: auto !important;
   }
 
   .paper-container {
     width: 100% !important;
-    max-width: 100% !important;
     margin: 0 !important;
     padding: 0 !important;
     box-shadow: none !important;
   }
 
-  /* 3. 종이(페이지)별 설정 */
+  /* 3. 페이지 설정 */
   .print-page {
     background: #fff !important;
     color: #000 !important;
@@ -907,21 +426,34 @@ main {
     border: none !important;
     border-radius: 0 !important;
     width: 100%;
-    height: 100%; 
-    page-break-after: always; /* 페이지 강제 나눔 */
+    height: auto !important;
+    
+    page-break-after: always; 
     break-after: page;
   }
 
-  /* 4. 인쇄용 헤더 (흑백, 심플) */
+  /* 마지막 페이지 빈 종이 방지 */
+  .print-page:last-child {
+    page-break-after: auto !important;
+    break-after: auto !important;
+    margin-bottom: 0 !important;
+  }
+
+  /* 4. 헤더 스타일 */
   .paper-header-area {
     border-bottom: 2px solid #000 !important;
-    margin-bottom: 10px !important;
-    padding-bottom: 5px !important;
+    margin-bottom: 15px !important; /* 간격 조금 늘림 */
+    padding-bottom: 8px !important;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
   }
 
   .paper-title {
     font-size: 16pt !important;
     color: #000 !important;
+    font-weight: bold;
+    margin: 0 !important;
   }
   
   .paper-page-num {
@@ -929,37 +461,51 @@ main {
     color: #000 !important;
   }
 
-  /* 5. 인쇄용 리스트 (2단 그리드) */
+  /* 5. 2단 그리드 */
   .paper-list-grid {
     display: grid !important;
-    grid-template-columns: 1fr 1fr; /* 2단 */
-    column-gap: 25px;
-    row-gap: 5px;
+    grid-template-columns: 1fr 1fr; 
+    column-gap: 30px;
+    row-gap: 0px;
     padding-top: 5px;
   }
 
-  /* 6. 인쇄용 아이템 (여백 최소화) */
+  /* 6. 아이템 스타일 (줄 간격 확대 적용) */
   .paper-item-compact {
-    padding: 5px 0 !important;
-    border-bottom: 1px dotted #999 !important;
+    padding: 8px 0 !important; /* [수정됨] 상하 여백을 3px -> 8px로 늘림 */
+    border-bottom: 1px dotted #ccc !important; 
     page-break-inside: avoid;
     background: none !important;
+    display: block !important;
+    min-height: 28px; /* 최소 높이 증가 */
   }
 
-  .pi-num {
-    color: #000 !important; /* 색상 제거 */
-    font-size: 10pt !important;
-    width: 30px !important;
+  .pi-content {
+    display: flex !important;
+    justify-content: space-between !important;
+    align-items: baseline !important;
+    width: 100%;
+    gap: 8px !important;
   }
 
+  /* 제시어 (왼쪽) */
   .pi-main {
-    font-size: 11pt !important;
+    font-size: 10pt !important; 
     color: #000 !important;
+    text-align: left !important;
+    font-weight: bold !important;
+    line-height: 1.4 !important; /* 줄 간격 확보 */
   }
 
+  /* 뜻 (오른쪽) */
   .pi-sub {
     font-size: 9.5pt !important;
     color: #333 !important;
+    text-align: right !important;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 55%;
+    line-height: 1.4 !important;
   }
 }
-
