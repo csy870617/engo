@@ -773,30 +773,77 @@ function renderBlogList() {
 }
 function getBlogTitle(type) { if (type === 'pattern') return "필수 영어 패턴"; if (type === 'idiom') return "숙어 & 구동사"; if (type === 'word') return "우선순위 영단어"; return "학습 노트"; }
 function openBlogPost(type, index) { currentBlogType = type; currentBlogIndex = index; goTo('blog-detail'); }
+// [수정됨] 블로그 상세 내용 그리기 (25개씩 페이지 그룹화)
 function renderBlogDetail() {
-  const contentBox = document.getElementById('paper-content'); contentBox.innerHTML = "";
-  const chunkSize = 50; const startIndex = currentBlogIndex * chunkSize;
-  let targetData = []; let titlePrefix = "";
+  const contentBox = document.getElementById('paper-content');
+  contentBox.innerHTML = "";
+  
+  // 현재 선택된 50개 단위 데이터 가져오기
+  const chunkSize = 50; 
+  const startIndex = currentBlogIndex * chunkSize;
+  
+  let targetData = []; 
+  let titlePrefix = "";
+
   if (currentBlogType === 'pattern') { targetData = patternData; titlePrefix = "Pattern Note"; }
   else if (currentBlogType === 'idiom') { targetData = idiomData; titlePrefix = "Idiom Note"; }
   else if (currentBlogType === 'word') { targetData = wordData; titlePrefix = "Vocabulary"; }
+
   const dataSlice = targetData.slice(startIndex, startIndex + chunkSize);
-  let html = `<div class="paper-title">${titlePrefix} Vol.${currentBlogIndex + 1}</div><p class="paper-sub" style="text-align:center; border-bottom:1px solid #ddd; padding-bottom:15px; margin-bottom:30px;">Study hard, play hard! (총 ${dataSlice.length}개)</p>`;
-  
-  dataSlice.forEach((item, idx) => {
-    const globalNum = startIndex + idx + 1;
-    let mainText = ""; let subText = ""; let example = "";
-    if (currentBlogType === 'pattern') { mainText = item.title; subText = item.desc; example = (item.examples && item.examples[0]) ? item.examples[0].en : ""; }
-    else if (currentBlogType === 'idiom') { mainText = item.idiom; subText = item.meaning; example = (item.examples && item.examples[0]) ? item.examples[0].en : ""; }
-    else if (currentBlogType === 'word') { mainText = item.word; subText = item.meaning; example = (item.examples && item.examples[0]) ? item.examples[0].en : ""; }
+
+  // [핵심 변경] 25개씩 잘라서 별도의 페이지(div)로 만듦
+  const itemsPerPage = 25;
+  const totalPages = Math.ceil(dataSlice.length / itemsPerPage);
+
+  for (let p = 0; p < totalPages; p++) {
+    const pageStart = p * itemsPerPage;
+    const pageEnd = Math.min((p + 1) * itemsPerPage, dataSlice.length);
+    const pageItems = dataSlice.slice(pageStart, pageEnd);
     
-    if (idx > 0 && idx % 25 === 0) {
-       html += `<div class="print-page-break"></div>`;
-       html += `<div class="paper-title" style="border:none; margin-bottom:10px; font-size:14pt !important; opacity:0.5;">${titlePrefix} Vol.${currentBlogIndex + 1} (Page ${Math.floor(idx/25) + 1})</div>`;
-    }
-    html += `<div class="paper-item" style="margin-bottom: 25px;"><div style="font-size: 1.15rem; font-weight: 700; color: #1e293b; display:flex; align-items:baseline;"><span style="color: #8b5cf6; margin-right: 8px; font-size:1rem;">${globalNum}.</span> ${mainText}</div><div style="font-size: 1rem; color: #475569; margin-top: 6px; margin-left: 28px; font-weight:500;">${subText}</div>${example ? `<div style="font-size: 0.9rem; color: #64748b; margin-top: 6px; margin-left: 28px; font-style: italic; background:rgba(0,0,0,0.03); padding:5px 10px; border-radius:6px;">Ex) ${example}</div>` : ''}</div><hr style="border: 0; border-top: 1px dashed #cbd5e1; margin: 20px 0;">`;
-  });
-  contentBox.innerHTML = html;
+    // 페이지 컨테이너 생성
+    const pageDiv = document.createElement('div');
+    pageDiv.className = 'print-page'; // CSS에서 이 클래스를 제어함
+
+    // 페이지 헤더 (제목)
+    const headerHtml = `
+      <div class="paper-header-area">
+        <div class="paper-title">${titlePrefix} Vol.${currentBlogIndex + 1}</div>
+        <div class="paper-page-num">Page ${p + 1} / ${totalPages} (No. ${startIndex + pageStart + 1} - ${startIndex + pageEnd})</div>
+      </div>
+    `;
+    
+    // 아이템 목록 생성
+    let listHtml = '<div class="paper-list-grid">'; // 그리드 레이아웃 적용
+    pageItems.forEach((item, idx) => {
+      const globalNum = startIndex + pageStart + idx + 1;
+      let mainText = ""; 
+      let subText = ""; 
+      // 인쇄 공간 절약을 위해 예문은 제외하거나 아주 짧게 처리 (여기서는 제외하여 공간 확보)
+      
+      if (currentBlogType === 'pattern') { 
+        mainText = item.title; subText = item.desc; 
+      } else if (currentBlogType === 'idiom') { 
+        mainText = item.idiom; subText = item.meaning; 
+      } else if (currentBlogType === 'word') { 
+        mainText = item.word; subText = item.meaning; 
+      }
+      
+      listHtml += `
+        <div class="paper-item-compact">
+          <div class="pi-num">${globalNum}.</div>
+          <div class="pi-content">
+            <div class="pi-main">${mainText}</div>
+            <div class="pi-sub">${subText}</div>
+          </div>
+        </div>
+      `;
+    });
+    listHtml += '</div>'; // grid end
+
+    // 페이지 조립
+    pageDiv.innerHTML = headerHtml + listHtml;
+    contentBox.appendChild(pageDiv);
+  }
 }
 function printPaperContent() { window.print(); }
 
@@ -894,3 +941,4 @@ async function downloadData() {
 // Init Execution
 loadMemorizedData(); loadVoices(); initNewsUpdater();
 const initialPage = location.hash.replace('#', '') || 'home'; goTo(initialPage, true);
+
