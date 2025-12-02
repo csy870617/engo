@@ -185,12 +185,13 @@
 
     <section id="page-blog-list" class="hidden">
       <div class="nav-header"><span class="back-btn" onclick="goTo('home')">❮ 뒤로</span><h2>영어 블로그</h2></div>
-      <div class="filter-area scroll-x">
-        <button class="chip-btn active" onclick="filterBlog('all', this)">전체</button>
-        <button class="chip-btn" onclick="filterBlog('pattern', this)">패턴 노트</button>
-        <button class="chip-btn" onclick="filterBlog('conv', this)">회화 스크립트</button>
+      
+      <div class="filter-area scroll-x" style="justify-content: center;">
+        <button class="chip-btn active" onclick="filterBlog('pattern', this)">패턴</button>
+        <button class="chip-btn" onclick="filterBlog('idiom', this)">숙어/구동사</button>
         <button class="chip-btn" onclick="filterBlog('word', this)">단어장</button>
       </div>
+      
       <div id="blog-list-container" class="list-view" style="margin-top:15px;"></div>
     </section>
 
@@ -547,4 +548,5 @@
   <script src="script.js"></script>
 </body>
 </html>
+
 
