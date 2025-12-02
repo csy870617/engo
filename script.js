@@ -1722,19 +1722,19 @@ function sendInquiry() {
   }
 }
 
+// ... (위쪽 코드는 그대로 유지) ...
+
 // ==========================================
-// 18. [신규] 영어 블로그 (페이퍼 뷰) 로직
+// 18. [수정됨] 영어 블로그 (50개 단위 요약 노트 - Cheat Sheet)
 // ==========================================
-let currentBlogType = 'all'; // all, pattern, conv, word
-let currentBlogId = null;
+let currentBlogType = 'all'; 
+let currentBlogIndex = 0; // 50개 단위의 페이지 인덱스 (0, 1, 2...)
 
 function filterBlog(type, btn) {
   currentBlogType = type;
-  // 버튼 스타일 활성화
   const btns = document.querySelectorAll('#page-blog-list .chip-btn');
   btns.forEach(b => b.classList.remove('active'));
   btn.classList.add('active');
-  
   renderBlogList();
 }
 
@@ -1742,126 +1742,121 @@ function renderBlogList() {
   const container = document.getElementById('blog-list-container');
   container.innerHTML = "";
 
-  let items = [];
-
-  // 1. 패턴 데이터 변환
+  // 1. 패턴 요약 노트 생성 (50개씩 묶음)
   if (currentBlogType === 'all' || currentBlogType === 'pattern') {
-    if (typeof patternData !== 'undefined') {
-      patternData.forEach(p => {
-        items.push({
-          type: 'pattern',
-          id: p.id,
-          title: `Pattern: ${p.title}`,
-          desc: p.desc,
-          tag: 'Pattern',
-          tagClass: 'tag-pattern'
-        });
-      });
+    if (typeof patternData !== 'undefined' && patternData.length > 0) {
+      const chunkSize = 50;
+      const totalChunks = Math.ceil(patternData.length / chunkSize);
+
+      for (let i = 0; i < totalChunks; i++) {
+        const start = i * chunkSize + 1;
+        const end = Math.min((i + 1) * chunkSize, patternData.length);
+        
+        const div = document.createElement("div");
+        div.className = "blog-card";
+        div.onclick = () => openBlogPost('pattern', i); // i는 페이지 번호(0부터 시작)
+        div.innerHTML = `
+          <span class="blog-tag tag-pattern">Pattern Note</span>
+          <div class="blog-title">핵심 패턴 모음 (Vol.${i + 1})</div>
+          <div class="blog-desc">패턴 ${start}번 ~ ${end}번 한눈에 보기</div>
+        `;
+        container.appendChild(div);
+      }
     }
   }
 
-  // 2. 대화 데이터 변환
-  if (currentBlogType === 'all' || currentBlogType === 'conv') {
-    if (typeof conversationData !== 'undefined') {
-      conversationData.forEach(c => {
-        items.push({
-          type: 'conv',
-          id: c.id,
-          title: `Conversation: ${c.title}`,
-          desc: `Situational practice: ${c.lines[0].en}`, // 첫 문장을 설명으로
-          tag: 'Conversation',
-          tagClass: 'tag-conv'
-        });
-      });
+  // 2. 숙어 요약 노트 생성 (50개씩 묶음)
+  if (currentBlogType === 'all' || currentBlogType === 'idiom') { // 'conv'나 'word'는 제외
+    if (typeof idiomData !== 'undefined' && idiomData.length > 0) {
+      const chunkSize = 50;
+      const totalChunks = Math.ceil(idiomData.length / chunkSize);
+
+      for (let i = 0; i < totalChunks; i++) {
+        const start = i * chunkSize + 1;
+        const end = Math.min((i + 1) * chunkSize, idiomData.length);
+        
+        const div = document.createElement("div");
+        div.className = "blog-card";
+        div.onclick = () => openBlogPost('idiom', i);
+        div.innerHTML = `
+          <span class="blog-tag tag-conv">Idiom Note</span>
+          <div class="blog-title">필수 숙어/구동사 (Vol.${i + 1})</div>
+          <div class="blog-desc">숙어 ${start}번 ~ ${end}번 한눈에 보기</div>
+        `;
+        container.appendChild(div);
+      }
     }
   }
-
-  // 3. 단어 데이터 (너무 많으니 랜덤 10개만 샘플로 보여주거나, 챕터별로 묶는 게 좋음)
-  // 여기서는 '오늘의 단어장' 느낌으로 5개씩 묶어서 하나로 표시하는 예시
-  if (currentBlogType === 'all' || currentBlogType === 'word') {
-     items.push({
-       type: 'word',
-       id: 'word-collection',
-       title: 'Weekly Vocabulary List',
-       desc: 'Essential words and idioms for this week.',
-       tag: 'Vocabulary',
-       tagClass: 'tag-word'
-     });
-  }
-
-  // 섞어서 보여주거나 순서대로 (여기선 순서대로)
-  items.forEach(item => {
-    const div = document.createElement('div');
-    div.className = 'blog-card';
-    div.onclick = () => openBlogPost(item.type, item.id);
-    div.innerHTML = `
-      <span class="blog-tag ${item.tagClass}">${item.tag}</span>
-      <div class="blog-title">${item.title}</div>
-      <div class="blog-desc">${item.desc}</div>
-    `;
-    container.appendChild(div);
-  });
 }
 
-function openBlogPost(type, id) {
-  currentBlogType = type; // 상세에서 쓰기 위해 저장
-  currentBlogId = id;
+function openBlogPost(type, index) {
+  currentBlogType = type;
+  currentBlogIndex = index;
   goTo('blog-detail');
 }
 
 function renderBlogDetail() {
   const contentBox = document.getElementById('paper-content');
   contentBox.innerHTML = "";
-
+  
+  const chunkSize = 50;
+  const startIndex = currentBlogIndex * chunkSize;
   let html = "";
+  let dataSlice = [];
+  let titlePrefix = "";
 
+  // 데이터 가져오기
   if (currentBlogType === 'pattern') {
-    const p = patternData.find(x => x.id === currentBlogId);
-    if(p) {
-      html += `<div class="paper-title">${p.title}</div>`;
-      html += `<div class="paper-section"><h3>💡 Key Point</h3><p class="paper-text">${p.desc}</p></div>`;
-      html += `<div class="paper-section"><h3>🗣 Examples</h3>`;
-      p.examples.forEach(ex => {
-        html += `<p class="paper-text"><span class="paper-highlight">${ex.en}</span><br><span class="paper-sub">${ex.kr}</span></p>`;
-      });
-      html += `</div>`;
-    }
-  } 
-  else if (currentBlogType === 'conv') {
-    const c = conversationData.find(x => x.id === currentBlogId);
-    if(c) {
-      html += `<div class="paper-title">${c.title}</div>`;
-      html += `<div class="paper-section"><h3>💬 Script</h3>`;
-      c.lines.forEach(line => {
-        html += `<p class="paper-text"><strong>${line.speaker}:</strong> ${line.en}<br><span class="paper-sub">${line.kr}</span></p>`;
-      });
-      html += `</div>`;
-      // 팁 섹션 추가 (가상 데이터)
-      html += `<div class="paper-section"><h3>📝 Study Note</h3><p class="paper-text">Try to shadow Speaker B's intonation. Notice how they link words together.</p></div>`;
-    }
+    dataSlice = patternData.slice(startIndex, startIndex + chunkSize);
+    titlePrefix = "Pattern Note";
+  } else if (currentBlogType === 'idiom') {
+    dataSlice = idiomData.slice(startIndex, startIndex + chunkSize);
+    titlePrefix = "Idiom Note";
   }
-  else if (currentBlogType === 'word') {
-    // 단어장 샘플 (랜덤 5개)
-    html += `<div class="paper-title">Weekly Vocabulary</div>`;
-    html += `<div class="paper-section"><h3>📚 Words of the Day</h3>`;
-    
-    if (typeof wordData !== 'undefined') {
-      const shuffled = wordData.sort(() => 0.5 - Math.random()).slice(0, 5);
-      shuffled.forEach(w => {
-        html += `<p class="paper-text"><strong>${w.word}</strong>: ${w.meaning}<br><span class="paper-sub">Ex) ${w.examples[0].en}</span></p><hr style="border:0; border-top:1px dashed #ddd; margin:10px 0;">`;
-      });
+
+  // 타이틀 표시
+  html += `<div class="paper-title">${titlePrefix} Vol.${currentBlogIndex + 1}</div>`;
+  html += `<p class="paper-sub" style="text-align:center; border-bottom:1px solid #ddd; padding-bottom:15px; margin-bottom:20px;">
+    총 ${dataSlice.length}개의 표현을 한 번에 복습하세요.
+  </p>`;
+
+  // 리스트 생성
+  dataSlice.forEach((item, idx) => {
+    const globalNum = startIndex + idx + 1;
+    let mainText = "";
+    let subText = "";
+    let example = "";
+
+    if (currentBlogType === 'pattern') {
+      mainText = item.title; // 패턴 (예: I'm looking for...)
+      subText = item.desc;   // 설명
+      example = item.examples && item.examples.length > 0 ? item.examples[0].en : "";
+    } else {
+      mainText = item.idiom; // 숙어
+      subText = item.meaning; // 뜻
+      example = item.examples && item.examples.length > 0 ? item.examples[0].en : "";
     }
-    html += `</div>`;
-  }
+
+    html += `
+      <div style="margin-bottom: 20px;">
+        <div style="font-size: 1.1rem; font-weight: 700; color: #1e293b;">
+          <span style="color: #8b5cf6; margin-right: 5px;">${globalNum}.</span> ${mainText}
+        </div>
+        <div style="font-size: 0.95rem; color: #475569; margin-top: 4px; margin-left: 25px;">
+          ${subText}
+        </div>
+        ${example ? `<div style="font-size: 0.85rem; color: #94a3b8; margin-top: 4px; margin-left: 25px; font-style: italic;">Ex) ${example}</div>` : ''}
+      </div>
+      <hr style="border: 0; border-top: 1px dashed #e2e8f0; margin: 15px 0;">
+    `;
+  });
 
   contentBox.innerHTML = html;
 }
 
-// 페이퍼 내용 읽어주기
-function speakPaperContent() {
-  // 텍스트만 추출해서 읽기
-  const text = document.getElementById('paper-content').innerText;
-  speakText(text);
+// [신규] 인쇄 기능 함수
+function printPaperContent() {
+  window.print();
 }
 
 // ------------------------------------------
@@ -1874,4 +1869,5 @@ initNewsUpdater();
 // 초기 화면 렌더링 (중복 히스토리 방지)
 const initialPage = location.hash.replace('#', '') || 'home';
 goTo(initialPage, true);
+
 
