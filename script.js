@@ -773,25 +773,25 @@ function renderBlogList() {
 }
 function getBlogTitle(type) { if (type === 'pattern') return "필수 영어 패턴"; if (type === 'idiom') return "숙어 & 구동사"; if (type === 'word') return "우선순위 영단어"; return "학습 노트"; }
 function openBlogPost(type, index) { currentBlogType = type; currentBlogIndex = index; goTo('blog-detail'); }
-// [수정됨] 블로그 상세 내용 그리기 (25개씩 페이지 그룹화)
+// [수정됨] 블로그 상세(페이퍼) 렌더링 - 디자인 최적화
 function renderBlogDetail() {
   const contentBox = document.getElementById('paper-content');
   contentBox.innerHTML = "";
   
-  // 현재 선택된 50개 단위 데이터 가져오기
-  const chunkSize = 50; 
+  const chunkSize = 50;
   const startIndex = currentBlogIndex * chunkSize;
   
-  let targetData = []; 
+  let targetData = [];
   let titlePrefix = "";
 
-  if (currentBlogType === 'pattern') { targetData = patternData; titlePrefix = "Pattern Note"; }
-  else if (currentBlogType === 'idiom') { targetData = idiomData; titlePrefix = "Idiom Note"; }
-  else if (currentBlogType === 'word') { targetData = wordData; titlePrefix = "Vocabulary"; }
+  if (currentBlogType === 'pattern') { targetData = patternData; titlePrefix = "Pattern Book"; }
+  else if (currentBlogType === 'idiom') { targetData = idiomData; titlePrefix = "Idioms & Verbs"; }
+  else if (currentBlogType === 'word') { targetData = wordData; titlePrefix = "Word List"; }
 
+  // 현재 페이지의 50개 데이터
   const dataSlice = targetData.slice(startIndex, startIndex + chunkSize);
-
-  // [핵심 변경] 25개씩 잘라서 별도의 페이지(div)로 만듦
+  
+  // 인쇄를 위해 25개씩 페이지(종이)로 나눔
   const itemsPerPage = 25;
   const totalPages = Math.ceil(dataSlice.length / itemsPerPage);
 
@@ -800,33 +800,28 @@ function renderBlogDetail() {
     const pageEnd = Math.min((p + 1) * itemsPerPage, dataSlice.length);
     const pageItems = dataSlice.slice(pageStart, pageEnd);
     
-    // 페이지 컨테이너 생성
+    // 종이(Page) 컨테이너
     const pageDiv = document.createElement('div');
-    pageDiv.className = 'print-page'; // CSS에서 이 클래스를 제어함
+    pageDiv.className = 'print-page';
 
-    // 페이지 헤더 (제목)
+    // 헤더
     const headerHtml = `
       <div class="paper-header-area">
         <div class="paper-title">${titlePrefix} Vol.${currentBlogIndex + 1}</div>
-        <div class="paper-page-num">Page ${p + 1} / ${totalPages} (No. ${startIndex + pageStart + 1} - ${startIndex + pageEnd})</div>
+        <div class="paper-page-num">Sheet ${p + 1} / ${totalPages}</div>
       </div>
     `;
     
-    // 아이템 목록 생성
-    let listHtml = '<div class="paper-list-grid">'; // 그리드 레이아웃 적용
+    // 리스트
+    let listHtml = '<div class="paper-list-grid">';
     pageItems.forEach((item, idx) => {
       const globalNum = startIndex + pageStart + idx + 1;
       let mainText = ""; 
       let subText = ""; 
-      // 인쇄 공간 절약을 위해 예문은 제외하거나 아주 짧게 처리 (여기서는 제외하여 공간 확보)
       
-      if (currentBlogType === 'pattern') { 
-        mainText = item.title; subText = item.desc; 
-      } else if (currentBlogType === 'idiom') { 
-        mainText = item.idiom; subText = item.meaning; 
-      } else if (currentBlogType === 'word') { 
-        mainText = item.word; subText = item.meaning; 
-      }
+      if (currentBlogType === 'pattern') { mainText = item.title; subText = item.desc; }
+      else if (currentBlogType === 'idiom') { mainText = item.idiom; subText = item.meaning; }
+      else if (currentBlogType === 'word') { mainText = item.word; subText = item.meaning; }
       
       listHtml += `
         <div class="paper-item-compact">
@@ -840,7 +835,6 @@ function renderBlogDetail() {
     });
     listHtml += '</div>'; // grid end
 
-    // 페이지 조립
     pageDiv.innerHTML = headerHtml + listHtml;
     contentBox.appendChild(pageDiv);
   }
@@ -941,4 +935,5 @@ async function downloadData() {
 // Init Execution
 loadMemorizedData(); loadVoices(); initNewsUpdater();
 const initialPage = location.hash.replace('#', '') || 'home'; goTo(initialPage, true);
+
 
