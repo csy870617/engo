@@ -479,4 +479,85 @@ main {
   font-size: 0.75rem;
   color: #64748b;
   text-align: right;
+
+}
+
+/* [수정됨] 유튜브 섹션 스타일 (슬라이드형) */
+.youtube-section {
+  margin-top: 30px;
+  margin-bottom: 50px; /* 하단 여백 넉넉히 */
+  padding: 0 4px;
+}
+
+.youtube-section h3 {
+  font-size: 1.2rem; /* 제목 크기 약간 키움 */
+  font-weight: 700;
+  color: #fff;
+  margin-bottom: 15px;
+  background: linear-gradient(90deg, #fff, #cbd5e1);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  display: inline-block;
+  margin-left: 4px;
+}
+
+/* 가로 스크롤(슬라이드) 컨테이너 */
+.youtube-scroll-area {
+  display: flex;
+  gap: 16px; /* 영상 사이 간격 */
+  overflow-x: auto; /* 가로 스크롤 활성화 */
+  padding-bottom: 15px;
+  scroll-behavior: smooth;
+  -webkit-overflow-scrolling: touch; /* 모바일에서 부드러운 스크롤 */
+  padding-left: 4px; 
+  padding-right: 4px;
+}
+
+/* 스크롤바 스타일 (선택 사항) */
+.youtube-scroll-area::-webkit-scrollbar {
+  height: 4px;
+}
+.youtube-scroll-area::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 2px;
+}
+
+/* 개별 영상 아이템 (크기 키움) */
+.youtube-item {
+  min-width: 70%; /* 모바일 화면의 85% 차지 (크게 보임) */
+  max-width: 400px; /* PC에서는 너무 커지지 않게 제한 */
+  flex-shrink: 0; /* 줄어들지 않게 고정 */
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+/* 반응형 비디오 컨테이너 (16:9 비율 유지) */
+.video-wrapper {
+  position: relative;
+  padding-bottom: 56.25%; /* 16:9 비율 */
+  height: 0;
+  overflow: hidden;
+  border-radius: 16px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: #000;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
+}
+
+.video-wrapper iframe {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
+
+/* 영상 제목 스타일 */
+.video-title {
+  font-size: 1rem; /* 글자 크기 키움 */
+  font-weight: 600;
+  color: #e2e8f0;
+  line-height: 1.4;
+  padding-left: 4px;
 }
