@@ -17,7 +17,7 @@
 const pages = [
   "home", "patterns", "pattern-detail", "words", "word-detail",
   "idioms", "idiom-detail", "conversations", "conv-detail",
-  "shadowing-list", "shadowing", "puzzle"
+  "shadowing-list", "shadowing", "puzzle", "blog-list", "blog-detail"
 ];
 
 const idiomData = [
@@ -122,6 +122,10 @@ function goTo(page, isReplace = false) {
 
   if (page === "shadowing-list") renderShadowingList();
   if (page === "puzzle") initPuzzle();
+
+  // [신규] 블로그 페이지 렌더링
+  if (page === "blog-list") renderBlogList();
+  if (page === "blog-detail") renderBlogDetail();
 }
 
 // 오디오 중단
@@ -1718,6 +1722,148 @@ function sendInquiry() {
   }
 }
 
+// ==========================================
+// 18. [신규] 영어 블로그 (페이퍼 뷰) 로직
+// ==========================================
+let currentBlogType = 'all'; // all, pattern, conv, word
+let currentBlogId = null;
+
+function filterBlog(type, btn) {
+  currentBlogType = type;
+  // 버튼 스타일 활성화
+  const btns = document.querySelectorAll('#page-blog-list .chip-btn');
+  btns.forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  
+  renderBlogList();
+}
+
+function renderBlogList() {
+  const container = document.getElementById('blog-list-container');
+  container.innerHTML = "";
+
+  let items = [];
+
+  // 1. 패턴 데이터 변환
+  if (currentBlogType === 'all' || currentBlogType === 'pattern') {
+    if (typeof patternData !== 'undefined') {
+      patternData.forEach(p => {
+        items.push({
+          type: 'pattern',
+          id: p.id,
+          title: `Pattern: ${p.title}`,
+          desc: p.desc,
+          tag: 'Pattern',
+          tagClass: 'tag-pattern'
+        });
+      });
+    }
+  }
+
+  // 2. 대화 데이터 변환
+  if (currentBlogType === 'all' || currentBlogType === 'conv') {
+    if (typeof conversationData !== 'undefined') {
+      conversationData.forEach(c => {
+        items.push({
+          type: 'conv',
+          id: c.id,
+          title: `Conversation: ${c.title}`,
+          desc: `Situational practice: ${c.lines[0].en}`, // 첫 문장을 설명으로
+          tag: 'Conversation',
+          tagClass: 'tag-conv'
+        });
+      });
+    }
+  }
+
+  // 3. 단어 데이터 (너무 많으니 랜덤 10개만 샘플로 보여주거나, 챕터별로 묶는 게 좋음)
+  // 여기서는 '오늘의 단어장' 느낌으로 5개씩 묶어서 하나로 표시하는 예시
+  if (currentBlogType === 'all' || currentBlogType === 'word') {
+     items.push({
+       type: 'word',
+       id: 'word-collection',
+       title: 'Weekly Vocabulary List',
+       desc: 'Essential words and idioms for this week.',
+       tag: 'Vocabulary',
+       tagClass: 'tag-word'
+     });
+  }
+
+  // 섞어서 보여주거나 순서대로 (여기선 순서대로)
+  items.forEach(item => {
+    const div = document.createElement('div');
+    div.className = 'blog-card';
+    div.onclick = () => openBlogPost(item.type, item.id);
+    div.innerHTML = `
+      <span class="blog-tag ${item.tagClass}">${item.tag}</span>
+      <div class="blog-title">${item.title}</div>
+      <div class="blog-desc">${item.desc}</div>
+    `;
+    container.appendChild(div);
+  });
+}
+
+function openBlogPost(type, id) {
+  currentBlogType = type; // 상세에서 쓰기 위해 저장
+  currentBlogId = id;
+  goTo('blog-detail');
+}
+
+function renderBlogDetail() {
+  const contentBox = document.getElementById('paper-content');
+  contentBox.innerHTML = "";
+
+  let html = "";
+
+  if (currentBlogType === 'pattern') {
+    const p = patternData.find(x => x.id === currentBlogId);
+    if(p) {
+      html += `<div class="paper-title">${p.title}</div>`;
+      html += `<div class="paper-section"><h3>💡 Key Point</h3><p class="paper-text">${p.desc}</p></div>`;
+      html += `<div class="paper-section"><h3>🗣 Examples</h3>`;
+      p.examples.forEach(ex => {
+        html += `<p class="paper-text"><span class="paper-highlight">${ex.en}</span><br><span class="paper-sub">${ex.kr}</span></p>`;
+      });
+      html += `</div>`;
+    }
+  } 
+  else if (currentBlogType === 'conv') {
+    const c = conversationData.find(x => x.id === currentBlogId);
+    if(c) {
+      html += `<div class="paper-title">${c.title}</div>`;
+      html += `<div class="paper-section"><h3>💬 Script</h3>`;
+      c.lines.forEach(line => {
+        html += `<p class="paper-text"><strong>${line.speaker}:</strong> ${line.en}<br><span class="paper-sub">${line.kr}</span></p>`;
+      });
+      html += `</div>`;
+      // 팁 섹션 추가 (가상 데이터)
+      html += `<div class="paper-section"><h3>📝 Study Note</h3><p class="paper-text">Try to shadow Speaker B's intonation. Notice how they link words together.</p></div>`;
+    }
+  }
+  else if (currentBlogType === 'word') {
+    // 단어장 샘플 (랜덤 5개)
+    html += `<div class="paper-title">Weekly Vocabulary</div>`;
+    html += `<div class="paper-section"><h3>📚 Words of the Day</h3>`;
+    
+    if (typeof wordData !== 'undefined') {
+      const shuffled = wordData.sort(() => 0.5 - Math.random()).slice(0, 5);
+      shuffled.forEach(w => {
+        html += `<p class="paper-text"><strong>${w.word}</strong>: ${w.meaning}<br><span class="paper-sub">Ex) ${w.examples[0].en}</span></p><hr style="border:0; border-top:1px dashed #ddd; margin:10px 0;">`;
+      });
+    }
+    html += `</div>`;
+  }
+
+  contentBox.innerHTML = html;
+}
+
+// 페이퍼 내용 읽어주기
+function speakPaperContent() {
+  // 텍스트만 추출해서 읽기
+  const text = document.getElementById('paper-content').innerText;
+  speakText(text);
+}
+
 // ------------------------------------------
 // 초기화 실행
 // ------------------------------------------
@@ -1728,3 +1874,4 @@ initNewsUpdater();
 // 초기 화면 렌더링 (중복 히스토리 방지)
 const initialPage = location.hash.replace('#', '') || 'home';
 goTo(initialPage, true);
+
