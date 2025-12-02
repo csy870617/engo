@@ -72,6 +72,14 @@
       </div>
 
       <div class="home-grid">
+        <div class="home-tile tile-blog" onclick="goTo('blog-list')" style="grid-column: span 2;">
+          <div class="tile-icon">📝</div>
+          <div class="tile-content">
+            <span class="label">영어 블로그</span>
+            <span class="desc">학습 노트 모아보기 (Paper View)</span>
+          </div>
+        </div>
+
         <div class="home-tile tile-pattern" onclick="goTo('patterns')">
           <div class="tile-icon">📘</div>
           <div class="tile-content">
@@ -173,6 +181,28 @@
         </div>
       </div>
 
+    </section>
+
+    <section id="page-blog-list" class="hidden">
+      <div class="nav-header"><span class="back-btn" onclick="goTo('home')">❮ 뒤로</span><h2>영어 블로그</h2></div>
+      <div class="filter-area scroll-x">
+        <button class="chip-btn active" onclick="filterBlog('all', this)">전체</button>
+        <button class="chip-btn" onclick="filterBlog('pattern', this)">패턴 노트</button>
+        <button class="chip-btn" onclick="filterBlog('conv', this)">회화 스크립트</button>
+        <button class="chip-btn" onclick="filterBlog('word', this)">단어장</button>
+      </div>
+      <div id="blog-list-container" class="list-view" style="margin-top:15px;"></div>
+    </section>
+
+    <section id="page-blog-detail" class="hidden">
+      <div class="nav-header"><span class="back-btn" onclick="goTo('blog-list')">❮ 목록으로</span></div>
+      <div class="paper-container">
+        <div id="paper-content">
+          </div>
+      </div>
+      <div style="text-align:center; margin-top:20px;">
+        <button class="btn-main" onclick="speakPaperContent()">🔊 전체 읽어주기</button>
+      </div>
     </section>
 
     <section id="page-patterns" class="hidden">
@@ -515,6 +545,3 @@
   <script src="script.js"></script>
 </body>
 </html>
-
-
-
