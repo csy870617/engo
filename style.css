@@ -365,38 +365,40 @@ main {
 
 
 /* =========================================
-   [수정됨] 인쇄 전용 스타일 (A4 꽉 채우기 - 줄 간격 확대)
+   [수정됨] 인쇄 전용 스타일 (모바일 빈 페이지 방지 최적화)
    ========================================= */
 @media print {
+  /* 1. 페이지 여백 강제 초기화 (모바일 호환성 핵심) */
   @page {
     size: A4;
-    margin: 10mm; /* 여백 최소화 */
+    margin: 0mm; /* 브라우저 기본 여백 제거 */
   }
 
-  /* 1. 화면 요소 숨김 */
+  /* 2. 화면 요소 숨김 */
   header, .nav-header, .no-print, .bg-glow, #install-banner, .modal, 
   .home-grid, .hero-card, #news-section, .youtube-section, .filter-area,
   #page-home, #page-blog-list, button {
     display: none !important;
   }
 
-  /* 2. 레이아웃 초기화 */
+  /* 3. 레이아웃 초기화 */
   html, body {
+    width: 210mm; /* A4 너비 고정 */
+    height: auto !important;
     background: #fff !important;
     color: #000 !important;
     margin: 0 !important;
-    padding: 0 !important;
-    font-size: 10pt;
-    height: auto !important;
-    overflow: visible !important;
+    padding: 0 !important; /* body 패딩 제거 */
+    font-size: 9pt;
+    line-height: 1.3;
+    overflow: hidden !important; /* 넘치는 내용 숨김 (빈 페이지 방지) */
   }
 
   main {
     margin: 0 !important;
     padding: 0 !important;
-    max-width: 100% !important;
     display: block !important;
-    height: auto !important;
+    width: 100% !important;
   }
 
   section { display: none !important; }
@@ -406,7 +408,6 @@ main {
     width: 100% !important;
     margin: 0 !important;
     padding: 0 !important;
-    height: auto !important;
   }
 
   .paper-container {
@@ -416,41 +417,41 @@ main {
     box-shadow: none !important;
   }
 
-  /* 3. 페이지 설정 */
+  /* 4. 인쇄 페이지 컨테이너 (안쪽 여백으로 조절) */
   .print-page {
-    background: #fff !important;
-    color: #000 !important;
-    box-shadow: none !important;
-    margin: 0 !important;
-    padding: 0 !important;
-    border: none !important;
-    border-radius: 0 !important;
     width: 100%;
-    height: auto !important;
+    /* 상하좌우 여백을 여기서 줍니다 (안전하게 안쪽으로) */
+    padding: 10mm 10mm !important; 
+    box-sizing: border-box;
     
     page-break-after: always; 
     break-after: page;
+    
+    /* 불필요한 마진 제거 */
+    margin: 0 !important;
+    border: none !important;
   }
 
-  /* 마지막 페이지 빈 종이 방지 */
+  /* 마지막 페이지 뒤에는 절대 빈 페이지 만들지 않음 */
   .print-page:last-child {
-    page-break-after: auto !important;
-    break-after: auto !important;
+    page-break-after: avoid !important;
+    break-after: avoid !important;
     margin-bottom: 0 !important;
+    padding-bottom: 0 !important;
   }
 
-  /* 4. 헤더 스타일 */
+  /* 5. 헤더 스타일 */
   .paper-header-area {
     border-bottom: 2px solid #000 !important;
-    margin-bottom: 15px !important; /* 간격 조금 늘림 */
-    padding-bottom: 8px !important;
+    margin-bottom: 5px !important;
+    padding-bottom: 2px !important;
     display: flex;
     justify-content: space-between;
     align-items: flex-end;
   }
 
   .paper-title {
-    font-size: 16pt !important;
+    font-size: 14pt !important;
     color: #000 !important;
     font-weight: bold;
     margin: 0 !important;
@@ -461,23 +462,24 @@ main {
     color: #000 !important;
   }
 
-  /* 5. 2단 그리드 */
+  /* 6. 2단 그리드 */
   .paper-list-grid {
     display: grid !important;
     grid-template-columns: 1fr 1fr; 
-    column-gap: 30px;
+    column-gap: 15px; /* 간격 약간 축소 */
     row-gap: 0px;
-    padding-top: 5px;
+    padding-top: 0px;
   }
 
-  /* 6. 아이템 스타일 (줄 간격 확대 적용) */
+  /* 7. 아이템 스타일 (높이 최적화) */
   .paper-item-compact {
-    padding: 8px 0 !important; /* [수정됨] 상하 여백을 3px -> 8px로 늘림 */
+    padding: 4px 0 !important; /* 상하 여백을 4px로 조정 */
     border-bottom: 1px dotted #ccc !important; 
     page-break-inside: avoid;
     background: none !important;
     display: block !important;
-    min-height: 28px; /* 최소 높이 증가 */
+    /* 최소 높이 제거하여 내용에 딱 맞게 */
+    min-height: auto !important; 
   }
 
   .pi-content {
@@ -485,27 +487,25 @@ main {
     justify-content: space-between !important;
     align-items: baseline !important;
     width: 100%;
-    gap: 8px !important;
+    gap: 5px !important;
   }
 
-  /* 제시어 (왼쪽) */
   .pi-main {
-    font-size: 10pt !important; 
+    font-size: 9pt !important; 
     color: #000 !important;
     text-align: left !important;
     font-weight: bold !important;
-    line-height: 1.4 !important; /* 줄 간격 확보 */
+    line-height: 1.2 !important;
   }
 
-  /* 뜻 (오른쪽) */
   .pi-sub {
-    font-size: 9.5pt !important;
+    font-size: 8.5pt !important; /* 뜻 글자 크기 살짝 줄임 */
     color: #333 !important;
     text-align: right !important;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
     max-width: 55%;
-    line-height: 1.4 !important;
+    line-height: 1.2 !important;
   }
 }
