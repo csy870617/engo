@@ -20,7 +20,7 @@ const pages = [
   "shadowing-list", "shadowing", "puzzle", "blog-list", "blog-detail"
 ];
 
-// 데이터 병합 (외부 파일에서 로드된 데이터가 없을 경우 대비)
+// 데이터 병합 (외부 파일 로드 실패 대비)
 const idiomData = [
   ...(typeof idiomsLevel1 !== "undefined" ? idiomsLevel1 : []),
   ...(typeof idiomsLevel2 !== "undefined" ? idiomsLevel2 : []),
@@ -129,9 +129,9 @@ function loadMemorizedData() {
     if(iStudy !== null) idiomStudyingOnly = (iStudy === 'true');
 
     const wLevel = localStorage.getItem("selectedWordLevel");
-    if(wLevel !== null) selectedWordLevel = parseInt(wLevel);
+    if (wLevel !== null) selectedWordLevel = parseInt(wLevel);
     const iLevel = localStorage.getItem("selectedIdiomLevel");
-    if(iLevel !== null) selectedIdiomLevel = parseInt(iLevel);
+    if (iLevel !== null) selectedIdiomLevel = parseInt(iLevel);
 
     currentPatternId = localStorage.getItem("currentPatternId");
     currentWordId = localStorage.getItem("currentWordId");
@@ -139,7 +139,24 @@ function loadMemorizedData() {
     currentConvId = localStorage.getItem("currentConvId");
   } catch (e) { console.warn(e); }
 }
+
 function saveData(type) { saveDataLocally(type); }
+
+// [복구됨] 누락되었던 저장 함수
+function saveDataLocally(type) {
+  if (type === 'pattern') {
+    localStorage.setItem("patternMemorizedIds", JSON.stringify(Array.from(memorizedPatterns)));
+    updatePatternProgress();
+  }
+  if (type === 'word') {
+    localStorage.setItem("wordMemorizedIds", JSON.stringify(Array.from(memorizedWords)));
+    updateWordProgress();
+  }
+  if (type === 'idiom') {
+    localStorage.setItem("idiomMemorizedIds", JSON.stringify(Array.from(memorizedIdioms)));
+    updateIdiomProgress();
+  }
+}
 
 // ==========================================
 // 4. 패턴 학습
@@ -399,7 +416,7 @@ function renderIdiomList() {
       e.stopPropagation();
       if (check.checked) memorizedIdioms.add(i.id); else memorizedIdioms.delete(i.id);
       saveData('idiom');
-      updateIdiomProgress();
+      if (idiomStudyingOnly) renderIdiomList();
     };
     div.appendChild(check);
     container.appendChild(div);
@@ -644,7 +661,7 @@ function nextRandomShadowingTopic() {
 }
 
 // ==========================================
-// 9. 문장 퍼즐 (Puzzle) - (수정됨)
+// 9. 문장 퍼즐 (Puzzle)
 // ==========================================
 let puzzleList = []; let currentPuzzleIndex = 0; let currentPuzzleAnswer = ""; let puzzleTargetTokens = []; let puzzleShuffledTokens = [];
 function initPuzzle() {
@@ -696,6 +713,73 @@ function showPuzzleAnswer() { const fb = document.getElementById("puzzle-feedbac
 function movePuzzle(offset) { if (offset === 1) nextPuzzle(); else alert("이전 문제는 지원하지 않습니다. (랜덤 방식)"); }
 
 // ==========================================
+// 18. 블로그 (요약 노트) - [최종 수정]
+// ==========================================
+let currentBlogType = 'pattern'; let currentBlogIndex = 0;
+function filterBlog(type, btn) {
+  currentBlogType = type;
+  const btns = document.querySelectorAll('#page-blog-list .chip-btn');
+  btns.forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  renderBlogList();
+}
+function renderBlogList() {
+  const container = document.getElementById('blog-list-container');
+  container.innerHTML = "";
+  let targetData = []; let label = ""; let tagClass = "";
+  if (currentBlogType === 'pattern') { targetData = (typeof patternData !== 'undefined') ? patternData : []; label = "Pattern Note"; tagClass = "tag-pattern"; }
+  else if (currentBlogType === 'idiom') { targetData = (typeof idiomData !== 'undefined') ? idiomData : []; label = "Idiom Note"; tagClass = "tag-conv"; }
+  else if (currentBlogType === 'word') { targetData = (typeof wordData !== 'undefined') ? wordData : []; label = "Vocabulary"; tagClass = "tag-word"; }
+
+  if (targetData.length === 0) { container.innerHTML = "<div style='text-align:center; padding:20px; color:#888;'>데이터가 없습니다.</div>"; return; }
+  const chunkSize = 50; const totalChunks = Math.ceil(targetData.length / chunkSize);
+  for (let i = 0; i < totalChunks; i++) {
+    const start = i * chunkSize + 1; const end = Math.min((i + 1) * chunkSize, targetData.length);
+    const div = document.createElement("div"); div.className = "blog-card";
+    div.onclick = () => openBlogPost(currentBlogType, i);
+    div.innerHTML = `<span class="blog-tag ${tagClass}">${label}</span><div class="blog-title">${getBlogTitle(currentBlogType)} Vol.${i + 1}</div><div class="blog-desc">No. ${start} ~ ${end} 핵심 정리</div>`;
+    container.appendChild(div);
+  }
+}
+function getBlogTitle(type) { if (type === 'pattern') return "필수 영어 패턴"; if (type === 'idiom') return "숙어 & 구동사"; if (type === 'word') return "우선순위 영단어"; return "학습 노트"; }
+function openBlogPost(type, index) { currentBlogType = type; currentBlogIndex = index; goTo('blog-detail'); }
+function renderBlogDetail() {
+  const contentBox = document.getElementById('paper-content'); contentBox.innerHTML = "";
+  const chunkSize = 50; const startIndex = currentBlogIndex * chunkSize;
+  let targetData = []; let titlePrefix = "";
+  if (currentBlogType === 'pattern') { targetData = patternData; titlePrefix = "Pattern Note"; }
+  else if (currentBlogType === 'idiom') { targetData = idiomData; titlePrefix = "Idiom Note"; }
+  else if (currentBlogType === 'word') { targetData = wordData; titlePrefix = "Vocabulary"; }
+  const dataSlice = targetData.slice(startIndex, startIndex + chunkSize);
+  
+  const itemsPerPage = 50;
+  const totalPages = Math.ceil(dataSlice.length / itemsPerPage);
+
+  for (let p = 0; p < totalPages; p++) {
+    const pageStart = p * itemsPerPage;
+    const pageEnd = Math.min((p + 1) * itemsPerPage, dataSlice.length);
+    const pageItems = dataSlice.slice(pageStart, pageEnd);
+    
+    const pageDiv = document.createElement('div');
+    pageDiv.className = 'print-page';
+    const headerHtml = `<div class="paper-header-area"><div class="paper-title">${titlePrefix} Vol.${currentBlogIndex + 1}</div><div class="paper-page-num">(No. ${startIndex + 1} - ${startIndex + pageEnd})</div></div>`;
+    let listHtml = '<div class="paper-list-grid">';
+    pageItems.forEach((item, idx) => {
+      let mainText = ""; let subText = "";
+      if (currentBlogType === 'pattern') { mainText = item.title; subText = item.desc; }
+      else if (currentBlogType === 'idiom') { mainText = item.idiom; subText = item.meaning; }
+      else if (currentBlogType === 'word') { mainText = item.word; subText = item.meaning; }
+      
+      listHtml += `<div class="paper-item-compact"><div class="pi-content"><div class="pi-main">${mainText}</div><div class="pi-sub">${subText}</div></div></div>`;
+    });
+    listHtml += '</div>';
+    pageDiv.innerHTML = headerHtml + listHtml;
+    contentBox.appendChild(pageDiv);
+  }
+}
+function printPaperContent() { window.print(); }
+
+// ==========================================
 // 10. TTS 설정
 // ==========================================
 let ttsVoices = []; let userVoiceIndex = null; let userRate = 1.0; let userFontSize = 'medium'; let autoPlayEnabled = true; let voiceA = null; let voiceB = null;
@@ -742,105 +826,7 @@ function applyFontSizeToBody(size) { const root = document.documentElement; root
 function previewVoiceSettings() { window.speechSynthesis.cancel(); const u = new SpeechSynthesisUtterance("Hello."); u.lang = "en-US"; u.rate = userRate; if(document.getElementById("tts-voice-select").value && ttsVoices[document.getElementById("tts-voice-select").value]) u.voice = ttsVoices[document.getElementById("tts-voice-select").value]; window.speechSynthesis.speak(u); }
 function saveSettings() { userVoiceIndex = document.getElementById("tts-voice-select").value || null; autoPlayEnabled = document.getElementById("tts-autoplay-toggle").checked; localStorage.setItem("ttsSettings", JSON.stringify({ voiceIndex: userVoiceIndex, rate: userRate, autoPlay: autoPlayEnabled, fontSize: userFontSize })); closeSettingsModal(); }
 
-// ==========================================
-// 18. 블로그 (요약 노트)
-// ==========================================
-let currentBlogType = 'pattern'; let currentBlogIndex = 0;
-function filterBlog(type, btn) {
-  currentBlogType = type;
-  const btns = document.querySelectorAll('#page-blog-list .chip-btn');
-  btns.forEach(b => b.classList.remove('active'));
-  btn.classList.add('active');
-  renderBlogList();
-}
-function renderBlogList() {
-  const container = document.getElementById('blog-list-container');
-  container.innerHTML = "";
-  let targetData = []; let label = ""; let tagClass = "";
-  if (currentBlogType === 'pattern') { targetData = (typeof patternData !== 'undefined') ? patternData : []; label = "Pattern Note"; tagClass = "tag-pattern"; }
-  else if (currentBlogType === 'idiom') { targetData = (typeof idiomData !== 'undefined') ? idiomData : []; label = "Idiom Note"; tagClass = "tag-conv"; }
-  else if (currentBlogType === 'word') { targetData = (typeof wordData !== 'undefined') ? wordData : []; label = "Vocabulary"; tagClass = "tag-word"; }
-
-  if (targetData.length === 0) { container.innerHTML = "<div style='text-align:center; padding:20px; color:#888;'>데이터가 없습니다.</div>"; return; }
-  const chunkSize = 50; const totalChunks = Math.ceil(targetData.length / chunkSize);
-  for (let i = 0; i < totalChunks; i++) {
-    const start = i * chunkSize + 1; const end = Math.min((i + 1) * chunkSize, targetData.length);
-    const div = document.createElement("div"); div.className = "blog-card";
-    div.onclick = () => openBlogPost(currentBlogType, i);
-    div.innerHTML = `<span class="blog-tag ${tagClass}">${label}</span><div class="blog-title">${getBlogTitle(currentBlogType)} Vol.${i + 1}</div><div class="blog-desc">No. ${start} ~ ${end} 핵심 정리</div>`;
-    container.appendChild(div);
-  }
-}
-function getBlogTitle(type) { if (type === 'pattern') return "필수 영어 패턴"; if (type === 'idiom') return "숙어 & 구동사"; if (type === 'word') return "우선순위 영단어"; return "학습 노트"; }
-function openBlogPost(type, index) { currentBlogType = type; currentBlogIndex = index; goTo('blog-detail'); }
-
-// [수정됨] 블로그 상세(페이퍼) 렌더링 - "Full List" 문구 제거
-function renderBlogDetail() {
-  const contentBox = document.getElementById('paper-content');
-  contentBox.innerHTML = "";
-  
-  const chunkSize = 50;
-  const startIndex = currentBlogIndex * chunkSize;
-  
-  let targetData = [];
-  let titlePrefix = "";
-
-  if (currentBlogType === 'pattern') { targetData = patternData; titlePrefix = "Pattern Note"; }
-  else if (currentBlogType === 'idiom') { targetData = idiomData; titlePrefix = "Idiom Note"; }
-  else if (currentBlogType === 'word') { targetData = wordData; titlePrefix = "Vocabulary"; }
-
-  const dataSlice = targetData.slice(startIndex, startIndex + chunkSize);
-  
-  const itemsPerPage = 50; 
-  const totalPages = Math.ceil(dataSlice.length / itemsPerPage);
-
-  for (let p = 0; p < totalPages; p++) {
-    const pageStart = p * itemsPerPage;
-    const pageEnd = Math.min((p + 1) * itemsPerPage, dataSlice.length);
-    const pageItems = dataSlice.slice(pageStart, pageEnd);
-    
-    const pageDiv = document.createElement('div');
-    pageDiv.className = 'print-page';
-
-    // [수정됨] "Full List" 제거 -> "(No. 1 - 50)" 형태로 변경
-    const headerHtml = `
-      <div class="paper-header-area">
-        <div class="paper-title">${titlePrefix} Vol.${currentBlogIndex + 1}</div>
-        <div class="paper-page-num">(No. ${startIndex + 1} - ${startIndex + pageEnd})</div>
-      </div>
-    `;
-    
-    let listHtml = '<div class="paper-list-grid">';
-    
-    pageItems.forEach((item, idx) => {
-      const globalNum = startIndex + pageStart + idx + 1;
-      let mainText = ""; 
-      let subText = ""; 
-      
-      if (currentBlogType === 'pattern') { mainText = item.title; subText = item.desc; }
-      else if (currentBlogType === 'idiom') { mainText = item.idiom; subText = item.meaning; }
-      else if (currentBlogType === 'word') { mainText = item.word; subText = item.meaning; }
-      
-      listHtml += `
-        <div class="paper-item-compact">
-          <div class="pi-content">
-            <div class="pi-main">${mainText}</div>
-            <div class="pi-sub">${subText}</div>
-          </div>
-        </div>
-      `;
-    });
-    
-    listHtml += '</div>'; 
-
-    pageDiv.innerHTML = headerHtml + listHtml;
-    contentBox.appendChild(pageDiv);
-  }
-}
-
-function printPaperContent() { window.print(); }
-
-// Firebase & EmailJS & News
+// Init & News
 const NEWS_TOPICS = [
   "https://news.google.com/rss/search?q=South+Korea+(k-pop+OR+k-drama+OR+movie)+(popular+OR+success)&hl=en-US&gl=US&ceid=US:en",
   "https://news.google.com/rss/search?q=South+Korea+(technology+OR+samsung+OR+economy)+(growth+OR+innovation)&hl=en-US&gl=US&ceid=US:en",
@@ -879,6 +865,8 @@ function loadBackupNews() {
 }
 function getTimeAgo(date) { const seconds = Math.floor((new Date() - date) / 1000); let interval = seconds / 3600; if (interval > 1) return Math.floor(interval) + " hours ago"; return "Just now"; }
 function initNewsUpdater() { fetchRealNews(); }
+
+// EmailJS & Firebase
 function openContactModal() { document.getElementById('settings-modal').classList.add('hidden'); document.getElementById('contact-modal').classList.remove('hidden'); }
 function closeContactModal() { document.getElementById('contact-modal').classList.add('hidden'); }
 function sendInquiry() {
@@ -889,7 +877,6 @@ function sendInquiry() {
     .finally(() => { sendBtn.innerText = originalText; sendBtn.disabled = false; });
   } else { alert("EmailJS 라이브러리 로드 실패"); sendBtn.disabled = false; }
 }
-// Firebase Setup
 const firebaseConfig = { apiKey: "AIzaSyCdr88Bomc9SQzZBj03iih3epxivhPL63I", authDomain: "engo-9c8e3.firebaseapp.com", projectId: "engo-9c8e3", storageBucket: "engo-9c8e3.firebasestorage.app", messagingSenderId: "252712209702", appId: "1:252712209702:web:5ed2ccb9f07230824d45e7", measurementId: "G-KHE07H3HKR" };
 let db; if (typeof firebase !== "undefined") { try { firebase.initializeApp(firebaseConfig); db = firebase.firestore(); } catch (e) { console.error(e); } }
 function openSyncModal(pushHistory = true) { if (pushHistory) { const currentPage = history.state ? history.state.page : 'home'; history.pushState({ page: currentPage, modal: 'sync' }, "", "#sync"); } document.getElementById("sync-modal").classList.remove("hidden"); const savedAuth = localStorage.getItem("syncAuth"); if (savedAuth) { const authData = JSON.parse(savedAuth); document.getElementById("sync-id").value = authData.id; document.getElementById("sync-pw").value = authData.pw; document.getElementById("sync-remember").checked = true; } }
@@ -931,6 +918,6 @@ async function downloadData() {
   } catch(e) { alert("오류: " + e.message); }
 }
 
-// Init Execution
+// Execution
 loadMemorizedData(); loadVoices(); initNewsUpdater();
 const initialPage = location.hash.replace('#', '') || 'home'; goTo(initialPage, true);
