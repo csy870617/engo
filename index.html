@@ -60,7 +60,7 @@
     </div>
   </header>
 
- <main>
+<main>
     <section id="page-home">
       <div class="hero-card">
         <h1>English & Go!</h1>
@@ -391,12 +391,19 @@
       </div>
     </section>
 
-    <section id="page-puzzle" class="hidden">
+<section id="page-puzzle" class="hidden">
       <div class="nav-header"><span class="back-btn" onclick="goTo('home')">❮ 나가기</span></div>
       
       <div class="game-card">
         <div class="game-header" style="justify-content:center; position:relative;">
           <h2>🧩 문장 퍼즐</h2>
+        </div>
+        
+        <div class="filter-area" style="justify-content: center; margin-bottom: 15px;">
+          <button class="chip-btn active" data-puzzle-level-btn="0" onclick="setPuzzleLevel(0)">전체</button>
+          <button class="chip-btn" data-puzzle-level-btn="1" onclick="setPuzzleLevel(1)">Lv.1 (5-6단어)</button>
+          <button class="chip-btn" data-puzzle-level-btn="2" onclick="setPuzzleLevel(2)">Lv.2 (7-8단어)</button>
+          <button class="chip-btn" data-puzzle-level-btn="3" onclick="setPuzzleLevel(3)">Lv.3 (9단어+)</button>
         </div>
         
         <div style="text-align:center; margin-bottom:15px; color:var(--text-sub); font-size:0.9rem;">
@@ -422,7 +429,7 @@
         <button onclick="movePuzzle(1)">다음 문제</button>
       </div>
     </section>
-
+        
   </main>
 
   <div id="install-banner" class="install-banner hidden">
@@ -528,5 +535,4 @@
   <script src="word.js"></script>
   <script src="script.js"></script>
 </body>
-
 </html>
