@@ -161,20 +161,25 @@ function saveDataLocally(type) {
 // ==========================================
 // 4. 패턴 학습
 // ==========================================
+// [수정됨] 패턴 목록 렌더링 (체크 시 즉시 사라짐 적용)
 function renderPatternList() {
   const container = document.getElementById("pattern-list");
   if (!container || typeof patternData === "undefined") return;
+
   const filterBtn = document.getElementById("pattern-studying-btn");
-  if (filterBtn) filterBtn.classList.toggle("active", patternStudyingOnly);
-  
+  if (filterBtn) {
+    filterBtn.classList.toggle("active", patternStudyingOnly);
+  }
+
   const keyword = (document.getElementById("pattern-search")?.value || "").toLowerCase();
   container.innerHTML = "";
-  
+
   const filtered = patternData.filter((p) => {
     const matchText = (p.title + p.desc).toLowerCase().includes(keyword);
     const matchStudy = !patternStudyingOnly || !memorizedPatterns.has(p.id);
     return matchText && matchStudy;
   });
+
   currentPatternList = filtered;
 
   filtered.forEach((p) => {
@@ -182,20 +187,32 @@ function renderPatternList() {
     div.className = "list-item";
     if (memorizedPatterns.has(p.id)) div.classList.add("memorized");
     div.onclick = () => openPattern(p.id);
-    div.innerHTML = `<div><div class="list-item-title">${p.title}</div><div class="list-item-sub">${p.desc}</div></div>`;
+
+    const left = document.createElement("div");
+    left.innerHTML = `<div class="list-item-title">${p.title}</div><div class="list-item-sub">${p.desc}</div>`;
+
     const check = document.createElement("input");
     check.type = "checkbox";
     check.className = "pattern-check";
     check.checked = memorizedPatterns.has(p.id);
+    
+    // [핵심 수정 부분]
     check.onclick = (e) => {
       e.stopPropagation();
-      if (check.checked) memorizedPatterns.add(p.id); else memorizedPatterns.delete(p.id);
+      if (check.checked) memorizedPatterns.add(p.id);
+      else memorizedPatterns.delete(p.id);
       saveData('pattern');
-      updatePatternProgress();
+      
+      // 미암기만 보기 필터가 켜져 있으면 리스트를 다시 그려서 즉시 사라지게 함
+      if (patternStudyingOnly) renderPatternList(); 
+      else updatePatternProgress();
     };
+
+    div.appendChild(left);
     div.appendChild(check);
     container.appendChild(div);
   });
+  
   if (filtered.length === 0) container.innerHTML = '<div class="list-item"><div>검색 결과가 없습니다.</div></div>';
   updatePatternProgress();
 }
@@ -273,16 +290,23 @@ async function playPatternExamples() {
 // ==========================================
 // 5. 단어 학습
 // ==========================================
+// [수정됨] 단어 목록 렌더링 (체크 시 즉시 사라짐 적용)
 function renderWordList() {
   const container = document.getElementById("word-list");
   if (!container || typeof wordData === "undefined") return;
+  
   const filterBtn = document.getElementById("word-studying-btn");
-  if (filterBtn) filterBtn.classList.toggle("active", wordStudyingOnly);
+  if (filterBtn) {
+    filterBtn.classList.toggle("active", wordStudyingOnly);
+  }
+
   document.querySelectorAll("[data-word-level-btn]").forEach(b => {
     b.classList.toggle("active", parseInt(b.dataset.wordLevelBtn) === selectedWordLevel);
   });
+
   const keyword = (document.getElementById("word-search")?.value || "").toLowerCase();
   container.innerHTML = "";
+  
   const filtered = wordData.filter(w => {
     const matchText = (w.word + w.meaning).toLowerCase().includes(keyword);
     const level = parseInt(w.id.match(/^L(\d)-/)?.[1] || 0);
@@ -290,26 +314,37 @@ function renderWordList() {
     const matchStudy = !wordStudyingOnly || !memorizedWords.has(w.id);
     return matchText && matchLevel && matchStudy;
   });
+
   currentWordList = filtered;
+
   filtered.forEach(w => {
     const div = document.createElement("div");
     div.className = "list-item";
     if (memorizedWords.has(w.id)) div.classList.add("memorized");
     div.onclick = () => openWord(w.id);
+    
     div.innerHTML = `<div><div class="list-item-title">${w.word} - ${w.meaning}</div><div class="list-item-sub">${w.examples?.[0]?.kr || ""}</div></div>`;
+    
     const check = document.createElement("input");
     check.type = "checkbox";
     check.className = "word-check";
     check.checked = memorizedWords.has(w.id);
+    
+    // [핵심 수정 부분]
     check.onclick = (e) => {
       e.stopPropagation();
       if (check.checked) memorizedWords.add(w.id); else memorizedWords.delete(w.id);
       saveData('word');
-      updateWordProgress();
+      
+      // 미암기만 보기 필터가 켜져 있으면 리스트를 다시 그려서 즉시 사라지게 함
+      if (wordStudyingOnly) renderWordList();
+      else updateWordProgress();
     };
+    
     div.appendChild(check);
     container.appendChild(div);
   });
+  
   if (filtered.length === 0) container.innerHTML = '<div class="list-item"><div>검색 결과가 없습니다.</div></div>';
   updateWordProgress();
 }
@@ -921,3 +956,4 @@ async function downloadData() {
 // Execution
 loadMemorizedData(); loadVoices(); initNewsUpdater();
 const initialPage = location.hash.replace('#', '') || 'home'; goTo(initialPage, true);
+
