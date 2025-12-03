@@ -365,13 +365,13 @@ main {
 
 
 /* =========================================
-   [수정됨] 인쇄 전용 스타일 (모바일 여백 제거 + 50개 꽉 채우기)
+   [수정됨] 인쇄 전용 스타일 (A4 꽉 채우기 - 줄 간격 확대)
    ========================================= */
 @media print {
-  /* 1. 페이지 여백 완전 제거 (모바일 강제 여백 삭제) */
+  /* 1. 여백 설정 (모바일 호환) */
   @page {
-    size: A4 portrait; /* 세로 방향 명시 */
-    margin: 0; /* 핵심: 브라우저 기본 여백 0 */
+    size: A4;
+    margin: 0mm; /* 브라우저 강제 여백 제거 */
   }
 
   /* 2. 화면 요소 숨김 */
@@ -383,37 +383,54 @@ main {
 
   /* 3. 레이아웃 초기화 */
   html, body {
-    width: 100%;
-    height: 100%;
+    width: 210mm;
+    height: auto !important;
     background: #fff !important;
     color: #000 !important;
     margin: 0 !important;
     padding: 0 !important;
-    font-size: 9pt;
-    line-height: 1.1; /* 줄 간격 좁힘 */
-    -webkit-print-color-adjust: exact; /* 배경색 강제 출력 */
+    font-size: 10pt; /* 글자 크기 9pt -> 10pt로 확대 */
+    line-height: 1.4; /* 줄 간격 여유 있게 */
+    -webkit-print-color-adjust: exact;
+    overflow: hidden !important;
   }
 
-  main, #page-blog-detail, .paper-container {
+  main {
     margin: 0 !important;
     padding: 0 !important;
-    width: 100% !important;
     display: block !important;
+    width: 100% !important;
+  }
+
+  section { display: none !important; }
+  
+  #page-blog-detail { 
+    display: block !important; 
+    width: 100% !important;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+
+  .paper-container {
+    width: 100% !important;
+    margin: 0 !important;
+    padding: 0 !important;
     box-shadow: none !important;
   }
 
-  /* 4. 페이지 컨테이너 (여백 최소화) */
+  /* 4. 페이지 컨테이너 (여백 확보) */
   .print-page {
     width: 100%;
-    height: 100vh; /* 페이지 꽉 채움 */
+    height: 100vh; 
     
-    /* 상하좌우 여백: 1cm (모바일에서도 잘리지 않을 최소한의 여백) */
-    padding: 10mm 8mm !important; 
+    /* 상하 여백을 15mm로 주어 전체적인 균형 맞춤 */
+    padding: 15mm 10mm !important; 
     box-sizing: border-box;
     
     page-break-after: always; 
     break-after: page;
     margin: 0 !important;
+    border: none !important;
   }
 
   .print-page:last-child {
@@ -422,25 +439,25 @@ main {
     margin-bottom: 0 !important;
   }
 
-  /* 5. 헤더 스타일 (공간 절약) */
+  /* 5. 헤더 스타일 */
   .paper-header-area {
-    border-bottom: 1px solid #000 !important;
-    margin-bottom: 5px !important;
-    padding-bottom: 2px !important;
+    border-bottom: 2px solid #000 !important;
+    margin-bottom: 12px !important; /* 헤더 아래 간격 확대 */
+    padding-bottom: 5px !important;
     display: flex;
     justify-content: space-between;
     align-items: flex-end;
   }
 
   .paper-title {
-    font-size: 14pt !important;
+    font-size: 16pt !important;
     color: #000 !important;
     font-weight: bold;
     margin: 0 !important;
   }
   
   .paper-page-num {
-    font-size: 8pt !important;
+    font-size: 9pt !important;
     color: #000 !important;
   }
 
@@ -448,15 +465,15 @@ main {
   .paper-list-grid {
     display: grid !important;
     grid-template-columns: 1fr 1fr; 
-    column-gap: 15px; 
+    column-gap: 20px; /* 단 사이 간격 적당히 */
     row-gap: 0px;
     padding-top: 0px;
   }
 
-  /* 7. 아이템 스타일 (초소형 간격) */
+  /* 7. 아이템 스타일 (간격 확대) */
   .paper-item-compact {
-    /* [핵심] 상하 패딩을 2px로 줄여서 한 페이지에 50개(25줄)가 넉넉히 들어가게 함 */
-    padding: 2px 0 !important; 
+    /* [핵심] 상하 패딩을 2px -> 6px로 늘려서 공간 채움 */
+    padding: 6px 0 !important; 
     border-bottom: 1px dotted #ccc !important; 
     page-break-inside: avoid;
     background: none !important;
@@ -469,31 +486,30 @@ main {
     justify-content: space-between !important;
     align-items: baseline !important;
     width: 100%;
-    gap: 5px !important;
+    gap: 8px !important;
   }
 
   /* 제시어 */
   .pi-main {
-    font-size: 9pt !important; 
+    font-size: 10pt !important; /* 10pt로 가독성 확보 */
     color: #000 !important;
     text-align: left !important;
     font-weight: bold !important;
-    line-height: 1.2 !important;
-    margin: 0 !important;
+    line-height: 1.3 !important;
   }
 
   /* 뜻 */
   .pi-sub {
-    font-size: 8.5pt !important;
+    font-size: 9.5pt !important;
     color: #333 !important;
     text-align: right !important;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
     max-width: 55%;
-    line-height: 1.2 !important;
-    margin: 0 !important;
+    line-height: 1.3 !important;
   }
 }
+
 
 
