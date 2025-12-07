@@ -955,4 +955,25 @@ async function downloadData() {
 
 // Init Execution
 loadMemorizedData(); loadVoices(); initNewsUpdater();
+
 const initialPage = location.hash.replace('#', '') || 'home'; goTo(initialPage, true);
+
+// ==========================================
+// 공유하기 기능 추가
+// ==========================================
+function shareApp() {
+  const shareData = {
+    title: 'ENGO - 영어회화',
+    text: '영어회화 공부 ENGO와 함께해요!', // 수정된 문구
+    url: window.location.href
+  };
+
+  if (navigator.share) {
+    navigator.share(shareData)
+      .catch((err) => console.log('공유 취소 또는 에러:', err));
+  } else {
+    navigator.clipboard.writeText(window.location.href)
+      .then(() => alert('주소가 복사되었습니다! 친구에게 붙여넣기(Ctrl+V)해서 공유해보세요.'))
+      .catch(() => alert('주소 복사에 실패했습니다.'));
+  }
+}
