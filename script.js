@@ -964,22 +964,54 @@ loadMemorizedData(); loadVoices(); initNewsUpdater();
 const initialPage = location.hash.replace('#', '') || 'home'; goTo(initialPage, true);
 
 // ==========================================
-// 공유하기 기능 추가
+// 공유하기 (카카오톡 우선)
 // ==========================================
+
+// 1. 카카오 SDK 초기화
+if (typeof Kakao !== 'undefined' && !Kakao.isInitialized()) {
+  Kakao.init('7e17cb2ba4738f9e3cd710879d487959'); // 전달주신 키 적용 완료
+}
+
 function shareApp() {
+  // 2. 카카오톡 공유 시도
+  if (typeof Kakao !== 'undefined' && Kakao.isInitialized()) {
+    Kakao.Share.sendDefault({
+      objectType: 'feed',
+      content: {
+        title: 'ENGO - 영어회화',
+        description: '영어회화 공부 ENGO와 함께해요!',
+        imageUrl: window.location.origin + '/logo.png',
+        link: {
+          mobileWebUrl: window.location.href,
+          webUrl: window.location.href,
+        },
+      },
+      buttons: [
+        {
+          title: '공부하러 가기',
+          link: {
+            mobileWebUrl: window.location.href,
+            webUrl: window.location.href,
+          },
+        },
+      ],
+    });
+    return;
+  }
+
+  // 3. 카카오톡 실패 시 기존 시스템 공유 실행
   const shareData = {
     title: 'ENGO - 영어회화',
-    text: '영어회화 공부 ENGO와 함께해요!', // 수정된 문구
+    text: '영어회화 공부 ENGO와 함께해요!',
     url: window.location.href
   };
 
   if (navigator.share) {
-    navigator.share(shareData)
-      .catch((err) => console.log('공유 취소 또는 에러:', err));
+    navigator.share(shareData).catch((err) => console.log('공유 취소:', err));
   } else {
     navigator.clipboard.writeText(window.location.href)
-      .then(() => alert('주소가 복사되었습니다! 친구에게 붙여넣기(Ctrl+V)해서 공유해보세요.'))
-      .catch(() => alert('주소 복사에 실패했습니다.'));
+      .then(() => alert('주소가 복사되었습니다!'))
+      .catch(() => alert('주소 복사 실패'));
   }
 }
 
@@ -1022,3 +1054,16 @@ function hideInstallBanner() {
   const banner = document.getElementById('install-banner');
   if (banner) banner.classList.add('hidden');
 }
+
+// ==========================================
+// 로딩 화면 처리 (시간 단축)
+// ==========================================
+window.addEventListener('load', () => {
+  // 1초(1000ms) 후에 로딩 화면을 서서히 사라지게 함
+  setTimeout(() => {
+    const loader = document.getElementById('loading-screen');
+    if (loader) {
+      loader.classList.add('fade-out');
+    }
+  }, 1000); 
+});
