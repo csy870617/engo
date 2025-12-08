@@ -1,5 +1,5 @@
 // 버전을 v5로 올렸습니다. (수정 시마다 숫자 올리기)
-const CACHE_NAME = 'engo-cache-v82';
+const CACHE_NAME = 'engo-cache-v83';
 
 // 캐싱할 파일 목록
 const ASSETS_TO_CACHE = [
@@ -61,4 +61,5 @@ self.addEventListener('fetch', (event) => {
   );
 
 });
+
 
