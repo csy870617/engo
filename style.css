@@ -512,4 +512,54 @@ main {
 }
 
 
+/* 설정 팝업 - 앱 다운로드 섹션 */
+.settings-install-area {
+  padding-top: 25px;
+  margin-top: 10px;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.install-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.install-badge {
+  font-size: 0.75rem;
+  background: rgba(139, 92, 246, 0.2);
+  color: #a78bfa;
+  padding: 2px 8px;
+  border-radius: 10px;
+}
+
+.install-desc {
+  color: #94a3b8;
+  font-size: 0.85rem;
+  margin-bottom: 15px;
+  line-height: 1.4;
+}
+
+.btn-install-gradient {
+  width: 100%;
+  background: linear-gradient(135deg, #8b5cf6 0%, #6366f1 100%);
+  border: none;
+  padding: 15px;
+  border-radius: 14px;
+  color: #fff;
+  font-weight: 700;
+  font-size: 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  box-shadow: 0 4px 15px rgba(99, 102, 241, 0.4);
+  transition: transform 0.2s, box-shadow 0.2s;
+  cursor: pointer;
+}
+
+.btn-install-gradient:active {
+  transform: scale(0.97);
+}
 

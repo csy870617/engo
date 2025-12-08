@@ -899,6 +899,11 @@ function loadBackupNews() {
 }
 function getTimeAgo(date) { const seconds = Math.floor((new Date() - date) / 1000); let interval = seconds / 3600; if (interval > 1) return Math.floor(interval) + " hours ago"; return "Just now"; }
 
+function initNewsUpdater() {
+  // 페이지 로드 시 바로 뉴스 불러오기
+  fetchRealNews();
+}
+
 function openContactModal() { document.getElementById('settings-modal').classList.add('hidden'); document.getElementById('contact-modal').classList.remove('hidden'); }
 function closeContactModal() { document.getElementById('contact-modal').classList.add('hidden'); }
 function sendInquiry() {
@@ -976,4 +981,44 @@ function shareApp() {
       .then(() => alert('주소가 복사되었습니다! 친구에게 붙여넣기(Ctrl+V)해서 공유해보세요.'))
       .catch(() => alert('주소 복사에 실패했습니다.'));
   }
+}
+
+// ==========================================
+// PWA 설치 로직 (항상 표시 + 설치 확인)
+// ==========================================
+let deferredPrompt;
+
+window.addEventListener('beforeinstallprompt', (e) => {
+  // 브라우저 자동 설치 팝업 차단하고 이벤트 저장
+  e.preventDefault();
+  deferredPrompt = e;
+
+  // 하단 배너는 설치 가능할 때만 보여줌 (원하신다면 유지)
+  const banner = document.getElementById('install-banner');
+  if (banner) banner.classList.remove('hidden');
+});
+
+async function installPWA() {
+  if (!deferredPrompt) {
+    // 설치 이벤트가 없으면 이미 설치되었거나 지원하지 않는 브라우저입니다.
+    alert("이미 설치되어 있거나, 현재 브라우저에서는 설치를 지원하지 않습니다.\n(홈 화면에 추가 기능을 확인해주세요.)");
+    return;
+  }
+
+  // 설치 팝업 띄우기
+  deferredPrompt.prompt();
+
+  const { outcome } = await deferredPrompt.userChoice;
+  if (outcome === 'accepted') {
+    deferredPrompt = null;
+    
+    // 하단 배너 숨기기
+    const banner = document.getElementById('install-banner');
+    if (banner) banner.classList.add('hidden');
+  }
+}
+
+function hideInstallBanner() {
+  const banner = document.getElementById('install-banner');
+  if (banner) banner.classList.add('hidden');
 }
