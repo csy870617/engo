@@ -964,12 +964,12 @@ loadMemorizedData(); loadVoices(); initNewsUpdater();
 const initialPage = location.hash.replace('#', '') || 'home'; goTo(initialPage, true);
 
 // ==========================================
-// 공유하기 (카카오톡 우선)
+// 공유하기 (제목/내용 숨김 - 썸네일 위주)
 // ==========================================
 
 // 1. 카카오 SDK 초기화
 if (typeof Kakao !== 'undefined' && !Kakao.isInitialized()) {
-  Kakao.init('7e17cb2ba4738f9e3cd710879d487959'); // 전달주신 키 적용 완료
+  Kakao.init('7e17cb2ba4738f9e3cd710879d487959');
 }
 
 function shareApp() {
@@ -978,8 +978,8 @@ function shareApp() {
     Kakao.Share.sendDefault({
       objectType: 'feed',
       content: {
-        title: 'ENGO - 영어회화',
-        description: '영어회화 공부 ENGO와 함께해요!',
+        title: ' ', // 필수 항목이므로 공백으로 설정하여 숨김 처리
+        description: '', // 내용 없음
         imageUrl: window.location.origin + '/logo.png',
         link: {
           mobileWebUrl: window.location.href,
@@ -999,10 +999,10 @@ function shareApp() {
     return;
   }
 
-  // 3. 카카오톡 실패 시 기존 시스템 공유 실행
+  // 3. 일반 공유 (Fallback)
   const shareData = {
-    title: 'ENGO - 영어회화',
-    text: '영어회화 공부 ENGO와 함께해요!',
+    title: '', // 제목 없음
+    text: '',  // 내용 없음
     url: window.location.href
   };
 
