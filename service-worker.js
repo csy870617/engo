@@ -1,12 +1,16 @@
 // 버전을 v5로 올렸습니다. (수정 시마다 숫자 올리기)
-const CACHE_NAME = 'engo-cache-v88';
+const CACHE_NAME = 'engo-cache-v89';
 
 // 캐싱할 파일 목록
 const ASSETS_TO_CACHE = [
   './',
   './index.html',
   './style.css',
-  './script.js',
+  './js/core.js',    // <-- 추가
+  './js/storage.js', // <-- 추가
+  './js/media.js',   // <-- 추가
+  './js/study.js',   // <-- 추가
+  './js/game.js',    // <-- 추가
   './pattern.js',
   './word.js',
   './idiom.js',
