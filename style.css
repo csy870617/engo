@@ -820,3 +820,25 @@ main {
   opacity: 0.7;
 
 }
+
+/* =========================================
+   [수정] 모바일 공유 버튼 강제 표시 패치
+   ========================================= */
+@media (max-width: 768px) {
+  .share-btn {
+    display: inline-flex !important; /* 강제로 보이게 설정 */
+    visibility: visible !important;
+    opacity: 1 !important;
+    width: 50%;       /* 모바일에서는 꽉 차게 */
+    margin-top: 15px;  /* 위쪽 간격 확보 */
+    justify-content: center;
+  }
+  
+  /* 만약 hero-card 높이 때문에 잘리는 경우 방지 */
+  .hero-card {
+    height: auto !important;
+    min-height: auto !important;
+    overflow: visible !important;
+  }
+}
+
