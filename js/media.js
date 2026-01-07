@@ -225,33 +225,16 @@ function shareApp() {
     url: window.location.href 
   };
 
-  // 1순위: 모바일/브라우저 기본 공유 기능 사용
+  // 1. 모바일/브라우저 내장 공유 기능 먼저 시도
   if (navigator.share) { 
     navigator.share(shareData).catch((err) => console.log('공유 취소:', err)); 
-    return;
   } 
-
-  // 2순위: 카카오톡 공유 (도메인 등록된 경우만 작동)
-  if (typeof Kakao !== 'undefined' && Kakao.isInitialized()) {
-    try {
-      Kakao.Share.sendDefault({ 
-        objectType: 'feed', 
-        content: { 
-          title: 'ENGO 영어회화', 
-          description: '오늘의 영어 정복을 시작해볼까요?', 
-          imageUrl: window.location.origin + '/logo.png', 
-          link: { mobileWebUrl: window.location.href, webUrl: window.location.href } 
-        }, 
-        buttons: [ { title: '공부하러 가기', link: { mobileWebUrl: window.location.href, webUrl: window.location.href } } ] 
-      });
-      return;
-    } catch (e) { console.log("Kakao Share Error", e); }
+  // 2. 내장 기능이 없으면(PC 등) 즉시 주소 복사
+  else {
+    navigator.clipboard.writeText(window.location.href)
+      .then(() => alert('주소가 복사되었습니다!\n친구에게 붙여넣기(Ctrl+V)로 공유해보세요.'))
+      .catch(() => prompt("이 주소를 복사해서 공유하세요:", window.location.href));
   }
-
-  // 3순위: 다 안되면 주소 복사
-  navigator.clipboard.writeText(window.location.href)
-    .then(() => alert('주소가 복사되었습니다! 친구에게 붙여넣기(Ctrl+V) 해주세요.'))
-    .catch(() => alert('주소 복사 실패'));
 }
 
 function openContactModal() {
