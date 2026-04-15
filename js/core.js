@@ -7,6 +7,9 @@
   if (ua.indexOf('kakaotalk') > -1) {
     if (ua.indexOf('android') > -1) {
       location.href = 'intent://' + url.replace(/https?:\/\//i, '') + '#Intent;scheme=https;end';
+    } else if (/iphone|ipad|ipod/.test(ua)) {
+      // iOS 카카오톡은 intent 스킴을 지원하지 않으므로 외부 브라우저 열기 요청
+      location.href = 'kakaotalk://web/openExternal?url=' + encodeURIComponent(url);
     }
   }
 })();
@@ -159,11 +162,6 @@ function hideInstallBanner() {
 }
 
 window.addEventListener('load', () => {
-  setTimeout(() => {
-    const loader = document.getElementById('loading-screen');
-    if (loader) loader.classList.add('fade-out');
-  }, 1000); 
-  
   if(typeof loadMemorizedData === 'function') loadMemorizedData();
   if(typeof loadVoices === 'function') loadVoices();
   if(typeof initNewsUpdater === 'function') initNewsUpdater();

@@ -55,23 +55,39 @@ function nextPuzzle() {
   document.getElementById("puzzle-question").textContent = target.kr;
   document.getElementById("puzzle-feedback").textContent = "";
   document.getElementById("puzzle-feedback").className = "feedback-msg";
-  document.getElementById("puzzle-feedback").style.color = ""; 
+  document.getElementById("puzzle-feedback").style.color = "";
   puzzleTargetTokens = [];
-  puzzleShuffledTokens = currentPuzzleAnswer.split(" ").sort(() => Math.random() - 0.5);
+  // 중복 단어를 안전하게 다루기 위해 각 토큰에 고유 id 부여
+  const words = currentPuzzleAnswer.split(" ");
+  puzzleShuffledTokens = words
+    .map((w, i) => ({ id: i, text: w }))
+    .sort(() => Math.random() - 0.5);
   renderPuzzle();
 }
 function renderPuzzle() {
   const bank = document.getElementById("puzzle-bank"); const target = document.getElementById("puzzle-target");
   bank.innerHTML = ""; target.innerHTML = "";
-  const currentBank = [...puzzleShuffledTokens];
-  puzzleTargetTokens.forEach(t => { const idx = currentBank.indexOf(t); if (idx > -1) currentBank.splice(idx, 1); });
-  currentBank.forEach(t => { const span = document.createElement("span"); span.className = "token"; span.textContent = t; span.onclick = () => { puzzleTargetTokens.push(t); renderPuzzle(); }; bank.appendChild(span); });
-  puzzleTargetTokens.forEach((t, i) => { const span = document.createElement("span"); span.className = "token"; span.textContent = t; span.onclick = () => { puzzleTargetTokens.splice(i, 1); renderPuzzle(); }; target.appendChild(span); });
+  const usedIds = new Set(puzzleTargetTokens.map(t => t.id));
+  const currentBank = puzzleShuffledTokens.filter(t => !usedIds.has(t.id));
+  currentBank.forEach(t => {
+    const span = document.createElement("span");
+    span.className = "token";
+    span.textContent = t.text;
+    span.onclick = () => { puzzleTargetTokens.push(t); renderPuzzle(); };
+    bank.appendChild(span);
+  });
+  puzzleTargetTokens.forEach((t, i) => {
+    const span = document.createElement("span");
+    span.className = "token";
+    span.textContent = t.text;
+    span.onclick = () => { puzzleTargetTokens.splice(i, 1); renderPuzzle(); };
+    target.appendChild(span);
+  });
 }
 function checkPuzzle() {
-  const user = puzzleTargetTokens.join(" ");
+  const user = puzzleTargetTokens.map(t => t.text).join(" ");
   const fb = document.getElementById("puzzle-feedback");
-  fb.style.color = ""; 
+  fb.style.color = "";
   if (user === currentPuzzleAnswer) { fb.textContent = "정답입니다! 🎉"; fb.className = "feedback ok"; speakText(currentPuzzleAnswer); }
   else { fb.textContent = "오답입니다."; fb.className = "feedback error"; }
 }

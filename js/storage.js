@@ -94,11 +94,22 @@ function updateSyncUI() {
   `;
 
   if (currentUser) {
-    statusEl.innerHTML = `<span style="color:#38bdf8; font-weight:bold;">${currentUser.displayName || "User"}</span>님 환영합니다.<br>아래 버튼을 눌러 동기화하세요.`;
+    // displayName/lastSyncTime 은 외부 입력이므로 textContent로 안전하게 주입
+    const nameSpan = document.createElement('span');
+    nameSpan.style.cssText = 'color:#38bdf8; font-weight:bold;';
+    nameSpan.textContent = currentUser.displayName || 'User';
+    statusEl.innerHTML = '';
+    statusEl.appendChild(nameSpan);
+    statusEl.appendChild(document.createTextNode('님 환영합니다.'));
+    statusEl.appendChild(document.createElement('br'));
+    statusEl.appendChild(document.createTextNode('아래 버튼을 눌러 동기화하세요.'));
+
     loginArea.classList.add("hidden");
     loggedInArea.classList.remove("hidden");
-    
-    // 버튼 스타일: 패딩 축소, 가로 배치 느낌, 심플하게 변경
+
+    const lastSync = localStorage.getItem("lastSyncTime");
+    const lastSyncText = lastSync ? "최근: " + lastSync : "동기화 기록 없음";
+
     loggedInArea.innerHTML = `
       <div style="display:flex; justify-content:center; margin-bottom:15px;">
         <button id="modal-sync-btn" class="sync-card-btn" onclick="handleSmartSyncUI('modal')" style="width:auto; min-width:140px; padding:12px 20px; display:flex; flex-direction:row; align-items:center; gap:10px; border-radius:30px;">
@@ -106,13 +117,13 @@ function updateSyncUI() {
           <div class="sync-label" style="font-size:0.95rem; margin:0;">지금 동기화</div>
         </button>
       </div>
-      <p style="text-align:center; font-size:0.75rem; color:#64748b; margin-top:5px;">
-         ${localStorage.getItem("lastSyncTime") ? "최근: " + localStorage.getItem("lastSyncTime") : "동기화 기록 없음"}
-      </p>
+      <p id="modal-last-sync" style="text-align:center; font-size:0.75rem; color:#64748b; margin-top:5px;"></p>
       <div style="text-align:center; margin-top:20px; border-top:1px solid rgba(255,255,255,0.1); padding-top:10px;">
          <button onclick="handleLogout()" style="background:none; border:none; color:var(--text-sub); text-decoration:underline; cursor:pointer; font-size:0.8rem;">로그아웃</button>
       </div>
     `;
+    const lastSyncEl = document.getElementById('modal-last-sync');
+    if (lastSyncEl) lastSyncEl.textContent = lastSyncText;
   } else {
     statusEl.innerHTML = "로그인하면 모든 기기에서<br>학습 기록이 자동으로 합쳐집니다.";
     loginArea.classList.remove("hidden");
@@ -151,12 +162,12 @@ async function handleSmartSyncUI(source) {
   }
 }
 
-// 4. 스마트 동기화 로직 (실제 데이터 처리)
+// 4. 스마트 동기화 로직 (양방향 병합)
 async function performSmartSync() {
   if (!currentUser || !db) throw new Error("연결 오류");
   const uid = currentUser.uid;
   const docRef = db.collection("users").doc(uid);
-  
+
   const doc = await docRef.get();
   let serverData = doc.exists ? doc.data() : {};
 
@@ -164,25 +175,52 @@ async function performSmartSync() {
   const mergedWords = new Set([...memorizedWords, ...(serverData.words || [])]);
   const mergedIdioms = new Set([...memorizedIdioms, ...(serverData.idioms || [])]);
 
-  const finalSettings = { 
-    voiceIndex: userVoiceIndex, rate: userRate, autoPlay: autoPlayEnabled, fontSize: userFontSize, 
-    wordLevel: selectedWordLevel, idiomLevel: selectedIdiomLevel, 
-    filterPattern: patternStudyingOnly, filterWord: wordStudyingOnly, filterIdiom: idiomStudyingOnly, 
-    puzzleLevel: selectedPuzzleLevel 
+  // 설정 병합: 서버 값이 있으면 우선 적용 (다른 기기에서 변경한 값 반영)
+  const serverSettings = serverData.settings || {};
+  if (serverSettings.voiceIndex !== undefined) userVoiceIndex = serverSettings.voiceIndex;
+  if (typeof serverSettings.rate === 'number') userRate = serverSettings.rate;
+  if (typeof serverSettings.autoPlay === 'boolean') autoPlayEnabled = serverSettings.autoPlay;
+  if (serverSettings.fontSize) userFontSize = serverSettings.fontSize;
+  if (typeof serverSettings.wordLevel === 'number') selectedWordLevel = serverSettings.wordLevel;
+  if (typeof serverSettings.idiomLevel === 'number') selectedIdiomLevel = serverSettings.idiomLevel;
+  if (typeof serverSettings.puzzleLevel === 'number') selectedPuzzleLevel = serverSettings.puzzleLevel;
+  if (typeof serverSettings.filterPattern === 'boolean') patternStudyingOnly = serverSettings.filterPattern;
+  if (typeof serverSettings.filterWord === 'boolean') wordStudyingOnly = serverSettings.filterWord;
+  if (typeof serverSettings.filterIdiom === 'boolean') idiomStudyingOnly = serverSettings.filterIdiom;
+
+  // 병합된 설정값을 로컬에도 영속화
+  try {
+    localStorage.setItem("ttsSettings", JSON.stringify({
+      voiceIndex: userVoiceIndex, rate: userRate, autoPlay: autoPlayEnabled, fontSize: userFontSize
+    }));
+    localStorage.setItem("selectedWordLevel", String(selectedWordLevel));
+    localStorage.setItem("selectedIdiomLevel", String(selectedIdiomLevel));
+    localStorage.setItem("selectedPuzzleLevel", String(selectedPuzzleLevel));
+    localStorage.setItem("patternStudyingOnly", String(patternStudyingOnly));
+    localStorage.setItem("wordStudyingOnly", String(wordStudyingOnly));
+    localStorage.setItem("idiomStudyingOnly", String(idiomStudyingOnly));
+  } catch (e) { console.warn(e); }
+  if (typeof applyFontSizeToBody === 'function') applyFontSizeToBody(userFontSize);
+
+  const finalSettings = {
+    voiceIndex: userVoiceIndex, rate: userRate, autoPlay: autoPlayEnabled, fontSize: userFontSize,
+    wordLevel: selectedWordLevel, idiomLevel: selectedIdiomLevel,
+    filterPattern: patternStudyingOnly, filterWord: wordStudyingOnly, filterIdiom: idiomStudyingOnly,
+    puzzleLevel: selectedPuzzleLevel
   };
 
   memorizedPatterns = mergedPatterns;
   memorizedWords = mergedWords;
   memorizedIdioms = mergedIdioms;
-  
+
   saveDataLocally('pattern');
   saveDataLocally('word');
   saveDataLocally('idiom');
-  
+
   if(typeof updatePatternProgress === 'function') updatePatternProgress();
   if(typeof updateWordProgress === 'function') updateWordProgress();
   if(typeof updateIdiomProgress === 'function') updateIdiomProgress();
-  
+
   const currPage = history.state ? history.state.page : 'home';
   if (currPage === 'patterns') renderPatternList();
   if (currPage === 'words') renderWordList();
@@ -197,7 +235,8 @@ async function performSmartSync() {
     settings: finalSettings
   };
 
-  await docRef.set(payload);
+  // merge:true 로 다른 필드를 보존
+  await docRef.set(payload, { merge: true });
   localStorage.setItem("lastSyncTime", new Date().toLocaleString());
   updateSyncUI();
 }

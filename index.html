@@ -5,7 +5,7 @@
   <meta name="naver-site-verification" content="8f83181083159d00f1384546b63e290af99c59da" />
   <meta charset="UTF-8" />
   <title>ENGO - 영어회화 학습</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
   <link rel="manifest" href="manifest.json">
   <meta name="theme-color" content="#0f172a">
   
@@ -563,29 +563,6 @@
       <div class="modal-btns">
         <button class="btn-sub" onclick="closeContactModal()">취소</button>
         <button class="btn-main" onclick="sendInquiry()">전송</button>
-      </div>
-    </div>
-  </div>
-
-  <div id="sync-modal" class="modal hidden">
-    <div class="modal-box">
-      <h3>클라우드 동기화</h3>
-      <div id="sync-status" style="text-align:center; margin-bottom:20px; color:var(--text-sub); font-size:0.9rem;">
-        로그인이 필요합니다.
-      </div>
-      <div class="modal-btns horizontal" style="display: flex; gap: 10px; justify-content: center; margin-bottom: 15px;">
-        <button id="btn-login" class="btn-sub" onclick="handleGoogleLogin()" style="flex:1; display:flex; align-items:center; justify-content:center; gap:5px;">
-          <span style="font-size:1.2rem;">G</span> 로그인
-        </button>
-        <button id="btn-sync" class="btn-main" onclick="handleSyncAction()" style="flex:1;">
-          🔄 동기화
-        </button>
-      </div>
-      <div id="logout-area" class="hidden" style="text-align:center; margin-top:10px;">
-        <button onclick="handleLogout()" style="background:none; border:none; color:var(--text-sub); text-decoration:underline; cursor:pointer; font-size:0.85rem;">로그아웃</button>
-      </div>
-      <div style="text-align:right; margin-top:10px;">
-        <button class="btn-text" onclick="closeSyncModal()">닫기</button>
       </div>
     </div>
   </div>
