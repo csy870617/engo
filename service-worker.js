@@ -1,5 +1,5 @@
-// 버전을 v5로 올렸습니다. (수정 시마다 숫자 올리기)
-const CACHE_NAME = 'engo-cache-v94';
+// 캐시 버전 - 정적 자산을 변경했을 때 숫자를 올리세요.
+const CACHE_NAME = 'engo-cache-v95';
 
 // 캐싱할 파일 목록
 const ASSETS_TO_CACHE = [
@@ -50,20 +50,43 @@ self.addEventListener('activate', (event) => {
   );
 });
 
-// 3. 요청 가로채기 (Fetch) - 오프라인 지원
+// 3. 요청 가로채기 (Fetch)
+// - HTML(navigation): network-first (새 버전 즉시 반영, 오프라인은 캐시 fallback)
+// - 정적 자산: stale-while-revalidate (캐시 즉시 반환 + 백그라운드 업데이트)
+// - GET 만 캐시, 외부 API(POST 등)는 패스
 self.addEventListener('fetch', (event) => {
-  // http, https 요청만 처리 (chrome-extension 등 제외)
-  if (!event.request.url.startsWith('http')) return;
+  const req = event.request;
+  if (!req.url.startsWith('http')) return;
+  if (req.method !== 'GET') return;
+
+  const isNavigation = req.mode === 'navigate' ||
+    (req.headers.get('accept') || '').includes('text/html');
+
+  if (isNavigation) {
+    event.respondWith(
+      fetch(req)
+        .then((res) => {
+          const copy = res.clone();
+          caches.open(CACHE_NAME).then((c) => c.put(req, copy)).catch(() => {});
+          return res;
+        })
+        .catch(() => caches.match(req).then((r) => r || caches.match('./index.html')))
+    );
+    return;
+  }
 
   event.respondWith(
-    caches.match(event.request).then((response) => {
-      // 캐시에 있으면 반환, 없으면 네트워크 요청
-      return response || fetch(event.request).catch(() => {
-          // 오프라인이고 캐시에도 없으면 아무것도 안 함 (또는 오프라인 페이지 반환 가능)
-      });
+    caches.match(req).then((cached) => {
+      const fetchPromise = fetch(req).then((res) => {
+        if (res && res.status === 200 && (res.type === 'basic' || res.type === 'cors')) {
+          const copy = res.clone();
+          caches.open(CACHE_NAME).then((c) => c.put(req, copy)).catch(() => {});
+        }
+        return res;
+      }).catch(() => cached);
+      return cached || fetchPromise;
     })
   );
-
 });
 
 

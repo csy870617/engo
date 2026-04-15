@@ -45,33 +45,42 @@
   
   <script>
     window.onload = function() {
+      // 단순 HTML escape (데이터 파일 신뢰 가정이지만 방어적으로 처리)
+      const esc = (s) => String(s == null ? '' : s)
+        .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+
       if(typeof patternData !== 'undefined') {
         const pDiv = document.getElementById('pattern-list');
-        patternData.forEach((p, i) => {
-          let exHtml = p.examples.map(e => `<span class="ex">Ex) ${e.en} (${e.kr})</span>`).join('');
-          pDiv.innerHTML += `<div class="item"><div class="en">${i+1}. ${p.title}</div><div class="kr">${p.desc}</div>${exHtml}</div>`;
-        });
+        const html = patternData.map((p, i) => {
+          const exHtml = p.examples.map(e => `<span class="ex">Ex) ${esc(e.en)} (${esc(e.kr)})</span>`).join('');
+          return `<div class="item"><div class="en">${i+1}. ${esc(p.title)}</div><div class="kr">${esc(p.desc)}</div>${exHtml}</div>`;
+        }).join('');
+        pDiv.innerHTML = html;
       }
       if(typeof idiomData !== 'undefined') {
         const iDiv = document.getElementById('idiom-list');
-        idiomData.forEach((i, idx) => {
-          let exHtml = i.examples.map(e => `<span class="ex">Ex) ${e.en} (${e.kr})</span>`).join('');
-          iDiv.innerHTML += `<div class="item"><div class="en">${idx+1}. ${i.idiom}</div><div class="kr">${i.meaning}</div>${exHtml}</div>`;
-        });
+        const html = idiomData.map((item, idx) => {
+          const exHtml = item.examples.map(e => `<span class="ex">Ex) ${esc(e.en)} (${esc(e.kr)})</span>`).join('');
+          return `<div class="item"><div class="en">${idx+1}. ${esc(item.idiom)}</div><div class="kr">${esc(item.meaning)}</div>${exHtml}</div>`;
+        }).join('');
+        iDiv.innerHTML = html;
       }
       if(typeof wordData !== 'undefined') {
         const wDiv = document.getElementById('word-list');
-        wordData.forEach((w, idx) => {
-          let exHtml = w.examples ? w.examples.map(e => `<span class="ex">Ex) ${e.en} (${e.kr})</span>`).join('') : '';
-          wDiv.innerHTML += `<div class="item"><div class="en">${idx+1}. ${w.word}</div><div class="kr">${w.meaning}</div>${exHtml}</div>`;
-        });
+        const html = wordData.map((w, idx) => {
+          const exHtml = w.examples ? w.examples.map(e => `<span class="ex">Ex) ${esc(e.en)} (${esc(e.kr)})</span>`).join('') : '';
+          return `<div class="item"><div class="en">${idx+1}. ${esc(w.word)}</div><div class="kr">${esc(w.meaning)}</div>${exHtml}</div>`;
+        }).join('');
+        wDiv.innerHTML = html;
       }
       if(typeof conversationData !== 'undefined') {
         const cDiv = document.getElementById('conv-list');
-        conversationData.forEach((c, idx) => {
-          let linesHtml = c.lines.map(l => `<span class="ex"><strong>${l.speaker}:</strong> ${l.en} (${l.kr})</span>`).join('');
-          cDiv.innerHTML += `<div class="item"><div class="en">${idx+1}. ${c.title}</div>${linesHtml}</div>`;
-        });
+        const html = conversationData.map((c, idx) => {
+          const linesHtml = c.lines.map(l => `<span class="ex"><strong>${esc(l.speaker)}:</strong> ${esc(l.en)} (${esc(l.kr)})</span>`).join('');
+          return `<div class="item"><div class="en">${idx+1}. ${esc(c.title)}</div>${linesHtml}</div>`;
+        }).join('');
+        cDiv.innerHTML = html;
       }
     };
   </script>

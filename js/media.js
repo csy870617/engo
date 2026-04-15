@@ -42,11 +42,16 @@ function loadVoices() {
 
   const raw = localStorage.getItem("ttsSettings");
   if(raw) {
-    const d = JSON.parse(raw);
-    userVoiceIndex = d.voiceIndex;
-    userRate = d.rate || 1.0;
-    if (d.autoPlay !== undefined) autoPlayEnabled = d.autoPlay;
-    if (d.fontSize) userFontSize = d.fontSize;
+    try {
+      const d = JSON.parse(raw);
+      userVoiceIndex = (d.voiceIndex === null || d.voiceIndex === undefined || d.voiceIndex === "")
+        ? null
+        : parseInt(d.voiceIndex, 10);
+      if (Number.isNaN(userVoiceIndex)) userVoiceIndex = null;
+      userRate = d.rate || 1.0;
+      if (d.autoPlay !== undefined) autoPlayEnabled = d.autoPlay;
+      if (d.fontSize) userFontSize = d.fontSize;
+    } catch (e) { console.warn("ttsSettings parse 실패", e); }
   }
   applyFontSizeToBody(userFontSize);
 }
@@ -119,18 +124,23 @@ function applyFontSizeToBody(size) {
 }
 
 function previewVoiceSettings() {
+  if (!("speechSynthesis" in window)) return;
   window.speechSynthesis.cancel();
   const u = new SpeechSynthesisUtterance("Hello.");
   u.lang = "en-US";
   u.rate = userRate;
-  if(document.getElementById("tts-voice-select").value && ttsVoices[document.getElementById("tts-voice-select").value]) {
-    u.voice = ttsVoices[document.getElementById("tts-voice-select").value];
+  const sel = document.getElementById("tts-voice-select");
+  if (sel && sel.value !== "") {
+    const idx = parseInt(sel.value, 10);
+    if (!Number.isNaN(idx) && ttsVoices[idx]) u.voice = ttsVoices[idx];
   }
   window.speechSynthesis.speak(u);
 }
 
 function saveSettings() {
-  userVoiceIndex = document.getElementById("tts-voice-select").value || null;
+  const rawVal = document.getElementById("tts-voice-select").value;
+  userVoiceIndex = rawVal === "" ? null : parseInt(rawVal, 10);
+  if (Number.isNaN(userVoiceIndex)) userVoiceIndex = null;
   autoPlayEnabled = document.getElementById("tts-autoplay-toggle").checked;
   localStorage.setItem("ttsSettings", JSON.stringify({
     voiceIndex: userVoiceIndex,
@@ -175,17 +185,45 @@ async function fetchRealNews() {
         const cleanTitle = item.title.split(" - ")[0];
         const sourceName = item.title.split(" - ")[1] || "News";
         const timeAgo = getTimeAgo(new Date(item.pubDate));
-        
+
         const card = document.createElement('div');
         card.className = 'news-card';
-        card.onclick = () => window.open(item.link, '_blank');
-        
+        card.onclick = () => window.open(item.link, '_blank', 'noopener,noreferrer');
+
         let topicTag = "#Trending";
         if (currentTopicIndex === 0) topicTag = "#K-Culture";
         else if (currentTopicIndex === 1) topicTag = "#Tech&Biz";
         else if (currentTopicIndex === 2) topicTag = "#Lifestyle";
-        
-        card.innerHTML = `<div><span class="news-tag">${topicTag}</span><div class="news-title">${cleanTitle}</div><div class="news-summary" style="font-size:0.8rem; color:#94a3b8;">${item.description ? item.description.replace(/<[^>]*>?/gm, '').substring(0, 70) + "..." : "Click to read more."}</div></div><div class="news-footer"><span>${sourceName}</span> • <span>${timeAgo}</span></div>`;
+
+        // 외부 RSS 응답을 textContent로 안전하게 주입 (XSS 방지)
+        const inner = document.createElement('div');
+        const tagSpan = document.createElement('span');
+        tagSpan.className = 'news-tag';
+        tagSpan.textContent = topicTag;
+        const titleDiv = document.createElement('div');
+        titleDiv.className = 'news-title';
+        titleDiv.textContent = cleanTitle;
+        const summaryDiv = document.createElement('div');
+        summaryDiv.className = 'news-summary';
+        summaryDiv.style.cssText = 'font-size:0.8rem; color:#94a3b8;';
+        const stripped = item.description ? item.description.replace(/<[^>]*>?/gm, '') : '';
+        summaryDiv.textContent = stripped ? stripped.substring(0, 70) + '...' : 'Click to read more.';
+        inner.appendChild(tagSpan);
+        inner.appendChild(titleDiv);
+        inner.appendChild(summaryDiv);
+
+        const footer = document.createElement('div');
+        footer.className = 'news-footer';
+        const sourceSpan = document.createElement('span');
+        sourceSpan.textContent = sourceName;
+        const timeSpan = document.createElement('span');
+        timeSpan.textContent = timeAgo;
+        footer.appendChild(sourceSpan);
+        footer.appendChild(document.createTextNode(' • '));
+        footer.appendChild(timeSpan);
+
+        card.appendChild(inner);
+        card.appendChild(footer);
         container.appendChild(card);
       });
       currentTopicIndex = (currentTopicIndex + 1) % NEWS_TOPICS.length;
@@ -207,10 +245,19 @@ function loadBackupNews() {
 }
 
 function getTimeAgo(date) {
+  if (!date || isNaN(date.getTime())) return "";
   const seconds = Math.floor((new Date() - date) / 1000);
-  let interval = seconds / 3600;
-  if (interval > 1) return Math.floor(interval) + " hours ago";
-  return "Just now";
+  if (seconds < 60) return "Just now";
+  const minutes = Math.floor(seconds / 60);
+  if (minutes < 60) return minutes + (minutes === 1 ? " minute ago" : " minutes ago");
+  const hours = Math.floor(minutes / 60);
+  if (hours < 24) return hours + (hours === 1 ? " hour ago" : " hours ago");
+  const days = Math.floor(hours / 24);
+  if (days < 30) return days + (days === 1 ? " day ago" : " days ago");
+  const months = Math.floor(days / 30);
+  if (months < 12) return months + (months === 1 ? " month ago" : " months ago");
+  const years = Math.floor(days / 365);
+  return years + (years === 1 ? " year ago" : " years ago");
 }
 
 // 3. Share & Contact
@@ -262,12 +309,17 @@ function sendInquiry() {
         document.getElementById('contact-msg').value = "";
         closeContactModal();
       })
+      .catch((err) => {
+        console.error("EmailJS 전송 실패:", err);
+        alert("❌ 전송에 실패했습니다. 잠시 후 다시 시도해주세요.");
+      })
       .finally(() => {
         sendBtn.innerText = originalText;
         sendBtn.disabled = false;
       });
   } else {
     alert("EmailJS 라이브러리 로드 실패");
+    sendBtn.innerText = originalText;
     sendBtn.disabled = false;
   }
 }
