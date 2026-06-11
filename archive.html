@@ -58,7 +58,17 @@
         }).join('');
         pDiv.innerHTML = html;
       }
-      if(typeof idiomData !== 'undefined') {
+      // idiomData는 js/core.js에서만 조립되는데 이 페이지는 core.js를 로드하지 않아
+      // 숙어 섹션이 항상 비어 있었음 → 레벨별 배열을 직접 합쳐서 사용
+      const idiomData = [].concat(
+        typeof idiomsLevel1 !== 'undefined' ? idiomsLevel1 : [],
+        typeof idiomsLevel2 !== 'undefined' ? idiomsLevel2 : [],
+        typeof idiomsLevel3 !== 'undefined' ? idiomsLevel3 : [],
+        typeof idiomsLevel4 !== 'undefined' ? idiomsLevel4 : [],
+        typeof idiomsLevel5 !== 'undefined' ? idiomsLevel5 : []
+      );
+
+      if(idiomData.length > 0) {
         const iDiv = document.getElementById('idiom-list');
         const html = idiomData.map((item, idx) => {
           const exHtml = item.examples.map(e => `<span class="ex">Ex) ${esc(e.en)} (${esc(e.kr)})</span>`).join('');

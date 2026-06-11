@@ -29,14 +29,31 @@ if (typeof firebase !== "undefined") {
 }
 
 // 1. 로컬 데이터 로드
+// 항목 하나가 손상되어도 나머지 로드는 계속되도록 키별로 개별 처리
+function safeParseIdSet(key) {
+  try {
+    const raw = localStorage.getItem(key);
+    if (!raw) return null;
+    const parsed = JSON.parse(raw);
+    return Array.isArray(parsed) ? new Set(parsed) : null;
+  } catch (e) { console.warn(key + " parse 실패", e); return null; }
+}
+
+function safeParseLevel(key) {
+  const raw = localStorage.getItem(key);
+  if (raw === null) return null;
+  const n = parseInt(raw, 10);
+  return Number.isNaN(n) ? null : n;
+}
+
 function loadMemorizedData() {
   try {
-    const pRaw = localStorage.getItem("patternMemorizedIds");
-    if (pRaw) memorizedPatterns = new Set(JSON.parse(pRaw));
-    const wRaw = localStorage.getItem("wordMemorizedIds");
-    if (wRaw) memorizedWords = new Set(JSON.parse(wRaw));
-    const iRaw = localStorage.getItem("idiomMemorizedIds");
-    if (iRaw) memorizedIdioms = new Set(JSON.parse(iRaw));
+    const pSet = safeParseIdSet("patternMemorizedIds");
+    if (pSet) memorizedPatterns = pSet;
+    const wSet = safeParseIdSet("wordMemorizedIds");
+    if (wSet) memorizedWords = wSet;
+    const iSet = safeParseIdSet("idiomMemorizedIds");
+    if (iSet) memorizedIdioms = iSet;
 
     const pStudy = localStorage.getItem("patternStudyingOnly");
     if(pStudy !== null) patternStudyingOnly = (pStudy === 'true');
@@ -44,13 +61,13 @@ function loadMemorizedData() {
     if(wStudy !== null) wordStudyingOnly = (wStudy === 'true');
     const iStudy = localStorage.getItem("idiomStudyingOnly");
     if(iStudy !== null) idiomStudyingOnly = (iStudy === 'true');
-    
-    const wLevel = localStorage.getItem("selectedWordLevel");
-    if (wLevel !== null) selectedWordLevel = parseInt(wLevel);
-    const iLevel = localStorage.getItem("selectedIdiomLevel");
-    if (iLevel !== null) selectedIdiomLevel = parseInt(iLevel);
-    const pzLevel = localStorage.getItem("selectedPuzzleLevel");
-    if (pzLevel !== null) selectedPuzzleLevel = parseInt(pzLevel);
+
+    const wLevel = safeParseLevel("selectedWordLevel");
+    if (wLevel !== null) selectedWordLevel = wLevel;
+    const iLevel = safeParseLevel("selectedIdiomLevel");
+    if (iLevel !== null) selectedIdiomLevel = iLevel;
+    const pzLevel = safeParseLevel("selectedPuzzleLevel");
+    if (pzLevel !== null) selectedPuzzleLevel = pzLevel;
 
     currentPatternId = localStorage.getItem("currentPatternId");
     currentWordId = localStorage.getItem("currentWordId");
@@ -171,9 +188,14 @@ async function performSmartSync() {
   const doc = await docRef.get();
   let serverData = doc.exists ? doc.data() : {};
 
-  const mergedPatterns = new Set([...memorizedPatterns, ...(serverData.patterns || [])]);
-  const mergedWords = new Set([...memorizedWords, ...(serverData.words || [])]);
-  const mergedIdioms = new Set([...memorizedIdioms, ...(serverData.idioms || [])]);
+  // 서버 필드가 배열이 아닌 경우(손상/타 버전 기록) spread 예외 방지
+  const serverPatterns = Array.isArray(serverData.patterns) ? serverData.patterns : [];
+  const serverWords = Array.isArray(serverData.words) ? serverData.words : [];
+  const serverIdioms = Array.isArray(serverData.idioms) ? serverData.idioms : [];
+
+  const mergedPatterns = new Set([...memorizedPatterns, ...serverPatterns]);
+  const mergedWords = new Set([...memorizedWords, ...serverWords]);
+  const mergedIdioms = new Set([...memorizedIdioms, ...serverIdioms]);
 
   // 설정 병합: 서버 값이 있으면 우선 적용 (다른 기기에서 변경한 값 반영)
   const serverSettings = serverData.settings || {};

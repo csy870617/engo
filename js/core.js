@@ -60,6 +60,15 @@ let isBackAction = false;
 let isConversationPlaying = false;
 let currentAudioSessionId = 0; 
 
+// 편향 없는 셔플 (Fisher-Yates) - 뉴스/퍼즐에서 공용 사용
+function shuffleArray(arr) {
+  for (let i = arr.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [arr[i], arr[j]] = [arr[j], arr[i]];
+  }
+  return arr;
+}
+
 // ==========================================
 // 2. 네비게이션 & UI 제어
 // ==========================================
@@ -76,8 +85,10 @@ window.onpopstate = function(event) {
 };
 
 function goTo(page, isReplace = false) {
+  // 존재하지 않는 페이지(#sync, #settings, 오타 해시 등)로 진입 시 빈 화면 방지
+  if (!pages.includes(page)) page = "home";
   stopAudio();
-  
+
   if (!isBackAction) {
     if (isReplace) history.replaceState({ page: page }, "", "#" + page);
     else if (!history.state || history.state.page !== page) history.pushState({ page: page }, "", "#" + page);
