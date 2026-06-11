@@ -39,7 +39,7 @@ function initPuzzle() {
     if (pool.length === 0) {
        pool.push({ en: "Welcome to the English puzzle game.", kr: "영어 퍼즐 게임에 오신 것을 환영합니다." });
     }
-    puzzleList = pool.sort(() => Math.random() - 0.5);
+    puzzleList = shuffleArray(pool);
     currentPuzzleIndex = 0;
   }
   if (!currentPuzzleAnswer) nextPuzzle(); else renderPuzzle();
@@ -47,10 +47,11 @@ function initPuzzle() {
 
 function nextPuzzle() {
   if (puzzleList.length === 0) { initPuzzle(); return; }
-  if (currentPuzzleIndex >= puzzleList.length) { currentPuzzleIndex = 0; puzzleList.sort(() => Math.random() - 0.5); }
+  if (currentPuzzleIndex >= puzzleList.length) { currentPuzzleIndex = 0; shuffleArray(puzzleList); }
   const target = puzzleList[currentPuzzleIndex];
   currentPuzzleIndex++;
-  currentPuzzleAnswer = target.en.trim();
+  // 연속 공백이 있으면 빈 토큰이 생기고 정답 판정이 불가능해지므로 공백 정규화
+  currentPuzzleAnswer = target.en.trim().replace(/\s+/g, " ");
   document.getElementById("puzzle-counter").textContent = `${currentPuzzleIndex} / ${puzzleList.length}`;
   document.getElementById("puzzle-question").textContent = target.kr;
   document.getElementById("puzzle-feedback").textContent = "";

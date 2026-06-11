@@ -1,34 +1,40 @@
 // 캐시 버전 - 정적 자산을 변경했을 때 숫자를 올리세요.
-const CACHE_NAME = 'engo-cache-v95';
+const CACHE_NAME = 'engo-cache-v96';
 
-// 캐싱할 파일 목록
+// 캐싱할 파일 목록 (같은 출처의 핵심 자산)
 const ASSETS_TO_CACHE = [
   './',
   './index.html',
   './style.css',
-  './js/core.js',    // <-- 추가
-  './js/storage.js', // <-- 추가
-  './js/media.js',   // <-- 추가
-  './js/study.js',   // <-- 추가
-  './js/game.js',    // <-- 추가
+  './js/core.js',
+  './js/storage.js',
+  './js/media.js',
+  './js/study.js',
+  './js/game.js',
   './pattern.js',
   './word.js',
   './idiom.js',
   './conversation.js',
   './manifest.json',
-  './icon.png',
+  './icon.png'
+];
+
+// 외부 CDN 자산 - 일시 장애로 받지 못해도 설치 자체는 실패하지 않도록 분리
+const EXTERNAL_ASSETS = [
   'https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css'
 ];
 
 // 1. 설치 (Install) - 새 파일 다운로드
 self.addEventListener('install', (event) => {
   // 대기하지 않고 즉시 활성화 단계로 넘어가도록 설정 (빠른 업데이트)
-  self.skipWaiting(); 
-  
+  self.skipWaiting();
+
   event.waitUntil(
     caches.open(CACHE_NAME).then((cache) => {
       console.log('[Service Worker] Caching all assets');
-      return cache.addAll(ASSETS_TO_CACHE);
+      return cache.addAll(ASSETS_TO_CACHE).then(() =>
+        Promise.allSettled(EXTERNAL_ASSETS.map((url) => cache.add(url)))
+      );
     })
   );
 });

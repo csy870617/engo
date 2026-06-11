@@ -84,10 +84,13 @@ function speakText(text, speaker = null) {
 
 function speakWithPromise(text, speaker) {
   return new Promise(resolve => {
+    // TTS 미지원 브라우저에서 자동재생 루프가 예외로 죽지 않도록 가드
+    if (!("speechSynthesis" in window)) { resolve(); return; }
+
     const u = new SpeechSynthesisUtterance(text);
     u.lang = "en-US";
     u.rate = userRate || 1.0;
-    
+
     if (userVoiceIndex !== null && ttsVoices[userVoiceIndex]) {
       u.voice = ttsVoices[userVoiceIndex];
     } else if (speaker === 'A' && voiceA) {
@@ -98,9 +101,22 @@ function speakWithPromise(text, speaker) {
       if (voiceA === voiceB) u.pitch = 0.8;
       else u.pitch = 1.0;
     }
-    
-    u.onend = resolve;
-    u.onerror = resolve;
+
+    // 일부 브라우저에서 onend/onerror가 누락되면 재생 루프가 영원히 멈추므로
+    // 문장 길이에 비례한 안전 타임아웃으로 반드시 resolve 보장
+    let settled = false;
+    let safetyTimer = null;
+    const finish = () => {
+      if (settled) return;
+      settled = true;
+      if (safetyTimer) clearTimeout(safetyTimer);
+      resolve();
+    };
+    const rate = userRate || 1.0;
+    safetyTimer = setTimeout(finish, Math.max(5000, (text.length * 150) / rate));
+
+    u.onend = finish;
+    u.onerror = finish;
     window.speechSynthesis.speak(u);
   });
 }
@@ -173,13 +189,13 @@ async function fetchRealNews() {
   
   try {
     const response = await fetch(apiUrl);
+    if (!response.ok) throw new Error("HTTP " + response.status);
     const data = await response.json();
-    
-    if (data.status === 'ok') {
+
+    if (data.status === 'ok' && Array.isArray(data.items)) {
       container.innerHTML = "";
-      let allArticles = data.items.slice(0, 15);
-      const shuffled = allArticles.sort(() => 0.5 - Math.random());
-      const selectedArticles = shuffled.slice(0, 3);
+      const allArticles = data.items.slice(0, 15);
+      const selectedArticles = shuffleArray(allArticles).slice(0, 3);
       
       selectedArticles.forEach(item => {
         const cleanTitle = item.title.split(" - ")[0];
@@ -233,6 +249,7 @@ async function fetchRealNews() {
 
 function loadBackupNews() {
   const container = document.getElementById('news-card-list');
+  if (!container) return;
   container.innerHTML = "";
   const newsData = [{ tag: "K-Culture", title: "Han Kang wins Nobel Prize", summary: "South Korean author Han Kang brings home the Nobel Prize.", source: "CNN", url: "https://edition.cnn.com/" }];
   newsData.forEach(news => {
