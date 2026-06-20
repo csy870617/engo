@@ -1,5 +1,5 @@
 // 캐시 버전 - 정적 자산을 변경했을 때 숫자를 올리세요.
-const CACHE_NAME = 'engo-cache-v96';
+const CACHE_NAME = 'engo-cache-v97';
 
 // 캐싱할 파일 목록 (같은 출처의 핵심 자산)
 const ASSETS_TO_CACHE = [

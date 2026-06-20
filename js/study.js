@@ -100,7 +100,7 @@ async function playPatternExamples() {
   const mySessionId = currentAudioSessionId;
   isConversationPlaying = true;
   const p = patternData.find(x => x.id === currentPatternId);
-  if (!p) return;
+  if (!p) { isConversationPlaying = false; return; }
   await speakWithPromise(p.title);
   if (currentAudioSessionId !== mySessionId || !isConversationPlaying) return;
   await new Promise(resolve => setTimeout(resolve, 800));
@@ -201,7 +201,7 @@ async function playWordExamples() {
   const mySessionId = currentAudioSessionId;
   isConversationPlaying = true;
   const w = wordData.find(x => x.id === currentWordId);
-  if (!w) return;
+  if (!w) { isConversationPlaying = false; return; }
   await speakWithPromise(w.word);
   if (currentAudioSessionId !== mySessionId || !isConversationPlaying) return;
   await new Promise(resolve => setTimeout(resolve, 800));
@@ -300,7 +300,7 @@ async function playIdiomExamples() {
   const mySessionId = currentAudioSessionId;
   isConversationPlaying = true;
   const item = idiomData.find(x => x.id === currentIdiomId);
-  if (!item) return;
+  if (!item) { isConversationPlaying = false; return; }
   await speakWithPromise(item.idiom);
   if (currentAudioSessionId !== mySessionId || !isConversationPlaying) return;
   await new Promise(resolve => setTimeout(resolve, 800));
@@ -336,7 +336,15 @@ function renderConversationDetail() {
   const conv = conversationData.find(c => c.id === currentConvId);
   if (!conv) return;
   document.getElementById("conv-title").textContent = conv.title;
+  // 진입 시 기본값(해석 켜짐)만 1회 설정하고, 실제 라인 렌더는 분리된 함수로 위임
   document.getElementById("conv-toggle-kr").checked = true;
+  renderConversationLines();
+}
+// 토글 onchange가 호출 - 현재 체크박스 상태를 그대로 읽어 라인만 다시 그림
+// (이전: onchange가 renderConversationDetail을 호출해 매번 checked=true로 강제 → 해석 숨김이 동작하지 않던 버그)
+function renderConversationLines() {
+  const conv = conversationData.find(c => c.id === currentConvId);
+  if (!conv) return;
   const showKr = document.getElementById("conv-toggle-kr").checked;
   const container = document.getElementById("conv-lines");
   container.innerHTML = "";
@@ -358,7 +366,7 @@ async function playConversationAll() {
   const mySessionId = currentAudioSessionId;
   isConversationPlaying = true; 
   const conv = conversationData.find(c => c.id === currentConvId);
-  if (!conv) return;
+  if (!conv) { isConversationPlaying = false; return; }
   for (const line of conv.lines) {
     if (currentAudioSessionId !== mySessionId || !isConversationPlaying) break; 
     await speakWithPromise(line.en, line.speaker);
@@ -495,9 +503,10 @@ function renderBlogDetail() {
   const contentBox = document.getElementById('paper-content'); contentBox.innerHTML = "";
   const chunkSize = 50; const startIndex = currentBlogIndex * chunkSize;
   let targetData = []; let titlePrefix = "";
-  if (currentBlogType === 'pattern') { targetData = patternData; titlePrefix = "Pattern Note"; }
-  else if (currentBlogType === 'idiom') { targetData = idiomData; titlePrefix = "Idiom Note"; }
-  else if (currentBlogType === 'word') { targetData = wordData; titlePrefix = "Vocabulary"; }
+  // renderBlogList과 동일하게 데이터 미정의(로드 실패 등) 상황을 방어
+  if (currentBlogType === 'pattern') { targetData = (typeof patternData !== 'undefined') ? patternData : []; titlePrefix = "Pattern Note"; }
+  else if (currentBlogType === 'idiom') { targetData = (typeof idiomData !== 'undefined') ? idiomData : []; titlePrefix = "Idiom Note"; }
+  else if (currentBlogType === 'word') { targetData = (typeof wordData !== 'undefined') ? wordData : []; titlePrefix = "Vocabulary"; }
   const dataSlice = targetData.slice(startIndex, startIndex + chunkSize);
   
   const itemsPerPage = 50;
