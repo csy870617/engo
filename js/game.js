@@ -60,9 +60,7 @@ function nextPuzzle() {
   puzzleTargetTokens = [];
   // 중복 단어를 안전하게 다루기 위해 각 토큰에 고유 id 부여
   const words = currentPuzzleAnswer.split(" ");
-  puzzleShuffledTokens = words
-    .map((w, i) => ({ id: i, text: w }))
-    .sort(() => Math.random() - 0.5);
+  puzzleShuffledTokens = shuffleArray(words.map((w, i) => ({ id: i, text: w })));
   renderPuzzle();
 }
 function renderPuzzle() {
@@ -89,8 +87,8 @@ function checkPuzzle() {
   const user = puzzleTargetTokens.map(t => t.text).join(" ");
   const fb = document.getElementById("puzzle-feedback");
   fb.style.color = "";
-  if (user === currentPuzzleAnswer) { fb.textContent = "정답입니다! 🎉"; fb.className = "feedback ok"; speakText(currentPuzzleAnswer); }
-  else { fb.textContent = "오답입니다."; fb.className = "feedback error"; }
+  if (user === currentPuzzleAnswer) { fb.textContent = "정답입니다! 🎉"; fb.className = "feedback-msg ok"; speakText(currentPuzzleAnswer); }
+  else { fb.textContent = "오답입니다."; fb.className = "feedback-msg error"; }
 }
 function resetPuzzle() { puzzleTargetTokens = []; const fb = document.getElementById("puzzle-feedback"); fb.textContent = ""; fb.style.color = ""; renderPuzzle(); }
 function showPuzzleAnswer() { const fb = document.getElementById("puzzle-feedback"); fb.textContent = `정답: ${currentPuzzleAnswer}`; fb.className = "feedback-msg"; fb.style.color = "#38bdf8"; }
