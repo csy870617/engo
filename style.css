@@ -240,8 +240,8 @@ main {
 .token:hover { background: var(--primary); color: #fff; }
 
 .feedback-msg { font-weight: bold; min-height: 24px; margin: 10px 0; }
-.feedback.ok { color: var(--success); }
-.feedback.error { color: var(--danger); }
+.feedback-msg.ok { color: var(--success); }
+.feedback-msg.error { color: var(--danger); }
 
 .progress-card { text-align: center; padding: 16px !important; }
 .progress-text { font-size: 0.85rem; color: var(--accent); margin-bottom: 6px; font-weight: 600; }
