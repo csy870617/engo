@@ -11,6 +11,10 @@ let autoPlayEnabled = true;
 let voiceA = null;
 let voiceB = null;
 
+// 앱 기본 목소리: 사용자가 별도로 고르지 않았을 때 사용할 목소리 (Google US English 우선)
+const DEFAULT_VOICE_NAME = "Google US English";
+let defaultVoice = null;
+
 function loadVoices() {
   ttsVoices = window.speechSynthesis.getVoices();
   const sel = document.getElementById("tts-voice-select");
@@ -28,7 +32,15 @@ function loadVoices() {
   
   const enVoices = ttsVoices.filter(v => v.lang.includes("en"));
   const preferredVoices = enVoices.filter(v => v.name.includes("Google") || v.name.includes("Samantha") || v.name.includes("Siri"));
-  
+
+  // 기본 목소리 결정: Google US English → 다른 Google 계열 en-US → 임의 en-US → 첫 영어 목소리
+  const isEnUS = (v) => v.lang.replace("_", "-").toLowerCase().startsWith("en-us");
+  defaultVoice =
+    enVoices.find(v => v.name === DEFAULT_VOICE_NAME) ||
+    enVoices.find(v => v.name.includes("Google") && isEnUS(v)) ||
+    enVoices.find(isEnUS) ||
+    enVoices[0] || null;
+
   if (preferredVoices.length >= 2) {
     voiceA = preferredVoices[0];
     voiceB = preferredVoices[1];
@@ -38,6 +50,19 @@ function loadVoices() {
   } else if (enVoices.length === 1) {
     voiceA = enVoices[0];
     voiceB = enVoices[0];
+  }
+
+  // 설정 목록의 '기본 목소리' 항목에 실제로 쓰이는 목소리 이름을 표시
+  if (sel && sel.options.length > 0 && defaultVoice) {
+    sel.options[0].textContent = `기본 목소리 (${defaultVoice.name})`;
+  }
+
+  // 대화 화자 A는 기본 목소리(Google US English)로 맞추고, B는 되도록 다른 목소리로 구분
+  if (defaultVoice) {
+    voiceA = defaultVoice;
+    if (!voiceB || voiceB === defaultVoice) {
+      voiceB = preferredVoices.find(v => v !== defaultVoice) || enVoices.find(v => v !== defaultVoice) || defaultVoice;
+    }
   }
 
   const raw = localStorage.getItem("ttsSettings");
@@ -77,8 +102,10 @@ function speakText(text, speaker = null) {
     u.voice = voiceB;
     if (voiceA === voiceB) u.pitch = 0.8;
     else u.pitch = 1.0;
+  } else if (defaultVoice) {
+    u.voice = defaultVoice;
   }
-  
+
   window.speechSynthesis.speak(u);
 }
 
@@ -100,6 +127,8 @@ function speakWithPromise(text, speaker) {
       u.voice = voiceB;
       if (voiceA === voiceB) u.pitch = 0.8;
       else u.pitch = 1.0;
+    } else if (defaultVoice) {
+      u.voice = defaultVoice;
     }
 
     // 일부 브라우저에서 onend/onerror가 누락되면 재생 루프가 영원히 멈추므로
@@ -149,6 +178,9 @@ function previewVoiceSettings() {
   if (sel && sel.value !== "") {
     const idx = parseInt(sel.value, 10);
     if (!Number.isNaN(idx) && ttsVoices[idx]) u.voice = ttsVoices[idx];
+  } else if (defaultVoice) {
+    // '기본 목소리' 선택 시에도 실제 재생과 동일한 목소리로 미리듣기
+    u.voice = defaultVoice;
   }
   window.speechSynthesis.speak(u);
 }
