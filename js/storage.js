@@ -149,8 +149,11 @@ function updateSyncUI() {
 }
 
 // 3. 통합 동기화 핸들러 (UI 효과 + 로직 실행)
+let isSyncing = false; // 버튼 연타 시 동기화가 겹쳐 실행되며 완료 알림이 중복되는 것 방지
 async function handleSmartSyncUI(source) {
   if (!currentUser) { openSyncModal(); return; }
+  if (isSyncing) return;
+  isSyncing = true;
 
   const headerBtn = document.getElementById("header-sync-btn");
   const modalBtn = document.getElementById("modal-sync-btn");
@@ -169,6 +172,7 @@ async function handleSmartSyncUI(source) {
     console.error(e);
     alert("동기화 실패: " + e.message);
   } finally {
+    isSyncing = false;
     setTimeout(() => {
       if(headerBtn) headerBtn.classList.remove("spinning");
       if(modalBtn) {
@@ -199,10 +203,11 @@ async function performSmartSync() {
 
   // 설정 병합: 서버 값이 있으면 우선 적용 (다른 기기에서 변경한 값 반영)
   const serverSettings = serverData.settings || {};
-  if (serverSettings.voiceIndex !== undefined) userVoiceIndex = serverSettings.voiceIndex;
-  if (typeof serverSettings.rate === 'number') userRate = serverSettings.rate;
+  // 서버 값의 형식이 어긋나면(손상/타 버전 기록) 목소리·글자 크기가 깨지므로 유효한 값만 반영
+  if (serverSettings.voiceIndex === null || Number.isInteger(serverSettings.voiceIndex)) userVoiceIndex = serverSettings.voiceIndex;
+  if (typeof serverSettings.rate === 'number' && serverSettings.rate > 0) userRate = serverSettings.rate;
   if (typeof serverSettings.autoPlay === 'boolean') autoPlayEnabled = serverSettings.autoPlay;
-  if (serverSettings.fontSize) userFontSize = serverSettings.fontSize;
+  if (['small', 'medium', 'large'].includes(serverSettings.fontSize)) userFontSize = serverSettings.fontSize;
   if (typeof serverSettings.wordLevel === 'number') selectedWordLevel = serverSettings.wordLevel;
   if (typeof serverSettings.idiomLevel === 'number') selectedIdiomLevel = serverSettings.idiomLevel;
   if (typeof serverSettings.puzzleLevel === 'number') selectedPuzzleLevel = serverSettings.puzzleLevel;
