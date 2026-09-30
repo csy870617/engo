@@ -77,11 +77,16 @@ window.onpopstate = function(event) {
   if (openModals.length > 0) {
     openModals.forEach(modal => modal.classList.add('hidden'));
   }
-  stopAudio(); 
-  const page = (event.state && event.state.page) ? event.state.page : 'home';
+  stopAudio();
+  // 설정 모달을 '저장' 없이 닫은 경우(취소/뒤로가기) 미리 적용된 속도·글자 크기 되돌림
+  restoreUnsavedSettings();
+  // 주소창에서 해시를 직접 바꾼 경우 state가 없으므로 해시를 기준으로 이동
+  let page = (event.state && event.state.page) ? event.state.page : (location.hash.replace('#', '') || 'home');
+  if (!pages.includes(page)) page = 'home';
   isBackAction = true;
   goTo(page);
   isBackAction = false;
+  if (!event.state) history.replaceState({ page: page }, "", "#" + page);
 };
 
 function goTo(page, isReplace = false) {
@@ -132,14 +137,25 @@ function stopAudio() {
 // ==========================================
 // 3. 설정(Settings) 및 모달 UI
 // ==========================================
+// 속도·글자 크기는 누르는 즉시 미리 적용되므로, 저장하지 않고 닫으면 되돌리기 위해 열 때 값을 보관
+let settingsSnapshot = null;
+function restoreUnsavedSettings() {
+  if (!settingsSnapshot) return;
+  userRate = settingsSnapshot.rate;
+  userFontSize = settingsSnapshot.fontSize;
+  applyFontSizeToBody(userFontSize);
+  settingsSnapshot = null;
+}
+
 function openSettingsModal() {
   const currentPage = history.state ? history.state.page : 'home'; history.pushState({ page: currentPage, modal: 'settings' }, "", "#settings");
+  settingsSnapshot = { rate: userRate, fontSize: userFontSize };
   document.getElementById("settings-modal").classList.remove("hidden");
   const sel = document.getElementById("tts-voice-select"); const chk = document.getElementById("tts-autoplay-toggle");
   if(sel) sel.value = userVoiceIndex !== null ? userVoiceIndex : ""; if(chk) chk.checked = autoPlayEnabled;
   updateButtonGroup('speed-btn-group', userRate); updateButtonGroup('font-btn-group', userFontSize);
 }
-function closeSettingsModal() { if (history.state && history.state.modal === 'settings') history.back(); else document.getElementById("settings-modal").classList.add("hidden"); }
+function closeSettingsModal() { if (history.state && history.state.modal === 'settings') history.back(); else { restoreUnsavedSettings(); document.getElementById("settings-modal").classList.add("hidden"); } }
 
 function updateButtonGroup(groupId, activeValue) { const group = document.getElementById(groupId); if(!group) return; group.querySelectorAll('button').forEach(btn => { if (btn.getAttribute('data-value') == activeValue) btn.classList.add('active'); else btn.classList.remove('active'); }); }
 
@@ -159,20 +175,26 @@ async function installPWA() {
     alert("이미 설치되어 있거나, 현재 브라우저에서는 설치를 지원하지 않습니다.\n(홈 화면에 추가 기능을 확인해주세요.)");
     return;
   }
-  deferredPrompt.prompt();
-  const { outcome } = await deferredPrompt.userChoice;
-  if (outcome === 'accepted') {
-    deferredPrompt = null;
-    const banner = document.getElementById('install-banner');
-    if (banner) banner.classList.add('hidden');
-  }
+  // prompt()는 이벤트당 한 번만 호출 가능 → 설치를 취소한 뒤 다시 누르면 InvalidStateError가 나므로 결과와 관계없이 비움
+  const promptEvent = deferredPrompt;
+  deferredPrompt = null;
+  try {
+    promptEvent.prompt();
+    const { outcome } = await promptEvent.userChoice;
+    if (outcome === 'accepted') {
+      const banner = document.getElementById('install-banner');
+      if (banner) banner.classList.add('hidden');
+    }
+  } catch (e) { console.warn("PWA 설치 프롬프트 실패", e); }
 }
 function hideInstallBanner() {
   const banner = document.getElementById('install-banner');
   if (banner) banner.classList.add('hidden');
 }
 
-window.addEventListener('load', () => {
+// 'load'는 광고·유튜브 iframe까지 모두 받아야 발생해 느린 네트워크에서 초기화가 늦어짐.
+// 그 사이 사용자가 암기 체크를 하면 빈 기록으로 저장돼 기존 기록이 덮어써지므로 DOM 준비 시점에 초기화
+document.addEventListener('DOMContentLoaded', () => {
   if(typeof loadMemorizedData === 'function') loadMemorizedData();
   if(typeof loadVoices === 'function') loadVoices();
   if(typeof initNewsUpdater === 'function') initNewsUpdater();

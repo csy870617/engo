@@ -16,7 +16,8 @@ const DEFAULT_VOICE_NAME = "Google US English";
 let defaultVoice = null;
 
 function loadVoices() {
-  ttsVoices = window.speechSynthesis.getVoices();
+  // speechSynthesis 미지원 브라우저(일부 인앱 웹뷰 등)에서 예외가 나면 초기화 전체가 중단되므로 가드
+  ttsVoices = ("speechSynthesis" in window) ? window.speechSynthesis.getVoices() : [];
   const sel = document.getElementById("tts-voice-select");
   if(sel) {
     sel.innerHTML = '<option value="">기본 목소리</option>';
@@ -196,6 +197,7 @@ function saveSettings() {
     autoPlay: autoPlayEnabled,
     fontSize: userFontSize
   }));
+  settingsSnapshot = null; // 저장했으므로 닫을 때 되돌리지 않음
   closeSettingsModal();
 }
 
@@ -218,9 +220,12 @@ async function fetchRealNews() {
   
   const currentRssUrl = NEWS_TOPICS[currentTopicIndex];
   const apiUrl = `https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent(currentRssUrl)}`;
-  
+
+  // 네트워크가 응답 없이 멈추면 '로딩 중' 문구가 계속 남으므로 8초 후 중단하고 백업 뉴스 표시
+  const controller = (typeof AbortController !== 'undefined') ? new AbortController() : null;
+  const abortTimer = controller ? setTimeout(() => controller.abort(), 8000) : null;
   try {
-    const response = await fetch(apiUrl);
+    const response = await fetch(apiUrl, controller ? { signal: controller.signal } : undefined);
     if (!response.ok) throw new Error("HTTP " + response.status);
     const data = await response.json();
 
@@ -277,6 +282,7 @@ async function fetchRealNews() {
       currentTopicIndex = (currentTopicIndex + 1) % NEWS_TOPICS.length;
     } else { throw new Error("API Error"); }
   } catch (error) { loadBackupNews(); }
+  finally { if (abortTimer) clearTimeout(abortTimer); }
 }
 
 function loadBackupNews() {
@@ -339,7 +345,9 @@ function openContactModal() {
 }
 
 function closeContactModal() {
-  document.getElementById('contact-modal').classList.add('hidden');
+  // 설정에서 열린 경우 설정 모달의 히스토리 항목(#settings)이 남아 있으므로 함께 정리
+  if (history.state && history.state.modal === 'settings') history.back();
+  else document.getElementById('contact-modal').classList.add('hidden');
 }
 
 function sendInquiry() {

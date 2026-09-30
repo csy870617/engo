@@ -1,5 +1,5 @@
 // 캐시 버전 - 정적 자산을 변경했을 때 숫자를 올리세요.
-const CACHE_NAME = 'engo-cache-v99';
+const CACHE_NAME = 'engo-cache-v100';
 
 // 캐싱할 파일 목록 (같은 출처의 핵심 자산)
 const ASSETS_TO_CACHE = [
@@ -16,7 +16,8 @@ const ASSETS_TO_CACHE = [
   './idiom.js',
   './conversation.js',
   './manifest.json',
-  './icon.png'
+  './icon.png',
+  './logo.png' // 파비콘·앱 아이콘(manifest) - 오프라인에서도 표시되도록 캐시
 ];
 
 // 외부 CDN 자산 - 일시 장애로 받지 못해도 설치 자체는 실패하지 않도록 분리
@@ -72,8 +73,11 @@ self.addEventListener('fetch', (event) => {
     event.respondWith(
       fetch(req)
         .then((res) => {
-          const copy = res.clone();
-          caches.open(CACHE_NAME).then((c) => c.put(req, copy)).catch(() => {});
+          // 404/500 같은 오류 페이지가 캐시되면 오프라인 시 오류 화면이 뜨므로 정상 응답만 저장
+          if (res && res.ok) {
+            const copy = res.clone();
+            caches.open(CACHE_NAME).then((c) => c.put(req, copy)).catch(() => {});
+          }
           return res;
         })
         .catch(() => caches.match(req).then((r) => r || caches.match('./index.html')))
