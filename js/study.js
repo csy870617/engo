@@ -491,7 +491,7 @@ function updateListPlayerUI(scroll) {
   // 목록 화면의 버튼: 재생 중인 목록이면 '중지'로
   document.querySelectorAll('[data-list-play]').forEach(btn => {
     const on = playing && listPlayer.type === btn.dataset.listPlay;
-    btn.textContent = on ? '■ 전체 듣기 중지' : '🔊 목록 전체 듣기';
+    btn.textContent = on ? '■ 듣기 중지' : '🔊 전체 듣기';
     btn.classList.toggle('active', on);
   });
   // 지금 읽는 항목 강조

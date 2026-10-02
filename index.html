@@ -254,13 +254,10 @@
         <div class="progress-text" id="pattern-progress">0% 완료</div>
         <div class="progress-track"><div id="pattern-progress-bar" class="progress-fill"></div></div>
       </div>
-      <div class="filter-area">
-        <button id="pattern-studying-btn" class="chip-btn" onclick="togglePatternStudying()">암기 미완료만 보기</button>
+      <div class="filter-area list-tools">
+        <button id="pattern-studying-btn" class="chip-btn" onclick="togglePatternStudying()">미완료만 보기</button>
+        <button class="chip-btn play-chip" data-list-play="pattern" onclick="toggleListPlay('pattern')">🔊 전체 듣기</button>
         <input id="pattern-search" type="text" placeholder="검색..." class="search-input" oninput="renderPatternList()" />
-      </div>
-      <div class="control-bar list-play-bar">
-        <button class="btn-small" data-list-play="pattern" onclick="toggleListPlay('pattern')">🔊 목록 전체 듣기</button>
-        <span id="pattern-list-count" class="list-play-count"></span>
       </div>
       <div id="pattern-list" class="list-view"></div>
     </section>
@@ -303,10 +300,9 @@
         <button class="chip-btn" data-word-level-btn="5" onclick="setWordLevel(5)">Lv.5</button>
         <button id="word-studying-btn" class="chip-btn outline" onclick="toggleWordStudying()">미암기만</button>
       </div>
-      <input id="word-search" type="text" placeholder="단어 검색..." class="search-input mt-2" oninput="renderWordList()" />
-      <div class="control-bar list-play-bar">
-        <button class="btn-small" data-list-play="word" onclick="toggleListPlay('word')">🔊 목록 전체 듣기</button>
-        <span id="word-list-count" class="list-play-count"></span>
+      <div class="list-tools">
+        <button class="chip-btn play-chip" data-list-play="word" onclick="toggleListPlay('word')">🔊 전체 듣기</button>
+        <input id="word-search" type="text" placeholder="단어 검색..." class="search-input" oninput="renderWordList()" />
       </div>
       <div id="word-list" class="list-view"></div>
     </section>
@@ -349,10 +345,9 @@
         <button class="chip-btn" data-idiom-level-btn="5" onclick="setIdiomLevel(5)">Lv.5</button>
         <button id="idiom-studying-btn" class="chip-btn outline" onclick="toggleIdiomStudying()">미암기만</button>
       </div>
-      <input id="idiom-search" type="text" placeholder="숙어 검색..." class="search-input mt-2" oninput="renderIdiomList()" />
-      <div class="control-bar list-play-bar">
-        <button class="btn-small" data-list-play="idiom" onclick="toggleListPlay('idiom')">🔊 목록 전체 듣기</button>
-        <span id="idiom-list-count" class="list-play-count"></span>
+      <div class="list-tools">
+        <button class="chip-btn play-chip" data-list-play="idiom" onclick="toggleListPlay('idiom')">🔊 전체 듣기</button>
+        <input id="idiom-search" type="text" placeholder="숙어 검색..." class="search-input" oninput="renderIdiomList()" />
       </div>
       <div id="idiom-list" class="list-view"></div>
     </section>
@@ -382,10 +377,9 @@
 
     <section id="page-conversations" class="hidden">
       <div class="nav-header"><span class="back-btn" onclick="goTo('home')">❮ 뒤로</span><h2>실전 대화</h2></div>
-      <input id="conv-search" type="text" placeholder="상황 검색 (예: 식당, 공항)..." class="search-input mb-4" oninput="renderConversationList()" />
-      <div class="control-bar list-play-bar">
-        <button class="btn-small" data-list-play="conv" onclick="toggleListPlay('conv')">🔊 목록 전체 듣기</button>
-        <span id="conv-list-count" class="list-play-count"></span>
+      <div class="list-tools">
+        <button class="chip-btn play-chip" data-list-play="conv" onclick="toggleListPlay('conv')">🔊 전체 듣기</button>
+        <input id="conv-search" type="text" placeholder="상황 검색 (예: 식당, 공항)..." class="search-input" oninput="renderConversationList()" />
       </div>
       <div id="conv-list" class="list-view"></div>
     </section>
