@@ -46,6 +46,17 @@ function safeParseLevel(key) {
   return Number.isNaN(n) ? null : n;
 }
 
+// 학습 데이터 정리로 중복 항목이 합쳐진 경우: 예전 ID로 암기한 기록을 남은 같은 항목 ID로 이어 준다
+// (wordIdAliases / idiomIdAliases 는 word.js / idiom.js 에 있음)
+function migrateIdSet(set, aliases) {
+  if (!aliases) return set;
+  set.forEach(id => { if (aliases[id]) set.add(aliases[id]); });
+  return set;
+}
+function migrateId(id, aliases) {
+  return (id && aliases && aliases[id]) ? aliases[id] : id;
+}
+
 function loadMemorizedData() {
   try {
     const pSet = safeParseIdSet("patternMemorizedIds");
@@ -54,6 +65,8 @@ function loadMemorizedData() {
     if (wSet) memorizedWords = wSet;
     const iSet = safeParseIdSet("idiomMemorizedIds");
     if (iSet) memorizedIdioms = iSet;
+    migrateIdSet(memorizedWords, typeof wordIdAliases !== 'undefined' ? wordIdAliases : null);
+    migrateIdSet(memorizedIdioms, typeof idiomIdAliases !== 'undefined' ? idiomIdAliases : null);
 
     const pStudy = localStorage.getItem("patternStudyingOnly");
     if(pStudy !== null) patternStudyingOnly = (pStudy === 'true');
@@ -70,8 +83,8 @@ function loadMemorizedData() {
     if (pzLevel !== null) selectedPuzzleLevel = pzLevel;
 
     currentPatternId = localStorage.getItem("currentPatternId");
-    currentWordId = localStorage.getItem("currentWordId");
-    currentIdiomId = localStorage.getItem("currentIdiomId");
+    currentWordId = migrateId(localStorage.getItem("currentWordId"), typeof wordIdAliases !== 'undefined' ? wordIdAliases : null);
+    currentIdiomId = migrateId(localStorage.getItem("currentIdiomId"), typeof idiomIdAliases !== 'undefined' ? idiomIdAliases : null);
     currentConvId = localStorage.getItem("currentConvId");
   } catch (e) { console.warn(e); }
 }
@@ -198,8 +211,9 @@ async function performSmartSync() {
   const serverIdioms = Array.isArray(serverData.idioms) ? serverData.idioms : [];
 
   const mergedPatterns = new Set([...memorizedPatterns, ...serverPatterns]);
-  const mergedWords = new Set([...memorizedWords, ...serverWords]);
-  const mergedIdioms = new Set([...memorizedIdioms, ...serverIdioms]);
+  // 다른 기기(예전 버전)에서 올린 기록의 옛 ID도 남은 항목 ID로 이어 준다
+  const mergedWords = migrateIdSet(new Set([...memorizedWords, ...serverWords]), typeof wordIdAliases !== 'undefined' ? wordIdAliases : null);
+  const mergedIdioms = migrateIdSet(new Set([...memorizedIdioms, ...serverIdioms]), typeof idiomIdAliases !== 'undefined' ? idiomIdAliases : null);
 
   // 설정 병합: 서버 값이 있으면 우선 적용 (다른 기기에서 변경한 값 반영)
   const serverSettings = serverData.settings || {};
