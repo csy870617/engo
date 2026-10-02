@@ -6,7 +6,7 @@ const idiomsLevel1 = [{
     desc: "공부, 일, 운동 중 잠시 쉬고 싶을 때.",
     examples: [
       { en: "Let's take a break.", kr: "잠깐 쉬자." },
-      { en: "You need to take a break.", kr: "넌 잠시 쉬는 게 필요해." }
+      { en: "You look tired. Take a break.", kr: "피곤해 보여. 좀 쉬어." }
     ]
   },
   {
@@ -104,8 +104,8 @@ const idiomsLevel1 = [{
     meaning: "들어오다",
     desc: "방/집 안으로 들어올 때.",
     examples: [
-      { en: "Come in!", kr: "들어와!" },
-      { en: "Please come in and sit.", kr: "들어와서 앉아." }
+      { en: "Come in! The door's open.", kr: "들어와! 문 열려 있어." },
+      { en: "Come in and have a seat.", kr: "들어와서 앉아." }
     ]
   },
 
@@ -173,18 +173,18 @@ const idiomsLevel1 = [{
     desc: "다시 돌아올 때.",
     examples: [
       { en: "I'll come back soon.", kr: "곧 돌아올게." },
-      { en: "She came back home.", kr: "그녀는 집에 돌아왔어." }
+      { en: "When are you coming back?", kr: "언제 돌아와?" }
     ]
   },
   {
     id: "lv1_17",
     level: 1,
     idiom: "go ahead",
-    meaning: "계속 하다, 먼저 하다",
-    desc: "허락할 때.",
+    meaning: "그렇게 해, 먼저 해",
+    desc: "상대에게 해도 된다고 허락하거나 먼저 하라고 양보할 때 써요.",
     examples: [
-      { en: "Go ahead.", kr: "계속 하세요." },
-      { en: "Go ahead and start.", kr: "먼저 시작하세요." }
+      { en: "Sure, go ahead. What do you need?", kr: "그래, 말해. 뭐 필요해?" },
+      { en: "You go ahead. I'll catch up.", kr: "먼저 가. 금방 따라갈게." }
     ]
   },
   {
@@ -202,22 +202,22 @@ const idiomsLevel1 = [{
     id: "lv1_19",
     level: 1,
     idiom: "come on",
-    meaning: "에이~, 제발",
-    desc: "상대가 망설이거나 안 믿을 때.",
+    meaning: "어서, 에이~ 제발",
+    desc: "상대를 재촉하거나, 말이 안 된다며 '에이~' 하고 따질 때 써요.",
     examples: [
-      { en: "Come on!", kr: "아 제발!" },
-      { en: "Come on, let's go.", kr: "자, 가자." }
+      { en: "Oh, come on! That's not fair.", kr: "에이, 그건 불공평하잖아!" },
+      { en: "Come on, let's go.", kr: "자, 어서 가자." }
     ]
   },
   {
-    id: "lv1_20",
+    id: "lv1_20r",
     level: 1,
-    idiom: "hang on",
-    meaning: "기다려봐",
-    desc: "잠깐 기다릴 때.",
+    idiom: "find out",
+    meaning: "알아내다, 알게 되다",
+    desc: "몰랐던 사실을 알게 되거나 정보를 알아볼 때 써요.",
     examples: [
-      { en: "Hang on a minute.", kr: "잠깐만." },
-      { en: "Hang on, I'll check.", kr: "기다려봐, 확인해볼게." }
+      { en: "I just found out my flight's been canceled.", kr: "방금 내 비행기가 취소된 걸 알았어." },
+      { en: "Can you find out when the store closes?", kr: "가게 몇 시에 닫는지 알아봐 줄래요?" }
     ]
   },
 
@@ -294,8 +294,8 @@ const idiomsLevel1 = [{
     meaning: "주워 들다, 차로 데리러 가다",
     desc: "사람/물건을 들어올리거나 데리러 갈 때.",
     examples: [
-      { en: "Pick it up.", kr: "그거 주워." },
-      { en: "I'll pick you up.", kr: "나 너 데리러 갈게." }
+      { en: "Can you pick that up for me?", kr: "그것 좀 주워 줄래?" },
+      { en: "I'll pick you up at seven.", kr: "7시에 데리러 갈게." }
     ]
   },
   {
@@ -317,7 +317,7 @@ const idiomsLevel1 = [{
     desc: "차/택시에 탈 때.",
     examples: [
       { en: "Get in the car.", kr: "차에 타." },
-      { en: "I got in quickly.", kr: "나는 빨리 탔어." }
+      { en: "Get in. I'll give you a ride.", kr: "타, 태워줄게." }
     ]
   },
   {
@@ -358,22 +358,22 @@ const idiomsLevel1 = [{
     id: "lv1_33",
     level: 1,
     idiom: "go out",
-    meaning: "외출하다",
-    desc: "집 밖으로 나갈 때.",
+    meaning: "외출하다, 놀러 나가다",
+    desc: "밥 먹거나 놀러 밖에 나갈 때 써요.",
     examples: [
-      { en: "Let's go out.", kr: "나가자." },
-      { en: "I went out yesterday.", kr: "어제 외출했어." }
+      { en: "Let's go out tonight.", kr: "오늘 밤에 나가 놀자." },
+      { en: "Do you want to go out for dinner?", kr: "저녁 먹으러 나갈래?" }
     ]
   },
   {
-    id: "lv1_34",
+    id: "lv1_34r",
     level: 1,
-    idiom: "come back home",
-    meaning: "집으로 돌아오다",
-    desc: "귀가 표현.",
+    idiom: "check out",
+    meaning: "한번 가 보다, 확인해 보다, 체크아웃하다",
+    desc: "새로운 장소나 물건을 구경하거나 호텔에서 나갈 때 써요.",
     examples: [
-      { en: "I came back home late.", kr: "집에 늦게 왔어." },
-      { en: "Come back home now.", kr: "지금 집으로 와." }
+      { en: "You should check out that new cafe downtown.", kr: "시내에 새로 생긴 카페 한번 가 봐." },
+      { en: "What time do we need to check out of the hotel?", kr: "호텔에서 몇 시에 체크아웃해야 해요?" }
     ]
   },
   {
@@ -402,8 +402,8 @@ const idiomsLevel1 = [{
     id: "lv1_37",
     level: 1,
     idiom: "put on",
-    meaning: "입다",
-    desc: "옷/신발/악세서리 착용.",
+    meaning: "입다, 신다, 쓰다",
+    desc: "옷, 신발, 모자 등을 몸에 걸칠 때 써요.",
     examples: [
       { en: "Put on your shoes.", kr: "신발 신어." },
       { en: "I put on my jacket.", kr: "나는 재킷을 입었어." }
@@ -425,10 +425,10 @@ const idiomsLevel1 = [{
     level: 1,
     idiom: "write down",
     meaning: "적다",
-    desc: "메모.",
+    desc: "잊어버리지 않게 종이나 폰에 메모해 둘 때 써요.",
     examples: [
-      { en: "Write it down.", kr: "적어." },
-      { en: "I wrote down the address.", kr: "주소를 적었어." }
+      { en: "Can you write it down for me?", kr: "그거 좀 적어 줄래?" },
+      { en: "I wrote down the address.", kr: "주소 적어 뒀어." }
     ]
   },
   {
@@ -463,8 +463,8 @@ const idiomsLevel2 = [
     meaning: "~을 기대하다",
     desc: "다가올 일에 대해 설레거나 기대될 때 쓰는 표현.",
     examples: [
-      { en: "I'm looking forward to the trip.", kr: "그 여행이 정말 기대돼." },
-      { en: "I look forward to meeting you.", kr: "당신을 만나 뵙기를 기대하고 있습니다." }
+      { en: "I'm looking forward to the trip.", kr: "그 여행 진짜 기대돼." },
+      { en: "I'm really looking forward to working with you.", kr: "같이 일하게 돼서 정말 기대돼요." }
     ]
   },
   {
@@ -474,8 +474,8 @@ const idiomsLevel2 = [
     meaning: "~이 다 떨어지다",
     desc: "시간·돈·물건 등이 부족해서 더 이상 남지 않았을 때.",
     examples: [
-      { en: "We ran out of time.", kr: "우리는 시간이 다 됐어." },
-      { en: "I ran out of coffee at home.", kr: "집에 커피가 다 떨어졌어." }
+      { en: "Sorry, we ran out of time.", kr: "미안, 시간이 다 됐어." },
+      { en: "My phone is running out of battery.", kr: "폰 배터리가 다 떨어져 가." }
     ]
   },
   {
@@ -523,14 +523,14 @@ const idiomsLevel2 = [
     ]
   },
   {
-    id: "lv2_8",
+    id: "lv2_8r",
     level: 2,
-    idiom: "be late for",
-    meaning: "~에 늦다",
-    desc: "회의, 수업, 약속 등에 제시간에 도착하지 못했을 때.",
+    idiom: "make it",
+    meaning: "(약속에) 가다, 제때 도착하다",
+    desc: "약속이나 모임에 갈 수 있는지, 제때 도착했는지 말할 때 써요.",
     examples: [
-      { en: "I was late for the meeting.", kr: "회의에 늦었어." },
-      { en: "Don't be late for class.", kr: "수업에 늦지 마." }
+      { en: "Sorry, I can't make it to dinner tonight.", kr: "미안, 오늘 저녁 못 갈 것 같아." },
+      { en: "We made it to the airport just in time!", kr: "우리 공항에 딱 맞춰 도착했어!" }
     ]
   },
   {
@@ -767,26 +767,26 @@ const idiomsLevel2 = [
     ]
   },
   {
-    id: "lv2_30",
+    id: "lv2_30r",
     level: 2,
-    idiom: "be hungry",
-    meaning: "배고프다",
-    desc: "밥 먹고 싶을 때 쓰는 가장 기본 표현.",
+    idiom: "get the hang of",
+    meaning: "요령을 터득하다, 감을 잡다",
+    desc: "새로운 일이나 기술에 점점 익숙해질 때 써요.",
     examples: [
-      { en: "I'm really hungry.", kr: "나 진짜 배고파." },
-      { en: "Are you hungry?", kr: "배고파?" }
+      { en: "Don't worry, you'll get the hang of it soon.", kr: "걱정 마, 금방 감 잡을 거야." },
+      { en: "I'm finally getting the hang of this new software.", kr: "이제야 이 새 프로그램 감이 좀 잡혀요." }
     ]
   },
 
   {
-    id: "lv2_31",
+    id: "lv2_31r",
     level: 2,
-    idiom: "be thirsty",
-    meaning: "목마르다",
-    desc: "마실 것이 필요할 때.",
+    idiom: "no big deal",
+    meaning: "별일 아니다, 대수롭지 않다",
+    desc: "상대를 안심시키거나 별것 아니라고 말할 때 써요.",
     examples: [
-      { en: "I'm thirsty. I need some water.", kr: "목 말라. 물 좀 마셔야겠어." },
-      { en: "You must be thirsty.", kr: "너 목마르겠다." }
+      { en: "I forgot my umbrella, but it's no big deal.", kr: "우산 깜빡했는데, 별거 아니야." },
+      { en: "Don't apologize. It's really no big deal.", kr: "사과하지 마. 진짜 별일 아니야." }
     ]
   },
   {
@@ -823,14 +823,14 @@ const idiomsLevel2 = [
     ]
   },
   {
-    id: "lv2_35",
+    id: "lv2_35r",
     level: 2,
-    idiom: "be scared of",
-    meaning: "~을 무서워하다",
-    desc: "두려운 대상에 대해 말할 때.",
+    idiom: "be on me",
+    meaning: "내가 내다, 내가 사다",
+    desc: "식사나 음료 값을 내가 내겠다고 할 때 써요.",
     examples: [
-      { en: "I'm scared of spiders.", kr: "나 거미 무서워해." },
-      { en: "He's scared of speaking in public.", kr: "그는 사람들 앞에서 말하는 걸 무서워해." }
+      { en: "Put your wallet away. Lunch is on me.", kr: "지갑 넣어 둬. 점심은 내가 살게." },
+      { en: "Thanks for helping. Dinner's on me tonight.", kr: "도와줘서 고마워. 오늘 저녁은 내가 쏠게." }
     ]
   },
   {
@@ -878,14 +878,14 @@ const idiomsLevel2 = [
     ]
   },
   {
-    id: "lv2_40",
+    id: "lv2_40r",
     level: 2,
-    idiom: "have a rest",
-    meaning: "쉬다, 휴식을 취하다",
-    desc: "몸과 마음을 잠깐 쉬게 할 때 쓰는 표현.",
+    idiom: "up to you",
+    meaning: "너에게 달렸다, 네가 정하다",
+    desc: "결정을 상대에게 맡길 때 써요.",
     examples: [
-      { en: "You should have a rest.", kr: "너 좀 쉬는 게 좋겠다." },
-      { en: "Let's have a rest for ten minutes.", kr: "10분만 쉬자." }
+      { en: "Pizza or pasta? It's up to you.", kr: "피자 아니면 파스타? 네가 정해." },
+      { en: "I'm fine either way. It's totally up to you.", kr: "난 아무거나 괜찮아. 전적으로 너한테 맡길게." }
     ]
   }
 ];
@@ -899,7 +899,7 @@ const idiomsLevel3 = [
     desc: "요즘 좋아해서 자주 보고, 듣고, 하는 것을 말할 때 쓰는 표현.",
     examples: [
       { en: "I'm really into movies these days.", kr: "나 요즘 영화에 푹 빠졌어." },
-      { en: "She's into K-pop.", kr: "그녀는 케이팝을 좋아해." }
+      { en: "My kids are really into K-pop right now.", kr: "우리 애들 요즘 케이팝에 완전 빠져 있어." }
     ]
   },
   {
@@ -1091,37 +1091,37 @@ const idiomsLevel3 = [
     ]
   },
   {
-    id: "lv3_19",
+    id: "lv3_19r",
     level: 3,
-    idiom: "in the morning",
-    meaning: "아침에",
-    desc: "시간대와 함께 자주 쓰이는 표현.",
+    idiom: "wrap up",
+    meaning: "마무리하다, 끝내다",
+    desc: "회의나 일을 정리하며 끝낼 때 써요.",
     examples: [
-      { en: "I drink coffee in the morning.", kr: "나는 아침에 커피를 마셔." },
-      { en: "I feel sleepy in the morning.", kr: "나는 아침에는 항상 졸려." }
+      { en: "Let's wrap up the meeting by five.", kr: "회의는 5시까지 마무리하죠." },
+      { en: "I need ten more minutes to wrap things up.", kr: "정리하는 데 10분만 더 필요해요." }
     ]
   },
   {
-    id: "lv3_20",
+    id: "lv3_20r",
     level: 3,
-    idiom: "in the evening",
-    meaning: "저녁에",
-    desc: "퇴근 후 시간대에 일어나는 일을 말할 때.",
+    idiom: "follow up (on)",
+    meaning: "다시 연락하다, 후속 확인하다",
+    desc: "이전에 한 이야기나 요청을 다시 확인하며 연락할 때 써요.",
     examples: [
-      { en: "I usually work out in the evening.", kr: "나는 보통 저녁에 운동해." },
-      { en: "Let's meet in the evening.", kr: "저녁에 만나자." }
+      { en: "I'm just following up on my email from Monday.", kr: "월요일에 보낸 메일 관련해서 다시 연락드려요." },
+      { en: "Can you follow up with the client tomorrow?", kr: "내일 고객한테 다시 연락해 줄 수 있어요?" }
     ]
   },
 
   {
-    id: "lv3_21",
+    id: "lv3_21r",
     level: 3,
-    idiom: "on the weekend",
-    meaning: "주말에",
-    desc: "토요일, 일요일에 하는 일을 말할 때.",
+    idiom: "fill ~ in (on)",
+    meaning: "(상황을) 알려 주다, 설명해 주다",
+    desc: "상대가 놓친 내용이나 최근 상황을 자세히 알려 줄 때 써요.",
     examples: [
-      { en: "What do you do on the weekend?", kr: "주말에 뭐 해?" },
-      { en: "I usually rest on the weekend.", kr: "나는 보통 주말에 쉬어." }
+      { en: "Can you fill me in on what I missed?", kr: "내가 놓친 거 좀 알려 줄래?" },
+      { en: "I'll fill you in after the meeting.", kr: "회의 끝나고 자세히 알려 줄게." }
     ]
   },
   {
@@ -1132,7 +1132,7 @@ const idiomsLevel3 = [
     desc: "온라인이나 전화가 아닌 실제로 직접 만나는 것.",
     examples: [
       { en: "I want to meet you in person.", kr: "직접 만나보고 싶어." },
-      { en: "We finally met in person.", kr: "우리는 드디어 직접 만났다." }
+      { en: "We finally met in person.", kr: "우리 드디어 직접 만났어." }
     ]
   },
   {
@@ -1142,8 +1142,8 @@ const idiomsLevel3 = [
     meaning: "확실히, 분명히",
     desc: "강한 동의나 확신을 표현할 때.",
     examples: [
-      { en: "I'll help you for sure.", kr: "내가 꼭 도와줄게." },
-      { en: "I don't know for sure.", kr: "정확히는 모르겠어." }
+      { en: "Are you coming to the party tonight? - For sure!", kr: "오늘 밤 파티 올 거야? - 당연하지!" },
+      { en: "I don't know for sure yet.", kr: "아직 확실히는 모르겠어." }
     ]
   },
   {
@@ -1264,8 +1264,8 @@ const idiomsLevel3 = [
     meaning: "이해가 되다, 말이 되다",
     desc: "상대 설명이 논리적이거나 이해될 때.",
     examples: [
-      { en: "That makes sense.", kr: "그 말 이해돼. / 말 되네." },
-      { en: "It doesn't make sense to me.", kr: "난 잘 이해가 안 돼." }
+      { en: "Oh, now that makes sense.", kr: "아, 이제야 말이 되네." },
+      { en: "It doesn't make sense to me.", kr: "난 그게 이해가 안 돼." }
     ]
   },
   {
@@ -1275,8 +1275,8 @@ const idiomsLevel3 = [
     meaning: "평소처럼",
     desc: "늘 그렇듯 평소와 같은 패턴일 때.",
     examples: [
-      { en: "He was late as usual.", kr: "그는 평소처럼 또 늦었어." },
-      { en: "Everything was the same as usual.", kr: "모든 게 평소와 똑같았어." }
+      { en: "He was late as usual.", kr: "걔는 평소처럼 또 늦었어." },
+      { en: "As usual, the subway was packed this morning.", kr: "오늘 아침에도 평소처럼 지하철이 꽉 찼어." }
     ]
   },
   {
@@ -1297,8 +1297,8 @@ const idiomsLevel3 = [
     meaning: "예를 들어",
     desc: "설명 후에 구체적인 사례를 들 때.",
     examples: [
-      { en: "You should eat more vegetables, for example, broccoli.", kr: "채소를 더 먹어야 해, 예를 들면 브로콜리 같은 거." },
-      { en: "Many people, for example my parents, like this song.", kr: "많은 사람들이, 예를 들면 우리 부모님이, 이 노래를 좋아해." }
+      { en: "I love being outdoors. For example, I go hiking every Sunday.", kr: "나 밖에 나가는 거 좋아해. 예를 들면 일요일마다 등산 가." },
+      { en: "For example, you could take the subway instead.", kr: "예를 들어, 대신 지하철을 타도 되잖아." }
     ]
   },
   {
@@ -1309,18 +1309,18 @@ const idiomsLevel3 = [
     desc: "앞의 상황을 받아서 결론을 말할 때.",
     examples: [
       { en: "In that case, let's stay home.", kr: "그렇다면 집에 있자." },
-      { en: "In that case, you should call her.", kr: "그런 경우라면, 그녀에게 전화해야 해." }
+      { en: "In that case, you should call her first.", kr: "그럼 네가 먼저 걔한테 전화해 봐." }
     ]
   },
   {
     id: "lv3_39",
     level: 3,
     idiom: "at the moment",
-    meaning: "지금 이 순간에는",
+    meaning: "지금은, 현재로서는",
     desc: "현재 상태를 말할 때, 나중에는 바뀔 수 있다는 뉘앙스.",
     examples: [
-      { en: "I'm busy at the moment.", kr: "지금 이 순간은 좀 바빠." },
-      { en: "We don't need anything at the moment.", kr: "지금은 필요한 게 없어." }
+      { en: "I'm a bit busy at the moment.", kr: "지금은 좀 바빠." },
+      { en: "We don't need anything at the moment.", kr: "지금은 필요한 거 없어." }
     ]
   },
   {
@@ -1374,11 +1374,11 @@ const idiomsLevel4 = [
     id: "lv4_4",
     level: 4,
     idiom: "take it seriously",
-    meaning: "심각하게 받아들이다",
+    meaning: "진지하게 받아들이다, 심각하게 여기다",
     desc: "가볍게 넘기지 않고 중요하게 생각할 때.",
     examples: [
-      { en: "You should take your health seriously.", kr: "건강을 진지하게 생각해야 해." },
-      { en: "He didn't take my advice seriously.", kr: "그는 내 조언을 진지하게 듣지 않았어." }
+      { en: "I was just joking. Don't take it seriously.", kr: "그냥 농담이었어. 너무 진지하게 받아들이지 마." },
+      { en: "This is really important, so please take it seriously.", kr: "이거 진짜 중요한 거니까 진지하게 생각해 줘." }
     ]
   },
   {
@@ -1529,10 +1529,10 @@ const idiomsLevel4 = [
     id: "lv4_18",
     level: 4,
     idiom: "turn up",
-    meaning: "갑자기 나타나다 / 볼륨을 키우다",
+    meaning: "나타나다, (소리를) 키우다",
     desc: "사람·물건이 갑자기 나타날 때, 또는 기기 소리를 키울 때.",
     examples: [
-      { en: "He turned up late.", kr: "그는 늦게 나타났어." },
+      { en: "He turned up an hour late to the meeting.", kr: "걔 회의에 한 시간이나 늦게 나타났어." },
       { en: "Can you turn up the music?", kr: "음악 소리 좀 키워줄래?" }
     ]
   },
@@ -1688,8 +1688,8 @@ const idiomsLevel4 = [
     meaning: "기대다, 믿다",
     desc: "상대가 약속을 지키거나 도와줄 거라 믿을 때.",
     examples: [
-      { en: "You can count on her.", kr: "그녀를 믿어도 돼." },
-      { en: "Don't count on luck.", kr: "운에만 기대지 마." }
+      { en: "You can count on me. I'll be there.", kr: "나만 믿어. 꼭 갈게." },
+      { en: "Don't count on it. He's always late.", kr: "기대하지 마. 걔 맨날 늦어." }
     ]
   },
   {
@@ -1824,7 +1824,7 @@ const idiomsLevel5 = [
     desc: "거의 일어나지 않는 일을 말할 때 쓰는 표현.",
     examples: [
       { en: "I drink soda once in a blue moon.", kr: "나는 탄산음료를 아주 가끔 마셔." },
-      { en: "We see each other once in a blue moon.", kr: "우리는 아주 가끔씩 만난다." }
+      { en: "We only see each other once in a blue moon.", kr: "우린 정말 어쩌다 한 번 만나." }
     ]
   },
   {
@@ -2167,8 +2167,8 @@ const idiomsLevel5 = [
     meaning: "최악의 상태에 이르다",
     desc: "상황이나 감정이 더 나쁠 수 없을 정도로 나빠진 상태.",
     examples: [
-      { en: "I felt like I hit rock bottom.", kr: "난 완전 바닥까지 떨어진 기분이었어." },
-      { en: "The company's sales hit rock bottom.", kr: "그 회사의 매출이 바닥을 쳤어." }
+      { en: "I felt like I hit rock bottom.", kr: "완전 바닥까지 떨어진 기분이었어." },
+      { en: "Our sales hit rock bottom last quarter.", kr: "지난 분기에 우리 매출이 바닥을 쳤어." }
     ]
   },
   {

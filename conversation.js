@@ -1,5 +1,5 @@
 // conversation.js
-// 총 50개 주제, 각 6문장
+// 총 65개 주제, 각 6문장
 // 학습 포인트: 간결하고 짧은 원어민 회화체
 
 const conversationData = [
@@ -11,11 +11,11 @@ const conversationData = [
     title: "자기소개 (Intro)",
     lines: [
       { speaker: "A", en: "I don't think we've met. I'm Minho.", kr: "우리 초면인 것 같네요. 민호예요." },
-      { speaker: "B", en: "Nice to meet you. I'm Sarah.", kr: "반가워요. 저는 사라입니다." },
-      { speaker: "A", en: "I just joined the Sales team.", kr: "이번에 영업팀에 들어왔어요." },
-      { speaker: "B", en: "Welcome! How do you like it?", kr: "환영해요! 다닐만해요?" },
-      { speaker: "A", en: "It's great, but I'm still learning.", kr: "좋아요. 아직 배우는 중이지만요." },
-      { speaker: "B", en: "You'll get used to it soon.", kr: "금방 적응하실 거예요." }
+      { speaker: "B", en: "Nice to meet you, Minho. I'm Sarah.", kr: "반가워요, 민호 씨. 저는 사라예요." },
+      { speaker: "A", en: "I just joined the sales team last week.", kr: "지난주에 영업팀에 막 들어왔어요." },
+      { speaker: "B", en: "Oh, welcome aboard! How are you liking it so far?", kr: "아, 환영해요! 지금까지는 어때요?" },
+      { speaker: "A", en: "So far so good, but I'm still learning the ropes.", kr: "지금까진 좋아요. 그래도 아직 일 배우는 중이에요." },
+      { speaker: "B", en: "Don't worry. You'll get the hang of it soon.", kr: "걱정 마요. 금방 익숙해질 거예요." }
     ]
   },
   {
@@ -58,12 +58,12 @@ const conversationData = [
     id: "conv-005",
     title: "취미 (Hobbies)",
     lines: [
-      { speaker: "A", en: "Is that a camera? Do you take photos?", kr: "그거 카메라야? 사진 찍어?" },
-      { speaker: "B", en: "Yeah, it's my new hobby.", kr: "응, 내 새로운 취미야." },
+      { speaker: "A", en: "Is that a camera? Are you into photography?", kr: "그거 카메라야? 너 사진 좋아해?" },
+      { speaker: "B", en: "Yeah, I just picked it up as a hobby.", kr: "응, 얼마 전에 취미로 시작했어." },
       { speaker: "A", en: "Cool. Is it hard to learn?", kr: "멋지다. 배우기 어려워?" },
-      { speaker: "B", en: "A little, but it's fun.", kr: "조금, 그래도 재밌어." },
-      { speaker: "A", en: "I need a hobby too.", kr: "나도 취미가 필요한데." },
-      { speaker: "B", en: "Join me this weekend!", kr: "이번 주말에 같이 가자!" }
+      { speaker: "B", en: "A little, but it's a lot of fun.", kr: "조금. 그래도 엄청 재밌어." },
+      { speaker: "A", en: "I've been looking for a new hobby too.", kr: "나도 새로운 취미 찾고 있었는데." },
+      { speaker: "B", en: "Then come take photos with me this weekend!", kr: "그럼 이번 주말에 같이 사진 찍으러 가자!" }
     ]
   },
 
@@ -110,11 +110,11 @@ const conversationData = [
     id: "conv-009",
     title: "계산하기 (Check)",
     lines: [
-      { speaker: "A", en: "I'll get this. It's my treat.", kr: "이건 내가 낼게. 내가 사는 거야." },
+      { speaker: "A", en: "I'll get this. It's my treat.", kr: "이건 내가 낼게. 내가 쏘는 거야." },
       { speaker: "B", en: "No way. Let's split it.", kr: "안 돼. 나눠 내자." },
-      { speaker: "A", en: "I insist. You paid last time.", kr: "낼게. 저번에 네가 냈잖아." },
+      { speaker: "A", en: "I insist. You paid last time.", kr: "진짜 내가 낼게. 저번에 네가 냈잖아." },
       { speaker: "B", en: "Okay, if you insist.", kr: "정 그렇다면 알겠어." },
-      { speaker: "A", en: "The next one's on you.", kr: "다음 건 네가 사." },
+      { speaker: "A", en: "The next one's on you.", kr: "다음엔 네가 사." },
       { speaker: "B", en: "Deal. Let's get dessert.", kr: "콜. 디저트 먹으러 가자." }
     ]
   },
@@ -127,7 +127,7 @@ const conversationData = [
       { speaker: "A", en: "I'm craving fried chicken.", kr: "프라이드치킨 땡겨." },
       { speaker: "B", en: "Sounds delicious. I'll order it.", kr: "맛있겠다. 내가 주문할게." },
       { speaker: "A", en: "Get the spicy sauce too.", kr: "매운 소스도 추가해 줘." },
-      { speaker: "B", en: "Got it. It'll take 30 minutes.", kr: "알겠어. 30분 걸린대." }
+      { speaker: "B", en: "Got it. It'll take about 30 minutes.", kr: "알겠어. 30분 정도 걸릴 거야." }
     ]
   },
 
@@ -138,48 +138,48 @@ const conversationData = [
     id: "conv-011",
     title: "길 묻기 (Directions)",
     lines: [
-      { speaker: "A", en: "Excuse me, where is the station?", kr: "실례합니다, 역이 어디죠?" },
-      { speaker: "B", en: "Just go straight two blocks.", kr: "두 블록만 쭉 가세요." },
-      { speaker: "A", en: "Do I turn left or right?", kr: "왼쪽인가요 오른쪽인가요?" },
+      { speaker: "A", en: "Excuse me, how do I get to the subway station?", kr: "실례합니다, 지하철역 어떻게 가요?" },
+      { speaker: "B", en: "Just go straight for two blocks.", kr: "두 블록만 쭉 가세요." },
+      { speaker: "A", en: "And then do I turn left or right?", kr: "그다음엔 왼쪽이에요, 오른쪽이에요?" },
       { speaker: "B", en: "Turn left at the bank.", kr: "은행에서 왼쪽으로 도세요." },
-      { speaker: "A", en: "Got it. Thanks!", kr: "알겠습니다. 감사해요!" },
-      { speaker: "B", en: "No problem. It's very close.", kr: "별말씀을요. 아주 가까워요." }
+      { speaker: "A", en: "Got it. Thanks so much!", kr: "알겠어요. 정말 고마워요!" },
+      { speaker: "B", en: "No problem. You can't miss it.", kr: "별말씀을요. 금방 찾으실 거예요." }
     ]
   },
   {
     id: "conv-012",
     title: "체크인 (Check-in)",
     lines: [
-      { speaker: "A", en: "Hi, checking in. Name's Lee.", kr: "안녕하세요, 체크인이요. 이(Lee)입니다." },
-      { speaker: "B", en: "Okay. Can I see your ID?", kr: "네. 신분증 좀 볼까요?" },
-      { speaker: "A", en: "Here. Is breakfast included?", kr: "여기요. 조식 포함인가요?" },
+      { speaker: "A", en: "Hi, I'd like to check in. It's under Lee.", kr: "안녕하세요, 체크인하려고요. 이(Lee) 이름으로 예약했어요." },
+      { speaker: "B", en: "Sure. Can I see your ID, please?", kr: "네. 신분증 좀 보여주시겠어요?" },
+      { speaker: "A", en: "Here you go. Is breakfast included?", kr: "여기요. 조식 포함인가요?" },
       { speaker: "B", en: "Yes, it is. Any room preference?", kr: "네, 포함입니다. 원하시는 객실 있으세요?" },
       { speaker: "A", en: "An ocean view, if possible.", kr: "가능하면 바다 전망으로요." },
-      { speaker: "B", en: "No problem. Here's your key.", kr: "알겠습니다. 키 여기 있습니다." }
+      { speaker: "B", en: "No problem. Here's your key card.", kr: "알겠습니다. 여기 카드 키예요." }
     ]
   },
   {
     id: "conv-013",
     title: "사진 요청 (Photo)",
     lines: [
-      { speaker: "A", en: "Could you take a picture of us?", kr: "저희 사진 좀 찍어주실래요?" },
-      { speaker: "B", en: "Sure. Just press this?", kr: "그럼요. 이거 누르면 되나요?" },
-      { speaker: "A", en: "Yes. Please get the tower in the shot.", kr: "네. 타워 나오게 해주세요." },
-      { speaker: "B", en: "Okay, say cheese! One more.", kr: "자, 치즈! 한 장 더요." },
-      { speaker: "A", en: "Perfect. Thanks a lot.", kr: "완벽해요. 정말 감사합니다." },
-      { speaker: "B", en: "You're welcome. Enjoy!", kr: "천만에요. 즐거운 여행 되세요!" }
+      { speaker: "A", en: "Excuse me, could you take a picture of us?", kr: "실례지만, 저희 사진 좀 찍어주실래요?" },
+      { speaker: "B", en: "Sure. Do I just press this button?", kr: "그럼요. 이 버튼만 누르면 되나요?" },
+      { speaker: "A", en: "Yes. Could you get the tower in the background?", kr: "네. 뒤에 타워 나오게 찍어주실 수 있어요?" },
+      { speaker: "B", en: "Okay, say cheese! Let me take one more.", kr: "자, 치즈! 한 장 더 찍을게요." },
+      { speaker: "A", en: "These look great. Thanks so much.", kr: "잘 나왔네요. 정말 감사해요." },
+      { speaker: "B", en: "You're welcome. Enjoy your trip!", kr: "천만에요. 즐거운 여행 되세요!" }
     ]
   },
   {
     id: "conv-014",
     title: "수하물 찾기 (Baggage)",
     lines: [
-      { speaker: "A", en: "Where is the baggage claim?", kr: "수하물 찾는 곳이 어디죠?" },
-      { speaker: "B", en: "It's right over there, number 4.", kr: "저기 바로 4번이에요." },
-      { speaker: "A", en: "My bag is taking forever.", kr: "가방이 진짜 안 나오네." },
-      { speaker: "B", en: "I hope it's not lost.", kr: "분실된 거 아니겠지." },
+      { speaker: "A", en: "Which carousel is our flight on?", kr: "우리 비행기 짐 몇 번 벨트에서 나와?" },
+      { speaker: "B", en: "Number 4. It's right over there.", kr: "4번. 바로 저기야." },
+      { speaker: "A", en: "Ugh, my bag is taking forever.", kr: "아, 내 가방 진짜 안 나오네." },
+      { speaker: "B", en: "I hope it didn't get lost.", kr: "분실된 건 아니었으면 좋겠다." },
       { speaker: "A", en: "Oh, there it is! Finally.", kr: "아, 저기 있다! 드디어." },
-      { speaker: "B", en: "Great. Let's go home.", kr: "잘됐네. 집에 가자." }
+      { speaker: "B", en: "Great. Let's grab a taxi.", kr: "잘됐다. 택시 잡자." }
     ]
   },
   {
@@ -206,7 +206,7 @@ const conversationData = [
       { speaker: "B", en: "Let me check. How about 3?", kr: "확인해 볼게. 3시 어때?" },
       { speaker: "A", en: "Can we do 3:30 instead?", kr: "3시 반으로 해도 될까?" },
       { speaker: "B", en: "Works for me. Where?", kr: "난 좋아. 어디서?" },
-      { speaker: "A", en: "Meeting room B. I'll send an invite.", kr: "회의실 B. 초대장 보낼게." },
+      { speaker: "A", en: "Meeting room B. I'll send you an invite.", kr: "B 회의실. 캘린더 초대 보낼게." },
       { speaker: "B", en: "Okay. See you then.", kr: "알겠어. 그때 봐." }
     ]
   },
@@ -226,12 +226,12 @@ const conversationData = [
     id: "conv-018",
     title: "휴가 (Day Off)",
     lines: [
-      { speaker: "A", en: "Can I talk to you for a sec?", kr: "잠깐 얘기 좀 할 수 있을까?" },
-      { speaker: "B", en: "Sure. What's up?", kr: "그럼. 무슨 일이야?" },
-      { speaker: "A", en: "I need next Friday off.", kr: "다음 주 금요일에 쉬어야 해서." },
-      { speaker: "B", en: "Everything okay?", kr: "무슨 일 있어?" },
-      { speaker: "A", en: "Just a family event.", kr: "그냥 가족 행사가 있어서." },
-      { speaker: "B", en: "No problem. Put it on the calendar.", kr: "문제없어. 캘린더에 올려놔." }
+      { speaker: "A", en: "Do you have a sec?", kr: "잠깐 시간 괜찮으세요?" },
+      { speaker: "B", en: "Sure. What's up?", kr: "그럼요. 무슨 일이에요?" },
+      { speaker: "A", en: "Would it be okay if I took next Friday off?", kr: "다음 주 금요일에 하루 쉬어도 될까요?" },
+      { speaker: "B", en: "Of course. Is everything okay?", kr: "물론이죠. 별일 없는 거죠?" },
+      { speaker: "A", en: "Yeah, it's just a family thing.", kr: "네, 그냥 가족 일이 좀 있어서요." },
+      { speaker: "B", en: "No problem. Just put it on the team calendar.", kr: "괜찮아요. 팀 캘린더에만 올려 줘요." }
     ]
   },
   {
@@ -239,11 +239,11 @@ const conversationData = [
     title: "기기 고장 (Broken)",
     lines: [
       { speaker: "A", en: "The printer is jammed again.", kr: "프린터 또 종이 걸렸어." },
-      { speaker: "B", en: "Seriously? It's so old.", kr: "진짜? 너무 낡았어." },
-      { speaker: "A", en: "I can't fix it this time.", kr: "이번엔 못 고치겠어." },
-      { speaker: "B", en: "We should call IT.", kr: "IT 팀 불러야겠다." },
-      { speaker: "A", en: "I'll call them now.", kr: "지금 전화할게." },
-      { speaker: "B", en: "Let me know when it's fixed.", kr: "고쳐지면 알려줘." }
+      { speaker: "B", en: "Seriously? That thing is ancient.", kr: "진짜? 그거 너무 오래됐잖아." },
+      { speaker: "A", en: "I can't fix it this time.", kr: "이번엔 나도 못 고치겠어." },
+      { speaker: "B", en: "We should probably call IT.", kr: "IT팀 불러야 할 것 같아." },
+      { speaker: "A", en: "I'll put in a ticket right now.", kr: "내가 지금 바로 요청 넣을게." },
+      { speaker: "B", en: "Thanks. Let me know when it's working.", kr: "고마워. 다시 되면 알려줘." }
     ]
   },
   {
@@ -318,8 +318,8 @@ const conversationData = [
       { speaker: "B", en: "What does he like?", kr: "뭐 좋아하시는데?" },
       { speaker: "A", en: "He loves hiking.", kr: "등산 좋아하셔." },
       { speaker: "B", en: "How about a backpack?", kr: "배낭은 어때?" },
-      { speaker: "A", en: "Good idea.", kr: "좋은 생각이다." },
-      { speaker: "B", en: "Let's go check the outdoor shop.", kr: "아웃도어 매장 가보자." }
+      { speaker: "A", en: "Good idea. He'd love that.", kr: "좋은 생각이다. 엄청 좋아하시겠다." },
+      { speaker: "B", en: "Let's go check out the outdoor store.", kr: "아웃도어 매장 가보자." }
     ]
   },
 
@@ -342,12 +342,12 @@ const conversationData = [
     id: "conv-027",
     title: "약국 (Medicine)",
     lines: [
-      { speaker: "A", en: "I have a sore throat.", kr: "목이 아파요." },
-      { speaker: "B", en: "How long has it been?", kr: "얼마나 됐나요?" },
-      { speaker: "A", en: "Since yesterday. It hurts.", kr: "어제부터요. 아파요." },
-      { speaker: "B", en: "Take this every 4 hours.", kr: "이걸 4시간마다 드세요." },
+      { speaker: "A", en: "Hi, I have a sore throat.", kr: "안녕하세요, 목이 아파서 왔어요." },
+      { speaker: "B", en: "How long has it been bothering you?", kr: "언제부터 그러셨어요?" },
+      { speaker: "A", en: "Since yesterday. It hurts when I swallow.", kr: "어제부터요. 침 삼킬 때 아파요." },
+      { speaker: "B", en: "Take one of these every four hours.", kr: "이거 4시간마다 한 알씩 드세요." },
       { speaker: "A", en: "Will it make me sleepy?", kr: "먹으면 졸린가요?" },
-      { speaker: "B", en: "No, it's non-drowsy.", kr: "아뇨, 졸음 성분 없습니다." }
+      { speaker: "B", en: "No, it's non-drowsy.", kr: "아뇨, 졸음 안 오는 약이에요." }
     ]
   },
   {
@@ -394,12 +394,12 @@ const conversationData = [
     id: "conv-031",
     title: "화남 (Angry)",
     lines: [
-      { speaker: "A", en: "My neighbor is so loud.", kr: "옆집 진짜 시끄러워." },
+      { speaker: "A", en: "My neighbor's been blasting music all night.", kr: "옆집이 밤새 음악을 크게 틀어놨어." },
       { speaker: "B", en: "At this hour? Seriously?", kr: "이 시간에? 진짜?" },
       { speaker: "A", en: "It's driving me crazy.", kr: "미쳐버리겠어." },
-      { speaker: "B", en: "You should complain.", kr: "항의해야지." },
-      { speaker: "A", en: "I did. They don't care.", kr: "했어. 신경도 안 써." },
-      { speaker: "B", en: "That's terrible.", kr: "최악이다." }
+      { speaker: "B", en: "Have you called the landlord?", kr: "집주인한테 연락해 봤어?" },
+      { speaker: "A", en: "Twice. Nothing's changed.", kr: "두 번이나. 달라진 게 없어." },
+      { speaker: "B", en: "Ugh, that's so frustrating.", kr: "아, 진짜 짜증 나겠다." }
     ]
   },
   {
@@ -420,9 +420,9 @@ const conversationData = [
     lines: [
       { speaker: "A", en: "I won the lottery!", kr: "나 복권 당첨됐어!" },
       { speaker: "B", en: "No way! Really?", kr: "말도 안 돼! 진짜?" },
-      { speaker: "A", en: "Look at the ticket.", kr: "이 티켓 봐봐." },
+      { speaker: "A", en: "Look! Here's the ticket.", kr: "봐봐! 이게 그 복권이야." },
       { speaker: "B", en: "Oh my god. That's amazing.", kr: "맙소사. 대박이다." },
-      { speaker: "A", en: "I can't believe it.", kr: "믿기지가 않아." },
+      { speaker: "A", en: "I still can't believe it.", kr: "아직도 믿기지가 않아." },
       { speaker: "B", en: "Dinner's on you!", kr: "저녁은 네가 쏴!" }
     ]
   },
@@ -459,10 +459,10 @@ const conversationData = [
     title: "와이파이 (Wi-Fi)",
     lines: [
       { speaker: "A", en: "Is the Wi-Fi down?", kr: "와이파이 안 돼?" },
-      { speaker: "B", en: "Yeah, it's not working.", kr: "응, 안 되네." },
-      { speaker: "A", en: "I restarted it.", kr: "재부팅 해봤는데." },
+      { speaker: "B", en: "Yeah, it's not working for me either.", kr: "응, 나도 안 되네." },
+      { speaker: "A", en: "I already restarted the router.", kr: "공유기 이미 재부팅 해봤는데." },
       { speaker: "B", en: "Still nothing?", kr: "아직도 안 돼?" },
-      { speaker: "A", en: "Nope. I'll use my data.", kr: "어. 데이터 써야겠다." },
+      { speaker: "A", en: "Nope. I'll just use my data.", kr: "응. 그냥 데이터 써야겠다." },
       { speaker: "B", en: "Can I use your hotspot?", kr: "나도 네 핫스팟 좀 써도 돼?" }
     ]
   },
@@ -482,12 +482,12 @@ const conversationData = [
     id: "conv-038",
     title: "넷플릭스 (Netflix)",
     lines: [
-      { speaker: "A", en: "Need something to watch.", kr: "뭐 볼 거 없어?" },
-      { speaker: "B", en: "Seen 'The Glory'?", kr: "'더 글로리' 봤어?" },
-      { speaker: "A", en: "No, is it good?", kr: "아니, 재밌어?" },
-      { speaker: "B", en: "It's crazy good.", kr: "진짜 재밌어." },
+      { speaker: "A", en: "I need something to watch. Any ideas?", kr: "뭐 볼 거 없나? 추천 좀 해줘." },
+      { speaker: "B", en: "Have you seen 'The Glory'?", kr: "'더 글로리' 봤어?" },
+      { speaker: "A", en: "No, is it any good?", kr: "아니, 재밌어?" },
+      { speaker: "B", en: "It's crazy good. I binged it.", kr: "진짜 재밌어. 나 몰아서 다 봤어." },
       { speaker: "A", en: "Is it scary?", kr: "무서워?" },
-      { speaker: "B", en: "Not really. Just watch it.", kr: "별로. 그냥 봐봐." }
+      { speaker: "B", en: "Not really. Just give it a try.", kr: "별로. 그냥 한번 봐봐." }
     ]
   },
   {
@@ -497,20 +497,20 @@ const conversationData = [
       { speaker: "A", en: "Did you see my post?", kr: "내 게시물 봤어?" },
       { speaker: "B", en: "No, I deleted Instagram.", kr: "아니, 나 인스타 지웠어." },
       { speaker: "A", en: "Really? Why?", kr: "정말? 왜?" },
-      { speaker: "B", en: "It was wasting too much of my time.", kr: "시간 너무 뺏겨서." },
+      { speaker: "B", en: "It was wasting too much of my time.", kr: "시간을 너무 많이 뺏겨서." },
       { speaker: "A", en: "I should do that too.", kr: "나도 그래야 하는데." },
-      { speaker: "B", en: "Try it. It's refreshing.", kr: "해봐. 기분 좋아." }
+      { speaker: "B", en: "Try it. It feels so freeing.", kr: "해봐. 엄청 홀가분해." }
     ]
   },
   {
     id: "conv-040",
     title: "사진 공유 (Sharing)",
     lines: [
-      { speaker: "A", en: "Great lighting here.", kr: "여기 조명 좋다." },
+      { speaker: "A", en: "The lighting here is great.", kr: "여기 조명 진짜 좋다." },
       { speaker: "B", en: "Let's take a selfie.", kr: "셀카 찍자." },
       { speaker: "A", en: "How does it look?", kr: "어때?" },
-      { speaker: "B", en: "Looks good. Send it to me.", kr: "잘 나왔네. 보내줘." },
-      { speaker: "A", en: "Airdrop okay?", kr: "에어드랍 돼?" },
+      { speaker: "B", en: "Looks good. Send it to me.", kr: "잘 나왔네. 나한테 보내줘." },
+      { speaker: "A", en: "Can I AirDrop it to you?", kr: "에어드롭으로 보내도 돼?" },
       { speaker: "B", en: "Yeah, go ahead.", kr: "응, 보내." }
     ]
   },
@@ -546,11 +546,11 @@ const conversationData = [
     id: "conv-043",
     title: "소음 (Noise)",
     lines: [
-      { speaker: "A", en: "The people upstairs are too loud.", kr: "윗집 너무 시끄러워." },
-      { speaker: "B", en: "It's midnight.", kr: "자정인데 말이야." },
-      { speaker: "A", en: "I'm gonna talk to them.", kr: "가서 말해야겠어." },
-      { speaker: "B", en: "Don't fight.", kr: "싸우진 마." },
-      { speaker: "A", en: "I'll be polite.", kr: "정중하게 할게." },
+      { speaker: "A", en: "The people upstairs are way too loud.", kr: "윗집 너무 시끄러워." },
+      { speaker: "B", en: "At midnight? That's so inconsiderate.", kr: "밤 12시에? 진짜 배려 없다." },
+      { speaker: "A", en: "I'm gonna go talk to them.", kr: "올라가서 말 좀 해야겠어." },
+      { speaker: "B", en: "Just don't start a fight.", kr: "싸우지는 마." },
+      { speaker: "A", en: "Don't worry, I'll be polite.", kr: "걱정 마, 정중하게 말할게." },
       { speaker: "B", en: "Good luck.", kr: "잘해봐." }
     ]
   },
@@ -586,24 +586,24 @@ const conversationData = [
     id: "conv-046",
     title: "한국 음식 (K-Food)",
     lines: [
-      { speaker: "A", en: "Tried Bibimbap?", kr: "비빔밥 먹어봤어?" },
+      { speaker: "A", en: "Have you ever tried bibimbap?", kr: "비빔밥 먹어본 적 있어?" },
       { speaker: "B", en: "No, is it good?", kr: "아니, 맛있어?" },
-      { speaker: "A", en: "It's delicious. It's rice mixed with veggies.", kr: "맛있어. 밥에 야채를 넣고 비벼 먹는 거야." },
+      { speaker: "A", en: "It's so good. It's rice mixed with veggies.", kr: "진짜 맛있어. 밥에 야채 넣고 비벼 먹는 거야." },
       { speaker: "B", en: "Is it spicy?", kr: "매워?" },
       { speaker: "A", en: "You can adjust how spicy it is.", kr: "매운 정도는 조절할 수 있어." },
-      { speaker: "B", en: "I'll try it.", kr: "먹어볼게." }
+      { speaker: "B", en: "Sounds great. I'll give it a try.", kr: "좋다. 한번 먹어볼게." }
     ]
   },
   {
     id: "conv-047",
     title: "케이팝 (K-Pop)",
     lines: [
-      { speaker: "A", en: "You like BTS?", kr: "BTS 좋아해?" },
-      { speaker: "B", en: "Yeah, I love them.", kr: "응, 완전 좋아해." },
-      { speaker: "A", en: "Who's your bias?", kr: "최애가 누구야?" },
-      { speaker: "B", en: "Probably V.", kr: "아마 뷔." },
-      { speaker: "A", en: "He has a great voice.", kr: "목소리가 좋지." },
-      { speaker: "B", en: "I want to see their concert.", kr: "콘서트 가보고 싶어." }
+      { speaker: "A", en: "Are you into K-pop?", kr: "너 케이팝 좋아해?" },
+      { speaker: "B", en: "Yeah, I've been obsessed with it lately.", kr: "응, 요즘 완전 빠졌어." },
+      { speaker: "A", en: "Who's your favorite group?", kr: "제일 좋아하는 그룹이 누구야?" },
+      { speaker: "B", en: "Honestly, there are too many to choose from.", kr: "솔직히 너무 많아서 못 고르겠어." },
+      { speaker: "A", en: "Have you ever been to a concert?", kr: "콘서트 가본 적 있어?" },
+      { speaker: "B", en: "Not yet, but it's on my bucket list.", kr: "아직. 근데 버킷리스트에 있어." }
     ]
   },
   {
@@ -640,6 +640,190 @@ const conversationData = [
       { speaker: "B", en: "He's my best friend.", kr: "내 가장 친한 친구야." },
       { speaker: "A", en: "I want a dog too.", kr: "나도 강아지 키우고 싶어." },
       { speaker: "B", en: "You should adopt one.", kr: "입양해 봐." }
+    ]
+  },
+
+  // ==================================================
+  // 11. 실전 필수 상황 (Essentials)
+  // ==================================================
+  {
+    id: "conv-051",
+    title: "못 알아들었을 때 (Sorry?)",
+    lines: [
+      { speaker: "A", en: "Excuse me, does this train go downtown?", kr: "실례합니다, 이 기차 시내로 가요?" },
+      { speaker: "B", en: "Yes, but you need to transfer at Central Station.", kr: "네, 근데 센트럴 역에서 갈아타야 해요." },
+      { speaker: "A", en: "Sorry, could you say that again a little slower?", kr: "죄송한데, 조금만 천천히 다시 말해 주시겠어요?" },
+      { speaker: "B", en: "Sure. Get off at Central, then transfer.", kr: "그럼요. 센트럴에서 내려서 갈아타세요." },
+      { speaker: "A", en: "Got it. How many stops is that?", kr: "알겠어요. 거기까지 몇 정거장이에요?" },
+      { speaker: "B", en: "Just three stops from here.", kr: "여기서 딱 세 정거장이에요." }
+    ]
+  },
+  {
+    id: "conv-052",
+    title: "식당 주문 (Ordering)",
+    lines: [
+      { speaker: "A", en: "Are you ready to order?", kr: "주문하시겠어요?" },
+      { speaker: "B", en: "Yes, I'll have the chicken salad, please.", kr: "네, 치킨 샐러드로 할게요." },
+      { speaker: "A", en: "Sure. Anything to drink?", kr: "네. 음료는요?" },
+      { speaker: "B", en: "Just water is fine. Oh, and no onions, please.", kr: "그냥 물이면 돼요. 아, 그리고 양파는 빼 주세요." },
+      { speaker: "A", en: "No problem. Anything else?", kr: "알겠습니다. 더 필요하신 건요?" },
+      { speaker: "B", en: "That's it for now, thanks.", kr: "일단 그거면 돼요, 감사해요." }
+    ]
+  },
+  {
+    id: "conv-053",
+    title: "전화 통화 (Phone Call)",
+    lines: [
+      { speaker: "A", en: "Hi, this is Minji. Can I speak to David?", kr: "안녕하세요, 민지인데요. 데이비드 씨랑 통화할 수 있을까요?" },
+      { speaker: "B", en: "Sorry, he's not in right now.", kr: "죄송한데, 지금 자리에 안 계세요." },
+      { speaker: "A", en: "Oh, okay. Could you ask him to call me back?", kr: "아, 그렇군요. 다시 전화 좀 달라고 전해 주시겠어요?" },
+      { speaker: "B", en: "Sure. What's your number?", kr: "그럼요. 번호가 어떻게 되세요?" },
+      { speaker: "A", en: "It's 555-0123. Thanks a lot.", kr: "555-0123이에요. 정말 감사해요." },
+      { speaker: "B", en: "No problem. I'll let him know.", kr: "별말씀을요. 전해 드릴게요." }
+    ]
+  },
+  {
+    id: "conv-054",
+    title: "지각 사과 (Running Late)",
+    lines: [
+      { speaker: "A", en: "I'm so sorry I'm late. Traffic was terrible.", kr: "늦어서 정말 죄송해요. 차가 엄청 막혔어요." },
+      { speaker: "B", en: "Don't worry about it. We just got started.", kr: "걱정 마세요. 방금 시작했어요." },
+      { speaker: "A", en: "Did I miss anything important?", kr: "중요한 거 놓친 거 있어요?" },
+      { speaker: "B", en: "Not really. We're still on the first item.", kr: "별로요. 아직 첫 번째 안건이에요." },
+      { speaker: "A", en: "Okay, good. It won't happen again.", kr: "다행이네요. 다시는 이런 일 없을 거예요." },
+      { speaker: "B", en: "It's fine, really. Grab a seat.", kr: "진짜 괜찮아요. 앉으세요." }
+    ]
+  },
+  {
+    id: "conv-055",
+    title: "초대와 거절 (Invitation)",
+    lines: [
+      { speaker: "A", en: "Hey, we're having a barbecue on Saturday. Want to come?", kr: "야, 우리 토요일에 바비큐 하는데, 올래?" },
+      { speaker: "B", en: "Oh, I'd love to, but I already have plans.", kr: "아, 진짜 가고 싶은데 벌써 약속이 있어." },
+      { speaker: "A", en: "That's too bad. Maybe next time?", kr: "아쉽다. 그럼 다음에?" },
+      { speaker: "B", en: "Definitely. Thanks for inviting me, though.", kr: "당연하지. 그래도 초대해 줘서 고마워." },
+      { speaker: "A", en: "Of course. I'll let you know about the next one.", kr: "뭘. 다음번에 하면 알려 줄게." },
+      { speaker: "B", en: "Sounds great. Have fun this weekend!", kr: "좋아. 주말 재밌게 보내!" }
+    ]
+  },
+  {
+    id: "conv-056",
+    title: "택시 타기 (Taxi)",
+    lines: [
+      { speaker: "A", en: "Hi, can you take me to the airport?", kr: "안녕하세요, 공항까지 가 주실 수 있어요?" },
+      { speaker: "B", en: "Sure. Which terminal?", kr: "그럼요. 몇 터미널이세요?" },
+      { speaker: "A", en: "Terminal 2, please. How long will it take?", kr: "2터미널이요. 얼마나 걸려요?" },
+      { speaker: "B", en: "About thirty minutes, depending on traffic.", kr: "차 막히는 거에 따라 다르지만 30분 정도요." },
+      { speaker: "A", en: "Okay. Can I pay by card?", kr: "알겠어요. 카드로 결제해도 돼요?" },
+      { speaker: "B", en: "Yes, card is fine.", kr: "네, 카드 돼요." }
+    ]
+  },
+  {
+    id: "conv-057",
+    title: "병원 예약 (Appointment)",
+    lines: [
+      { speaker: "A", en: "Hi, I'd like to make an appointment, please.", kr: "안녕하세요, 진료 예약하고 싶은데요." },
+      { speaker: "B", en: "Sure. What's the reason for your visit?", kr: "네. 어떤 일로 오시는 거예요?" },
+      { speaker: "A", en: "I've had a bad cough for about a week.", kr: "일주일쯤 기침이 심해서요." },
+      { speaker: "B", en: "Okay. Can you come in tomorrow at ten?", kr: "알겠습니다. 내일 10시에 오실 수 있어요?" },
+      { speaker: "A", en: "Do you have anything later in the day?", kr: "좀 더 늦은 시간은 없나요?" },
+      { speaker: "B", en: "We have an opening at 3:30. Does that work?", kr: "3시 반에 자리가 있어요. 괜찮으세요?" }
+    ]
+  },
+  {
+    id: "conv-058",
+    title: "입국 심사 (Immigration)",
+    lines: [
+      { speaker: "A", en: "What's the purpose of your visit?", kr: "방문 목적이 뭐예요?" },
+      { speaker: "B", en: "I'm here on vacation.", kr: "휴가차 왔어요." },
+      { speaker: "A", en: "How long are you staying?", kr: "얼마나 머무르실 거예요?" },
+      { speaker: "B", en: "About a week.", kr: "일주일 정도요." },
+      { speaker: "A", en: "Where will you be staying?", kr: "어디서 지내실 거예요?" },
+      { speaker: "B", en: "At a hotel downtown. Here's my reservation.", kr: "시내에 있는 호텔이요. 여기 예약 확인서요." }
+    ]
+  },
+  {
+    id: "conv-059",
+    title: "호텔 문제 (Room Problem)",
+    lines: [
+      { speaker: "A", en: "Hi, I'm calling from room 512.", kr: "안녕하세요, 512호인데요." },
+      { speaker: "B", en: "Yes, how can I help you?", kr: "네, 무엇을 도와드릴까요?" },
+      { speaker: "A", en: "The air conditioner isn't working.", kr: "에어컨이 안 돼요." },
+      { speaker: "B", en: "I'm sorry about that. I'll send someone up right away.", kr: "죄송합니다. 바로 사람 올려 보낼게요." },
+      { speaker: "A", en: "Thanks. Could I also get some extra towels?", kr: "고마워요. 수건도 좀 더 받을 수 있을까요?" },
+      { speaker: "B", en: "Of course. I'll have those brought up too.", kr: "물론이죠. 같이 갖다 드릴게요." }
+    ]
+  },
+  {
+    id: "conv-060",
+    title: "식당 예약 (Reservation)",
+    lines: [
+      { speaker: "A", en: "Hi, I'd like to book a table for Friday night.", kr: "안녕하세요, 금요일 저녁에 자리 예약하고 싶어요." },
+      { speaker: "B", en: "Sure. For how many people?", kr: "네. 몇 분이세요?" },
+      { speaker: "A", en: "Four people, around seven o'clock.", kr: "네 명이고, 7시쯤이요." },
+      { speaker: "B", en: "Let me check... We have a table at 7:30.", kr: "확인해 볼게요... 7시 반에 자리가 있어요." },
+      { speaker: "A", en: "That works. It's under Kim.", kr: "좋아요. 김으로 예약해 주세요." },
+      { speaker: "B", en: "Perfect. See you on Friday!", kr: "좋습니다. 금요일에 뵐게요!" }
+    ]
+  },
+  {
+    id: "conv-061",
+    title: "칭찬하기 (Compliment)",
+    lines: [
+      { speaker: "A", en: "I love your jacket! Where did you get it?", kr: "재킷 너무 예쁘다! 어디서 샀어?" },
+      { speaker: "B", en: "Thanks! I got it on sale online.", kr: "고마워! 온라인에서 세일할 때 샀어." },
+      { speaker: "A", en: "It looks really good on you.", kr: "너한테 진짜 잘 어울린다." },
+      { speaker: "B", en: "Aw, that's so nice of you to say.", kr: "아, 그렇게 말해 줘서 고마워." },
+      { speaker: "A", en: "Seriously. The color is perfect for you.", kr: "진짜야. 색깔이 너한테 딱이야." },
+      { speaker: "B", en: "Thanks, you just made my day!", kr: "고마워, 덕분에 기분 최고야!" }
+    ]
+  },
+  {
+    id: "conv-062",
+    title: "도움 요청 (Asking for Help)",
+    lines: [
+      { speaker: "A", en: "Excuse me, could you help me for a second?", kr: "실례합니다, 잠깐 좀 도와주실 수 있어요?" },
+      { speaker: "B", en: "Sure. What do you need?", kr: "그럼요. 뭐가 필요하세요?" },
+      { speaker: "A", en: "I can't figure out how to use this ticket machine.", kr: "이 발권기 어떻게 쓰는지 모르겠어요." },
+      { speaker: "B", en: "Oh, it's a bit tricky. Tap here first.", kr: "아, 좀 헷갈리죠. 먼저 여기를 누르세요." },
+      { speaker: "A", en: "Ah, I see. Then I just put my card in?", kr: "아, 알겠어요. 그다음에 카드만 넣으면 돼요?" },
+      { speaker: "B", en: "Yep, that's it. You're all set.", kr: "네, 그거예요. 다 됐어요." }
+    ]
+  },
+  {
+    id: "conv-063",
+    title: "면접 (Job Interview)",
+    lines: [
+      { speaker: "A", en: "Thanks for coming in today. Did you find us okay?", kr: "오늘 와 주셔서 감사해요. 찾아오시는 데 괜찮으셨어요?" },
+      { speaker: "B", en: "Yes, thanks. It was easy to find.", kr: "네, 감사합니다. 찾기 쉬웠어요." },
+      { speaker: "A", en: "Great. So, tell me a little about yourself.", kr: "다행이네요. 그럼, 본인 소개를 좀 해 주시겠어요?" },
+      { speaker: "B", en: "Sure. I've worked in marketing for five years.", kr: "네. 저는 마케팅 분야에서 5년 일했어요." },
+      { speaker: "A", en: "What made you apply for this position?", kr: "이 자리에 지원하신 이유가 뭐예요?" },
+      { speaker: "B", en: "I'm looking for a new challenge, and I love your products.", kr: "새로운 도전을 해 보고 싶었고, 이 회사 제품을 정말 좋아해서요." }
+    ]
+  },
+  {
+    id: "conv-064",
+    title: "공항 체크인 (Flight Check-in)",
+    lines: [
+      { speaker: "A", en: "Hi, can I see your passport, please?", kr: "안녕하세요, 여권 좀 보여 주시겠어요?" },
+      { speaker: "B", en: "Here you go. Can I get a window seat?", kr: "여기요. 창가 자리로 받을 수 있을까요?" },
+      { speaker: "A", en: "Sure, I have one left. Are you checking any bags?", kr: "네, 하나 남아 있네요. 부치실 짐 있으세요?" },
+      { speaker: "B", en: "Just this one. What time does boarding start?", kr: "이거 하나요. 탑승은 몇 시에 시작해요?" },
+      { speaker: "A", en: "At 2:15, from Gate 23.", kr: "2시 15분에 23번 게이트에서요." },
+      { speaker: "B", en: "Great, thank you so much.", kr: "좋아요, 정말 감사해요." }
+    ]
+  },
+  {
+    id: "conv-065",
+    title: "은행 (Bank)",
+    lines: [
+      { speaker: "A", en: "Hi, I'd like to open a bank account.", kr: "안녕하세요, 계좌를 개설하고 싶어요." },
+      { speaker: "B", en: "Sure. Do you have a photo ID with you?", kr: "네. 사진 있는 신분증 가지고 오셨어요?" },
+      { speaker: "A", en: "Yes, here's my passport.", kr: "네, 여기 여권이요." },
+      { speaker: "B", en: "Thanks. Would you like a checking or savings account?", kr: "감사합니다. 입출금 계좌로 하실래요, 저축 계좌로 하실래요?" },
+      { speaker: "A", en: "Checking, please. Is there a monthly fee?", kr: "입출금 계좌요. 월 수수료가 있어요?" },
+      { speaker: "B", en: "Not if you keep at least 500 dollars in it.", kr: "잔액을 최소 500달러 유지하시면 없어요." }
     ]
   }
 ];

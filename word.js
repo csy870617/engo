@@ -11,10 +11,10 @@ const wordsLevel1_Part1 = [
   {
     id: "L1-002",
     word: "be",
-    meaning: "이다, 있다, 존재하다",
+    meaning: "~이다, (~에) 있다",
     examples: [
-      { en: "She is a student.", kr: "그녀는 학생이다." },
-      { en: "We are at home now.", kr: "우리는 지금 집에 있어." }
+      { en: "She's a nurse, and her husband is a teacher.", kr: "그녀는 간호사고, 남편은 선생님이야." },
+      { en: "We're at home now. Want to come over?", kr: "우리 지금 집에 있어. 놀러 올래?" }
     ]
   },
   {
@@ -31,7 +31,7 @@ const wordsLevel1_Part1 = [
     word: "of",
     meaning: "~의, ~ 중에서",
     examples: [
-      { en: "The color of the sky is blue.", kr: "하늘의 색깔은 파란색이야." },
+      { en: "Can I get a cup of coffee, please?", kr: "커피 한 잔 주시겠어요?" },
       { en: "She is one of my best friends.", kr: "그녀는 내 가장 친한 친구들 중 한 명이야." }
     ]
   },
@@ -40,17 +40,17 @@ const wordsLevel1_Part1 = [
     word: "and",
     meaning: "그리고",
     examples: [
-      { en: "I like coffee and tea.", kr: "나는 커피 그리고 차를 좋아해." },
+      { en: "I'd like a burger and fries, please.", kr: "햄버거랑 감자튀김 주세요." },
       { en: "He is tall and handsome.", kr: "그는 키가 크고 잘생겼어." }
     ]
   },
   {
     id: "L1-006",
     word: "a",
-    meaning: "하나의 (부정관사)",
+    meaning: "하나의, 어떤",
     examples: [
       { en: "I need a new book.", kr: "나는 새 책 한 권이 필요해." },
-      { en: "She has a dog.", kr: "그녀는 개 한 마리를 키워." }
+      { en: "Do you have a minute to talk?", kr: "잠깐 얘기할 시간 있어?" }
     ]
   },
   {
@@ -59,7 +59,7 @@ const wordsLevel1_Part1 = [
     meaning: "~ 안에, ~에",
     examples: [
       { en: "The keys are in the box.", kr: "열쇠는 상자 안에 있어." },
-      { en: "We live in Seoul.", kr: "우리는 서울에 살아." }
+      { en: "I've lived in Seoul for five years.", kr: "저는 서울에서 5년째 살고 있어요." }
     ]
   },
   {
@@ -76,8 +76,8 @@ const wordsLevel1_Part1 = [
     word: "have",
     meaning: "가지다, 먹다",
     examples: [
-      { en: "I have a big house.", kr: "나는 큰 집을 가지고 있어." },
-      { en: "Let's have dinner together.", kr: "함께 저녁을 먹자." }
+      { en: "Do you have any plans this weekend?", kr: "이번 주말에 무슨 계획 있어?" },
+      { en: "Let's have dinner together sometime.", kr: "언제 같이 저녁 먹자." }
     ]
   },
   {
@@ -85,8 +85,8 @@ const wordsLevel1_Part1 = [
     word: "I",
     meaning: "나",
     examples: [
-      { en: "I am happy to see you.", kr: "당신을 만나서 기뻐요." },
-      { en: "I work every day.", kr: "나는 매일 일해." }
+      { en: "I'm so happy to see you.", kr: "만나서 정말 반가워요." },
+      { en: "I work from home on Fridays.", kr: "저는 금요일엔 재택근무해요." }
     ]
   },
   {
@@ -94,8 +94,8 @@ const wordsLevel1_Part1 = [
     word: "it",
     meaning: "그것",
     examples: [
-      { en: "It is a beautiful day.", kr: "아름다운 날씨야." },
-      { en: "Did you finish it?", kr: "너 그거 끝냈니?" }
+      { en: "It is a beautiful day.", kr: "날씨 정말 좋다." },
+      { en: "Did you finish it already? That was fast.", kr: "벌써 그거 끝냈어? 빠르다." }
     ]
   },
   {
@@ -112,17 +112,17 @@ const wordsLevel1_Part1 = [
     word: "not",
     meaning: "~ 않다",
     examples: [
-      { en: "I do not like apples.", kr: "나는 사과를 좋아하지 않아." },
-      { en: "It is not true.", kr: "그것은 사실이 아니야." }
+      { en: "I'm not hungry right now, thanks.", kr: "지금은 배 안 고파요, 고마워요." },
+      { en: "That's not what I meant.", kr: "그런 뜻으로 한 말 아니었어." }
     ]
   },
   {
     id: "L1-014",
     word: "on",
-    meaning: "~ 위에, ~에 대해",
+    meaning: "~ 위에, (요일·날짜)에",
     examples: [
       { en: "The book is on the desk.", kr: "책이 책상 위에 있어." },
-      { en: "The discussion was on politics.", kr: "그 토론은 정치에 관한 것이었어." }
+      { en: "Let's meet on Friday after work.", kr: "금요일 퇴근 후에 만나자." }
     ]
   },
   {
@@ -139,7 +139,7 @@ const wordsLevel1_Part1 = [
     word: "he",
     meaning: "그 (남자)",
     examples: [
-      { en: "He is my brother.", kr: "그는 나의 남동생이야." },
+      { en: "He's my coworker from the marketing team.", kr: "그는 마케팅팀 동료야." },
       { en: "He works at a hospital.", kr: "그는 병원에서 일해." }
     ]
   },
@@ -148,17 +148,17 @@ const wordsLevel1_Part1 = [
     word: "as",
     meaning: "~로서, ~처럼, ~만큼",
     examples: [
-      { en: "She works as a teacher.", kr: "그녀는 선생님으로서 일해." },
-      { en: "It is as cold as yesterday.", kr: "어제만큼 추워." }
+      { en: "She works as a teacher.", kr: "그녀는 선생님으로 일해." },
+      { en: "It's as cold today as it was yesterday.", kr: "오늘도 어제만큼 추워." }
     ]
   },
   {
     id: "L1-018",
     word: "you",
-    meaning: "당신, 너희들",
+    meaning: "너, 당신, 너희",
     examples: [
-      { en: "How are you today?", kr: "오늘 기분이 어때요?" },
-      { en: "You should study hard.", kr: "너희들은 열심히 공부해야 해." }
+      { en: "How are you doing today?", kr: "오늘 하루 어때요?" },
+      { en: "Are you free for lunch tomorrow?", kr: "내일 점심 시간 돼?" }
     ]
   },
   {
@@ -166,8 +166,8 @@ const wordsLevel1_Part1 = [
     word: "do",
     meaning: "하다",
     examples: [
-      { en: "What do you do for fun?", kr: "취미로 뭐 하니?" },
-      { en: "Do your homework now.", kr: "지금 숙제 해." }
+      { en: "What do you do for fun?", kr: "취미로 뭐 해?" },
+      { en: "Can you do me a favor?", kr: "부탁 하나 들어줄 수 있어?" }
     ]
   },
   {
@@ -184,8 +184,8 @@ const wordsLevel1_Part1 = [
     word: "this",
     meaning: "이것, 이",
     examples: [
-      { en: "Is this your bag?", kr: "이것이 네 가방이니?" },
-      { en: "I like this song.", kr: "나는 이 노래가 좋아." }
+      { en: "Is this your bag on the chair?", kr: "의자 위에 있는 이거 네 가방이야?" },
+      { en: "I really like this song. Who sings it?", kr: "이 노래 진짜 좋다. 누가 불렀어?" }
     ]
   },
   {
@@ -193,8 +193,8 @@ const wordsLevel1_Part1 = [
     word: "but",
     meaning: "그러나, ~을 제외하고",
     examples: [
-      { en: "It is raining, but I will go out.", kr: "비가 오지만, 나는 외출할 거야." },
-      { en: "Everyone came but him.", kr: "그를 제외하고 모두 왔어." }
+      { en: "It's raining, but I still want to go out.", kr: "비 오는데 그래도 나가고 싶어." },
+      { en: "Everyone was there but my boss.", kr: "우리 상사 빼고 다 왔어." }
     ]
   },
   {
@@ -202,26 +202,26 @@ const wordsLevel1_Part1 = [
     word: "his",
     meaning: "그의",
     examples: [
-      { en: "His car is new.", kr: "그의 차는 새것이야." },
-      { en: "I know his name.", kr: "나는 그의 이름을 알아." }
+      { en: "I forgot his name. What was it again?", kr: "그 사람 이름 까먹었어. 뭐였더라?" },
+      { en: "His new car is really nice.", kr: "그 사람 새 차 진짜 좋더라." }
     ]
   },
   {
     id: "L1-024",
     word: "by",
-    meaning: "~에 의해, ~ 옆에",
+    meaning: "~까지, ~ 옆에",
     examples: [
-      { en: "The book was written by a student.", kr: "그 책은 한 학생에 의해 쓰여졌어." },
-      { en: "The house is by the river.", kr: "집은 강 옆에 있어." }
+      { en: "Can you finish the report by Friday?", kr: "금요일까지 보고서 끝낼 수 있어요?" },
+      { en: "Let's get a table by the window.", kr: "창가 자리에 앉자." }
     ]
   },
   {
     id: "L1-025",
     word: "from",
-    meaning: "~로부터",
+    meaning: "~에서, ~로부터",
     examples: [
-      { en: "I got a letter from my friend.", kr: "친구로부터 편지를 받았어." },
-      { en: "The train departs from Platform 3.", kr: "기차는 3번 플랫폼에서 출발해." }
+      { en: "I just got a text from my mom.", kr: "방금 엄마한테서 문자 왔어." },
+      { en: "Where are you from originally?", kr: "원래 어디 출신이에요?" }
     ]
   },
   {
@@ -229,8 +229,8 @@ const wordsLevel1_Part1 = [
     word: "they",
     meaning: "그들, 그것들",
     examples: [
-      { en: "They are waiting for you.", kr: "그들이 너를 기다리고 있어." },
-      { en: "The books are old, but they are useful.", kr: "그 책들은 오래되었지만, 유용해." }
+      { en: "They are waiting for you.", kr: "그 사람들이 너 기다리고 있어." },
+      { en: "I love my neighbors. They're really friendly.", kr: "우리 이웃들 너무 좋아. 정말 친절해." }
     ]
   },
   {
@@ -238,8 +238,8 @@ const wordsLevel1_Part1 = [
     word: "we",
     meaning: "우리",
     examples: [
-      { en: "We are going to the movies.", kr: "우리는 영화 보러 갈 거야." },
-      { en: "We should help him.", kr: "우리는 그를 도와야 해." }
+      { en: "We are going to the movies.", kr: "우리 영화 보러 갈 거야." },
+      { en: "We should help him move this weekend.", kr: "이번 주말에 그 사람 이사하는 거 도와줘야 해." }
     ]
   },
   {
@@ -265,8 +265,8 @@ const wordsLevel1_Part1 = [
     word: "she",
     meaning: "그녀 (여자)",
     examples: [
-      { en: "She is a good singer.", kr: "그녀는 노래를 잘하는 사람이야." },
-      { en: "She lives next door.", kr: "그녀는 옆집에 살아." }
+      { en: "She is a good singer.", kr: "그녀는 노래를 잘해." },
+      { en: "She lives next door with her two kids.", kr: "그녀는 아이 둘이랑 옆집에 살아." }
     ]
   },
   {
@@ -274,14 +274,14 @@ const wordsLevel1_Part1 = [
     word: "or",
     meaning: "또는, 혹은",
     examples: [
-      { en: "Do you want coffee or tea?", kr: "커피 또는 차를 원하니?" },
-      { en: "It might rain or snow.", kr: "비가 오거나 혹은 눈이 올 수도 있어." }
+      { en: "Do you want coffee or tea?", kr: "커피 마실래, 아니면 차 마실래?" },
+      { en: "It might rain or snow.", kr: "비나 눈이 올 수도 있어." }
     ]
   },
   {
     id: "L1-032",
     word: "will",
-    meaning: "~할 것이다 (조동사)",
+    meaning: "~할 것이다, ~할게",
     examples: [
       { en: "I will call you later.", kr: "나중에 전화할게." },
       { en: "The store will be open tomorrow.", kr: "가게는 내일 문을 열 거야." }
@@ -292,17 +292,17 @@ const wordsLevel1_Part1 = [
     word: "my",
     meaning: "나의",
     examples: [
-      { en: "This is my favorite song.", kr: "이것은 내가 가장 좋아하는 노래야." },
-      { en: "My sister is a doctor.", kr: "나의 누나는 의사야." }
+      { en: "This is my favorite song.", kr: "이거 내가 제일 좋아하는 노래야." },
+      { en: "My sister is a doctor.", kr: "우리 언니는 의사야." }
     ]
   },
   {
     id: "L1-034",
     word: "one",
-    meaning: "하나, 어떤 사람",
+    meaning: "하나, (앞서 말한) 것",
     examples: [
-      { en: "I want one piece of cake.", kr: "케이크 한 조각을 원해." },
-      { en: "One must be careful when driving.", kr: "운전할 때는 조심해야 해." }
+      { en: "Can I have one more piece of cake?", kr: "케이크 한 조각 더 먹어도 돼?" },
+      { en: "I like the blue one better.", kr: "나는 파란 게 더 좋아." }
     ]
   },
   {
@@ -346,8 +346,8 @@ const wordsLevel1_Part1 = [
     word: "what",
     meaning: "무엇, ~하는 것",
     examples: [
-      { en: "What is your name?", kr: "네 이름이 뭐니?" },
-      { en: "Tell me what you saw.", kr: "네가 본 것을 나에게 말해줘." }
+      { en: "What are you doing this weekend?", kr: "이번 주말에 뭐 해?" },
+      { en: "Tell me what you saw.", kr: "네가 본 거 말해줘." }
     ]
   },
   {
@@ -355,17 +355,17 @@ const wordsLevel1_Part1 = [
     word: "so",
     meaning: "그래서, 그렇게",
     examples: [
-      { en: "It was raining, so I stayed inside.", kr: "비가 와서, 나는 안에 머물렀어." },
-      { en: "I am so tired.", kr: "나는 정말 피곤해." }
+      { en: "It was raining, so I stayed inside.", kr: "비가 와서 집에 있었어." },
+      { en: "I'm so tired after work today.", kr: "오늘 퇴근하고 너무 피곤해." }
     ]
   },
   {
     id: "L1-041",
     word: "up",
-    meaning: "위로",
+    meaning: "위로, (가격·수치가) 올라",
     examples: [
       { en: "Look up at the sky.", kr: "하늘을 올려다 봐." },
-      { en: "The prices went up.", kr: "가격이 올랐어." }
+      { en: "Prices went up again at the grocery store.", kr: "마트 물가가 또 올랐어." }
     ]
   },
   {
@@ -373,7 +373,7 @@ const wordsLevel1_Part1 = [
     word: "out",
     meaning: "밖으로",
     examples: [
-      { en: "Please go out and play.", kr: "나가서 놀아." },
+      { en: "Let's go out for dinner tonight.", kr: "오늘 밤에 나가서 저녁 먹자." },
       { en: "The cat ran out of the house.", kr: "고양이가 집 밖으로 뛰어나갔어." }
     ]
   },
@@ -382,8 +382,8 @@ const wordsLevel1_Part1 = [
     word: "if",
     meaning: "만약 ~라면",
     examples: [
-      { en: "If you are ready, let's go.", kr: "만약 준비되었다면, 가자." },
-      { en: "I don't know if he will come.", kr: "나는 그가 올지 아닐지 모르겠어." }
+      { en: "If you are ready, let's go.", kr: "준비됐으면 가자." },
+      { en: "I don't know if he will come.", kr: "그가 올지 모르겠어." }
     ]
   },
   {
@@ -400,8 +400,8 @@ const wordsLevel1_Part1 = [
     word: "who",
     meaning: "누구, ~하는 (사람)",
     examples: [
-      { en: "Who is that person?", kr: "저 사람은 누구니?" },
-      { en: "He is the boy who helped me.", kr: "그는 나를 도와준 소년이야." }
+      { en: "Who is that person by the door?", kr: "문 옆에 있는 저 사람 누구야?" },
+      { en: "That's the guy who helped me yesterday.", kr: "저 사람이 어제 나 도와준 사람이야." }
     ]
   },
   {
@@ -416,10 +416,10 @@ const wordsLevel1_Part1 = [
   {
     id: "L1-047",
     word: "which",
-    meaning: "어느 것, ~인 것",
+    meaning: "어느, 어느 것",
     examples: [
-      { en: "Which color do you prefer?", kr: "어떤 색깔을 선호하니?" },
-      { en: "This is the car which I bought.", kr: "이것이 내가 산 차야." }
+      { en: "Which color do you prefer?", kr: "어떤 색이 더 좋아?" },
+      { en: "Which seat would you like, window or aisle?", kr: "창가석이랑 통로석 중 어느 자리로 드릴까요?" }
     ]
   },
   {
@@ -427,8 +427,8 @@ const wordsLevel1_Part1 = [
     word: "go",
     meaning: "가다",
     examples: [
-      { en: "Let's go home now.", kr: "지금 집에 가자." },
-      { en: "I want to go traveling this summer.", kr: "나는 이번 여름에 여행을 가고 싶어." }
+      { en: "It's late. Let's go home now.", kr: "늦었다. 이제 집에 가자." },
+      { en: "I want to go traveling this summer.", kr: "이번 여름에 여행 가고 싶어." }
     ]
   },
   {
@@ -436,8 +436,8 @@ const wordsLevel1_Part1 = [
     word: "me",
     meaning: "나를, 나에게",
     examples: [
-      { en: "Can you help me?", kr: "나를 도와줄 수 있니?" },
-      { en: "Give me a pen.", kr: "나에게 펜을 줘." }
+      { en: "Can you help me with this?", kr: "이것 좀 도와줄래?" },
+      { en: "Can you send me the file later?", kr: "나중에 그 파일 좀 보내줄래?" }
     ]
   },
   {
@@ -445,23 +445,23 @@ const wordsLevel1_Part1 = [
     word: "when",
     meaning: "언제, ~할 때",
     examples: [
-      { en: "When is your birthday?", kr: "네 생일은 언제니?" },
+      { en: "When is your flight back home?", kr: "집에 돌아가는 비행기 언제야?" },
       { en: "I was sleeping when he called.", kr: "그가 전화했을 때 나는 자고 있었어." }
     ]
   },
   {
     id: "L1-051",
     word: "make",
-    meaning: "만들다",
+    meaning: "만들다, ~하게 하다",
     examples: [
       { en: "She makes delicious cookies.", kr: "그녀는 맛있는 쿠키를 만들어." },
-      { en: "You make me happy.", kr: "너는 나를 행복하게 해." }
+      { en: "That song always makes me happy.", kr: "그 노래 들으면 항상 기분이 좋아져." }
     ]
   },
   {
     id: "L1-052",
     word: "can",
-    meaning: "~할 수 있다 (조동사)",
+    meaning: "~할 수 있다, ~해도 되다",
     examples: [
       { en: "I can speak English well.", kr: "나는 영어를 잘 말할 수 있어." },
       { en: "Can you open the door?", kr: "문 좀 열어줄 수 있니?" }
@@ -497,10 +497,10 @@ const wordsLevel1_Part1 = [
   {
     id: "L1-056",
     word: "just",
-    meaning: "단지, 방금",
+    meaning: "그냥, 방금",
     examples: [
-      { en: "I was just checking the news.", kr: "나는 단지 뉴스를 확인하고 있었어." },
-      { en: "He just left five minutes ago.", kr: "그는 방금 5분 전에 떠났어." }
+      { en: "I was just checking the news.", kr: "그냥 뉴스 보고 있었어." },
+      { en: "He just left five minutes ago.", kr: "그 사람 5분 전에 막 나갔어." }
     ]
   },
   {
@@ -508,8 +508,8 @@ const wordsLevel1_Part1 = [
     word: "him",
     meaning: "그를, 그에게",
     examples: [
-      { en: "I saw him at the library.", kr: "나는 도서관에서 그를 봤어." },
-      { en: "Give him the book.", kr: "그에게 그 책을 줘." }
+      { en: "I saw him at the library.", kr: "도서관에서 그 사람 봤어." },
+      { en: "Can you give him this book tomorrow?", kr: "내일 그 사람한테 이 책 좀 전해줄래?" }
     ]
   },
   {
@@ -517,8 +517,8 @@ const wordsLevel1_Part1 = [
     word: "know",
     meaning: "알다",
     examples: [
-      { en: "I know the answer.", kr: "나는 답을 알아." },
-      { en: "Do you know how to swim?", kr: "너 수영할 줄 아니?" }
+      { en: "I don't know the answer either.", kr: "나도 답을 모르겠어." },
+      { en: "Do you know how to swim?", kr: "너 수영할 줄 알아?" }
     ]
   },
   {
@@ -526,7 +526,7 @@ const wordsLevel1_Part1 = [
     word: "take",
     meaning: "가져가다, (시간이) 걸리다",
     examples: [
-      { en: "Please take your coat.", kr: "코트를 가져가세요." },
+      { en: "Take your coat. It's cold outside.", kr: "코트 챙겨 가. 밖에 추워." },
       { en: "It takes ten minutes to walk there.", kr: "거기까지 걸어서 10분 걸려." }
     ]
   },
@@ -553,8 +553,8 @@ const wordsLevel1_Part1 = [
     word: "year",
     meaning: "년, 해",
     examples: [
-      { en: "The company was founded last year.", kr: "그 회사는 작년에 설립되었어." },
-      { en: "Happy New Year!", kr: "새해 복 많이 받아!" }
+      { en: "I started this job last year.", kr: "작년에 이 일 시작했어." },
+      { en: "I've been learning English for two years.", kr: "영어 배운 지 2년 됐어." }
     ]
   },
   {
@@ -562,8 +562,8 @@ const wordsLevel1_Part1 = [
     word: "your",
     meaning: "당신의, 너의",
     examples: [
-      { en: "Is this your umbrella?", kr: "이것이 당신의 우산인가요?" },
-      { en: "What is your opinion?", kr: "당신의 의견은 무엇입니까?" }
+      { en: "Excuse me, is this your umbrella?", kr: "저기요, 이거 혹시 그쪽 우산이에요?" },
+      { en: "What's your opinion on this?", kr: "이거에 대해 네 생각은 어때?" }
     ]
   },
   {
@@ -571,7 +571,7 @@ const wordsLevel1_Part1 = [
     word: "good",
     meaning: "좋은",
     examples: [
-      { en: "Have a good day.", kr: "좋은 하루 보내세요." },
+      { en: "Have a good weekend, see you Monday!", kr: "주말 잘 보내, 월요일에 봐!" },
       { en: "She is a good person.", kr: "그녀는 좋은 사람이야." }
     ]
   },
@@ -580,14 +580,14 @@ const wordsLevel1_Part1 = [
     word: "some",
     meaning: "약간의, 몇몇",
     examples: [
-      { en: "I need some help.", kr: "나는 약간의 도움이 필요해." },
-      { en: "Some students left early.", kr: "몇몇 학생들이 일찍 떠났어." }
+      { en: "Can I get some water, please?", kr: "물 좀 주시겠어요?" },
+      { en: "Some of my coworkers left early today.", kr: "동료 몇 명은 오늘 일찍 퇴근했어." }
     ]
   },
   {
     id: "L1-066",
     word: "could",
-    meaning: "~할 수 있었다 (조동사)",
+    meaning: "~할 수 있었다, ~해 주시겠어요",
     examples: [
       { en: "I could swim when I was ten.", kr: "나는 열 살 때 수영할 수 있었어." },
       { en: "Could you close the window?", kr: "창문을 닫아 주시겠어요?" }
@@ -626,7 +626,7 @@ const wordsLevel1_Part1 = [
     meaning: "~보다 (비교)",
     examples: [
       { en: "She is taller than her brother.", kr: "그녀는 남동생보다 키가 커." },
-      { en: "It is better late than never.", kr: "늦는 것이 아예 안 하는 것보다 낫다." }
+      { en: "It's better late than never.", kr: "늦더라도 안 하는 것보다는 낫지." }
     ]
   },
   {
@@ -634,8 +634,8 @@ const wordsLevel1_Part1 = [
     word: "then",
     meaning: "그때, 그러고 나서",
     examples: [
-      { en: "We were young then.", kr: "우리는 그때 젊었어." },
-      { en: "I finished the work, and then I went home.", kr: "나는 일을 끝내고, 그러고 나서 집에 갔어." }
+      { en: "I was living in Busan back then.", kr: "그때 나는 부산에 살고 있었어." },
+      { en: "I finished the work, and then I went home.", kr: "일 끝내고 나서 집에 갔어." }
     ]
   },
   {
@@ -643,8 +643,8 @@ const wordsLevel1_Part1 = [
     word: "now",
     meaning: "지금",
     examples: [
-      { en: "We should start now.", kr: "우리는 지금 시작해야 해." },
-      { en: "He is a doctor now.", kr: "그는 지금 의사야." }
+      { en: "We should start now, or we'll be late.", kr: "지금 출발해야 해, 안 그러면 늦어." },
+      { en: "He is a doctor now.", kr: "그는 이제 의사야." }
     ]
   },
   {
@@ -652,8 +652,8 @@ const wordsLevel1_Part1 = [
     word: "look",
     meaning: "보다, ~처럼 보이다",
     examples: [
-      { en: "Look at the stars.", kr: "별을 봐." },
-      { en: "You look happy today.", kr: "너 오늘 행복해 보여." }
+      { en: "Look at this picture of my dog.", kr: "우리 강아지 사진 좀 봐." },
+      { en: "You look happy today.", kr: "너 오늘 기분 좋아 보인다." }
     ]
   },
   {
@@ -661,8 +661,8 @@ const wordsLevel1_Part1 = [
     word: "only",
     meaning: "오직, 단지",
     examples: [
-      { en: "I have only one brother.", kr: "나는 오직 남동생 한 명만 있어." },
-      { en: "This is only a small problem.", kr: "이것은 단지 작은 문제일 뿐이야." }
+      { en: "I have only one brother.", kr: "나는 남동생 한 명밖에 없어." },
+      { en: "This is only a small problem.", kr: "이건 그냥 작은 문제일 뿐이야." }
     ]
   },
   {
@@ -671,7 +671,7 @@ const wordsLevel1_Part1 = [
     meaning: "오다",
     examples: [
       { en: "Please come to my party.", kr: "내 파티에 와줘." },
-      { en: "The bus is coming.", kr: "버스가 오고 있어." }
+      { en: "The bus is coming. Let's hurry!", kr: "버스 온다. 서두르자!" }
     ]
   },
   {
@@ -679,8 +679,8 @@ const wordsLevel1_Part1 = [
     word: "its",
     meaning: "그것의",
     examples: [
-      { en: "The dog wagged its tail.", kr: "그 개는 꼬리를 흔들었어." },
-      { en: "The company announced its new plan.", kr: "그 회사는 자사의 새로운 계획을 발표했어." }
+      { en: "The dog wagged its tail.", kr: "강아지가 꼬리를 흔들었어." },
+      { en: "This café is famous for its cheesecake.", kr: "이 카페는 치즈케이크로 유명해." }
     ]
   },
   {
@@ -688,8 +688,8 @@ const wordsLevel1_Part1 = [
     word: "over",
     meaning: "~ 위에, ~을 넘어, 끝난",
     examples: [
-      { en: "The plane flew over the city.", kr: "비행기가 도시 위를 날았어." },
-      { en: "The meeting is over.", kr: "회의가 끝났어." }
+      { en: "The plane flew over the city.", kr: "비행기가 도시 위로 날아갔어." },
+      { en: "The meeting is over, so let's grab lunch.", kr: "회의 끝났으니까 점심 먹으러 가자." }
     ]
   },
   {
@@ -706,8 +706,8 @@ const wordsLevel1_Part1 = [
     word: "also",
     meaning: "또한",
     examples: [
-      { en: "I am hungry and also tired.", kr: "나는 배고프고 또한 피곤해." },
-      { en: "She is a student and also an artist.", kr: "그녀는 학생이고 또한 예술가야." }
+      { en: "I'm hungry, and I'm also really tired.", kr: "배도 고프고 또 너무 피곤해." },
+      { en: "She is a student and also an artist.", kr: "그녀는 학생이면서 예술가이기도 해." }
     ]
   },
   {
@@ -724,7 +724,7 @@ const wordsLevel1_Part1 = [
     word: "after",
     meaning: "~ 후에",
     examples: [
-      { en: "Let's go after lunch.", kr: "점심 식사 후에 가자." },
+      { en: "Let's talk about it after lunch.", kr: "점심 먹고 나서 얘기하자." },
       { en: "He arrived after the party started.", kr: "그는 파티가 시작된 후에 도착했어." }
     ]
   },
@@ -742,8 +742,8 @@ const wordsLevel1_Part1 = [
     word: "how",
     meaning: "어떻게",
     examples: [
-      { en: "How are you feeling?", kr: "기분은 어떠니?" },
-      { en: "Tell me how to do it.", kr: "나에게 그것을 어떻게 하는지 말해줘." }
+      { en: "How are you feeling today? Any better?", kr: "오늘 좀 어때? 좀 나아졌어?" },
+      { en: "Tell me how to do it.", kr: "그거 어떻게 하는지 알려줘." }
     ]
   },
   {
@@ -760,8 +760,8 @@ const wordsLevel1_Part1 = [
     word: "work",
     meaning: "일하다, 작업",
     examples: [
-      { en: "I have a lot of work to do.", kr: "나는 해야 할 일이 많아." },
-      { en: "He works very hard.", kr: "그는 매우 열심히 일해." }
+      { en: "I have a lot of work to do.", kr: "할 일이 많아." },
+      { en: "He works really hard, even on weekends.", kr: "그는 주말에도 정말 열심히 일해." }
     ]
   },
   {
@@ -785,10 +785,10 @@ const wordsLevel1_Part1 = [
   {
     id: "L1-088",
     word: "even",
-    meaning: "심지어, 평평한",
+    meaning: "심지어, ~조차",
     examples: [
-      { en: "He didn't even say hello.", kr: "그는 심지어 인사도 하지 않았어." },
-      { en: "Try to make the surface even.", kr: "표면을 평평하게 만들어 봐." }
+      { en: "He didn't even say hello.", kr: "그는 인사조차 안 했어." },
+      { en: "She can't even cook ramen.", kr: "걔는 라면조차 못 끓여." }
     ]
   },
   {
@@ -814,7 +814,7 @@ const wordsLevel1_Part1 = [
     word: "want",
     meaning: "원하다",
     examples: [
-      { en: "What do you want for dinner?", kr: "저녁 식사로 무엇을 원하니?" },
+      { en: "What do you want for dinner?", kr: "저녁 뭐 먹고 싶어?" },
       { en: "I want to be a doctor.", kr: "나는 의사가 되고 싶어." }
     ]
   },
@@ -850,8 +850,8 @@ const wordsLevel1_Part1 = [
     word: "give",
     meaning: "주다",
     examples: [
-      { en: "Give me the phone.", kr: "나에게 전화기를 줘." },
-      { en: "She gave him a gift.", kr: "그녀는 그에게 선물을 주었어." }
+      { en: "Can you give me a ride home?", kr: "집까지 좀 태워 줄래?" },
+      { en: "She gave him a gift.", kr: "그녀는 그에게 선물을 줬어." }
     ]
   },
   {
@@ -884,10 +884,10 @@ const wordsLevel1_Part1 = [
   {
     id: "L1-099",
     word: "much",
-    meaning: "많은 (양)",
+    meaning: "많은, 많이",
     examples: [
-      { en: "I don't have much money.", kr: "나는 돈이 많지 않아." },
-      { en: "Thank you very much.", kr: "정말 고마워." }
+      { en: "I don't have much money.", kr: "나 돈이 별로 없어." },
+      { en: "How much is this jacket?", kr: "이 재킷 얼마예요?" }
     ]
   },
   {
@@ -895,8 +895,8 @@ const wordsLevel1_Part1 = [
     word: "thing",
     meaning: "것, 물건",
     examples: [
-      { en: "What is that thing?", kr: "저 물건은 뭐야?" },
-      { en: "The most important thing is safety.", kr: "가장 중요한 것은 안전이야." }
+      { en: "What's that thing on your desk?", kr: "책상 위에 있는 그거 뭐야?" },
+      { en: "The most important thing is safety.", kr: "가장 중요한 건 안전이야." }
     ]
   }
 ];
@@ -959,10 +959,10 @@ const wordsLevel1_Part2 = [
   {
     id: "L1-107",
     word: "down",
-    meaning: "아래로",
+    meaning: "아래로, (소리 등을) 낮춰",
     examples: [
-      { en: "Please sit down.", kr: "앉아 주세요." },
-      { en: "The building fell down.", kr: "그 건물이 무너졌어." }
+      { en: "Please sit down and make yourself comfortable.", kr: "앉아서 편하게 계세요." },
+      { en: "Can you turn the music down a little?", kr: "음악 소리 좀 줄여 줄래?" }
     ]
   },
   {
@@ -1006,8 +1006,8 @@ const wordsLevel1_Part2 = [
     word: "hand",
     meaning: "손",
     examples: [
-      { en: "Please hold my hand.", kr: "내 손을 잡아줘." },
-      { en: "She raised her hand to ask a question.", kr: "그녀는 질문하기 위해 손을 들었어." }
+      { en: "Wash your hands before you eat.", kr: "먹기 전에 손 씻어." },
+      { en: "She raised her hand to ask a question.", kr: "그녀는 질문하려고 손을 들었어." }
     ]
   },
   {
@@ -1015,8 +1015,8 @@ const wordsLevel1_Part2 = [
     word: "where",
     meaning: "어디에",
     examples: [
-      { en: "Where are you going?", kr: "어디에 가니?" },
-      { en: "That is the house where I was born.", kr: "저것은 내가 태어난 집이야." }
+      { en: "Where are you going this summer?", kr: "이번 여름에 어디 가?" },
+      { en: "That is the house where I was born.", kr: "저기가 내가 태어난 집이야." }
     ]
   },
   {
@@ -1033,17 +1033,17 @@ const wordsLevel1_Part2 = [
     word: "tell",
     meaning: "말하다, 알리다",
     examples: [
-      { en: "Tell me what happened.", kr: "나에게 무슨 일이 있었는지 말해줘." },
-      { en: "Please tell her that I called.", kr: "그녀에게 내가 전화했다고 알려 줘." }
+      { en: "Tell me what happened last night.", kr: "어젯밤에 무슨 일 있었는지 말해줘." },
+      { en: "Please tell her that I called.", kr: "그녀에게 내가 전화했다고 전해줘." }
     ]
   },
   {
     id: "L1-116",
     word: "general",
-    meaning: "일반적인",
+    meaning: "일반적인, 대략적인",
     examples: [
-      { en: "In general, I agree with you.", kr: "일반적으로, 나는 너에게 동의해." },
-      { en: "This rule applies to the general public.", kr: "이 규칙은 일반 대중에게 적용돼." }
+      { en: "In general, I agree with you.", kr: "대체로 네 말에 동의해." },
+      { en: "I have a general idea of the plan.", kr: "그 계획은 대충 알고 있어." }
     ]
   },
   {
@@ -1067,10 +1067,10 @@ const wordsLevel1_Part2 = [
   {
     id: "L1-119",
     word: "number",
-    meaning: "숫자",
+    meaning: "번호, 숫자, 수",
     examples: [
-      { en: "What is your phone number?", kr: "네 전화번호가 뭐니?" },
-      { en: "A large number of students failed.", kr: "많은 수의 학생들이 불합격했어." }
+      { en: "What is your phone number?", kr: "전화번호가 뭐야?" },
+      { en: "Wow, a huge number of people showed up!", kr: "와, 사람들이 엄청 많이 왔네!" }
     ]
   },
   {
@@ -1085,10 +1085,10 @@ const wordsLevel1_Part2 = [
   {
     id: "L1-121",
     word: "form",
-    meaning: "형태, 양식, 형성하다",
+    meaning: "양식, 서식, 방식",
     examples: [
-      { en: "The gas changed form and became liquid.", kr: "기체가 형태를 바꿔 액체가 되었어." },
-      { en: "Fill out the application form.", kr: "신청 양식을 작성해." }
+      { en: "Please fill out this form first.", kr: "먼저 이 양식부터 작성해 주세요." },
+      { en: "What forms of payment do you accept?", kr: "결제는 어떤 방식으로 할 수 있어요?" }
     ]
   },
   {
@@ -1105,8 +1105,8 @@ const wordsLevel1_Part2 = [
     word: "life",
     meaning: "삶, 인생, 생명",
     examples: [
-      { en: "Life is too short.", kr: "인생은 너무 짧아." },
-      { en: "He saved a person's life.", kr: "그는 한 사람의 생명을 구했어." }
+      { en: "Life is too short to worry so much.", kr: "그렇게 걱정하며 살기엔 인생이 너무 짧아." },
+      { en: "He saved a person's life.", kr: "그는 사람 목숨을 구했어." }
     ]
   },
   {
@@ -1114,35 +1114,35 @@ const wordsLevel1_Part2 = [
     word: "public",
     meaning: "대중의",
     examples: [
-      { en: "The event is open to the public.", kr: "그 행사는 대중에게 공개돼." },
-      { en: "We rely on public transportation.", kr: "우리는 대중교통에 의존해." }
+      { en: "The event is open to the public.", kr: "그 행사는 누구나 갈 수 있어." },
+      { en: "I usually take public transportation to work.", kr: "저는 보통 대중교통으로 출근해요." }
     ]
   },
   {
     id: "L1-125",
     word: "present",
-    meaning: "선물, 현재, 참석한",
+    meaning: "선물, 참석한",
     examples: [
-      { en: "I received a present on my birthday.", kr: "생일에 선물을 받았어." },
-      { en: "All members were present at the meeting.", kr: "모든 구성원들이 회의에 참석했어." }
+      { en: "I received a present on my birthday.", kr: "생일에 선물 받았어." },
+      { en: "Everyone was present at today's meeting.", kr: "오늘 회의에 다 참석했어." }
     ]
   },
   {
     id: "L1-126",
     word: "case",
-    meaning: "경우, 사건",
+    meaning: "경우, 만일의 경우",
     examples: [
-      { en: "In that case, we should wait.", kr: "그 경우엔, 우리는 기다려야 해." },
-      { en: "The police are investigating a difficult case.", kr: "경찰은 어려운 사건을 수사하고 있어." }
+      { en: "In that case, we should wait.", kr: "그렇다면 기다리는 게 좋겠다." },
+      { en: "Take an umbrella, just in case.", kr: "혹시 모르니까 우산 챙겨." }
     ]
   },
   {
     id: "L1-127",
     word: "point",
-    meaning: "점, 요점",
+    meaning: "요점, 지적, 점",
     examples: [
-      { en: "What is the main point of the lesson?", kr: "수업의 주요 요점이 뭐니?" },
-      { en: "Draw a straight line from point A to point B.", kr: "A점에서 B점까지 직선을 그어." }
+      { en: "What is the main point of the lesson?", kr: "이 수업의 요점이 뭐야?" },
+      { en: "That's a good point. I didn't think of that.", kr: "좋은 지적이야. 그건 생각 못 했네." }
     ]
   },
   {
@@ -1166,10 +1166,10 @@ const wordsLevel1_Part2 = [
   {
     id: "L1-130",
     word: "power",
-    meaning: "힘, 전력",
+    meaning: "힘, 권력, 전기",
     examples: [
-      { en: "Knowledge is power.", kr: "지식은 힘이다." },
-      { en: "The storm knocked out the power.", kr: "폭풍이 전기를 끊었어." }
+      { en: "He has a lot of power in the company.", kr: "그 사람 회사에서 힘이 세." },
+      { en: "The storm knocked out the power.", kr: "폭풍 때문에 정전됐어." }
     ]
   },
   {
@@ -1177,8 +1177,8 @@ const wordsLevel1_Part2 = [
     word: "policy",
     meaning: "정책",
     examples: [
-      { en: "The government announced a new housing policy.", kr: "정부가 새로운 주택 정책을 발표했어." },
-      { en: "What is the company's refund policy?", kr: "회사의 환불 정책은 무엇입니까?" }
+      { en: "Did you hear about the new work-from-home policy?", kr: "새 재택근무 정책 얘기 들었어?" },
+      { en: "What's your refund policy?", kr: "환불 규정이 어떻게 되나요?" }
     ]
   },
   {
@@ -1204,8 +1204,8 @@ const wordsLevel1_Part2 = [
     word: "side",
     meaning: "쪽, 측면",
     examples: [
-      { en: "Which side of the argument are you on?", kr: "논쟁의 어느 편이니?" },
-      { en: "The car was hit on the right side.", kr: "차는 오른쪽 측면을 맞았어." }
+      { en: "Whose side are you on, anyway?", kr: "도대체 너 누구 편이야?" },
+      { en: "The car was hit on the right side.", kr: "차 오른쪽 측면이 받혔어." }
     ]
   },
   {
@@ -1258,17 +1258,17 @@ const wordsLevel1_Part2 = [
     word: "hold",
     meaning: "잡다, 개최하다",
     examples: [
-      { en: "Hold my hand tightly.", kr: "내 손을 꽉 잡아." },
-      { en: "The meeting will be held tomorrow.", kr: "회의는 내일 개최될 거야." }
+      { en: "Can you hold my bag for a second?", kr: "가방 좀 잠깐 들어줄래?" },
+      { en: "The meeting will be held tomorrow.", kr: "회의는 내일 열려요." }
     ]
   },
   {
     id: "L1-141",
     word: "stand",
-    meaning: "서다",
+    meaning: "서다, 참다",
     examples: [
-      { en: "Please stand up when your name is called.", kr: "네 이름이 불리면 일어나." },
-      { en: "The table stands in the middle of the room.", kr: "테이블이 방 중앙에 서 있어." }
+      { en: "Please stand up when your name is called.", kr: "이름이 불리면 일어나 주세요." },
+      { en: "I can't stand this hot weather.", kr: "이 더운 날씨 못 참겠어." }
     ]
   },
   {
@@ -1276,8 +1276,8 @@ const wordsLevel1_Part2 = [
     word: "own",
     meaning: "자신의, 소유하다",
     examples: [
-      { en: "I want to start my own business.", kr: "나는 내 자신의 사업을 시작하고 싶어." },
-      { en: "Do you own this car?", kr: "이 차를 소유하고 있니?" }
+      { en: "I want to start my own business.", kr: "내 사업을 시작하고 싶어." },
+      { en: "Do you own this car?", kr: "이 차 네 거야?" }
     ]
   },
   {
@@ -1285,8 +1285,8 @@ const wordsLevel1_Part2 = [
     word: "pay",
     meaning: "지불하다",
     examples: [
-      { en: "I need to pay the bills.", kr: "나는 청구서를 지불해야 해." },
-      { en: "How much did you pay for it?", kr: "그것에 얼마를 지불했니?" }
+      { en: "I need to pay the bills.", kr: "공과금 내야 해." },
+      { en: "How much did you pay for it?", kr: "그거 얼마 주고 샀어?" }
     ]
   },
   {
@@ -1303,8 +1303,8 @@ const wordsLevel1_Part2 = [
     word: "school",
     meaning: "학교",
     examples: [
-      { en: "What school do you go to?", kr: "어떤 학교에 다니니?" },
-      { en: "The new building is a school.", kr: "그 새 건물은 학교야." }
+      { en: "What school do you go to?", kr: "어느 학교 다녀?" },
+      { en: "My kids walk to school every morning.", kr: "우리 애들은 매일 아침 걸어서 학교에 가." }
     ]
   },
   {
@@ -1321,8 +1321,8 @@ const wordsLevel1_Part2 = [
     word: "feel",
     meaning: "느끼다",
     examples: [
-      { en: "I feel tired today.", kr: "나는 오늘 피곤함을 느껴." },
-      { en: "How do you feel about the decision?", kr: "그 결정에 대해 어떻게 느끼니?" }
+      { en: "I feel really tired today.", kr: "오늘 너무 피곤해." },
+      { en: "How do you feel about the decision?", kr: "그 결정에 대해 어떻게 생각해?" }
     ]
   },
   {
@@ -1418,10 +1418,10 @@ const wordsLevel1_Part2 = [
   {
     id: "L1-158",
     word: "member",
-    meaning: "구성원",
+    meaning: "회원, 구성원",
     examples: [
-      { en: "He is a member of the local club.", kr: "그는 지역 클럽의 구성원이야." },
-      { en: "All team members must participate.", kr: "모든 팀 구성원들은 참여해야 해." }
+      { en: "He is a member of the local club.", kr: "그는 동네 클럽 회원이야." },
+      { en: "Are you a member? You get ten percent off.", kr: "회원이세요? 10% 할인돼요." }
     ]
   },
   {
@@ -1463,10 +1463,10 @@ const wordsLevel1_Part2 = [
   {
     id: "L1-163",
     word: "process",
-    meaning: "과정, 처리하다",
+    meaning: "과정, 절차, 처리하다",
     examples: [
-      { en: "Learning is a continuous process.", kr: "학습은 지속적인 과정이야." },
-      { en: "The data is being processed now.", kr: "데이터는 지금 처리되고 있어." }
+      { en: "The visa process took about three months.", kr: "비자 절차가 3개월 정도 걸렸어." },
+      { en: "Your order is being processed now.", kr: "주문이 지금 처리되고 있어요." }
     ]
   },
   {
@@ -1474,8 +1474,8 @@ const wordsLevel1_Part2 = [
     word: "run",
     meaning: "달리다, 운영하다",
     examples: [
-      { en: "She can run very fast.", kr: "그녀는 매우 빨리 달릴 수 있어." },
-      { en: "Who runs this company?", kr: "누가 이 회사를 운영하니?" }
+      { en: "She can run very fast.", kr: "그녀는 엄청 빨리 달려." },
+      { en: "Who runs this restaurant? The food is amazing.", kr: "이 식당 누가 운영해? 음식 진짜 맛있다." }
     ]
   },
   {
@@ -1483,8 +1483,8 @@ const wordsLevel1_Part2 = [
     word: "result",
     meaning: "결과",
     examples: [
-      { en: "What was the result of the match?", kr: "경기 결과는 무엇이었니?" },
-      { en: "The success is a result of hard work.", kr: "성공은 노력의 결과야." }
+      { en: "What was the result of the match?", kr: "경기 결과 어떻게 됐어?" },
+      { en: "When will we get the test results?", kr: "검사 결과는 언제 나와요?" }
     ]
   },
   {
@@ -1501,8 +1501,8 @@ const wordsLevel1_Part2 = [
     word: "money",
     meaning: "돈",
     examples: [
-      { en: "I don't have enough money for a trip.", kr: "나는 여행할 충분한 돈이 없어." },
-      { en: "Time is money.", kr: "시간은 돈이다." }
+      { en: "I don't have enough money for a trip.", kr: "여행 갈 돈이 부족해." },
+      { en: "Can I borrow some money until Friday?", kr: "금요일까지 돈 좀 빌릴 수 있을까?" }
     ]
   },
   {
@@ -1519,8 +1519,8 @@ const wordsLevel1_Part2 = [
     word: "interest",
     meaning: "관심, 이자",
     examples: [
-      { en: "I have a great interest in history.", kr: "나는 역사에 큰 관심이 있어." },
-      { en: "The bank pays a high interest rate.", kr: "은행은 높은 이자율을 지불해." }
+      { en: "I've always had an interest in history.", kr: "난 예전부터 역사에 관심이 많았어." },
+      { en: "This bank pays a high interest rate.", kr: "이 은행은 이자를 많이 줘." }
     ]
   },
   {
@@ -1537,8 +1537,8 @@ const wordsLevel1_Part2 = [
     word: "fact",
     meaning: "사실",
     examples: [
-      { en: "It is a fact that the earth goes around the sun.", kr: "지구가 태양 주위를 돈다는 것은 사실이야." },
-      { en: "We must consider all the facts.", kr: "우리는 모든 사실을 고려해야 해." }
+      { en: "In fact, I've never been to Japan.", kr: "사실 나 일본에 가 본 적 없어." },
+      { en: "Let's get the facts before we decide.", kr: "결정하기 전에 사실관계부터 확인하자." }
     ]
   },
   {
@@ -1546,8 +1546,8 @@ const wordsLevel1_Part2 = [
     word: "war",
     meaning: "전쟁",
     examples: [
-      { en: "The country was recovering from the war.", kr: "그 나라는 전쟁으로부터 회복하고 있었어." },
-      { en: "We all hope for world peace, not war.", kr: "우리 모두 전쟁이 아닌 세계 평화를 희망해." }
+      { en: "Did you watch that new war movie?", kr: "그 새로 나온 전쟁 영화 봤어?" },
+      { en: "My grandpa still talks about the war sometimes.", kr: "우리 할아버지는 아직도 가끔 전쟁 얘기를 하셔." }
     ]
   },
   {
@@ -1555,8 +1555,8 @@ const wordsLevel1_Part2 = [
     word: "view",
     meaning: "관점, 경치, 보다",
     examples: [
-      { en: "What is your view on this issue?", kr: "이 문제에 대한 당신의 관점은 무엇입니까?" },
-      { en: "The apartment has a great view of the city.", kr: "그 아파트에서는 도시의 멋진 경치가 보여." }
+      { en: "What's your view on this issue?", kr: "이 문제에 대해 어떻게 생각해요?" },
+      { en: "The apartment has a great view of the city.", kr: "그 아파트는 시내 전망이 정말 좋아." }
     ]
   },
   {
@@ -1573,8 +1573,8 @@ const wordsLevel1_Part2 = [
     word: "reason",
     meaning: "이유",
     examples: [
-      { en: "What is the reason for the delay?", kr: "지연되는 이유는 무엇입니까?" },
-      { en: "Give me one good reason to agree.", kr: "동의할 만한 좋은 이유 하나를 말해줘." }
+      { en: "What is the reason for the delay?", kr: "지연되는 이유가 뭐예요?" },
+      { en: "Give me one good reason to agree.", kr: "내가 동의할 만한 이유 하나만 대 봐." }
     ]
   },
   {
@@ -1600,8 +1600,8 @@ const wordsLevel1_Part2 = [
     word: "name",
     meaning: "이름, 명성",
     examples: [
-      { en: "What is your full name?", kr: "당신의 성함이 무엇입니까?" },
-      { en: "She made a name for herself as an artist.", kr: "그녀는 예술가로서 명성을 얻었어." }
+      { en: "What is your full name?", kr: "성함이 어떻게 되세요?" },
+      { en: "She made a name for herself as an artist.", kr: "그녀는 예술가로 이름을 알렸어." }
     ]
   },
   {
@@ -1618,8 +1618,8 @@ const wordsLevel1_Part2 = [
     word: "report",
     meaning: "보고하다, 신고하다, 보고서",
     examples: [
-      { en: "You must report the incident to the police.", kr: "그 사건을 경찰에 신고해야 합니다." },
-      { en: "The company will release its financial report soon.", kr: "회사는 곧 재무 보고서를 발표할 거야." }
+      { en: "You should report the accident to the police.", kr: "그 사고는 경찰에 신고해야 해요." },
+      { en: "I need to finish this report by tomorrow.", kr: "내일까지 이 보고서 끝내야 해." }
     ]
   },
   {
@@ -1636,7 +1636,7 @@ const wordsLevel1_Part2 = [
     word: "line",
     meaning: "줄, 선",
     examples: [
-      { en: "Please wait in line.", kr: "줄 서서 기다려 주세요." },
+      { en: "Are you waiting in line for the restroom?", kr: "화장실 줄 서 계신 거예요?" },
       { en: "Draw a straight line on the paper.", kr: "종이에 직선을 그려." }
     ]
   },
@@ -1670,10 +1670,10 @@ const wordsLevel1_Part2 = [
   {
     id: "L1-186",
     word: "unit",
-    meaning: "단위, (아파트 등의) 한 세대",
+    meaning: "(아파트·건물의) 호, 세대",
     examples: [
-      { en: "Meters are a unit of length.", kr: "미터는 길이의 단위야." },
-      { en: "The apartment complex has 100 residential units.", kr: "그 아파트 단지에는 100세대가 있어." }
+      { en: "This unit has two bedrooms and a balcony.", kr: "이 집은 방 두 개에 발코니가 있어요." },
+      { en: "Our unit is on the fifth floor.", kr: "우리 집은 5층이에요." }
     ]
   },
   {
@@ -1697,10 +1697,10 @@ const wordsLevel1_Part2 = [
   {
     id: "L1-189",
     word: "social",
-    meaning: "사회적인",
+    meaning: "사교적인, 친목의",
     examples: [
-      { en: "Humans are social creatures.", kr: "인간은 사회적인 동물이야." },
-      { en: "We discussed the current social issues.", kr: "우리는 현재의 사회적인 문제들을 논의했어." }
+      { en: "I'm not very social at big parties.", kr: "나는 큰 파티에서 사람들이랑 잘 못 어울려." },
+      { en: "It's more of a social event than a work thing.", kr: "그건 업무라기보다는 친목 모임에 가까워." }
     ]
   },
   {
@@ -1735,8 +1735,8 @@ const wordsLevel1_Part2 = [
     word: "right",
     meaning: "옳은, 오른쪽",
     examples: [
-      { en: "You are absolutely right.", kr: "네 말이 전적으로 옳아." },
-      { en: "Turn right at the next traffic light.", kr: "다음 신호등에서 오른쪽으로 돌아." }
+      { en: "You're absolutely right about that.", kr: "그건 네 말이 완전히 맞아." },
+      { en: "Turn right at the next traffic light.", kr: "다음 신호등에서 우회전하세요." }
     ]
   },
   {
@@ -1753,8 +1753,8 @@ const wordsLevel1_Part2 = [
     word: "able",
     meaning: "~할 수 있는",
     examples: [
-      { en: "I am able to drive a truck.", kr: "나는 트럭을 운전할 수 있어." },
-      { en: "She is not able to attend the party.", kr: "그녀는 파티에 참석할 수 없어." }
+      { en: "Will you be able to come tomorrow?", kr: "내일 올 수 있어?" },
+      { en: "She won't be able to make it to the party.", kr: "걔 파티에 못 온대." }
     ]
   },
   {
@@ -1810,8 +1810,8 @@ const wordsLevel1_Part3 = [
     word: "open",
     meaning: "열린, 열다",
     examples: [
-      { en: "The library is open until 9 PM.", kr: "도서관은 저녁 9시까지 열려 있습니다." },
-      { en: "Please open the window for some fresh air.", kr: "신선한 공기를 위해 창문을 열어주세요." }
+      { en: "The library is open until 9 PM.", kr: "도서관은 저녁 9시까지 열어요." },
+      { en: "Please open the window for some fresh air.", kr: "바람 좀 들어오게 창문 좀 열어 주세요." }
     ]
   },
   {
@@ -1819,17 +1819,17 @@ const wordsLevel1_Part3 = [
     word: "provide",
     meaning: "제공하다",
     examples: [
-      { en: "The hotel provides free breakfast.", kr: "그 호텔은 무료 아침 식사를 제공합니다." },
-      { en: "We need to provide more information.", kr: "우리는 더 많은 정보를 제공해야 합니다." }
+      { en: "Does the hotel provide free breakfast?", kr: "그 호텔은 조식을 무료로 제공해요?" },
+      { en: "We'll provide lunch, so you don't need to bring anything.", kr: "점심은 저희가 제공하니까 아무것도 안 가져오셔도 돼요." }
     ]
   },
   {
     id: "L1-203",
     word: "party",
-    meaning: "파티, 정당",
+    meaning: "파티, 일행",
     examples: [
-      { en: "Are you coming to my birthday party?", kr: "내 생일 파티에 올 거니?" },
-      { en: "She belongs to the conservative party.", kr: "그녀는 보수 정당에 속해 있습니다." }
+      { en: "Are you coming to my birthday party?", kr: "내 생일 파티에 올 거야?" },
+      { en: "Hi, we're a party of four.", kr: "안녕하세요, 저희 일행은 네 명이에요." }
     ]
   },
   {
@@ -1837,8 +1837,8 @@ const wordsLevel1_Part3 = [
     word: "big",
     meaning: "큰",
     examples: [
-      { en: "I saw a big dog in the park.", kr: "나는 공원에서 큰 개를 봤어." },
-      { en: "This is a big step for our team.", kr: "이것은 우리 팀에게 큰 진전입니다." }
+      { en: "I saw a big dog in the park.", kr: "공원에서 엄청 큰 개를 봤어." },
+      { en: "This is a big step for our team.", kr: "이건 우리 팀한테 큰 진전이에요." }
     ]
   },
   {
@@ -1855,8 +1855,8 @@ const wordsLevel1_Part3 = [
     word: "possible",
     meaning: "가능한",
     examples: [
-      { en: "It is possible to finish it today.", kr: "오늘 그것을 끝내는 것이 가능합니다." },
-      { en: "I'll do everything possible to help.", kr: "도울 수 있는 모든 것을 할게요." }
+      { en: "Is it possible to finish this by today?", kr: "오늘까지 이거 끝내는 게 가능해요?" },
+      { en: "I'll do everything possible to help.", kr: "도울 수 있는 건 뭐든 다 할게요." }
     ]
   },
   {
@@ -1864,8 +1864,8 @@ const wordsLevel1_Part3 = [
     word: "program",
     meaning: "프로그램",
     examples: [
-      { en: "I watched an interesting TV program last night.", kr: "어젯밤에 흥미로운 TV 프로그램을 봤어." },
-      { en: "This computer program is very useful.", kr: "이 컴퓨터 프로그램은 매우 유용합니다." }
+      { en: "I watched an interesting TV program last night.", kr: "어젯밤에 재밌는 TV 프로그램을 봤어." },
+      { en: "This program is really useful for editing photos.", kr: "이 프로그램 사진 편집할 때 진짜 유용해요." }
     ]
   },
   {
@@ -1898,10 +1898,10 @@ const wordsLevel1_Part3 = [
   {
     id: "L1-211",
     word: "almost",
-    meaning: "거의",
+    meaning: "거의, 하마터면",
     examples: [
-      { en: "It's almost midnight.", kr: "거의 자정입니다." },
-      { en: "I almost forgot your birthday.", kr: "네 생일을 거의 잊을 뻔했어." }
+      { en: "It's almost midnight. We should go home.", kr: "거의 자정이야. 이제 집에 가야겠다." },
+      { en: "I almost forgot your birthday!", kr: "하마터면 네 생일 잊어버릴 뻔했어!" }
     ]
   },
   {
@@ -1909,8 +1909,8 @@ const wordsLevel1_Part3 = [
     word: "important",
     meaning: "중요한",
     examples: [
-      { en: "This is a very important meeting.", kr: "이것은 매우 중요한 회의입니다." },
-      { en: "It's important to be honest.", kr: "정직한 것이 중요합니다." }
+      { en: "This is a very important meeting.", kr: "이건 정말 중요한 회의예요." },
+      { en: "It's important to be honest.", kr: "솔직한 게 중요해요." }
     ]
   },
   {
@@ -1918,8 +1918,8 @@ const wordsLevel1_Part3 = [
     word: "play",
     meaning: "놀다, 연주하다",
     examples: [
-      { en: "Let's go play outside.", kr: "나가서 놀자." },
-      { en: "He can play the piano well.", kr: "그는 피아노를 잘 연주할 수 있어." }
+      { en: "Let's go play outside for a bit.", kr: "나가서 좀 놀자." },
+      { en: "He can play the piano really well.", kr: "그는 피아노를 정말 잘 쳐." }
     ]
   },
   {
@@ -1927,8 +1927,8 @@ const wordsLevel1_Part3 = [
     word: "write",
     meaning: "쓰다",
     examples: [
-      { en: "Can you write your name here?", kr: "여기에 당신의 이름을 써주시겠어요?" },
-      { en: "I need to write a report.", kr: "나는 보고서를 써야 해." }
+      { en: "Can you write your name here?", kr: "여기에 성함 좀 써 주시겠어요?" },
+      { en: "I need to write a report.", kr: "나 보고서 써야 해." }
     ]
   },
   {
@@ -1936,8 +1936,8 @@ const wordsLevel1_Part3 = [
     word: "become",
     meaning: "~이 되다",
     examples: [
-      { en: "She wants to become a doctor.", kr: "그녀는 의사가 되고 싶어 합니다." },
-      { en: "The weather became cold suddenly.", kr: "날씨가 갑자기 추워졌어." }
+      { en: "She wants to become a doctor.", kr: "그녀는 의사가 되고 싶어 해요." },
+      { en: "How did you become a teacher?", kr: "어떻게 선생님이 되셨어요?" }
     ]
   },
   {
@@ -1952,10 +1952,10 @@ const wordsLevel1_Part3 = [
   {
     id: "L1-217",
     word: "street",
-    meaning: "거리",
+    meaning: "거리, 길",
     examples: [
-      { en: "He lives down the street from me.", kr: "그는 나와 같은 거리에 살아." },
-      { en: "Be careful when you cross the street.", kr: "거리를 건널 때 조심해." }
+      { en: "He lives just down the street from me.", kr: "그 사람 우리 집에서 길 따라 조금만 가면 나오는 데 살아." },
+      { en: "Be careful when you cross the street.", kr: "길 건널 때 조심해." }
     ]
   },
   {
@@ -1963,7 +1963,7 @@ const wordsLevel1_Part3 = [
     word: "second",
     meaning: "두 번째의, 초",
     examples: [
-      { en: "This is my second cup of coffee.", kr: "이것은 나의 두 번째 커피 잔이야." },
+      { en: "This is my second cup of coffee today.", kr: "이거 오늘 두 번째 커피야." },
       { en: "Wait a second, I need to check something.", kr: "잠깐만, 확인할 게 있어." }
     ]
   },
@@ -1972,8 +1972,8 @@ const wordsLevel1_Part3 = [
     word: "talk",
     meaning: "말하다, 이야기하다",
     examples: [
-      { en: "Let's talk about your plan.", kr: "네 계획에 대해 이야기하자." },
-      { en: "I don't like to talk too much.", kr: "나는 말을 너무 많이 하는 것을 좋아하지 않아." }
+      { en: "Let's talk about your plan.", kr: "네 계획에 대해 얘기해 보자." },
+      { en: "Can I talk to you for a minute?", kr: "잠깐 얘기 좀 할 수 있을까?" }
     ]
   },
   {
@@ -1981,8 +1981,8 @@ const wordsLevel1_Part3 = [
     word: "soon",
     meaning: "곧",
     examples: [
-      { en: "I hope to see you again soon.", kr: "곧 다시 만나기를 바랍니다." },
-      { en: "Dinner will be ready soon.", kr: "저녁 식사가 곧 준비될 거야." }
+      { en: "I hope to see you again soon.", kr: "곧 또 만났으면 좋겠어요." },
+      { en: "Dinner will be ready soon.", kr: "저녁 곧 다 돼." }
     ]
   },
   {
@@ -1990,26 +1990,26 @@ const wordsLevel1_Part3 = [
     word: "continue",
     meaning: "계속하다",
     examples: [
-      { en: "Please continue your story.", kr: "당신의 이야기를 계속해 주세요." },
-      { en: "We decided to continue working late.", kr: "우리는 늦게까지 계속 일하기로 결정했어." }
+      { en: "Sorry for interrupting. Please continue.", kr: "말 끊어서 죄송해요. 계속하세요." },
+      { en: "We decided to continue working late.", kr: "우리 늦게까지 계속 일하기로 했어." }
     ]
   },
   {
     id: "L1-222",
     word: "build",
-    meaning: "짓다",
+    meaning: "짓다, 쌓다",
     examples: [
-      { en: "They are going to build a new bridge.", kr: "그들은 새 다리를 지을 예정이야." },
-      { en: "It takes time to build trust.", kr: "신뢰를 쌓는 데는 시간이 걸립니다." }
+      { en: "They're going to build a new bridge here.", kr: "여기에 새 다리를 지을 거래." },
+      { en: "It takes time to build trust.", kr: "신뢰를 쌓는 데는 시간이 걸려요." }
     ]
   },
   {
     id: "L1-223",
     word: "increase",
-    meaning: "증가하다",
+    meaning: "늘리다, 증가하다",
     examples: [
-      { en: "The company will increase its budget next year.", kr: "회사는 내년에 예산을 늘릴 것입니다." },
-      { en: "The price of gas has increased recently.", kr: "휘발유 가격이 최근에 올랐습니다." }
+      { en: "Can we increase the budget a little?", kr: "예산을 조금 늘릴 수 있을까요?" },
+      { en: "Gas prices have increased a lot recently.", kr: "요즘 기름값이 많이 올랐어요." }
     ]
   },
   {
@@ -2017,17 +2017,17 @@ const wordsLevel1_Part3 = [
     word: "week",
     meaning: "주(週)",
     examples: [
-      { en: "I will be on vacation next week.", kr: "나는 다음 주에 휴가 갈 거야." },
-      { en: "How many days are there in a week?", kr: "일주일은 며칠이니?" }
+      { en: "I'll be on vacation next week.", kr: "나 다음 주에 휴가야." },
+      { en: "I go to the gym three times a week.", kr: "나 일주일에 세 번 헬스장 가." }
     ]
   },
   {
     id: "L1-225",
     word: "president",
-    meaning: "대통령, 회장",
+    meaning: "대통령, 회장, 사장",
     examples: [
-      { en: "The president gave a speech yesterday.", kr: "대통령은 어제 연설을 했습니다." },
-      { en: "She is the president of the company.", kr: "그녀는 그 회사의 회장입니다." }
+      { en: "Did you watch the president's speech last night?", kr: "어젯밤에 대통령 연설 봤어?" },
+      { en: "She's the president of the company.", kr: "그분이 그 회사 사장님이에요." }
     ]
   },
   {
@@ -2035,17 +2035,17 @@ const wordsLevel1_Part3 = [
     word: "history",
     meaning: "역사",
     examples: [
-      { en: "I enjoy studying ancient history.", kr: "나는 고대 역사 공부하는 것을 즐깁니다." },
-      { en: "This event made history.", kr: "이 사건은 역사를 만들었습니다." }
+      { en: "I was never good at history in school.", kr: "나 학교 다닐 때 역사를 진짜 못했어." },
+      { en: "This city has a really long history.", kr: "이 도시는 역사가 정말 길어요." }
     ]
   },
   {
     id: "L1-227",
     word: "approach",
-    meaning: "접근하다, 접근법",
+    meaning: "다가가다, 접근법",
     examples: [
-      { en: "The cat slowly approached the bird.", kr: "고양이가 새에게 천천히 접근했어." },
-      { en: "We need a new approach to solve this problem.", kr: "이 문제를 해결하기 위해 새로운 접근법이 필요해." }
+      { en: "A stranger approached me at the station.", kr: "역에서 낯선 사람이 나한테 다가왔어." },
+      { en: "We need a new approach to this problem.", kr: "이 문제는 새로운 접근법이 필요해." }
     ]
   },
   {
@@ -2053,35 +2053,35 @@ const wordsLevel1_Part3 = [
     word: "different",
     meaning: "다른",
     examples: [
-      { en: "I have two different types of phones.", kr: "나는 두 가지 다른 종류의 휴대폰을 가지고 있어." },
-      { en: "Our opinions are very different.", kr: "우리의 의견은 매우 다릅니다." }
+      { en: "You look different today. Did you get a haircut?", kr: "너 오늘 좀 달라 보인다. 머리 잘랐어?" },
+      { en: "Our opinions are very different.", kr: "우리 의견은 많이 달라요." }
     ]
   },
   {
     id: "L1-229",
     word: "offer",
-    meaning: "제공하다, 제안",
+    meaning: "제안하다, 제안",
     examples: [
-      { en: "They offered me a job.", kr: "그들은 나에게 일자리를 제안했습니다." },
-      { en: "Thank you for your generous offer.", kr: "당신의 관대한 제안에 감사드립니다." }
+      { en: "They offered me a job!", kr: "그 회사에서 나한테 일자리를 제안했어!" },
+      { en: "Thanks for the offer, but I'm okay.", kr: "제안은 고맙지만 괜찮아요." }
     ]
   },
   {
     id: "L1-230",
     word: "local",
-    meaning: "지역의",
+    meaning: "지역의, 현지의",
     examples: [
-      { en: "Do you know any good local restaurants?", kr: "괜찮은 지역 식당 아는 곳 있니?" },
-      { en: "We support the local economy.", kr: "우리는 지역 경제를 지원합니다." }
+      { en: "Do you know any good local restaurants?", kr: "괜찮은 현지 맛집 아는 데 있어요?" },
+      { en: "Is this a local beer?", kr: "이거 이 지역 맥주예요?" }
     ]
   },
   {
     id: "L1-231",
     word: "cover",
-    meaning: "덮다, 포함하다",
+    meaning: "덮다, (비용을) 부담하다",
     examples: [
-      { en: "Cover the food to keep it warm.", kr: "음식을 따뜻하게 유지하기 위해 덮어라." },
-      { en: "The report covers all the main points.", kr: "그 보고서는 모든 주요 요점을 포함합니다." }
+      { en: "Cover the food so it stays warm.", kr: "음식 식지 않게 덮어 둬." },
+      { en: "Don't worry, the company will cover the cost.", kr: "걱정 마, 비용은 회사가 부담할 거야." }
     ]
   },
   {
@@ -2089,8 +2089,8 @@ const wordsLevel1_Part3 = [
     word: "hear",
     meaning: "듣다",
     examples: [
-      { en: "Can you hear the music clearly?", kr: "음악이 명확하게 들리니?" },
-      { en: "I was surprised to hear the news.", kr: "그 소식을 듣고 놀랐어." }
+      { en: "Can you hear me okay now?", kr: "이제 제 목소리 잘 들려요?" },
+      { en: "I was surprised to hear the news.", kr: "그 소식 듣고 놀랐어." }
     ]
   },
   {
@@ -2098,8 +2098,8 @@ const wordsLevel1_Part3 = [
     word: "easy",
     meaning: "쉬운",
     examples: [
-      { en: "The test was surprisingly easy.", kr: "시험이 놀랍게도 쉬웠어." },
-      { en: "It is not easy to learn a new language.", kr: "새로운 언어를 배우는 것은 쉽지 않습니다." }
+      { en: "The test was surprisingly easy.", kr: "시험이 의외로 쉬웠어." },
+      { en: "It's not easy to learn a new language.", kr: "새 언어 배우는 건 쉽지 않아요." }
     ]
   },
   {
@@ -2114,10 +2114,10 @@ const wordsLevel1_Part3 = [
   {
     id: "L1-235",
     word: "picture",
-    meaning: "그림, 사진",
+    meaning: "사진, 그림",
     examples: [
-      { en: "Did you see the picture I sent you?", kr: "내가 너에게 보낸 사진 봤니?" },
-      { en: "She painted a picture of her dog.", kr: "그녀는 자기 개의 그림을 그렸어." }
+      { en: "Did you see the picture I sent you?", kr: "내가 보낸 사진 봤어?" },
+      { en: "Excuse me, could you take a picture of us?", kr: "실례지만 저희 사진 좀 찍어 주시겠어요?" }
     ]
   },
   {
@@ -2134,8 +2134,8 @@ const wordsLevel1_Part3 = [
     word: "five",
     meaning: "다섯",
     examples: [
-      { en: "I have five books on the shelf.", kr: "나는 선반에 다섯 권의 책을 가지고 있어." },
-      { en: "The meeting starts in five minutes.", kr: "회의는 5분 후에 시작합니다." }
+      { en: "We're about five minutes away.", kr: "우리 5분 정도 거리에 있어." },
+      { en: "The meeting starts in five minutes.", kr: "회의 5분 뒤에 시작해요." }
     ]
   },
   {
@@ -2143,8 +2143,8 @@ const wordsLevel1_Part3 = [
     word: "sense",
     meaning: "감각, 의미",
     examples: [
-      { en: "That doesn't make any sense.", kr: "그것은 전혀 말이 안 돼." },
-      { en: "We learn about the five senses in school.", kr: "우리는 학교에서 오감에 대해 배웁니다." }
+      { en: "That doesn't make any sense.", kr: "그건 전혀 말이 안 돼." },
+      { en: "He has a great sense of humor.", kr: "그 사람 유머 감각이 정말 좋아." }
     ]
   },
   {
@@ -2170,8 +2170,8 @@ const wordsLevel1_Part3 = [
     word: "wait",
     meaning: "기다리다",
     examples: [
-      { en: "Please wait for me at the entrance.", kr: "입구에서 저를 기다려 주세요." },
-      { en: "I can't wait to see the movie.", kr: "그 영화를 빨리 보고 싶어 (기다릴 수 없어)." }
+      { en: "Please wait for me at the entrance.", kr: "입구에서 기다려 주세요." },
+      { en: "I can't wait to see the movie.", kr: "그 영화 빨리 보고 싶어 죽겠어." }
     ]
   },
   {
@@ -2179,17 +2179,17 @@ const wordsLevel1_Part3 = [
     word: "expect",
     meaning: "예상하다, 기대하다",
     examples: [
-      { en: "I expect her to call soon.", kr: "나는 그녀가 곧 전화할 것이라고 예상해." },
-      { en: "Don't expect too much from others.", kr: "다른 사람들에게 너무 많이 기대하지 마." }
+      { en: "I expect her to call soon.", kr: "그녀가 곧 전화할 것 같아." },
+      { en: "Don't expect too much from others.", kr: "남한테 너무 많이 기대하지 마." }
     ]
   },
   {
     id: "L1-243",
     word: "position",
-    meaning: "위치, 입장, 직위",
+    meaning: "직위, 자리, 입장",
     examples: [
-      { en: "What is your position on this matter?", kr: "이 문제에 대한 당신의 입장은 무엇입니까?" },
-      { en: "She applied for a managerial position.", kr: "그녀는 관리직에 지원했습니다." }
+      { en: "What position are you applying for?", kr: "어떤 자리에 지원하시는 거예요?" },
+      { en: "I'm not in a position to decide that.", kr: "제가 그걸 결정할 입장은 아니에요." }
     ]
   },
   {
@@ -2197,8 +2197,8 @@ const wordsLevel1_Part3 = [
     word: "decide",
     meaning: "결정하다",
     examples: [
-      { en: "We need to decide quickly.", kr: "우리는 빨리 결정해야 합니다." },
-      { en: "Have you decided what to eat?", kr: "무엇을 먹을지 결정했니?" }
+      { en: "We need to decide quickly.", kr: "빨리 결정해야 해요." },
+      { en: "Have you decided what to eat?", kr: "뭐 먹을지 정했어?" }
     ]
   },
   {
@@ -2215,8 +2215,8 @@ const wordsLevel1_Part3 = [
     word: "contain",
     meaning: "포함하다, (안에) 들어 있다",
     examples: [
-      { en: "This bottle contains orange juice.", kr: "이 병에는 오렌지 주스가 들어 있습니다." },
-      { en: "The box was said to contain a rare jewel.", kr: "그 상자에는 희귀한 보석이 들어 있다고 했다." }
+      { en: "This bottle contains orange juice.", kr: "이 병에는 오렌지 주스가 들어 있어요." },
+      { en: "Does this contain any nuts? I'm allergic.", kr: "이거 견과류 들어 있어요? 저 알레르기 있어서요." }
     ]
   },
   {
@@ -2224,8 +2224,8 @@ const wordsLevel1_Part3 = [
     word: "remember",
     meaning: "기억하다",
     examples: [
-      { en: "I can't remember his name.", kr: "나는 그의 이름을 기억할 수 없어." },
-      { en: "Remember to lock the door.", kr: "문 잠그는 것을 기억해." }
+      { en: "I can't remember his name.", kr: "그 사람 이름이 기억이 안 나." },
+      { en: "Remember to lock the door.", kr: "문 잠그는 거 잊지 마." }
     ]
   },
   {
@@ -2240,7 +2240,7 @@ const wordsLevel1_Part3 = [
   {
     id: "L1-249",
     word: "spend",
-    meaning: "쓰다, 소비하다",
+    meaning: "(돈을) 쓰다, (시간을) 보내다",
     examples: [
       { en: "I like to spend time outdoors.", kr: "나는 야외에서 시간을 보내는 것을 좋아해." },
       { en: "How much did you spend on this trip?", kr: "이 여행에 얼마를 썼니?" }
@@ -2260,8 +2260,8 @@ const wordsLevel1_Part3 = [
     word: "education",
     meaning: "교육",
     examples: [
-      { en: "Education is the key to a better future.", kr: "교육은 더 나은 미래의 열쇠입니다." },
-      { en: "She received her education in London.", kr: "그녀는 런던에서 교육을 받았어." }
+      { en: "I want my kids to get a good education.", kr: "우리 애들이 좋은 교육을 받았으면 좋겠어." },
+      { en: "He went back to school to continue his education.", kr: "그는 교육을 계속 받으려고 다시 학교에 갔어." }
     ]
   },
   {
@@ -2269,8 +2269,8 @@ const wordsLevel1_Part3 = [
     word: "price",
     meaning: "가격",
     examples: [
-      { en: "The price of gas went up again.", kr: "휘발유 가격이 또 올랐어." },
-      { en: "This store offers a low price guarantee.", kr: "이 가게는 최저가 보장 서비스를 제공합니다." }
+      { en: "The price of gas went up again.", kr: "기름값이 또 올랐어." },
+      { en: "What's the price of this jacket?", kr: "이 재킷 가격이 얼마예요?" }
     ]
   },
   {
@@ -2278,8 +2278,8 @@ const wordsLevel1_Part3 = [
     word: "short",
     meaning: "짧은",
     examples: [
-      { en: "I prefer short hair.", kr: "나는 짧은 머리를 선호해." },
-      { en: "We only had a short break.", kr: "우리는 단지 짧은 휴식 시간만 가졌어." }
+      { en: "I prefer short hair in the summer.", kr: "여름엔 짧은 머리가 좋아." },
+      { en: "We only had a short break.", kr: "쉬는 시간이 짧았어." }
     ]
   },
   {
@@ -2296,7 +2296,7 @@ const wordsLevel1_Part3 = [
     word: "experience",
     meaning: "경험",
     examples: [
-      { en: "Do you have any experience in teaching?", kr: "가르치는 것에 대한 경험이 있습니까?" },
+      { en: "Do you have any experience in teaching?", kr: "가르쳐 본 경험 있으세요?" },
       { en: "It was a wonderful experience.", kr: "정말 멋진 경험이었어." }
     ]
   },
@@ -2314,8 +2314,8 @@ const wordsLevel1_Part3 = [
     word: "join",
     meaning: "참여하다, 합류하다",
     examples: [
-      { en: "Would you like to join us for dinner?", kr: "우리와 함께 저녁 식사에 합류하시겠어요?" },
-      { en: "The two rivers join near the city.", kr: "그 두 강은 도시 근처에서 합쳐집니다." }
+      { en: "Would you like to join us for dinner?", kr: "저녁 같이 하실래요?" },
+      { en: "Do you mind if I join you?", kr: "저도 같이 껴도 될까요?" }
     ]
   },
   {
@@ -2366,19 +2366,19 @@ const wordsLevel1_Part3 = [
   {
     id: "L1-263",
     word: "create",
-    meaning: "창조하다",
+    meaning: "만들다, 창조하다",
     examples: [
-      { en: "The artist created a beautiful sculpture.", kr: "그 예술가는 아름다운 조각품을 창조했어." },
-      { en: "We need to create a plan for next month.", kr: "우리는 다음 달을 위한 계획을 만들어야 해." }
+      { en: "Did you create this logo yourself?", kr: "이 로고 직접 만든 거예요?" },
+      { en: "We need to create a plan for next month.", kr: "다음 달 계획을 세워야 해요." }
     ]
   },
   {
     id: "L1-264",
     word: "base",
-    meaning: "기초, 기반, 기지",
+    meaning: "기반, ~에 근거를 두다",
     examples: [
-      { en: "The military has a large base near the coast.", kr: "군대는 해안 근처에 큰 기지를 가지고 있어." },
-      { en: "This decision is based on a survey.", kr: "이 결정은 설문조사를 기반으로 합니다." }
+      { en: "Is this movie based on a true story?", kr: "이 영화 실화를 바탕으로 한 거야?" },
+      { en: "Our company is based in Seoul.", kr: "우리 회사는 서울에 기반을 두고 있어요." }
     ]
   },
   {
@@ -2386,8 +2386,8 @@ const wordsLevel1_Part3 = [
     word: "value",
     meaning: "가치, 소중히 여기다",
     examples: [
-      { en: "The historical value of the painting is immense.", kr: "그 그림의 역사적 가치는 엄청납니다." },
-      { en: "I value your friendship greatly.", kr: "나는 당신의 우정을 대단히 소중하게 여깁니다." }
+      { en: "What's the value of this old coin?", kr: "이 오래된 동전 가치가 얼마나 돼요?" },
+      { en: "I really value your advice.", kr: "네 조언 정말 소중하게 생각해." }
     ]
   },
   {
@@ -2404,8 +2404,8 @@ const wordsLevel1_Part3 = [
     word: "voice",
     meaning: "목소리",
     examples: [
-      { en: "She has a beautiful singing voice.", kr: "그녀는 노래하는 목소리가 아름다워." },
-      { en: "Everyone needs to have a voice in the decision.", kr: "모두가 그 결정에 목소리를 내야 합니다." }
+      { en: "She has a beautiful singing voice.", kr: "그녀는 노래하는 목소리가 정말 예뻐." },
+      { en: "Can you lower your voice a little?", kr: "목소리 좀 낮춰 줄래?" }
     ]
   },
   {
@@ -2422,8 +2422,8 @@ const wordsLevel1_Part3 = [
     word: "love",
     meaning: "사랑, 사랑하다, 아주 좋아하다",
     examples: [
-      { en: "I love spending time with my family.", kr: "나는 가족과 시간을 보내는 것을 정말 좋아해." },
-      { en: "Their love story is famous.", kr: "그들의 사랑 이야기는 유명합니다." }
+      { en: "I love spending time with my family.", kr: "나는 가족이랑 시간 보내는 게 정말 좋아." },
+      { en: "Love you! See you tonight.", kr: "사랑해! 이따 밤에 봐." }
     ]
   },
   {
@@ -2440,8 +2440,8 @@ const wordsLevel1_Part3 = [
     word: "period",
     meaning: "기간",
     examples: [
-      { en: "It was a very difficult period in my life.", kr: "그것은 내 인생에서 매우 어려운 기간이었어." },
-      { en: "The contract is valid for a period of one year.", kr: "계약은 1년 기간 동안 유효합니다." }
+      { en: "It was a really hard period in my life.", kr: "내 인생에서 정말 힘든 기간이었어." },
+      { en: "There's a 30-day trial period, right?", kr: "30일 체험 기간이 있는 거 맞죠?" }
     ]
   },
   {
@@ -2467,17 +2467,17 @@ const wordsLevel1_Part3 = [
     word: "various",
     meaning: "다양한",
     examples: [
-      { en: "The market sells various types of fruit.", kr: "그 시장은 다양한 종류의 과일을 판매합니다." },
-      { en: "We discussed the problem from various angles.", kr: "우리는 다양한 각도에서 그 문제를 논의했습니다." }
+      { en: "I've tried various diets, but nothing worked.", kr: "다양한 다이어트를 해 봤는데 효과가 하나도 없었어." },
+      { en: "We talked about the problem from various angles.", kr: "그 문제를 다양한 각도에서 얘기해 봤어요." }
     ]
   },
   {
     id: "L1-275",
     word: "private",
-    meaning: "사적인",
+    meaning: "사적인, 전용의",
     examples: [
-      { en: "This is a private conversation.", kr: "이것은 사적인 대화입니다." },
-      { en: "They held a private meeting.", kr: "그들은 비공개 회의를 열었습니다." }
+      { en: "This is a private conversation.", kr: "이건 사적인 대화예요." },
+      { en: "Is this a private beach?", kr: "여기 전용 해변이에요?" }
     ]
   },
   {
@@ -2485,8 +2485,8 @@ const wordsLevel1_Part3 = [
     word: "current",
     meaning: "현재의",
     examples: [
-      { en: "What is your current address?", kr: "당신의 현재 주소는 무엇입니까?" },
-      { en: "We are discussing the current economic situation.", kr: "우리는 현재의 경제 상황에 대해 논의하고 있습니다." }
+      { en: "What's your current address?", kr: "현재 주소가 어떻게 되세요?" },
+      { en: "What's the current exchange rate?", kr: "현재 환율이 어떻게 돼요?" }
     ]
   },
   {
@@ -2521,8 +2521,8 @@ const wordsLevel1_Part3 = [
     word: "necessary",
     meaning: "필요한",
     examples: [
-      { en: "A passport is necessary for international travel.", kr: "여권은 해외여행에 필수적입니다." },
-      { en: "It is necessary to eat healthy food.", kr: "건강한 음식을 먹는 것이 필요합니다." }
+      { en: "A passport is necessary for international travel.", kr: "해외여행 갈 땐 여권이 꼭 필요해요." },
+      { en: "Is it necessary to book in advance?", kr: "미리 예약하는 게 필요해요?" }
     ]
   },
   {
@@ -2530,8 +2530,8 @@ const wordsLevel1_Part3 = [
     word: "finally",
     meaning: "마침내",
     examples: [
-      { en: "Finally, the rain stopped.", kr: "마침내 비가 멈췄어." },
-      { en: "We finally finished the project.", kr: "우리는 마침내 프로젝트를 끝냈어." }
+      { en: "The rain finally stopped. Let's go out!", kr: "드디어 비가 그쳤어. 나가자!" },
+      { en: "We finally finished the project.", kr: "우리 마침내 프로젝트 끝냈어." }
     ]
   },
   {
@@ -2555,19 +2555,19 @@ const wordsLevel1_Part3 = [
   {
     id: "L1-284",
     word: "check",
-    meaning: "확인하다",
+    meaning: "확인하다, 점검하다",
     examples: [
-      { en: "Please check your email for the details.", kr: "자세한 내용을 이메일로 확인해 주세요." },
-      { en: "The mechanic will check the car's engine.", kr: "정비사가 차의 엔진을 확인할 것입니다." }
+      { en: "Please check your email for the details.", kr: "자세한 내용은 이메일로 확인해 주세요." },
+      { en: "The mechanic will check the car's engine.", kr: "정비사가 차 엔진을 점검해 줄 거예요." }
     ]
   },
   {
     id: "L1-285",
     word: "figure",
-    meaning: "수치, 인물",
+    meaning: "수치, 알아내다",
     examples: [
-      { en: "Sales figures rose sharply last quarter.", kr: "지난 분기에 매출 수치가 급격히 올랐어." },
-      { en: "She is an important figure in the community.", kr: "그녀는 지역사회에서 중요한 인물입니다." }
+      { en: "I can't figure out how this works.", kr: "이게 어떻게 돌아가는지 알아낼 수가 없어." },
+      { en: "Can you check the sales figures for March?", kr: "3월 매출 수치 좀 확인해 줄래요?" }
     ]
   },
   {
@@ -2575,26 +2575,26 @@ const wordsLevel1_Part3 = [
     word: "common",
     meaning: "흔한, 공통의",
     examples: [
-      { en: "It is a common sight in this neighborhood.", kr: "그것은 이 동네에서 흔한 광경입니다." },
-      { en: "They have a lot of common interests.", kr: "그들은 많은 공통 관심사를 가지고 있어." }
+      { en: "Kim is a really common last name in Korea.", kr: "김 씨는 한국에서 정말 흔한 성이에요." },
+      { en: "Wow, we have a lot in common.", kr: "와, 우리 공통점이 많네." }
     ]
   },
   {
     id: "L1-287",
     word: "behind",
-    meaning: "뒤에",
+    meaning: "뒤에, 뒤처진",
     examples: [
-      { en: "The sun disappeared behind the clouds.", kr: "태양이 구름 뒤로 사라졌어." },
-      { en: "He is behind in his school work.", kr: "그는 학교 공부가 뒤처져 있어." }
+      { en: "The restroom is behind the stairs.", kr: "화장실은 계단 뒤에 있어요." },
+      { en: "I'm a little behind on my work this week.", kr: "이번 주에 일이 좀 뒤처졌어." }
     ]
   },
   {
     id: "L1-288",
     word: "direction",
-    meaning: "방향, 지시",
+    meaning: "방향, 길 안내",
     examples: [
-      { en: "Which direction is the park?", kr: "공원은 어느 방향인가요?" },
-      { en: "I need some direction for this project.", kr: "이 프로젝트에 대한 지침이 필요합니다." }
+      { en: "Which direction is the park?", kr: "공원은 어느 방향이에요?" },
+      { en: "Could you give me directions to the station?", kr: "역까지 가는 길 좀 안내해 주시겠어요?" }
     ]
   },
   {
@@ -2611,17 +2611,17 @@ const wordsLevel1_Part3 = [
     word: "personal",
     meaning: "개인적인",
     examples: [
-      { en: "Please keep your personal belongings safe.", kr: "개인 소지품을 안전하게 보관해 주세요." },
-      { en: "I don't want to discuss my personal life.", kr: "내 사생활에 대해 논의하고 싶지 않습니다." }
+      { en: "Please keep your personal belongings with you.", kr: "개인 소지품은 잘 챙기세요." },
+      { en: "I don't want to talk about my personal life.", kr: "개인적인 얘기는 하고 싶지 않아요." }
     ]
   },
   {
     id: "L1-291",
     word: "industry",
-    meaning: "산업",
+    meaning: "산업, 업계",
     examples: [
-      { en: "The tourism industry is growing rapidly.", kr: "관광 산업이 빠르게 성장하고 있습니다." },
-      { en: "He works in the tech industry.", kr: "그는 기술 산업에서 일합니다." }
+      { en: "What industry are you in?", kr: "어느 업계에서 일하세요?" },
+      { en: "He works in the tech industry.", kr: "그 사람 IT 업계에서 일해." }
     ]
   },
   {
@@ -2656,8 +2656,8 @@ const wordsLevel1_Part3 = [
     word: "evidence",
     meaning: "증거",
     examples: [
-      { en: "The police found no evidence of a crime.", kr: "경찰은 범죄의 증거를 찾지 못했습니다." },
-      { en: "There is evidence that he was involved.", kr: "그가 연루되었다는 증거가 있습니다." }
+      { en: "Do you have any evidence for that?", kr: "그거 증거 있어?" },
+      { en: "There's no evidence that it actually works.", kr: "그게 실제로 효과 있다는 증거는 없어." }
     ]
   },
   {
@@ -2665,8 +2665,8 @@ const wordsLevel1_Part3 = [
     word: "appear",
     meaning: "나타나다, ~처럼 보이다",
     examples: [
-      { en: "A new star appeared in the sky.", kr: "하늘에 새로운 별이 나타났어." },
-      { en: "She appears to be very tired.", kr: "그녀는 매우 피곤해 보입니다." }
+      { en: "He suddenly appeared at the door.", kr: "그가 갑자기 문 앞에 나타났어." },
+      { en: "She appears to be really tired.", kr: "그녀 정말 피곤해 보여요." }
     ]
   },
   {
@@ -2674,8 +2674,8 @@ const wordsLevel1_Part3 = [
     word: "design",
     meaning: "디자인, 설계하다",
     examples: [
-      { en: "I love the modern design of this building.", kr: "나는 이 건물의 현대적인 디자인을 좋아해." },
-      { en: "Who will design the website?", kr: "누가 웹사이트를 설계할 건가요?" }
+      { en: "I love the modern design of this building.", kr: "이 건물 현대적인 디자인이 정말 좋아." },
+      { en: "Who's going to design the website?", kr: "웹사이트 디자인은 누가 해요?" }
     ]
   },
   {
@@ -2683,8 +2683,8 @@ const wordsLevel1_Part3 = [
     word: "determine",
     meaning: "결정하다, 알아내다",
     examples: [
-      { en: "We need to determine the cause of the problem.", kr: "우리는 문제의 원인을 밝혀내야 합니다." },
-      { en: "His efforts will determine his success.", kr: "그의 노력이 그의 성공을 결정할 것입니다." }
+      { en: "We need to determine the cause of the problem first.", kr: "먼저 문제 원인부터 알아내야 해요." },
+      { en: "The weather will determine whether we go hiking.", kr: "등산 갈지 말지는 날씨가 결정할 거예요." }
     ]
   },
   {
@@ -2701,8 +2701,8 @@ const wordsLevel1_Part3 = [
     word: "truth",
     meaning: "진실",
     examples: [
-      { en: "Tell me the whole truth.", kr: "나에게 모든 진실을 말해줘." },
-      { en: "The truth is often complicated.", kr: "진실은 종종 복잡합니다." }
+      { en: "Just tell me the truth.", kr: "그냥 진실을 말해 줘." },
+      { en: "To tell you the truth, I didn't like the movie.", kr: "사실대로 말하면 그 영화 별로였어." }
     ]
   }
 ];
@@ -2711,28 +2711,28 @@ const wordsLevel1_Part4 = [
   {
     id: "L1-301",
     word: "cause",
-    meaning: "원인, 야기하다",
+    meaning: "원인, 일으키다",
     examples: [
-      { en: "What was the cause of the fire?", kr: "그 화재의 원인은 무엇이었습니까?" },
-      { en: "Heavy rain can cause flooding.", kr: "폭우는 홍수를 야기할 수 있습니다." }
+      { en: "What was the cause of the fire?", kr: "그 화재 원인이 뭐였어요?" },
+      { en: "Do you know what's causing the delay?", kr: "뭐가 지연을 일으키고 있는지 아세요?" }
     ]
   },
   {
     id: "L1-302",
     word: "force",
-    meaning: "힘, 강요하다",
+    meaning: "강요하다, 억지로 하다",
     examples: [
-      { en: "We had to use great force to move the rock.", kr: "우리는 바위를 옮기기 위해 큰 힘을 사용해야 했어." },
-      { en: "The law will force companies to change their policy.", kr: "그 법은 회사들이 정책을 바꾸도록 강요할 것입니다." }
+      { en: "I don't want to force you to come.", kr: "억지로 오라고 강요하고 싶진 않아." },
+      { en: "My parents forced me to take piano lessons.", kr: "부모님이 억지로 피아노 레슨을 받게 하셨어." }
     ]
   },
   {
     id: "L1-303",
     word: "answer",
-    meaning: "대답하다, 대답",
+    meaning: "대답, 대답하다, (전화를) 받다",
     examples: [
-      { en: "I don't know the answer to this question.", kr: "이 질문에 대한 대답을 모르겠습니다." },
-      { en: "Please answer the phone.", kr: "전화를 받아주세요." }
+      { en: "I don't know the answer to this question.", kr: "이 질문 답을 모르겠어요." },
+      { en: "Can you answer the phone? I'm driving.", kr: "전화 좀 받아 줄래? 나 운전 중이야." }
     ]
   },
   {
@@ -2749,17 +2749,17 @@ const wordsLevel1_Part4 = [
     word: "apply",
     meaning: "적용하다, 지원하다",
     examples: [
-      { en: "This rule does not apply to everyone.", kr: "이 규칙이 모든 사람에게 적용되는 것은 아닙니다." },
-      { en: "I decided to apply for the new job.", kr: "나는 새 일자리에 지원하기로 결정했어." }
+      { en: "This rule doesn't apply to everyone.", kr: "이 규칙이 모두한테 적용되는 건 아니에요." },
+      { en: "I decided to apply for the new job.", kr: "그 새 일자리에 지원하기로 했어." }
     ]
   },
   {
     id: "L1-306",
     word: "term",
-    meaning: "용어, 기간",
+    meaning: "용어, 임기, 기간",
     examples: [
-      { en: "Please explain the technical term.", kr: "그 전문 용어를 설명해 주세요." },
-      { en: "He was elected for a four-year term.", kr: "그는 4년 임기로 선출되었습니다." }
+      { en: "Can you explain that term in simple words?", kr: "그 용어 쉬운 말로 설명해 줄 수 있어요?" },
+      { en: "In Korea, the president serves a five-year term.", kr: "한국에서는 대통령 임기가 5년이에요." }
     ]
   },
   {
@@ -2783,19 +2783,19 @@ const wordsLevel1_Part4 = [
   {
     id: "L1-309",
     word: "concern",
-    meaning: "우려, 관심사, ~에 관련되다",
+    meaning: "걱정, 우려",
     examples: [
-      { en: "The main concern is patient safety.", kr: "주요 우려 사항은 환자의 안전입니다." },
-      { en: "This problem concerns all of us.", kr: "이 문제는 우리 모두에게 관련이 있습니다." }
+      { en: "My main concern is the cost.", kr: "제일 걱정되는 건 비용이에요." },
+      { en: "Thanks for your concern, but I'm fine.", kr: "걱정해 줘서 고마운데 나 괜찮아." }
     ]
   },
   {
     id: "L1-310",
     word: "suggest",
-    meaning: "제안하다",
+    meaning: "제안하다, 추천하다",
     examples: [
-      { en: "I suggest we take a break now.", kr: "지금 휴식을 취할 것을 제안합니다." },
-      { en: "The evidence suggests a different conclusion.", kr: "그 증거는 다른 결론을 시사합니다." }
+      { en: "I suggest we take a short break now.", kr: "제안하자면, 지금 잠깐 쉬었다 하죠." },
+      { en: "Can you suggest a good restaurant nearby?", kr: "근처에 괜찮은 식당 추천해 줄래요?" }
     ]
   },
   {
@@ -2812,17 +2812,17 @@ const wordsLevel1_Part4 = [
     word: "whether",
     meaning: "~인지 아닌지",
     examples: [
-      { en: "I don't know whether he will come or not.", kr: "나는 그가 올지 안 올지 모르겠어." },
-      { en: "We must decide whether to go forward.", kr: "우리는 앞으로 나아갈지 말지 결정해야 합니다." }
+      { en: "I don't know whether he'll come or not.", kr: "그가 올지 안 올지 모르겠어." },
+      { en: "Let me know whether you can make it.", kr: "올 수 있는지 없는지 알려 줘." }
     ]
   },
   {
     id: "L1-313",
     word: "reach",
-    meaning: "도달하다",
+    meaning: "도달하다, 닿다, 연락하다",
     examples: [
-      { en: "We finally reached the top of the mountain.", kr: "우리는 마침내 산 정상에 도달했어." },
-      { en: "Can you reach the book on the top shelf?", kr: "가장 높은 선반에 있는 책에 손이 닿니?" }
+      { en: "What's the best way to reach you?", kr: "어떻게 연락드리는 게 제일 좋을까요?" },
+      { en: "Can you reach the book on the top shelf?", kr: "맨 위 선반에 있는 책에 손 닿아?" }
     ]
   },
   {
@@ -2837,19 +2837,19 @@ const wordsLevel1_Part4 = [
   {
     id: "L1-315",
     word: "community",
-    meaning: "공동체",
+    meaning: "공동체, 커뮤니티",
     examples: [
-      { en: "We are building a strong local community.", kr: "우리는 탄탄한 지역 공동체를 만들어 가고 있습니다." },
-      { en: "The event benefited the entire community.", kr: "그 행사는 전체 공동체에 혜택을 주었습니다." }
+      { en: "It's a really friendly community here.", kr: "여기 커뮤니티는 다들 정말 친절해요." },
+      { en: "I joined an online community for runners.", kr: "러너들 온라인 커뮤니티에 가입했어." }
     ]
   },
   {
     id: "L1-316",
     word: "remain",
-    meaning: "남아있다, ~인 채로 있다",
+    meaning: "계속 ~인 채로 있다, 남아 있다",
     examples: [
-      { en: "Only a few people remained in the room.", kr: "방에는 소수의 사람들만이 남아 있었습니다." },
-      { en: "He remained silent throughout the meeting.", kr: "그는 회의 내내 침묵을 지켰습니다." }
+      { en: "Please remain seated until the plane comes to a stop.", kr: "비행기가 완전히 멈출 때까지 자리에 앉아 계십시오." },
+      { en: "He remained silent during the whole meeting.", kr: "그는 회의 내내 아무 말 없이 있었어." }
     ]
   },
   {
@@ -2857,8 +2857,8 @@ const wordsLevel1_Part4 = [
     word: "effect",
     meaning: "효과, 영향",
     examples: [
-      { en: "The medicine had an immediate effect.", kr: "그 약은 즉각적인 효과가 있었습니다." },
-      { en: "The storm had a severe effect on the crops.", kr: "폭풍은 작물에 심각한 영향을 미쳤습니다." }
+      { en: "The medicine had an immediate effect.", kr: "그 약은 바로 효과가 있었어요." },
+      { en: "Does this medicine have any side effects?", kr: "이 약 부작용 있어요?" }
     ]
   },
   {
@@ -2875,8 +2875,8 @@ const wordsLevel1_Part4 = [
     word: "nature",
     meaning: "자연, 본성",
     examples: [
-      { en: "I love spending time in nature.", kr: "나는 자연 속에서 시간을 보내는 것을 좋아해." },
-      { en: "It is in his nature to be kind.", kr: "친절한 것은 그의 본성입니다." }
+      { en: "I love spending time in nature.", kr: "나는 자연 속에서 시간 보내는 게 좋아." },
+      { en: "It's in his nature to be kind.", kr: "친절한 건 그 사람 본성이야." }
     ]
   },
   {
@@ -2884,17 +2884,17 @@ const wordsLevel1_Part4 = [
     word: "data",
     meaning: "데이터, 자료",
     examples: [
-      { en: "We need more data to analyze the trend.", kr: "우리는 그 추세를 분석하기 위해 더 많은 자료가 필요합니다." },
-      { en: "The report is based on raw data.", kr: "그 보고서는 가공되지 않은 자료를 기반으로 합니다." }
+      { en: "We need more data before we decide.", kr: "결정하기 전에 데이터가 더 필요해요." },
+      { en: "I ran out of data on my phone.", kr: "휴대폰 데이터를 다 썼어." }
     ]
   },
   {
     id: "L1-321",
     word: "support",
-    meaning: "지원하다, 지지하다",
+    meaning: "지지하다, 지원, 응원",
     examples: [
-      { en: "I will support your decision fully.", kr: "나는 당신의 결정을 전적으로 지지할 것입니다." },
-      { en: "The bridge needs better structural support.", kr: "그 다리는 더 나은 구조적 지지대가 필요합니다." }
+      { en: "I totally support your decision.", kr: "네 결정 전적으로 지지해." },
+      { en: "Thanks for all your support.", kr: "그동안 응원해 줘서 고마워." }
     ]
   },
   {
@@ -2927,10 +2927,10 @@ const wordsLevel1_Part4 = [
   {
     id: "L1-325",
     word: "act",
-    meaning: "행동하다, 행위",
+    meaning: "행동하다, 굴다",
     examples: [
-      { en: "He always acts responsibly.", kr: "그는 항상 책임감 있게 행동합니다." },
-      { en: "It was a courageous act of kindness.", kr: "그것은 용감하고 친절한 행위였습니다." }
+      { en: "Stop acting like a child.", kr: "애처럼 굴지 마." },
+      { en: "He always acts like he knows everything.", kr: "그는 항상 다 아는 것처럼 행동해." }
     ]
   },
   {
@@ -2963,10 +2963,10 @@ const wordsLevel1_Part4 = [
   {
     id: "L1-329",
     word: "grow",
-    meaning: "자라다, 성장하다",
+    meaning: "자라다, 키우다",
     examples: [
-      { en: "The trees grow very fast here.", kr: "여기는 나무들이 매우 빨리 자랍니다." },
-      { en: "The company's market share continues to grow.", kr: "회사의 시장 점유율은 계속 성장하고 있습니다." }
+      { en: "I grew up in a small town.", kr: "나는 작은 동네에서 자랐어." },
+      { en: "We grow our own tomatoes in the backyard.", kr: "우리는 뒷마당에서 토마토를 직접 키워요." }
     ]
   },
   {
@@ -3035,10 +3035,10 @@ const wordsLevel1_Part4 = [
   {
     id: "L1-337",
     word: "free",
-    meaning: "자유로운, 무료의",
+    meaning: "무료의, 한가한, 자유로운",
     examples: [
-      { en: "The concert tickets are free.", kr: "그 콘서트 티켓은 무료입니다." },
-      { en: "We are finally free from worry.", kr: "우리는 마침내 걱정에서 벗어났습니다(자유롭습니다)." }
+      { en: "The concert tickets are free.", kr: "그 콘서트 티켓은 무료예요." },
+      { en: "Are you free this Saturday?", kr: "이번 토요일에 시간 돼?" }
     ]
   },
   {
@@ -3179,10 +3179,10 @@ const wordsLevel1_Part4 = [
   {
     id: "L1-353",
     word: "age",
-    meaning: "나이, 시대",
+    meaning: "나이",
     examples: [
-      { en: "What is the legal drinking age here?", kr: "여기서 법적인 음주 연령은 몇 살입니까?" },
-      { en: "We live in the digital age.", kr: "우리는 디지털 시대에 살고 있습니다." }
+      { en: "What's the legal drinking age here?", kr: "여기는 법적으로 술 마실 수 있는 나이가 몇 살이에요?" },
+      { en: "We're about the same age.", kr: "우리 나이가 비슷하네요." }
     ]
   },
   {
@@ -3190,8 +3190,8 @@ const wordsLevel1_Part4 = [
     word: "center",
     meaning: "중심, 중앙",
     examples: [
-      { en: "Place the vase in the center of the table.", kr: "꽃병을 테이블 중앙에 놓으세요." },
-      { en: "The star is at the center of the galaxy.", kr: "별은 은하계의 중심에 있습니다." }
+      { en: "Put the vase in the center of the table.", kr: "꽃병을 테이블 가운데에 놔 줘." },
+      { en: "How do I get to the city center?", kr: "시내 중심가에 어떻게 가요?" }
     ]
   },
   {
@@ -3215,19 +3215,19 @@ const wordsLevel1_Part4 = [
   {
     id: "L1-357",
     word: "require",
-    meaning: "요구하다",
+    meaning: "필요로 하다, 요구하다",
     examples: [
-      { en: "This job requires strong communication skills.", kr: "이 직업은 강력한 의사소통 능력을 요구합니다." },
-      { en: "The repair will require a lot of time.", kr: "수리는 많은 시간을 필요로 할 것입니다." }
+      { en: "This job requires strong communication skills.", kr: "이 일은 뛰어난 소통 능력이 필요해요." },
+      { en: "Is a reservation required?", kr: "예약이 필요한가요?" }
     ]
   },
   {
     id: "L1-358",
     word: "space",
-    meaning: "공간, 우주",
+    meaning: "공간, 자리",
     examples: [
-      { en: "I need more space for my books.", kr: "나는 책을 위한 더 많은 공간이 필요해." },
-      { en: "Astronauts travel into space.", kr: "우주비행사들은 우주로 여행합니다." }
+      { en: "I need more space for my books.", kr: "책 둘 공간이 더 필요해." },
+      { en: "Do you have space for one more in the car?", kr: "차에 한 명 더 탈 자리 있어?" }
     ]
   },
   {
@@ -3251,19 +3251,19 @@ const wordsLevel1_Part4 = [
   {
     id: "L1-361",
     word: "rule",
-    meaning: "규칙, 지배하다",
+    meaning: "규칙",
     examples: [
-      { en: "You must obey the school rules.", kr: "당신은 학교 규칙을 준수해야 합니다." },
-      { en: "The country was ruled by a queen.", kr: "그 나라는 여왕에 의해 지배되었습니다." }
+      { en: "What are the rules of this game?", kr: "이 게임 규칙이 뭐야?" },
+      { en: "Sorry, those are the rules.", kr: "죄송하지만 규칙이 그래요." }
     ]
   },
   {
     id: "L1-362",
     word: "among",
-    meaning: "~ 사이에",
+    meaning: "~ 사이에서, ~ 중에서",
     examples: [
-      { en: "She is the best singer among her friends.", kr: "그녀는 친구들 중에서 최고의 가수입니다." },
-      { en: "The treasure was hidden among the rocks.", kr: "보물은 바위들 사이에 숨겨져 있었습니다." }
+      { en: "She's the best singer among her friends.", kr: "그녀는 친구들 중에서 노래를 제일 잘해." },
+      { en: "This app is really popular among teenagers.", kr: "이 앱은 십 대들 사이에서 인기가 많아." }
     ]
   },
   {
@@ -3271,8 +3271,8 @@ const wordsLevel1_Part4 = [
     word: "start",
     meaning: "시작하다",
     examples: [
-      { en: "The game will start in ten minutes.", kr: "경기는 10분 후에 시작될 것입니다." },
-      { en: "Where did you start your career?", kr: "당신은 어디서 경력을 시작했습니까?" }
+      { en: "The game will start in ten minutes.", kr: "경기 10분 뒤에 시작해요." },
+      { en: "Where did you start your career?", kr: "어디서 처음 일을 시작하셨어요?" }
     ]
   },
   {
@@ -3307,8 +3307,8 @@ const wordsLevel1_Part4 = [
     word: "air",
     meaning: "공기",
     examples: [
-      { en: "We need fresh air in the room.", kr: "우리는 방에 신선한 공기가 필요합니다." },
-      { en: "The air in the mountains is clean and cool.", kr: "산속의 공기는 깨끗하고 시원합니다." }
+      { en: "I need to go outside for some fresh air.", kr: "밖에 나가서 신선한 공기 좀 마셔야겠어." },
+      { en: "The air in the mountains is clean and cool.", kr: "산 공기는 깨끗하고 시원해요." }
     ]
   },
   {
@@ -3343,8 +3343,8 @@ const wordsLevel1_Part4 = [
     word: "head",
     meaning: "머리, 책임자",
     examples: [
-      { en: "He injured his head in the accident.", kr: "그는 사고로 머리를 다쳤습니다." },
-      { en: "She is the head of the marketing department.", kr: "그녀는 마케팅 부서의 책임자입니다." }
+      { en: "Ouch! I hit my head on the door.", kr: "아야! 문에 머리 부딪쳤어." },
+      { en: "She's the head of the marketing department.", kr: "그분이 마케팅 부서 책임자예요." }
     ]
   },
   {
@@ -3377,19 +3377,19 @@ const wordsLevel1_Part4 = [
   {
     id: "L1-375",
     word: "return",
-    meaning: "돌아오다, 반환하다",
+    meaning: "돌아오다, 반납하다, 반품하다",
     examples: [
-      { en: "When will you return home?", kr: "언제 집에 돌아올 거니?" },
-      { en: "You can return the product within 30 days.", kr: "당신은 30일 이내에 제품을 반환할 수 있습니다." }
+      { en: "When do you return from your trip?", kr: "여행에서 언제 돌아와?" },
+      { en: "You can return the product within 30 days.", kr: "제품은 30일 이내에 반품하실 수 있어요." }
     ]
   },
   {
     id: "L1-376",
     word: "direct",
-    meaning: "직접적인, 지시하다, 감독하다",
+    meaning: "직접적인, 직행의, 감독하다",
     examples: [
-      { en: "I prefer a direct answer to my question.", kr: "저는 제 질문에 대한 직접적인 답변을 선호합니다." },
-      { en: "He will direct the new movie.", kr: "그가 새 영화를 감독할 것입니다." }
+      { en: "Is there a direct flight to Seoul?", kr: "서울 가는 직항편 있어요?" },
+      { en: "He's going to direct the new movie.", kr: "그가 새 영화를 감독할 거래." }
     ]
   },
   {
@@ -3433,8 +3433,8 @@ const wordsLevel1_Part4 = [
     word: "sit",
     meaning: "앉다",
     examples: [
-      { en: "Please sit here and wait.", kr: "여기에 앉아서 기다려 주세요." },
-      { en: "The old house sits on a hill.", kr: "그 낡은 집은 언덕 위에 자리 잡고 있습니다." }
+      { en: "Please sit here and wait.", kr: "여기 앉아서 기다려 주세요." },
+      { en: "Can I sit next to you?", kr: "옆에 앉아도 돼요?" }
     ]
   },
   {
@@ -3458,7 +3458,7 @@ const wordsLevel1_Part4 = [
   {
     id: "L1-384",
     word: "fall",
-    meaning: "떨어지다, 가을",
+    meaning: "떨어지다, 넘어지다, 가을",
     examples: [
       { en: "Be careful not to fall on the ice.", kr: "얼음 위에서 넘어지지 않도록 조심해." },
       { en: "Fall is my favorite season.", kr: "가을은 내가 가장 좋아하는 계절이야." }
@@ -3467,10 +3467,10 @@ const wordsLevel1_Part4 = [
   {
     id: "L1-385",
     word: "die",
-    meaning: "죽다",
+    meaning: "죽다, (배터리가) 나가다",
     examples: [
-      { en: "The old tree died last winter.", kr: "그 오래된 나무는 지난겨울에 죽었습니다." },
-      { en: "No one wants to die alone.", kr: "아무도 혼자 죽고 싶어 하지 않습니다." }
+      { en: "My plants died while I was on vacation.", kr: "휴가 간 사이에 화분이 다 죽었어." },
+      { en: "My phone died, so I couldn't call you.", kr: "폰 배터리가 나가서 전화를 못 했어." }
     ]
   },
   {
@@ -3487,17 +3487,17 @@ const wordsLevel1_Part4 = [
     word: "national",
     meaning: "국가의, 국립의",
     examples: [
-      { en: "We visited the national museum in Seoul.", kr: "우리는 서울에 있는 국립 박물관을 방문했습니다." },
-      { en: "We should focus on national security.", kr: "우리는 국가 안보에 집중해야 합니다." }
+      { en: "We visited the national museum in Seoul.", kr: "서울에 있는 국립 박물관에 가 봤어요." },
+      { en: "Is today a national holiday?", kr: "오늘 국가 공휴일이에요?" }
     ]
   },
   {
     id: "L1-388",
     word: "strong",
-    meaning: "강한",
+    meaning: "강한, 진한",
     examples: [
-      { en: "He is a very strong swimmer.", kr: "그는 매우 강한 수영 선수입니다." },
-      { en: "The wind was very strong last night.", kr: "어젯밤에 바람이 매우 강했습니다." }
+      { en: "This coffee is too strong for me.", kr: "이 커피 나한텐 너무 진해." },
+      { en: "The wind was really strong last night.", kr: "어젯밤에 바람이 엄청 강했어." }
     ]
   },
   {
@@ -3521,10 +3521,10 @@ const wordsLevel1_Part4 = [
   {
     id: "L1-391",
     word: "loss",
-    meaning: "손실, 상실",
+    meaning: "상실, 손실, 감량",
     examples: [
-      { en: "The company reported a major financial loss.", kr: "그 회사는 막대한 재정적 손실을 보고했습니다." },
-      { en: "Her death was a great loss to the family.", kr: "그녀의 죽음은 가족에게 큰 상실이었습니다." }
+      { en: "I'm so sorry for your loss.", kr: "소중한 분을 잃으셔서 얼마나 마음 아프세요." },
+      { en: "Weight loss isn't easy after forty.", kr: "마흔 넘으면 체중 감량이 쉽지 않아." }
     ]
   },
   {
@@ -3539,10 +3539,10 @@ const wordsLevel1_Part4 = [
   {
     id: "L1-393",
     word: "mother",
-    meaning: "어머니",
+    meaning: "어머니, 엄마",
     examples: [
-      { en: "My mother is a kind person.", kr: "우리 어머니는 친절한 분입니다." },
-      { en: "She became a mother last year.", kr: "그녀는 작년에 엄마가 되었어." }
+      { en: "My mother calls me every Sunday.", kr: "우리 엄마는 일요일마다 나한테 전화하셔." },
+      { en: "She became a mother last year.", kr: "그녀는 작년에 엄마가 됐어." }
     ]
   },
   {
@@ -3557,10 +3557,10 @@ const wordsLevel1_Part4 = [
   {
     id: "L1-395",
     word: "share",
-    meaning: "공유하다, 몫",
+    meaning: "공유하다, 나누다",
     examples: [
-      { en: "Can you share your notes with me?", kr: "네 노트를 나와 공유해 줄 수 있니?" },
-      { en: "He has a large share in the company.", kr: "그는 회사에 큰 지분을 가지고 있습니다." }
+      { en: "Can you share your notes with me?", kr: "네 노트 나랑 공유해 줄 수 있어?" },
+      { en: "Do you want to share a pizza?", kr: "피자 하나 나눠 먹을래?" }
     ]
   },
   {
@@ -3577,8 +3577,8 @@ const wordsLevel1_Part4 = [
     word: "student",
     meaning: "학생",
     examples: [
-      { en: "She is a university student.", kr: "그녀는 대학생입니다." },
-      { en: "All students must wear a uniform.", kr: "모든 학생들은 교복을 입어야 합니다." }
+      { en: "She's a university student.", kr: "그녀는 대학생이에요." },
+      { en: "Is there a student discount?", kr: "학생 할인 있어요?" }
     ]
   },
   {
@@ -3614,10 +3614,10 @@ const wordsLevel2_Part1 = [
   {
     id: "L2-001",
     word: "achieve",
-    meaning: "성취하다, 달성하다",
+    meaning: "이루다, 달성하다",
     examples: [
-      { en: "She worked hard to achieve her goal.", kr: "그녀는 목표를 성취하기 위해 열심히 일했습니다." },
-      { en: "It's a great feeling to achieve success.", kr: "성공을 달성하는 것은 정말 기분 좋은 일입니다." }
+      { en: "She worked really hard to achieve her goal.", kr: "그녀는 목표를 이루려고 정말 열심히 노력했어요." },
+      { en: "What do you want to achieve this year?", kr: "올해 뭘 이루고 싶어요?" }
     ]
   },
   {
@@ -3632,37 +3632,37 @@ const wordsLevel2_Part1 = [
   {
     id: "L2-003",
     word: "concept",
-    meaning: "개념",
+    meaning: "개념, 콘셉트",
     examples: [
-      { en: "The concept of time travel is fascinating.", kr: "시간 여행이라는 개념은 매혹적입니다." },
-      { en: "Do you understand the main concept of the theory?", kr: "그 이론의 주요 개념을 이해합니까?" }
+      { en: "I like the concept, but the design needs work.", kr: "콘셉트는 좋은데 디자인은 좀 손봐야겠어요." },
+      { en: "Time travel is such a cool concept, right?", kr: "시간 여행은 정말 멋진 개념이야, 그렇지?" }
     ]
   },
   {
     id: "L2-004",
     word: "consist",
-    meaning: "구성되다",
+    meaning: "(~로) 구성되다, 이루어지다",
     examples: [
-      { en: "The team consists of five members.", kr: "그 팀은 다섯 명의 구성원으로 이루어져 있습니다." },
-      { en: "The meal consisted of soup, salad, and bread.", kr: "그 식사는 수프, 샐러드, 빵으로 구성되어 있었습니다." }
+      { en: "Our team consists of five people.", kr: "우리 팀은 다섯 명으로 이루어져 있어요." },
+      { en: "The set menu consists of soup, salad, and pasta.", kr: "세트 메뉴는 수프, 샐러드, 파스타로 구성돼 있어요." }
     ]
   },
   {
     id: "L2-005",
     word: "consequence",
-    meaning: "결과, 중요성",
+    meaning: "결과, 영향",
     examples: [
-      { en: "The flood was a consequence of heavy rain.", kr: "그 홍수는 폭우의 결과였습니다." },
-      { en: "This decision could have serious consequences.", kr: "이 결정은 심각한 결과를 초래할 수 있습니다." }
+      { en: "If you skip class, there will be consequences.", kr: "수업 빼먹으면 그에 따른 결과가 있을 거야." },
+      { en: "Did you think about the consequences before quitting?", kr: "그만두기 전에 그 결과를 생각해 봤어?" }
     ]
   },
   {
     id: "L2-006",
     word: "conduct",
-    meaning: "수행하다, 행동",
+    meaning: "실시하다, 수행하다, 행동",
     examples: [
-      { en: "The researchers will conduct an experiment.", kr: "연구원들은 실험을 수행할 것입니다." },
-      { en: "His conduct during the meeting was unprofessional.", kr: "회의 중 그의 행동은 비전문적이었습니다." }
+      { en: "We'll conduct a short survey after the event.", kr: "행사 끝나고 간단한 설문 조사를 실시할 거예요." },
+      { en: "His conduct at the meeting was really unprofessional.", kr: "회의에서 그 사람 행동은 정말 프로답지 못했어요." }
     ]
   },
   {
@@ -3670,26 +3670,26 @@ const wordsLevel2_Part1 = [
     word: "define",
     meaning: "정의하다",
     examples: [
-      { en: "It is difficult to define love precisely.", kr: "사랑을 정확하게 정의하기는 어렵습니다." },
-      { en: "The law defines the rights of citizens.", kr: "그 법은 시민들의 권리를 정의합니다." }
+      { en: "How would you define success?", kr: "넌 성공을 어떻게 정의해?" },
+      { en: "It's hard to define what makes a good friend.", kr: "좋은 친구가 뭔지 정의하기는 어려워요." }
     ]
   },
   {
     id: "L2-008",
     word: "distribute",
-    meaning: "분배하다, 배포하다",
+    meaning: "나눠 주다, 배포하다, 분배하다",
     examples: [
-      { en: "They distributed flyers to the local residents.", kr: "그들은 지역 주민들에게 전단지를 배포했습니다." },
-      { en: "The company will distribute its profits among shareholders.", kr: "그 회사는 주주들에게 이익을 분배할 것입니다." }
+      { en: "Can you distribute these handouts before the meeting?", kr: "회의 전에 이 유인물 좀 나눠 줄래요?" },
+      { en: "We distributed flyers all over the neighborhood.", kr: "우리 동네 곳곳에 전단지를 배포했어요." }
     ]
   },
   {
     id: "L2-009",
     word: "establish",
-    meaning: "설립하다, 확립하다",
+    meaning: "설립하다, 세우다, 확립하다",
     examples: [
-      { en: "They plan to establish a new branch overseas.", kr: "그들은 해외에 새로운 지점을 설립할 계획입니다." },
-      { en: "We need to establish clear rules from the start.", kr: "우리는 처음부터 명확한 규칙을 확립해야 합니다." }
+      { en: "The company was established in 1998.", kr: "그 회사는 1998년에 설립됐어요." },
+      { en: "Let's establish some ground rules first.", kr: "먼저 기본 규칙부터 세우자." }
     ]
   },
   {
@@ -3697,26 +3697,26 @@ const wordsLevel2_Part1 = [
     word: "factor",
     meaning: "요인, 요소",
     examples: [
-      { en: "Cost is a key factor in the decision.", kr: "비용은 그 결정의 주요 요인입니다." },
-      { en: "Many factors influence climate change.", kr: "많은 요소들이 기후 변화에 영향을 미칩니다." }
+      { en: "Price was the main factor in my decision.", kr: "가격이 내 결정의 주된 요인이었어." },
+      { en: "Location is a big factor when you rent an apartment.", kr: "아파트 구할 때 위치가 큰 요소예요." }
     ]
   },
   {
     id: "L2-011",
     word: "generate",
-    meaning: "생성하다, 발생시키다",
+    meaning: "만들어 내다, 생성하다, 발생시키다",
     examples: [
-      { en: "The dam is used to generate electricity.", kr: "그 댐은 전기를 생성하는 데 사용됩니다." },
-      { en: "The campaign aims to generate public interest.", kr: "그 캠페인은 대중의 관심을 불러일으키는 것을 목표로 합니다." }
+      { en: "Solar panels generate electricity for the whole house.", kr: "태양광 패널이 집 전체에 쓸 전기를 만들어 내요." },
+      { en: "The app can generate a strong password for you.", kr: "그 앱이 강력한 비밀번호를 생성해 줄 수 있어요." }
     ]
   },
   {
     id: "L2-012",
     word: "imply",
-    meaning: "암시하다, 내포하다",
+    meaning: "암시하다, 넌지시 말하다",
     examples: [
-      { en: "His silence seemed to imply agreement.", kr: "그의 침묵은 동의를 암시하는 것처럼 보였습니다." },
-      { en: "What does the author imply in this passage?", kr: "이 구절에서 작가는 무엇을 암시합니까?" }
+      { en: "Are you implying that I'm lying?", kr: "지금 내가 거짓말한다고 넌지시 말하는 거야?" },
+      { en: "I didn't mean to imply that it was your fault.", kr: "네 잘못이라고 암시하려던 건 아니었어." }
     ]
   },
   {
@@ -3724,17 +3724,17 @@ const wordsLevel2_Part1 = [
     word: "indicate",
     meaning: "나타내다, 표시하다, 가리키다",
     examples: [
-      { en: "The survey results indicate a rise in sales.", kr: "설문조사 결과는 매출 증가를 나타냅니다." },
-      { en: "Please indicate your choice by checking the box.", kr: "상자에 체크하여 선택 사항을 표시해 주세요." }
+      { en: "The numbers indicate that sales are going up.", kr: "이 수치는 매출이 오르고 있다는 걸 나타내요." },
+      { en: "Please indicate your seat preference when you book.", kr: "예약하실 때 원하는 좌석을 표시해 주세요." }
     ]
   },
   {
     id: "L2-014",
     word: "involve",
-    meaning: "포함하다, 관련시키다",
+    meaning: "포함하다, 수반하다, 관련시키다",
     examples: [
-      { en: "The job involves a lot of traveling.", kr: "그 일은 많은 출장을 포함합니다." },
-      { en: "She didn't want to involve her family in the trouble.", kr: "그녀는 가족을 그 문제에 관련시키고 싶지 않았습니다." }
+      { en: "The job involves a lot of traveling.", kr: "그 일에는 출장이 많이 포함돼요." },
+      { en: "I don't want to get involved in their argument.", kr: "걔네 싸움에 휘말리고 싶지 않아." }
     ]
   },
   {
@@ -3749,19 +3749,19 @@ const wordsLevel2_Part1 = [
   {
     id: "L2-016",
     word: "perceive",
-    meaning: "인지하다, 인식하다",
+    meaning: "인식하다, 감지하다",
     examples: [
-      { en: "The public perceives the brand as reliable.", kr: "대중은 그 브랜드를 신뢰할 수 있는 것으로 인식합니다." },
-      { en: "We perceive colors through our eyes.", kr: "우리는 눈을 통해 색깔을 인지합니다." }
+      { en: "How do you think customers perceive our brand?", kr: "고객들이 우리 브랜드를 어떻게 인식한다고 생각해요?" },
+      { en: "I perceived a bit of tension between them.", kr: "둘 사이에 약간 긴장감이 있는 걸 감지했어요." }
     ]
   },
   {
     id: "L2-017",
     word: "proceed",
-    meaning: "진행하다, 나아가다",
+    meaning: "진행하다, (~로) 가다",
     examples: [
-      { en: "You may now proceed with your presentation.", kr: "이제 발표를 진행하셔도 됩니다." },
-      { en: "The committee will proceed to a vote.", kr: "위원회는 투표에 들어갈 것입니다." }
+      { en: "You can proceed with your presentation now.", kr: "이제 발표 진행하셔도 돼요." },
+      { en: "Please proceed to gate 12 for boarding.", kr: "탑승을 위해 12번 게이트로 이동해 주십시오." }
     ]
   },
   {
@@ -3769,8 +3769,8 @@ const wordsLevel2_Part1 = [
     word: "react",
     meaning: "반응하다",
     examples: [
-      { en: "How did he react to the news?", kr: "그는 그 소식에 어떻게 반응했습니까?" },
-      { en: "The chemical reacts violently with water.", kr: "그 화학 물질은 물과 격렬하게 반응합니다." }
+      { en: "How did he react to the news?", kr: "그 사람 그 소식 듣고 어떻게 반응했어?" },
+      { en: "I didn't know how to react when she cried.", kr: "그녀가 울었을 때 어떻게 반응해야 할지 몰랐어." }
     ]
   },
   {
@@ -3787,8 +3787,8 @@ const wordsLevel2_Part1 = [
     word: "strategy",
     meaning: "전략",
     examples: [
-      { en: "The company developed a new marketing strategy.", kr: "그 회사는 새로운 마케팅 전략을 개발했습니다." },
-      { en: "Success depends on careful strategy and planning.", kr: "성공은 신중한 전략과 계획에 달려 있습니다." }
+      { en: "What's your strategy for the job interview?", kr: "면접 전략이 뭐예요?" },
+      { en: "We need a better marketing strategy this year.", kr: "올해는 더 나은 마케팅 전략이 필요해요." }
     ]
   },
   {
@@ -3796,17 +3796,17 @@ const wordsLevel2_Part1 = [
     word: "sufficient",
     meaning: "충분한",
     examples: [
-      { en: "Do we have sufficient resources for the task?", kr: "그 과제에 충분한 자원이 있습니까?" },
-      { en: "A small amount of evidence is not sufficient.", kr: "소량의 증거는 충분하지 않습니다." }
+      { en: "Is one hour sufficient for the test?", kr: "시험 보는 데 한 시간이면 충분해요?" },
+      { en: "Sorry, your balance isn't sufficient for this payment.", kr: "죄송하지만 잔액이 이 결제에 충분하지 않네요." }
     ]
   },
   {
     id: "L2-022",
     word: "unique",
-    meaning: "독특한, 유일한",
+    meaning: "독특한, 고유한",
     examples: [
-      { en: "Each person has a unique set of fingerprints.", kr: "각 사람은 고유한 지문을 가지고 있습니다." },
-      { en: "The artist has a truly unique style.", kr: "그 예술가는 정말 독특한 스타일을 가지고 있습니다." }
+      { en: "Your style is so unique. I love it!", kr: "네 스타일 진짜 독특하다. 완전 좋아!" },
+      { en: "Every city has its own unique charm.", kr: "도시마다 고유한 매력이 있어요." }
     ]
   },
   {
@@ -3814,26 +3814,26 @@ const wordsLevel2_Part1 = [
     word: "vary",
     meaning: "다양하다, 달라지다",
     examples: [
-      { en: "The cost of the services can vary greatly.", kr: "그 서비스들의 비용은 크게 달라질 수 있습니다." },
-      { en: "The students' opinions vary on this matter.", kr: "이 문제에 대한 학생들의 의견은 다양합니다." }
+      { en: "Prices vary depending on the season.", kr: "가격은 계절에 따라 달라져요." },
+      { en: "Opinions vary a lot on this issue.", kr: "이 문제에 대해서는 의견이 정말 다양해요." }
     ]
   },
   {
     id: "L2-024",
     word: "crucial",
-    meaning: "결정적인, 중대한",
+    meaning: "매우 중요한, 결정적인",
     examples: [
-      { en: "Timing is crucial for a successful negotiation.", kr: "성공적인 협상을 위해서는 타이밍이 결정적입니다." },
-      { en: "This step is crucial to the entire process.", kr: "이 단계는 전체 과정에 중대합니다." }
+      { en: "Timing is crucial in a negotiation.", kr: "협상에선 타이밍이 결정적이에요." },
+      { en: "This meeting is crucial for our project.", kr: "이번 회의는 우리 프로젝트에 정말 중요해요." }
     ]
   },
   {
     id: "L2-025",
     word: "acquire",
-    meaning: "습득하다, 획득하다",
+    meaning: "습득하다, 얻다, 인수하다",
     examples: [
-      { en: "She acquired a new skill set through the training.", kr: "그녀는 훈련을 통해 새로운 기술 세트를 습득했습니다." },
-      { en: "The company acquired a small startup last year.", kr: "그 회사는 작년에 작은 스타트업을 획득(인수)했습니다." }
+      { en: "I acquired a lot of new skills at that job.", kr: "그 일 하면서 새로운 기술을 많이 습득했어요." },
+      { en: "I heard a bigger company acquired our competitor.", kr: "더 큰 회사가 우리 경쟁사를 인수했대요." }
     ]
   },
   {
@@ -3841,8 +3841,8 @@ const wordsLevel2_Part1 = [
     word: "alternative",
     meaning: "대안의, 대안",
     examples: [
-      { en: "Is there an alternative route to the airport?", kr: "공항으로 가는 대안 경로가 있습니까?" },
-      { en: "We are exploring alternative sources of energy.", kr: "우리는 대체 에너지원을 탐색하고 있습니다." }
+      { en: "Is there an alternative route to the airport?", kr: "공항 가는 대체 경로가 있어요?" },
+      { en: "If that doesn't work, what's the alternative?", kr: "그게 안 되면 대안이 뭐야?" }
     ]
   },
   {
@@ -3850,17 +3850,17 @@ const wordsLevel2_Part1 = [
     word: "analyze",
     meaning: "분석하다",
     examples: [
-      { en: "They need to analyze the sales data.", kr: "그들은 판매 데이터를 분석해야 합니다." },
-      { en: "The lab will analyze the sample for contaminants.", kr: "실험실은 오염 물질이 있는지 샘플을 분석할 것입니다." }
+      { en: "Let's analyze the sales data before we decide.", kr: "결정하기 전에 판매 데이터를 분석해 보자." },
+      { en: "Stop analyzing every little thing he says.", kr: "그 사람이 하는 말 하나하나 분석하지 좀 마." }
     ]
   },
   {
     id: "L2-028",
     word: "assess",
-    meaning: "평가하다, 사정하다",
+    meaning: "평가하다, 판단하다",
     examples: [
-      { en: "The committee will assess the damage caused by the storm.", kr: "위원회는 폭풍으로 인한 피해를 평가할 것입니다." },
-      { en: "We need to assess the level of risk.", kr: "우리는 위험 수준을 평가해야 합니다." }
+      { en: "We need to assess the risks first.", kr: "먼저 위험성을 평가해야 해요." },
+      { en: "The doctor will assess your condition tomorrow.", kr: "내일 의사 선생님이 상태를 보고 평가해 주실 거예요." }
     ]
   },
   {
@@ -3868,35 +3868,35 @@ const wordsLevel2_Part1 = [
     word: "complex",
     meaning: "복잡한",
     examples: [
-      { en: "It's a very complex issue with no easy solution.", kr: "이것은 쉬운 해결책이 없는 매우 복잡한 문제입니다." },
-      { en: "The human brain is incredibly complex.", kr: "인간의 뇌는 믿을 수 없을 만큼 복잡합니다." }
+      { en: "It's a very complex issue with no easy solution.", kr: "쉬운 해결책이 없는 정말 복잡한 문제야." },
+      { en: "The instructions are too complex for me.", kr: "설명서가 나한텐 너무 복잡해." }
     ]
   },
   {
     id: "L2-030",
     word: "dimension",
-    meaning: "차원, 측면",
+    meaning: "차원, 측면, 치수",
     examples: [
-      { en: "We must consider every dimension of the problem.", kr: "우리는 문제의 모든 측면을 고려해야 합니다." },
-      { en: "The artist added a new dimension to the sculpture.", kr: "그 예술가는 조각품에 새로운 차원을 더했습니다." }
+      { en: "Having a baby adds a whole new dimension to life.", kr: "아기가 생기면 삶에 완전히 새로운 차원이 더해져요." },
+      { en: "Can you check the dimensions of the sofa?", kr: "소파 치수 좀 확인해 줄래요?" }
     ]
   },
   {
     id: "L2-031",
     word: "demonstrate",
-    meaning: "입증하다, 보여주다",
+    meaning: "보여주다, 시연하다, 입증하다",
     examples: [
-      { en: "He wants to demonstrate his leadership skills.", kr: "그는 자신의 리더십 기술을 보여주고 싶어 합니다." },
-      { en: "The experiment clearly demonstrates the effect.", kr: "그 실험은 그 효과를 명확하게 입증합니다." }
+      { en: "Let me demonstrate how the app works.", kr: "앱이 어떻게 작동하는지 보여 드릴게요." },
+      { en: "This project really demonstrates his leadership skills.", kr: "이 프로젝트가 그의 리더십을 확실히 입증해 줘요." }
     ]
   },
   {
     id: "L2-032",
     word: "distinct",
-    meaning: "별개의, 뚜렷한",
+    meaning: "뚜렷한, 별개의, 확실히 다른",
     examples: [
-      { en: "The two languages are very distinct from each other.", kr: "그 두 언어는 서로 뚜렷이 구별됩니다." },
-      { en: "I heard the distinct sound of a bell ringing.", kr: "나는 종이 울리는 뚜렷한 소리를 들었습니다." }
+      { en: "The two flavors are really distinct from each other.", kr: "두 맛은 서로 확실히 달라요." },
+      { en: "I had the distinct feeling someone was watching me.", kr: "누가 날 보고 있다는 뚜렷한 느낌이 들었어." }
     ]
   },
   {
@@ -3904,8 +3904,8 @@ const wordsLevel2_Part1 = [
     word: "emphasize",
     meaning: "강조하다",
     examples: [
-      { en: "The report emphasizes the need for urgent action.", kr: "그 보고서는 긴급한 조치의 필요성을 강조합니다." },
-      { en: "She emphasized the word 'never' in her speech.", kr: "그녀는 연설에서 '절대'라는 단어를 강조했습니다." }
+      { en: "My boss emphasized the importance of deadlines.", kr: "상사가 마감의 중요성을 강조했어요." },
+      { en: "I can't emphasize this enough: back up your files.", kr: "이건 아무리 강조해도 지나치지 않아요. 파일 백업하세요." }
     ]
   },
   {
@@ -3913,35 +3913,35 @@ const wordsLevel2_Part1 = [
     word: "evolve",
     meaning: "진화하다, 발전하다",
     examples: [
-      { en: "The company's strategy has evolved over the years.", kr: "그 회사의 전략은 수년 동안 발전해 왔습니다." },
-      { en: "Humans evolved from earlier primates.", kr: "인간은 초기 영장류로부터 진화했습니다." }
+      { en: "Our relationship has evolved over the years.", kr: "우리 관계는 몇 년에 걸쳐 발전해 왔어요." },
+      { en: "Smartphones have evolved so quickly, haven't they?", kr: "스마트폰은 정말 빨리 진화했죠, 그렇죠?" }
     ]
   },
   {
     id: "L2-035",
     word: "feature",
-    meaning: "특징, 특징으로 하다",
+    meaning: "기능, 특징, 등장시키다",
     examples: [
-      { en: "The new phone has many exciting features.", kr: "새 휴대폰은 많은 흥미로운 특징들을 가지고 있습니다." },
-      { en: "The documentary features interviews with experts.", kr: "그 다큐멘터리는 전문가들과의 인터뷰를 특징으로 합니다." }
+      { en: "This phone has some really cool features.", kr: "이 폰에는 정말 멋진 기능이 몇 개 있어요." },
+      { en: "The movie features a lot of famous actors.", kr: "그 영화엔 유명한 배우들이 많이 등장해요." }
     ]
   },
   {
     id: "L2-036",
     word: "identify",
-    meaning: "식별하다, 확인하다",
+    meaning: "알아보다, 식별하다, 찾아내다",
     examples: [
-      { en: "Can you identify the person in this photograph?", kr: "이 사진 속의 인물을 식별할 수 있습니까?" },
-      { en: "We must identify the root cause of the problem.", kr: "우리는 문제의 근본 원인을 확인해야 합니다." }
+      { en: "Can you identify the man in this photo?", kr: "이 사진 속 남자가 누군지 알아볼 수 있어요?" },
+      { en: "We need to identify the root of the problem.", kr: "문제의 근본 원인을 찾아내야 해요." }
     ]
   },
   {
     id: "L2-037",
     word: "integrate",
-    meaning: "통합하다, 합치다",
+    meaning: "통합하다, 연동되다, 융화되다",
     examples: [
-      { en: "The goal is to integrate all departments into one team.", kr: "목표는 모든 부서를 하나의 팀으로 통합하는 것입니다." },
-      { en: "The device can integrate with any operating system.", kr: "그 장치는 어떤 운영 체제와도 통합될 수 있습니다." }
+      { en: "The app integrates easily with your calendar.", kr: "그 앱은 캘린더랑 쉽게 연동돼요." },
+      { en: "It took a while to integrate into the new team.", kr: "새 팀에 융화되는 데 시간이 좀 걸렸어요." }
     ]
   },
   {
@@ -3949,8 +3949,8 @@ const wordsLevel2_Part1 = [
     word: "invest",
     meaning: "투자하다",
     examples: [
-      { en: "It is wise to invest in your education.", kr: "당신의 교육에 투자하는 것은 현명합니다." },
-      { en: "They plan to invest millions in the new technology.", kr: "그들은 새 기술에 수백만 달러를 투자할 계획입니다." }
+      { en: "Investing in your health is never a waste.", kr: "건강에 투자하는 건 절대 낭비가 아니야." },
+      { en: "Have you ever invested in stocks?", kr: "주식에 투자해 본 적 있어요?" }
     ]
   },
   {
@@ -3958,8 +3958,8 @@ const wordsLevel2_Part1 = [
     word: "maintain",
     meaning: "유지하다, 주장하다",
     examples: [
-      { en: "It is hard to maintain a perfect balance.", kr: "완벽한 균형을 유지하기는 어렵습니다." },
-      { en: "She maintains that she is innocent.", kr: "그녀는 자신이 무죄라고 주장합니다." }
+      { en: "It's hard to maintain a healthy diet when traveling.", kr: "여행할 때는 건강한 식단을 유지하기가 어려워요." },
+      { en: "He still maintains that he did nothing wrong.", kr: "그는 아직도 자기가 잘못한 게 없다고 주장해요." }
     ]
   },
   {
@@ -3967,35 +3967,35 @@ const wordsLevel2_Part1 = [
     word: "merely",
     meaning: "단지, 그저",
     examples: [
-      { en: "It was merely a misunderstanding.", kr: "그것은 단지 오해였을 뿐입니다." },
-      { en: "This list is merely a guideline, not a strict rule.", kr: "이 목록은 그저 지침일 뿐, 엄격한 규칙은 아닙니다." }
+      { en: "It was merely a misunderstanding, nothing more.", kr: "그건 그저 오해였을 뿐이야, 그 이상은 아니야." },
+      { en: "I was merely trying to help.", kr: "난 그저 도와주려고 했을 뿐이야." }
     ]
   },
   {
     id: "L2-041",
     word: "occur",
-    meaning: "발생하다, 떠오르다",
+    meaning: "일어나다, 발생하다, (생각이) 떠오르다",
     examples: [
-      { en: "The accident occurred late last night.", kr: "그 사고는 지난 밤 늦게 발생했습니다." },
-      { en: "It didn't occur to me to call him.", kr: "그에게 전화해야겠다는 생각이 나에게 떠오르지 않았습니다." }
+      { en: "When did the accident occur?", kr: "그 사고는 언제 일어났어요?" },
+      { en: "It never occurred to me to ask him.", kr: "그에게 물어볼 생각이 전혀 안 떠올랐어." }
     ]
   },
   {
     id: "L2-042",
     word: "phase",
-    meaning: "단계, 국면",
+    meaning: "단계, 국면, 한때",
     examples: [
-      { en: "The project is currently in its final phase.", kr: "그 프로젝트는 현재 최종 단계에 있습니다." },
-      { en: "This is a temporary phase in the market.", kr: "이것은 시장에서의 일시적인 국면입니다." }
+      { en: "The project is in its final phase now.", kr: "프로젝트는 이제 마지막 단계에 있어요." },
+      { en: "Don't worry, it's just a phase. He'll grow out of it.", kr: "걱정 마, 그냥 한때야. 크면서 괜찮아질 거야." }
     ]
   },
   {
     id: "L2-043",
     word: "primary",
-    meaning: "주된, 1차적인",
+    meaning: "주된, 가장 중요한",
     examples: [
-      { en: "The primary purpose of the meeting is planning.", kr: "그 회의의 주된 목적은 계획입니다." },
-      { en: "Primary colors are red, yellow, and blue.", kr: "삼원색(1차색)은 빨강, 노랑, 파랑입니다." }
+      { en: "What's the primary goal of this meeting?", kr: "이 회의의 주된 목표가 뭐예요?" },
+      { en: "Safety is our primary concern.", kr: "안전이 우리의 가장 중요한 관심사예요." }
     ]
   },
   {
@@ -4003,44 +4003,44 @@ const wordsLevel2_Part1 = [
     word: "proportion",
     meaning: "비율, 부분",
     examples: [
-      { en: "A large proportion of the budget was spent on advertising.", kr: "예산의 큰 부분이 광고에 쓰였습니다." },
-      { en: "Mix the flour and water in the right proportion.", kr: "밀가루와 물을 알맞은 비율로 섞으세요." }
+      { en: "A large proportion of my salary goes to rent.", kr: "내 월급의 상당 부분이 월세로 나가." },
+      { en: "Mix the flour and water in equal proportions.", kr: "밀가루와 물을 같은 비율로 섞으세요." }
     ]
   },
   {
     id: "L2-045",
     word: "resource",
-    meaning: "자원",
+    meaning: "자원, 자료",
     examples: [
-      { en: "We need to conserve natural resources.", kr: "우리는 천연 자원을 보존해야 합니다." },
-      { en: "The internet is a valuable resource for research.", kr: "인터넷은 연구를 위한 귀중한 자원입니다." }
+      { en: "This website is a great resource for learning English.", kr: "이 웹사이트는 영어 공부하기에 정말 좋은 자료예요." },
+      { en: "We don't have enough resources for this project.", kr: "이 프로젝트를 할 자원이 충분하지 않아요." }
     ]
   },
   {
     id: "L2-046",
     word: "stable",
-    meaning: "안정된, 마구간",
+    meaning: "안정된, 안정적인",
     examples: [
-      { en: "We need to ensure a stable economy.", kr: "우리는 안정된 경제를 보장해야 합니다." },
-      { en: "The horse was kept in the stable.", kr: "그 말은 마구간에서 지냈습니다." }
+      { en: "I want a stable job with good benefits.", kr: "복지 좋은 안정적인 직장을 원해요." },
+      { en: "The patient is in stable condition now.", kr: "환자는 이제 안정된 상태예요." }
     ]
   },
   {
     id: "L2-047",
     word: "technique",
-    meaning: "기술, 기법",
+    meaning: "기술, 기법, 요령",
     examples: [
-      { en: "She used a new painting technique.", kr: "그녀는 새로운 그림 그리는 기술을 사용했습니다." },
-      { en: "The interviewer was impressed by his sales technique.", kr: "면접관은 그의 판매 기법에 감명을 받았습니다." }
+      { en: "What's your technique for remembering names?", kr: "이름 기억하는 너만의 요령이 뭐야?" },
+      { en: "This breathing technique really helps when I'm nervous.", kr: "이 호흡 기법은 긴장될 때 정말 도움이 돼." }
     ]
   },
   {
     id: "L2-048",
     word: "trigger",
-    meaning: "촉발하다, 방아쇠",
+    meaning: "유발하다, 촉발하다",
     examples: [
-      { en: "The event might trigger a new investigation.", kr: "그 사건은 새로운 조사를 촉발할 수 있습니다." },
-      { en: "He pulled the trigger of the gun.", kr: "그는 총의 방아쇠를 당겼습니다." }
+      { en: "Stress can trigger my headaches.", kr: "스트레스가 내 두통을 유발할 수 있어." },
+      { en: "His comment triggered a huge argument.", kr: "그 사람 말 한마디가 큰 말다툼을 촉발했어." }
     ]
   },
   {
@@ -4048,8 +4048,8 @@ const wordsLevel2_Part1 = [
     word: "ultimate",
     meaning: "궁극적인, 최고의",
     examples: [
-      { en: "His ultimate goal is to become a CEO.", kr: "그의 궁극적인 목표는 CEO가 되는 것입니다." },
-      { en: "This trip was the ultimate adventure of my life.", kr: "이번 여행은 내 인생 최고의 모험이었습니다." }
+      { en: "My ultimate goal is to start my own business.", kr: "내 궁극적인 목표는 내 사업을 시작하는 거야." },
+      { en: "This trip was the ultimate adventure for me.", kr: "이번 여행은 나한테 최고의 모험이었어." }
     ]
   },
   {
@@ -4057,53 +4057,53 @@ const wordsLevel2_Part1 = [
     word: "widespread",
     meaning: "널리 퍼진, 광범위한",
     examples: [
-      { en: "The use of computers is now widespread.", kr: "컴퓨터 사용은 이제 널리 퍼져 있습니다." },
-      { en: "There is widespread fear of another pandemic.", kr: "또 다른 팬데믹에 대한 광범위한 두려움이 있습니다." }
+      { en: "Smartphone use is widespread, even among older people.", kr: "스마트폰 사용은 어르신들 사이에서도 널리 퍼져 있어요." },
+      { en: "There's widespread concern about rising prices.", kr: "물가 상승에 대한 걱정이 광범위하게 퍼져 있어요." }
     ]
   },
   {
     id: "L2-051",
     word: "adjust",
-    meaning: "조정하다, 적응하다",
+    meaning: "조절하다, 조정하다, 적응하다",
     examples: [
-      { en: "You need to adjust the height of your chair.", kr: "당신은 의자의 높이를 조정할 필요가 있습니다." },
-      { en: "It takes time to adjust to a new culture.", kr: "새로운 문화에 적응하는 데는 시간이 걸립니다." }
+      { en: "Can you help me adjust my seat?", kr: "좌석 조절하는 것 좀 도와줄래요?" },
+      { en: "It took me months to adjust to life in Seoul.", kr: "서울 생활에 적응하는 데 몇 달 걸렸어요." }
     ]
   },
   {
     id: "L2-052",
     word: "apparent",
-    meaning: "명백한, 분명한",
+    meaning: "분명한, 명백한, 뚜렷한",
     examples: [
-      { en: "It was apparent that he was lying.", kr: "그가 거짓말하고 있다는 것이 명백했습니다." },
-      { en: "The problem became apparent after a few days.", kr: "며칠 후에 그 문제가 분명해졌습니다." }
+      { en: "It was apparent that he was lying.", kr: "그가 거짓말하고 있다는 게 분명했어." },
+      { en: "For no apparent reason, my laptop just shut down.", kr: "뚜렷한 이유도 없이 노트북이 그냥 꺼졌어." }
     ]
   },
   {
     id: "L2-053",
     word: "brief",
-    meaning: "간결한, 짧은",
+    meaning: "간단한, 짧은",
     examples: [
-      { en: "She gave a brief explanation of the plan.", kr: "그녀는 그 계획에 대해 간결한 설명을 했습니다." },
-      { en: "The meeting will be very brief.", kr: "회의는 매우 짧을 것입니다." }
+      { en: "Can you give me a brief summary of the meeting?", kr: "회의 내용 간단하게 요약해 줄래요?" },
+      { en: "I'll keep this brief because we're running late.", kr: "시간이 늦어지고 있으니까 짧게 할게요." }
     ]
   },
   {
     id: "L2-054",
     word: "cite",
-    meaning: "인용하다, 언급하다",
+    meaning: "인용하다, (예로) 들다",
     examples: [
-      { en: "Please remember to cite your sources properly.", kr: "출처를 적절하게 인용하는 것을 기억해 주세요." },
-      { en: "He cited several examples to support his argument.", kr: "그는 자신의 주장을 뒷받침하기 위해 여러 사례를 언급했습니다." }
+      { en: "He cited several examples to support his point.", kr: "그는 자기 주장을 뒷받침하려고 몇 가지 예를 들었어요." },
+      { en: "Don't forget to cite your sources in the report.", kr: "보고서에 출처 인용하는 거 잊지 마세요." }
     ]
   },
   {
     id: "L2-055",
     word: "confine",
-    meaning: "국한하다, 가두다",
+    meaning: "한정하다, 국한하다, 가두다",
     examples: [
-      { en: "The discussion was confined to military issues.", kr: "그 토론은 군사 문제에 국한되었습니다." },
-      { en: "He was confined to his room after getting sick.", kr: "그는 병에 걸린 후 방에 갇혀 있었습니다." }
+      { en: "He was confined to bed for a week with the flu.", kr: "그는 독감 때문에 일주일 동안 침대에만 갇혀 지냈어요." },
+      { en: "Let's confine our discussion to the budget today.", kr: "오늘은 예산 얘기로만 한정합시다." }
     ]
   },
   {
@@ -4111,26 +4111,26 @@ const wordsLevel2_Part1 = [
     word: "corporate",
     meaning: "기업의, 회사의",
     examples: [
-      { en: "She works in corporate finance.", kr: "그녀는 기업 금융 분야에서 일합니다." },
-      { en: "We must uphold corporate social responsibility.", kr: "우리는 기업의 사회적 책임을 다해야 합니다." }
+      { en: "She works in corporate finance at a big bank.", kr: "그녀는 큰 은행에서 기업 금융 일을 해요." },
+      { en: "I'm tired of corporate life; I want something different.", kr: "회사 생활에 지쳤어. 뭔가 다른 걸 하고 싶어." }
     ]
   },
   {
     id: "L2-057",
     word: "domestic",
-    meaning: "국내의, 가정의",
+    meaning: "국내의, 가정의, 집안의",
     examples: [
-      { en: "The new airline offers only domestic flights.", kr: "새 항공사는 오직 국내선 항공편만 제공합니다." },
-      { en: "She enjoys domestic life and gardening.", kr: "그녀는 가정 생활과 정원 가꾸기를 즐깁니다." }
+      { en: "Domestic flights leave from Terminal 2.", kr: "국내선 항공편은 2터미널에서 출발해요." },
+      { en: "We split the domestic chores fifty-fifty.", kr: "우리는 집안일을 반반씩 나눠서 해요." }
     ]
   },
   {
     id: "L2-058",
     word: "dramatic",
-    meaning: "극적인, 인상적인",
+    meaning: "극적인, 호들갑스러운",
     examples: [
-      { en: "There was a dramatic change in the weather.", kr: "날씨에 극적인 변화가 있었습니다." },
-      { en: "The singer gave a dramatic performance.", kr: "그 가수는 인상적인 공연을 선보였습니다." }
+      { en: "There's been a dramatic change in the weather.", kr: "날씨에 극적인 변화가 있었어요." },
+      { en: "Stop being so dramatic. It's just a scratch.", kr: "그렇게 호들갑 떨지 마. 그냥 긁힌 거야." }
     ]
   },
   {
@@ -4138,8 +4138,8 @@ const wordsLevel2_Part1 = [
     word: "edit",
     meaning: "편집하다, 수정하다",
     examples: [
-      { en: "I spent hours editing my video.", kr: "나는 내 비디오를 편집하는 데 여러 시간을 보냈습니다." },
-      { en: "The editor asked me to edit the last chapter.", kr: "편집자는 나에게 마지막 장을 수정해 달라고 요청했습니다." }
+      { en: "I spent hours editing my video last night.", kr: "어젯밤에 영상 편집하느라 몇 시간을 보냈어." },
+      { en: "Can you edit my essay before I submit it?", kr: "제출하기 전에 내 에세이 좀 수정해 줄래?" }
     ]
   },
   {
@@ -4148,25 +4148,25 @@ const wordsLevel2_Part1 = [
     meaning: "노출시키다, 폭로하다",
     examples: [
       { en: "Don't expose the camera to direct sunlight.", kr: "카메라를 직사광선에 노출시키지 마세요." },
-      { en: "The investigation exposed a corruption scandal.", kr: "그 조사는 부패 스캔들을 폭로했습니다." }
+      { en: "The reporter exposed the company's lies.", kr: "그 기자가 회사의 거짓말을 폭로했어요." }
     ]
   },
   {
     id: "L2-061",
     word: "financial",
-    meaning: "재정적인, 금융의",
+    meaning: "재정적인, 금융의, 재무의",
     examples: [
-      { en: "He has excellent financial management skills.", kr: "그는 훌륭한 재정 관리 기술을 가지고 있습니다." },
-      { en: "The company is facing a financial crisis.", kr: "그 회사는 금융 위기에 직면해 있습니다." }
+      { en: "I'm having some financial problems right now.", kr: "지금 재정적인 문제가 좀 있어요." },
+      { en: "You should talk to a financial advisor.", kr: "재무 상담사랑 얘기해 보는 게 좋겠어요." }
     ]
   },
   {
     id: "L2-062",
     word: "govern",
-    meaning: "통치하다, 지배하다",
+    meaning: "다스리다, 통치하다",
     examples: [
-      { en: "The king governed the country for forty years.", kr: "그 왕은 40년 동안 나라를 통치했습니다." },
-      { en: "The rules that govern the competition are clear.", kr: "그 대회를 규율하는 규칙들은 명확합니다." }
+      { en: "It must be hard to govern such a big country.", kr: "그렇게 큰 나라를 다스리는 건 정말 어렵겠다." },
+      { en: "Do you think he's fit to govern the country?", kr: "그 사람이 나라를 다스릴 자격이 있다고 생각해?" }
     ]
   },
   {
@@ -4174,8 +4174,8 @@ const wordsLevel2_Part1 = [
     word: "illustrate",
     meaning: "설명하다, 삽화를 넣다",
     examples: [
-      { en: "The drawing illustrates the structure of the building.", kr: "그 그림은 건물의 구조를 설명합니다." },
-      { en: "She wrote a children's book and illustrated it herself.", kr: "그녀는 동화책을 쓰고 직접 삽화를 넣었습니다." }
+      { en: "Let me illustrate my point with an example.", kr: "예를 들어서 제 요점을 설명해 볼게요." },
+      { en: "She wrote and illustrated the book herself.", kr: "그녀는 그 책을 직접 쓰고 삽화도 그렸어요." }
     ]
   },
   {
@@ -4192,17 +4192,17 @@ const wordsLevel2_Part1 = [
     word: "liberal",
     meaning: "진보적인, 자유로운",
     examples: [
-      { en: "She holds very liberal views on social issues.", kr: "그녀는 사회 문제에 대해 매우 진보적인 견해를 가지고 있습니다." },
-      { en: "The school has a liberal attitude toward dress codes.", kr: "그 학교는 복장 규정에 대해 자유로운 태도를 가지고 있습니다." }
+      { en: "My parents are pretty liberal about curfews.", kr: "우리 부모님은 통금 시간에 꽤 자유로운 편이야." },
+      { en: "She has very liberal views on most issues.", kr: "그녀는 대부분의 문제에 대해 꽤 진보적인 시각을 갖고 있어요." }
     ]
   },
   {
     id: "L2-066",
     word: "minimal",
-    meaning: "최소의",
+    meaning: "최소한의, 아주 적은",
     examples: [
-      { en: "The damage was minimal and easily repaired.", kr: "피해는 최소였고 쉽게 수리되었습니다." },
-      { en: "We require only a minimal amount of information.", kr: "우리는 단지 최소한의 정보만 요구합니다." }
+      { en: "The damage was minimal, thank goodness.", kr: "다행히 피해가 최소한에 그쳤어요." },
+      { en: "This recipe takes minimal effort but tastes amazing.", kr: "이 레시피는 최소한의 노력으로 끝내주는 맛이 나요." }
     ]
   },
   {
@@ -4210,8 +4210,8 @@ const wordsLevel2_Part1 = [
     word: "perspective",
     meaning: "관점, 시각",
     examples: [
-      { en: "Try to look at the problem from a different perspective.", kr: "다른 관점에서 그 문제를 보려고 노력하세요." },
-      { en: "His novel offers a unique perspective on the war.", kr: "그의 소설은 전쟁에 대한 독특한 시각을 제공합니다." }
+      { en: "Try to look at the problem from a different perspective.", kr: "다른 관점에서 그 문제를 한번 봐 봐." },
+      { en: "Traveling really gave me a new perspective on life.", kr: "여행이 삶을 보는 새로운 시각을 줬어요." }
     ]
   },
   {
@@ -4219,17 +4219,17 @@ const wordsLevel2_Part1 = [
     word: "precise",
     meaning: "정확한, 정밀한",
     examples: [
-      { en: "We need precise measurements for the construction.", kr: "우리는 건설을 위해 정확한 측정이 필요합니다." },
-      { en: "The clock shows the precise time.", kr: "그 시계는 정확한 시간을 보여줍니다." }
+      { en: "Can you be more precise about the time?", kr: "시간을 좀 더 정확하게 말해 줄래요?" },
+      { en: "To be precise, we've been waiting for forty minutes.", kr: "정확히 말하면, 우리 40분째 기다리고 있어요." }
     ]
   },
   {
     id: "L2-069",
     word: "pursue",
-    meaning: "추구하다, 뒤쫓다",
+    meaning: "추구하다, 좇다",
     examples: [
-      { en: "He decided to pursue a career in medicine.", kr: "그는 의학 분야의 경력을 추구하기로 결정했습니다." },
-      { en: "The police pursued the suspect down the street.", kr: "경찰이 거리를 따라 용의자를 뒤쫓았습니다." }
+      { en: "He decided to pursue a career in medicine.", kr: "그는 의학 쪽 커리어를 추구하기로 했어요." },
+      { en: "You should pursue your dreams while you're young.", kr: "젊을 때 꿈을 좇아야 해." }
     ]
   },
   {
@@ -4237,8 +4237,8 @@ const wordsLevel2_Part1 = [
     word: "ratio",
     meaning: "비율",
     examples: [
-      { en: "The ratio of students to teachers is 20 to 1.", kr: "학생 대 교사의 비율은 20대 1입니다." },
-      { en: "We need to maintain a healthy debt-to-equity ratio.", kr: "우리는 건전한 부채-자본 비율을 유지해야 합니다." }
+      { en: "What's the student-to-teacher ratio at that school?", kr: "그 학교 학생 대 교사 비율이 어떻게 돼요?" },
+      { en: "Use a two-to-one ratio of water to rice.", kr: "물과 쌀을 2대 1 비율로 넣으세요." }
     ]
   },
   {
@@ -4246,8 +4246,8 @@ const wordsLevel2_Part1 = [
     word: "reject",
     meaning: "거절하다, 거부하다",
     examples: [
-      { en: "The committee decided to reject the proposal.", kr: "위원회는 그 제안을 거절하기로 결정했습니다." },
-      { en: "The body might reject the transplanted organ.", kr: "신체는 이식된 장기를 거부할 수도 있습니다." }
+      { en: "My application was rejected again.", kr: "내 지원서가 또 거절됐어." },
+      { en: "She politely rejected his offer.", kr: "그녀는 그의 제안을 정중하게 거절했어요." }
     ]
   },
   {
@@ -4255,17 +4255,17 @@ const wordsLevel2_Part1 = [
     word: "resolve",
     meaning: "해결하다, 결심하다",
     examples: [
-      { en: "We need to resolve the conflict peacefully.", kr: "우리는 그 갈등을 평화롭게 해결해야 합니다." },
-      { en: "She resolved to study harder next semester.", kr: "그녀는 다음 학기에 더 열심히 공부하기로 결심했습니다." }
+      { en: "Let's resolve this issue before the weekend.", kr: "주말 전에 이 문제를 해결하자." },
+      { en: "I resolved to exercise every morning this year.", kr: "올해는 매일 아침 운동하기로 결심했어." }
     ]
   },
   {
     id: "L2-073",
     word: "restore",
-    meaning: "복원하다, 회복시키다",
+    meaning: "복원하다, 되돌리다, 회복시키다",
     examples: [
-      { en: "The painting was carefully restored by experts.", kr: "그 그림은 전문가들에 의해 조심스럽게 복원되었습니다." },
-      { en: "We hope to restore public confidence in the system.", kr: "우리는 그 시스템에 대한 대중의 신뢰를 회복시키기를 희망합니다." }
+      { en: "They restored the old house beautifully.", kr: "그 오래된 집을 아름답게 복원했어요." },
+      { en: "I need to restore my phone to factory settings.", kr: "휴대폰을 공장 초기 상태로 되돌려야 해." }
     ]
   },
   {
@@ -4274,7 +4274,7 @@ const wordsLevel2_Part1 = [
     meaning: "수정하다, 개정하다",
     examples: [
       { en: "Please revise the document before submitting it.", kr: "제출하기 전에 문서를 수정해 주세요." },
-      { en: "The government decided to revise the law.", kr: "정부는 그 법을 개정하기로 결정했습니다." }
+      { en: "We had to revise our travel plans because of the rain.", kr: "비 때문에 여행 계획을 수정해야 했어요." }
     ]
   },
   {
@@ -4282,26 +4282,26 @@ const wordsLevel2_Part1 = [
     word: "sector",
     meaning: "부문, 분야",
     examples: [
-      { en: "She works in the public sector.", kr: "그녀는 공공 부문에서 일합니다." },
-      { en: "The company is a leader in the tech sector.", kr: "그 회사는 기술 분야의 선두 주자입니다." }
+      { en: "She works in the public sector.", kr: "그녀는 공공 부문에서 일해요." },
+      { en: "Jobs in the tech sector pay really well.", kr: "기술 분야 일자리는 급여가 정말 좋아요." }
     ]
   },
   {
     id: "L2-076",
     word: "simulate",
-    meaning: "모의 실험하다, 흉내 내다",
+    meaning: "재현하다, 흉내 내다, 모의 실험하다",
     examples: [
-      { en: "A computer program was used to simulate the weather.", kr: "날씨를 모의 실험하기 위해 컴퓨터 프로그램이 사용되었습니다." },
-      { en: "The machine simulates the feeling of flight.", kr: "그 기계는 비행하는 느낌을 흉내 냅니다." }
+      { en: "This app simulates a real job interview.", kr: "이 앱은 실제 면접을 그대로 재현해 줘요." },
+      { en: "The ride simulates the feeling of flying.", kr: "그 놀이기구는 하늘을 나는 느낌을 흉내 내요." }
     ]
   },
   {
     id: "L2-077",
     word: "sole",
-    meaning: "유일한, 독점적인",
+    meaning: "유일한, 단독의",
     examples: [
-      { en: "He was the sole survivor of the crash.", kr: "그는 그 사고의 유일한 생존자였습니다." },
-      { en: "The company has the sole right to sell the product.", kr: "그 회사는 그 제품을 판매할 독점적인 권리를 가지고 있습니다." }
+      { en: "He was the sole survivor of the crash.", kr: "그는 그 사고의 유일한 생존자였어요." },
+      { en: "My sole purpose here is to help you.", kr: "내가 여기 온 유일한 목적은 널 돕는 거야." }
     ]
   },
   {
@@ -4309,44 +4309,44 @@ const wordsLevel2_Part1 = [
     word: "sphere",
     meaning: "영역, 구",
     examples: [
-      { en: "Politics is not her sphere of expertise.", kr: "정치는 그녀의 전문 지식 영역이 아닙니다." },
-      { en: "The earth is an almost perfect sphere.", kr: "지구는 거의 완벽한 구입니다." }
+      { en: "Sorry, that's outside my sphere of expertise.", kr: "미안, 그건 내 전문 영역 밖이야." },
+      { en: "The lamp is shaped like a glass sphere.", kr: "그 램프는 유리 구 모양이에요." }
     ]
   },
   {
     id: "L2-079",
     word: "subsequent",
-    meaning: "후속의, 그 다음의",
+    meaning: "그다음의, 이후의",
     examples: [
-      { en: "Subsequent events proved his theory correct.", kr: "그 다음의 사건들이 그의 이론이 옳았음을 증명했습니다." },
-      { en: "The initial excitement faded in the subsequent weeks.", kr: "처음의 흥분은 그 이후 몇 주 동안 사그라들었습니다." }
+      { en: "The first meeting was fun, but subsequent ones were boring.", kr: "첫 회의는 재밌었는데 그 이후 회의들은 지루했어요." },
+      { en: "Your first lesson is free; subsequent lessons are twenty dollars.", kr: "첫 수업은 무료고, 그다음 수업들은 20달러예요." }
     ]
   },
   {
     id: "L2-080",
     word: "submit",
-    meaning: "제출하다, 굴복하다",
+    meaning: "제출하다",
     examples: [
-      { en: "You must submit your application by Friday.", kr: "당신은 금요일까지 신청서를 제출해야 합니다." },
-      { en: "He refused to submit to their demands.", kr: "그는 그들의 요구에 굴복하기를 거부했습니다." }
+      { en: "You must submit your application by Friday.", kr: "금요일까지 신청서를 제출해야 해요." },
+      { en: "Did you submit the report yet?", kr: "보고서 벌써 제출했어?" }
     ]
   },
   {
     id: "L2-081",
     word: "temporary",
-    meaning: "일시적인",
+    meaning: "일시적인, 임시의",
     examples: [
-      { en: "We moved into a temporary office during the renovation.", kr: "우리는 리노베이션 기간 동안 임시 사무실로 옮겼습니다." },
-      { en: "This is just a temporary solution.", kr: "이것은 단지 일시적인 해결책일 뿐입니다." }
+      { en: "This is just a temporary solution.", kr: "이건 그냥 임시 해결책일 뿐이야." },
+      { en: "We're working in a temporary office during the renovation.", kr: "리모델링 기간 동안 임시 사무실에서 일하고 있어요." }
     ]
   },
   {
     id: "L2-082",
     word: "transmit",
-    meaning: "전송하다, 전달하다",
+    meaning: "전송하다, 전달하다, 옮기다",
     examples: [
-      { en: "The satellite transmits data back to Earth.", kr: "그 위성은 데이터를 지구로 다시 전송합니다." },
-      { en: "Mosquitoes can transmit various diseases.", kr: "모기는 다양한 질병을 전달할 수 있습니다." }
+      { en: "Mosquitoes can transmit diseases, so wear repellent.", kr: "모기는 병을 옮길 수 있으니까 모기 기피제 발라." },
+      { en: "The watch transmits data to your phone automatically.", kr: "그 시계는 데이터를 휴대폰으로 자동 전송해요." }
     ]
   },
   {
@@ -4361,10 +4361,10 @@ const wordsLevel2_Part1 = [
   {
     id: "L2-084",
     word: "visualize",
-    meaning: "시각화하다",
+    meaning: "시각화하다, 머릿속에 그리다",
     examples: [
-      { en: "Try to close your eyes and visualize your goal.", kr: "눈을 감고 당신의 목표를 시각화해 보세요." },
-      { en: "The software helps users visualize complex data.", kr: "그 소프트웨어는 사용자들이 복잡한 데이터를 시각화하도록 돕습니다." }
+      { en: "Close your eyes and visualize your goal.", kr: "눈을 감고 목표를 머릿속에 그려 봐요." },
+      { en: "I can't visualize how the room will look.", kr: "방이 어떻게 보일지 머릿속에 안 그려져." }
     ]
   },
   {
@@ -4372,17 +4372,17 @@ const wordsLevel2_Part1 = [
     word: "abstract",
     meaning: "추상적인",
     examples: [
-      { en: "Beauty is an abstract concept.", kr: "아름다움은 추상적인 개념입니다." },
-      { en: "The artist prefers abstract expressionism.", kr: "그 예술가는 추상 표현주의를 선호합니다." }
+      { en: "Love is such an abstract concept.", kr: "사랑은 정말 추상적인 개념이야." },
+      { en: "I don't really get abstract art.", kr: "난 추상 미술은 잘 이해가 안 돼." }
     ]
   },
   {
     id: "L2-086",
     word: "collaborate",
-    meaning: "협력하다",
+    meaning: "협력하다, 협업하다",
     examples: [
-      { en: "They collaborated on the new research paper.", kr: "그들은 새로운 연구 논문에 협력했습니다." },
-      { en: "The two companies decided to collaborate on the project.", kr: "두 회사는 그 프로젝트에 협력하기로 결정했습니다." }
+      { en: "Let's collaborate on this project.", kr: "이 프로젝트 같이 협업해요." },
+      { en: "I've collaborated with their design team before.", kr: "전에 그쪽 디자인 팀이랑 협업한 적 있어요." }
     ]
   },
   {
@@ -4390,8 +4390,8 @@ const wordsLevel2_Part1 = [
     word: "commit",
     meaning: "전념하다, 약속하다",
     examples: [
-      { en: "The government is committed to improving education.", kr: "정부는 교육 개선에 전념하고 있습니다." },
-      { en: "Did you commit to attending the meeting?", kr: "당신은 회의 참석을 약속했습니까?" }
+      { en: "I'm fully committed to this project.", kr: "저는 이 프로젝트에 완전히 전념하고 있어요." },
+      { en: "I can't commit to anything until I check my schedule.", kr: "일정 확인하기 전엔 아무것도 약속 못 해." }
     ]
   },
   {
@@ -4399,26 +4399,26 @@ const wordsLevel2_Part1 = [
     word: "derive",
     meaning: "얻다, 유래하다",
     examples: [
-      { en: "The word 'science' is derived from a Latin word.", kr: "‘과학’이라는 단어는 라틴어 단어에서 유래했습니다." },
-      { en: "We can derive great pleasure from helping others.", kr: "우리는 다른 사람들을 돕는 것에서 큰 기쁨을 얻을 수 있습니다." }
+      { en: "I derive a lot of joy from cooking for friends.", kr: "친구들한테 요리해 줄 때 큰 기쁨을 얻어요." },
+      { en: "Apparently, the word 'salary' is derived from salt.", kr: "'salary'라는 단어가 소금에서 유래했대요." }
     ]
   },
   {
     id: "L2-089",
     word: "diminish",
-    meaning: "줄어들다, 감소시키다",
+    meaning: "줄어들다, 줄이다, 약화시키다",
     examples: [
-      { en: "The pain will gradually diminish over time.", kr: "그 고통은 시간이 지남에 따라 점차 줄어들 것입니다." },
-      { en: "Repeated failures did not diminish his enthusiasm.", kr: "거듭된 실패도 그의 열정을 줄이지 못했습니다." }
+      { en: "The pain should diminish in a few days.", kr: "통증은 며칠 지나면 줄어들 거예요." },
+      { en: "Don't let one mistake diminish your confidence.", kr: "실수 하나로 자신감이 줄어들게 하지 마." }
     ]
   },
   {
     id: "L2-090",
     word: "emerge",
-    meaning: "나타나다, 출현하다",
+    meaning: "나타나다, 드러나다, 나오다",
     examples: [
-      { en: "A new leader emerged from the election.", kr: "선거에서 새로운 지도자가 나타났습니다." },
-      { en: "The facts finally emerged after a long investigation.", kr: "긴 조사 끝에 마침내 사실들이 드러났습니다." }
+      { en: "New details emerged after the investigation.", kr: "조사 후에 새로운 사실들이 드러났어요." },
+      { en: "She emerged from the meeting looking really upset.", kr: "그녀가 회의실에서 나왔는데 정말 화나 보였어." }
     ]
   },
   {
@@ -4426,35 +4426,35 @@ const wordsLevel2_Part1 = [
     word: "flexible",
     meaning: "유연한, 융통성 있는",
     examples: [
-      { en: "Our work hours are very flexible.", kr: "우리의 근무 시간은 매우 유연합니다." },
-      { en: "You need a flexible mind to solve this puzzle.", kr: "이 퍼즐을 풀기 위해서는 융통성 있는 사고가 필요합니다." }
+      { en: "My work hours are pretty flexible.", kr: "제 근무 시간은 꽤 유연해요." },
+      { en: "My schedule's flexible, so pick any day you want.", kr: "내 일정은 유연하니까 원하는 날 아무 때나 골라." }
     ]
   },
   {
     id: "L2-092",
     word: "infrastructure",
-    meaning: "사회 기반 시설",
+    meaning: "기반 시설, 인프라",
     examples: [
-      { en: "The city needs investment in its aging infrastructure.", kr: "그 도시는 노후된 사회 기반 시설에 대한 투자가 필요합니다." },
-      { en: "Good infrastructure is essential for economic growth.", kr: "좋은 사회 기반 시설은 경제 성장에 필수적입니다." }
+      { en: "The city's infrastructure is getting really old.", kr: "이 도시의 기반 시설이 정말 낡아 가고 있어요." },
+      { en: "Good internet infrastructure is a must for remote work.", kr: "재택근무엔 좋은 인터넷 인프라가 꼭 필요해요." }
     ]
   },
   {
     id: "L2-093",
     word: "massive",
-    meaning: "거대한, 대규모의",
+    meaning: "거대한, 엄청난, 대규모의",
     examples: [
-      { en: "The storm caused massive damage to the coast.", kr: "그 폭풍은 해안에 막대한 피해를 입혔습니다." },
-      { en: "The event attracted a massive crowd.", kr: "그 행사는 대규모의 인파를 끌어모았습니다." }
+      { en: "There was a massive line outside the store.", kr: "가게 밖에 줄이 어마어마하게 길었어." },
+      { en: "The storm caused massive damage to the coast.", kr: "그 폭풍이 해안에 엄청난 피해를 입혔어요." }
     ]
   },
   {
     id: "L2-094",
     word: "migrate",
-    meaning: "이주하다, 이동하다",
+    meaning: "이동하다, 이주하다, 옮기다",
     examples: [
-      { en: "Birds migrate south for the winter.", kr: "새들은 겨울을 나기 위해 남쪽으로 이동합니다." },
-      { en: "Many people migrate from rural areas to cities.", kr: "많은 사람들이 시골 지역에서 도시로 이주합니다." }
+      { en: "Birds migrate south for the winter.", kr: "새들은 겨울을 나러 남쪽으로 이동해요." },
+      { en: "We're migrating all our files to the new system.", kr: "파일을 전부 새 시스템으로 옮기고 있어요." }
     ]
   },
   {
@@ -4462,8 +4462,8 @@ const wordsLevel2_Part1 = [
     word: "negotiate",
     meaning: "협상하다",
     examples: [
-      { en: "They tried to negotiate a peace treaty.", kr: "그들은 평화 조약을 협상하려고 노력했습니다." },
-      { en: "You should be prepared to negotiate the price.", kr: "당신은 가격을 협상할 준비가 되어 있어야 합니다." }
+      { en: "Don't be afraid to negotiate your salary.", kr: "연봉 협상하는 걸 두려워하지 마." },
+      { en: "Can we negotiate the price a little?", kr: "가격 좀 협상할 수 있을까요?" }
     ]
   },
   {
@@ -4471,17 +4471,17 @@ const wordsLevel2_Part1 = [
     word: "overcome",
     meaning: "극복하다",
     examples: [
-      { en: "She overcame her fear of heights.", kr: "그녀는 고소공포증을 극복했습니다." },
-      { en: "We must overcome these difficulties together.", kr: "우리는 이 어려움들을 함께 극복해야 합니다." }
+      { en: "She finally overcame her fear of flying.", kr: "그녀는 결국 비행 공포증을 극복했어요." },
+      { en: "We'll overcome this together, I promise.", kr: "우리 이거 같이 극복할 거야, 약속해." }
     ]
   },
   {
     id: "L2-097",
     word: "sustain",
-    meaning: "지속하다, 지탱하다",
+    meaning: "유지하다, 지속하다, 지탱하다",
     examples: [
-      { en: "The economy needs to sustain its growth rate.", kr: "경제는 성장세를 지속해야 합니다." },
-      { en: "The bridge is built to sustain heavy loads.", kr: "그 다리는 무거운 하중을 지탱하도록 건설되었습니다." }
+      { en: "I can't sustain this pace much longer.", kr: "이 속도를 더는 오래 유지 못 하겠어." },
+      { en: "Can this shelf sustain the weight of all these books?", kr: "이 선반이 이 책들 무게를 다 지탱할 수 있을까?" }
     ]
   },
   {
@@ -4489,17 +4489,17 @@ const wordsLevel2_Part1 = [
     word: "reinforce",
     meaning: "강화하다, 보강하다",
     examples: [
-      { en: "The goal is to reinforce the public health system.", kr: "목표는 공중 보건 시스템을 강화하는 것입니다." },
-      { en: "We need to reinforce the weak parts of the wall.", kr: "우리는 벽의 약한 부분을 보강해야 합니다." }
+      { en: "We need to reinforce the weak parts of the wall.", kr: "벽의 약한 부분을 보강해야 해요." },
+      { en: "This experience reinforced my decision to change jobs.", kr: "이번 경험이 이직하겠다는 결심을 더 강화해 줬어요." }
     ]
   },
   {
     id: "L2-099",
     word: "severe",
-    meaning: "심각한, 엄격한",
+    meaning: "심한, 심각한",
     examples: [
-      { en: "The region experienced a severe drought.", kr: "그 지역은 심각한 가뭄을 겪었습니다." },
-      { en: "The new laws impose severe penalties.", kr: "새로운 법률은 엄격한 처벌을 부과합니다." }
+      { en: "I have a severe headache today.", kr: "오늘 두통이 심해요." },
+      { en: "The forecast says severe storms are coming tonight.", kr: "일기 예보에서 오늘 밤에 심한 폭풍이 온대요." }
     ]
   },
   {
@@ -4507,8 +4507,8 @@ const wordsLevel2_Part1 = [
     word: "sophisticated",
     meaning: "정교한, 세련된",
     examples: [
-      { en: "The new weapon system is highly sophisticated.", kr: "새로운 무기 시스템은 매우 정교합니다." },
-      { en: "She has a very sophisticated taste in art.", kr: "그녀는 예술에 매우 세련된 취향을 가지고 있습니다." }
+      { en: "She has very sophisticated taste in wine.", kr: "그녀는 와인 취향이 정말 세련됐어요." },
+      { en: "This phone has a pretty sophisticated camera system.", kr: "이 폰은 카메라 시스템이 꽤 정교해요." }
     ]
   }
 ];
@@ -4517,19 +4517,19 @@ const wordsLevel2_Part2 = [
   {
     id: "L2-101",
     word: "adequate",
-    meaning: "충분한, 적절한",
+    meaning: "충분한, 적절한, 그런대로 괜찮은",
     examples: [
-      { en: "We have an adequate supply of food.", kr: "우리는 식량을 충분히 확보하고 있습니다." },
-      { en: "The salary is adequate for the amount of work.", kr: "그 급여는 업무량에 비해 적절합니다." }
+      { en: "Do we have adequate time to prepare?", kr: "준비할 시간이 충분해요?" },
+      { en: "The hotel was adequate, but nothing special.", kr: "호텔은 그런대로 괜찮았는데 특별하진 않았어요." }
     ]
   },
   {
     id: "L2-102",
     word: "allocate",
-    meaning: "할당하다, 배분하다",
+    meaning: "할당하다, 배정하다, 배분하다",
     examples: [
-      { en: "The government will allocate funds for education.", kr: "정부는 교육을 위해 자금을 할당할 것입니다." },
-      { en: "We need to allocate tasks to team members.", kr: "우리는 팀원들에게 업무를 배분해야 합니다." }
+      { en: "How much should we allocate for the trip?", kr: "여행에 얼마를 배정해야 할까?" },
+      { en: "Let's allocate tasks to everyone on the team.", kr: "팀원 모두에게 업무를 배분하자." }
     ]
   },
   {
@@ -4537,26 +4537,26 @@ const wordsLevel2_Part2 = [
     word: "bias",
     meaning: "편견, 편향",
     examples: [
-      { en: "The report showed a clear bias toward the company.", kr: "그 보고서는 회사에 대한 명확한 편향을 보여주었습니다." },
-      { en: "We must try to avoid gender bias in hiring.", kr: "우리는 채용 시 성별 편견을 피하도록 노력해야 합니다." }
+      { en: "I think the article has a strong bias.", kr: "그 기사는 편향이 심한 것 같아." },
+      { en: "Try not to let your personal bias affect your decision.", kr: "개인적인 편견이 결정에 영향을 주지 않게 해." }
     ]
   },
   {
     id: "L2-104",
     word: "capable",
-    meaning: "능력이 있는, 가능한",
+    meaning: "능력 있는, 유능한, ~할 수 있는",
     examples: [
-      { en: "She is capable of doing much better work.", kr: "그녀는 훨씬 더 나은 일을 할 능력이 있습니다." },
-      { en: "The system is capable of detecting small changes.", kr: "그 시스템은 작은 변화를 감지할 수 있습니다." }
+      { en: "I know you're capable of much more than this.", kr: "넌 이것보다 훨씬 더 잘할 능력이 있다는 거 알아." },
+      { en: "She's a very capable manager.", kr: "그녀는 정말 유능한 매니저예요." }
     ]
   },
   {
     id: "L2-105",
     word: "clarify",
-    meaning: "명확히 하다",
+    meaning: "명확히 하다, 분명히 하다",
     examples: [
-      { en: "Can you clarify your last statement?", kr: "당신의 마지막 진술을 명확히 해 주시겠어요?" },
-      { en: "The new guidelines clarify the rules.", kr: "새로운 지침은 규칙을 명확히 합니다." }
+      { en: "Could you clarify what you mean by that?", kr: "그게 무슨 뜻인지 명확히 말해 줄래요?" },
+      { en: "Let me clarify one thing before we start.", kr: "시작하기 전에 한 가지만 분명히 할게요." }
     ]
   },
   {
@@ -4564,8 +4564,8 @@ const wordsLevel2_Part2 = [
     word: "compensate",
     meaning: "보상하다, 보완하다",
     examples: [
-      { en: "The company compensated him for the damage.", kr: "회사는 그에게 피해에 대해 보상했습니다." },
-      { en: "His talent compensates for his lack of experience.", kr: "그의 재능은 경험 부족을 보완해 줍니다." }
+      { en: "The airline compensated us for the delay.", kr: "항공사가 지연에 대해 우리한테 보상해 줬어요." },
+      { en: "His hard work compensates for his lack of experience.", kr: "그의 성실함이 경험 부족을 보완해 줘요." }
     ]
   },
   {
@@ -4573,8 +4573,8 @@ const wordsLevel2_Part2 = [
     word: "comprehensive",
     meaning: "종합적인, 포괄적인",
     examples: [
-      { en: "We need a comprehensive review of the budget.", kr: "우리는 예산에 대한 종합적인 검토가 필요합니다." },
-      { en: "The course offers comprehensive training.", kr: "그 과정은 포괄적인 훈련을 제공합니다." }
+      { en: "This guide is really comprehensive and easy to follow.", kr: "이 가이드는 정말 포괄적이고 따라 하기 쉬워요." },
+      { en: "I'd like a comprehensive insurance plan.", kr: "종합 보험에 가입하고 싶어요." }
     ]
   },
   {
@@ -4582,26 +4582,26 @@ const wordsLevel2_Part2 = [
     word: "consequently",
     meaning: "결과적으로",
     examples: [
-      { en: "He missed the bus; consequently, he was late for work.", kr: "그는 버스를 놓쳤고, 결과적으로 직장에 늦었습니다." },
-      { en: "The rules were changed, and consequently, the costs rose.", kr: "규칙이 변경되었고, 결과적으로 비용이 상승했습니다." }
+      { en: "I overslept and consequently missed my flight.", kr: "늦잠을 자서 결과적으로 비행기를 놓쳤어." },
+      { en: "The road was closed; consequently, we had to take a detour.", kr: "도로가 통제돼서 결과적으로 돌아가야 했어요." }
     ]
   },
   {
     id: "L2-109",
     word: "cooperate",
-    meaning: "협력하다",
+    meaning: "협력하다, 협조하다",
     examples: [
-      { en: "The two organizations agreed to cooperate on the project.", kr: "두 조직은 그 프로젝트에 협력하기로 동의했습니다." },
-      { en: "We must cooperate to achieve our common goal.", kr: "우리는 공동의 목표를 달성하기 위해 협력해야 합니다." }
+      { en: "If everyone cooperates, we'll finish early.", kr: "다들 협조하면 일찍 끝낼 수 있어요." },
+      { en: "The kids wouldn't cooperate at bedtime last night.", kr: "어젯밤에 애들이 잘 시간에 도무지 협조를 안 했어." }
     ]
   },
   {
     id: "L2-110",
     word: "deduce",
-    meaning: "추론하다, 연역하다",
+    meaning: "추론하다",
     examples: [
-      { en: "From the evidence, we can deduce what really happened.", kr: "그 증거로부터 우리는 실제로 무슨 일이 일어났는지 추론할 수 있습니다." },
-      { en: "The detective deduced the killer's identity.", kr: "탐정은 살인자의 신원을 추론해 냈습니다." }
+      { en: "From his accent, I deduced he was from Texas.", kr: "말투를 듣고 그가 텍사스 출신이라고 추론했어요." },
+      { en: "What can we deduce from these numbers?", kr: "이 숫자들로 뭘 추론할 수 있을까요?" }
     ]
   },
   {
@@ -4609,8 +4609,8 @@ const wordsLevel2_Part2 = [
     word: "depict",
     meaning: "묘사하다, 나타내다",
     examples: [
-      { en: "The painting depicts a historical battle scene.", kr: "그 그림은 역사적인 전투 장면을 묘사합니다." },
-      { en: "The novel depicts life in the 1950s.", kr: "그 소설은 1950년대의 삶을 나타냅니다." }
+      { en: "The movie depicts life in the 1980s.", kr: "그 영화는 1980년대의 삶을 묘사해요." },
+      { en: "The painting depicts a busy market scene.", kr: "그 그림은 붐비는 시장 풍경을 묘사하고 있어요." }
     ]
   },
   {
@@ -4618,17 +4618,17 @@ const wordsLevel2_Part2 = [
     word: "diverse",
     meaning: "다양한",
     examples: [
-      { en: "The group is composed of people with diverse backgrounds.", kr: "그 그룹은 다양한 배경을 가진 사람들로 구성되어 있습니다." },
-      { en: "The museum hosts a diverse collection of art.", kr: "그 박물관은 다양한 예술품을 소장하고 있습니다." }
+      { en: "Our team has people from really diverse backgrounds.", kr: "우리 팀에는 정말 다양한 배경의 사람들이 있어요." },
+      { en: "The city has a really diverse food scene.", kr: "그 도시는 음식 문화가 정말 다양해요." }
     ]
   },
   {
     id: "L2-113",
     word: "eliminate",
-    meaning: "제거하다, 없애다",
+    meaning: "없애다, 제거하다, 탈락시키다",
     examples: [
-      { en: "We need to eliminate unnecessary spending.", kr: "우리는 불필요한 지출을 제거해야 합니다." },
-      { en: "The team was eliminated from the competition.", kr: "그 팀은 대회에서 탈락(제거)되었습니다." }
+      { en: "We need to eliminate unnecessary spending.", kr: "불필요한 지출을 없애야 해요." },
+      { en: "Our team got eliminated in the first round.", kr: "우리 팀은 첫 라운드에서 탈락했어." }
     ]
   },
   {
@@ -4636,8 +4636,8 @@ const wordsLevel2_Part2 = [
     word: "enhance",
     meaning: "향상시키다, 높이다",
     examples: [
-      { en: "The new software will enhance productivity.", kr: "새 소프트웨어는 생산성을 향상시킬 것입니다." },
-      { en: "You can enhance the flavor with a pinch of salt.", kr: "소금 한 꼬집으로 풍미를 높일 수 있습니다." }
+      { en: "A pinch of salt will enhance the flavor.", kr: "소금 한 꼬집이 풍미를 높여 줄 거예요." },
+      { en: "This app can enhance the quality of your photos.", kr: "이 앱으로 사진 화질을 향상시킬 수 있어요." }
     ]
   },
   {
@@ -4645,17 +4645,17 @@ const wordsLevel2_Part2 = [
     word: "exclude",
     meaning: "제외하다, 배제하다",
     examples: [
-      { en: "Children under 12 are excluded from the tour.", kr: "12세 미만의 어린이는 투어에서 제외됩니다." },
-      { en: "The possibility of human error cannot be excluded.", kr: "인간의 실수 가능성은 배제될 수 없습니다." }
+      { en: "Drinks are excluded from the set price.", kr: "음료는 세트 가격에서 제외돼요." },
+      { en: "I felt excluded from the conversation.", kr: "대화에서 배제된 느낌이었어." }
     ]
   },
   {
     id: "L2-116",
     word: "exploit",
-    meaning: "착취하다, 활용하다",
+    meaning: "착취하다, 악용하다, 이용하다",
     examples: [
-      { en: "The company was accused of exploiting its workers.", kr: "그 회사는 노동자들을 착취한다는 비난을 받았습니다." },
-      { en: "We need to exploit the full potential of this technology.", kr: "우리는 이 기술의 잠재력을 최대한 활용해야 합니다." }
+      { en: "The company was accused of exploiting its workers.", kr: "그 회사는 직원들을 착취했다는 비난을 받았어요." },
+      { en: "Hackers exploited a weakness in the system.", kr: "해커들이 시스템의 약점을 악용했어요." }
     ]
   },
   {
@@ -4663,8 +4663,8 @@ const wordsLevel2_Part2 = [
     word: "fluctuate",
     meaning: "변동하다, 오르내리다",
     examples: [
-      { en: "Oil prices have been fluctuating recently.", kr: "유가가 최근에 변동하고 있습니다." },
-      { en: "His mood tends to fluctuate wildly.", kr: "그의 기분은 격렬하게 오르내리는 경향이 있습니다." }
+      { en: "Gas prices have been fluctuating a lot lately.", kr: "요즘 기름값이 많이 오르내리고 있어요." },
+      { en: "My weight tends to fluctuate during the holidays.", kr: "명절 동안엔 몸무게가 오르락내리락하는 편이에요." }
     ]
   },
   {
@@ -4672,8 +4672,8 @@ const wordsLevel2_Part2 = [
     word: "framework",
     meaning: "틀, 체계, 골조",
     examples: [
-      { en: "The new law provides a legal framework for the trade.", kr: "새 법은 그 거래에 대한 법적 틀을 제공합니다." },
-      { en: "We built the house using a wooden framework.", kr: "우리는 나무 골조를 사용하여 집을 지었습니다." }
+      { en: "We need a clear framework for this project.", kr: "이 프로젝트에는 명확한 틀이 필요해요." },
+      { en: "The house has a wooden framework.", kr: "그 집은 나무 골조로 되어 있어요." }
     ]
   },
   {
@@ -4681,17 +4681,17 @@ const wordsLevel2_Part2 = [
     word: "hostile",
     meaning: "적대적인",
     examples: [
-      { en: "The crowd was openly hostile to the speaker.", kr: "군중은 연사에게 노골적으로 적대적이었습니다." },
-      { en: "We entered hostile territory with caution.", kr: "우리는 주의하며 적대적인 영토로 들어섰습니다." }
+      { en: "The crowd was openly hostile to the speaker.", kr: "관중은 연사에게 대놓고 적대적이었어요." },
+      { en: "Why are you being so hostile? I'm just asking.", kr: "왜 그렇게 적대적이야? 그냥 물어본 거야." }
     ]
   },
   {
     id: "L2-120",
     word: "incentive",
-    meaning: "장려책, 동기 부여",
+    meaning: "동기 부여, 장려책, 인센티브",
     examples: [
-      { en: "The tax break provides an incentive for small businesses.", kr: "그 세금 감면은 소기업들에게 장려책을 제공합니다." },
-      { en: "Money is not my only incentive for working hard.", kr: "돈은 열심히 일하는 나의 유일한 동기 부여가 아닙니다." }
+      { en: "Money isn't my only incentive for working hard.", kr: "돈이 내가 열심히 일하는 유일한 동기는 아니야." },
+      { en: "The company offers incentives for hitting sales targets.", kr: "회사는 판매 목표를 달성하면 인센티브를 줘요." }
     ]
   },
   {
@@ -4699,26 +4699,26 @@ const wordsLevel2_Part2 = [
     word: "inhibit",
     meaning: "억제하다, 막다",
     examples: [
-      { en: "Fear can inhibit your ability to perform.", kr: "두려움은 당신의 수행 능력을 억제할 수 있습니다." },
-      { en: "The new policies inhibit economic growth.", kr: "새 정책들은 경제 성장을 막습니다." }
+      { en: "Fear can inhibit you from speaking up.", kr: "두려움은 네가 의견을 말하는 걸 막을 수 있어." },
+      { en: "This cream helps inhibit the growth of bacteria.", kr: "이 크림은 세균 번식을 억제하는 데 도움이 돼요." }
     ]
   },
   {
     id: "L2-122",
     word: "initial",
-    meaning: "초기의",
+    meaning: "처음의, 초기의",
     examples: [
-      { en: "The initial reaction was one of shock.", kr: "초기 반응은 충격이었습니다." },
-      { en: "What are your initial impressions of the place?", kr: "그 장소에 대한 당신의 초기 인상은 무엇입니까?" }
+      { en: "What was your initial impression of him?", kr: "그 사람에 대한 처음 인상이 어땠어요?" },
+      { en: "My initial reaction was total shock.", kr: "내 처음 반응은 완전 충격이었어." }
     ]
   },
   {
     id: "L2-123",
     word: "input",
-    meaning: "의견, 입력, 투입",
+    meaning: "의견, 조언",
     examples: [
-      { en: "We welcome your input on this new design.", kr: "이 새로운 디자인에 대한 여러분의 의견을 환영합니다." },
-      { en: "The computer receives input from the keyboard.", kr: "컴퓨터는 키보드로부터 입력을 받습니다." }
+      { en: "Thanks for your input on the new design.", kr: "새 디자인에 대한 의견 고마워요." },
+      { en: "We'd love some input from the whole team.", kr: "팀 전체의 의견을 듣고 싶어요." }
     ]
   },
   {
@@ -4726,17 +4726,17 @@ const wordsLevel2_Part2 = [
     word: "install",
     meaning: "설치하다",
     examples: [
-      { en: "Did you install the new operating system?", kr: "새 운영 체제를 설치했습니까?" },
-      { en: "They came to install a new air conditioner.", kr: "그들은 새 에어컨을 설치하러 왔습니다." }
+      { en: "Did you install the latest update?", kr: "최신 업데이트 설치했어?" },
+      { en: "They're coming to install the air conditioner tomorrow.", kr: "내일 에어컨 설치하러 와요." }
     ]
   },
   {
     id: "L2-125",
     word: "interact",
-    meaning: "상호 작용하다",
+    meaning: "상호 작용하다, 소통하다, 어울리다",
     examples: [
-      { en: "The two chemicals interact with each other.", kr: "그 두 화학 물질은 서로 상호 작용합니다." },
-      { en: "He finds it hard to interact with strangers.", kr: "그는 낯선 사람들과 상호 작용하는 것을 어려워합니다." }
+      { en: "He finds it hard to interact with strangers.", kr: "그는 낯선 사람들과 어울리는 걸 힘들어해요." },
+      { en: "Kids learn a lot by interacting with others.", kr: "아이들은 다른 사람들과 소통하면서 많이 배워요." }
     ]
   },
   {
@@ -4744,8 +4744,8 @@ const wordsLevel2_Part2 = [
     word: "interpret",
     meaning: "해석하다, 통역하다",
     examples: [
-      { en: "How should we interpret this data?", kr: "우리는 이 데이터를 어떻게 해석해야 합니까?" },
-      { en: "She was asked to interpret for the diplomat.", kr: "그녀는 외교관을 위해 통역해 달라고 요청받았습니다." }
+      { en: "How should I interpret his silence?", kr: "그의 침묵을 어떻게 해석해야 할까?" },
+      { en: "Could you interpret for me at the meeting?", kr: "회의에서 저 대신 통역해 줄 수 있어요?" }
     ]
   },
   {
@@ -4753,8 +4753,8 @@ const wordsLevel2_Part2 = [
     word: "justify",
     meaning: "정당화하다, 해명하다",
     examples: [
-      { en: "You must justify your request with clear reasons.", kr: "당신은 명확한 이유로 당신의 요청을 정당화해야 합니다." },
-      { en: "He tried to justify his absence.", kr: "그는 자신의 결석을 해명하려고 했습니다." }
+      { en: "How can you justify spending that much on shoes?", kr: "신발에 그렇게 많이 쓰는 걸 어떻게 정당화할 수 있어?" },
+      { en: "You don't have to justify your decision to me.", kr: "나한테 네 결정을 해명할 필요 없어." }
     ]
   },
   {
@@ -4762,8 +4762,8 @@ const wordsLevel2_Part2 = [
     word: "label",
     meaning: "라벨을 붙이다, 라벨, 꼬리표",
     examples: [
-      { en: "Please label the boxes clearly.", kr: "상자들에 라벨을 분명하게 붙여 주세요." },
-      { en: "He hates being given the label of 'genius'.", kr: "그는 '천재'라는 꼬리표가 붙는 것을 싫어합니다." }
+      { en: "Please label the boxes clearly.", kr: "상자에 라벨을 잘 보이게 붙여 주세요." },
+      { en: "He hates being labeled as lazy.", kr: "그는 게으르다는 꼬리표가 붙는 걸 싫어해요." }
     ]
   },
   {
@@ -4771,44 +4771,44 @@ const wordsLevel2_Part2 = [
     word: "mediate",
     meaning: "중재하다",
     examples: [
-      { en: "An outside party was called in to mediate the dispute.", kr: "외부 당사자가 분쟁을 중재하기 위해 소집되었습니다." },
-      { en: "The talks aim to mediate a peaceful resolution.", kr: "그 회담은 평화적인 해결을 중재하는 것을 목표로 합니다." }
+      { en: "My mom had to mediate between me and my sister.", kr: "엄마가 나랑 언니 사이를 중재해야 했어." },
+      { en: "We hired a lawyer to mediate the dispute.", kr: "분쟁을 중재하려고 변호사를 고용했어요." }
     ]
   },
   {
     id: "L2-130",
     word: "monitor",
-    meaning: "감시하다, 관찰하다",
+    meaning: "지켜보다, 감시하다, 관찰하다",
     examples: [
-      { en: "We need to monitor the situation closely.", kr: "우리는 그 상황을 면밀히 감시해야 합니다." },
-      { en: "The nurse is monitoring the patient's heart rate.", kr: "간호사는 환자의 심장 박동수를 관찰하고 있습니다." }
+      { en: "We need to monitor the situation closely.", kr: "상황을 면밀히 지켜봐야 해요." },
+      { en: "The nurse will monitor your heart rate overnight.", kr: "간호사가 밤새 심박수를 관찰할 거예요." }
     ]
   },
   {
     id: "L2-131",
     word: "neutral",
-    meaning: "중립적인",
+    meaning: "중립적인, 무난한(색)",
     examples: [
-      { en: "It is important for the judge to remain neutral.", kr: "판사가 중립적인 상태를 유지하는 것이 중요합니다." },
-      { en: "Switzerland remained neutral during the war.", kr: "스위스는 전쟁 동안 중립을 지켰습니다." }
+      { en: "I'm staying neutral in their fight.", kr: "난 걔네 싸움에서 중립을 지킬 거야." },
+      { en: "I prefer neutral colors like beige and gray.", kr: "난 베이지나 회색 같은 무난한 중간색이 좋아." }
     ]
   },
   {
     id: "L2-132",
     word: "notion",
-    meaning: "개념, 생각",
+    meaning: "생각, 개념, 관념",
     examples: [
-      { en: "She rejected the notion that money brings happiness.", kr: "그녀는 돈이 행복을 가져다준다는 개념을 거부했습니다." },
-      { en: "I had a sudden notion to travel the world.", kr: "나는 갑자기 세계를 여행하겠다는 생각이 들었습니다." }
+      { en: "I don't buy the notion that money equals happiness.", kr: "돈이 곧 행복이라는 생각엔 동의 안 해." },
+      { en: "He has no notion of time.", kr: "그는 시간 개념이 전혀 없어." }
     ]
   },
   {
     id: "L2-133",
     word: "obtain",
-    meaning: "얻다, 획득하다",
+    meaning: "얻다, 받다, 획득하다",
     examples: [
-      { en: "You can obtain a visa from the embassy.", kr: "대사관에서 비자를 얻을 수 있습니다." },
-      { en: "We need to obtain permission before proceeding.", kr: "우리는 진행하기 전에 허가를 획득해야 합니다." }
+      { en: "Where can I obtain a visa?", kr: "비자는 어디서 받을 수 있어요?" },
+      { en: "You need to obtain permission before filming here.", kr: "여기서 촬영하려면 먼저 허가를 받아야 해요." }
     ]
   },
   {
@@ -4816,8 +4816,8 @@ const wordsLevel2_Part2 = [
     word: "oppose",
     meaning: "반대하다",
     examples: [
-      { en: "The majority of the public opposes the new tax.", kr: "대부분의 대중이 새 세금에 반대합니다." },
-      { en: "He will oppose any attempt to cut the budget.", kr: "그는 예산을 삭감하려는 어떤 시도에도 반대할 것입니다." }
+      { en: "Most people oppose the new tax.", kr: "대부분의 사람들이 새 세금에 반대해요." },
+      { en: "My parents strongly opposed my decision to quit.", kr: "부모님이 내가 그만두겠다는 결정에 강하게 반대하셨어." }
     ]
   },
   {
@@ -4825,17 +4825,17 @@ const wordsLevel2_Part2 = [
     word: "participate",
     meaning: "참여하다",
     examples: [
-      { en: "Everyone is encouraged to participate in the discussion.", kr: "모두가 토론에 참여하도록 권장됩니다." },
-      { en: "She participated in a charity run last year.", kr: "그녀는 작년에 자선 달리기 행사에 참여했습니다." }
+      { en: "Everyone is encouraged to participate in the discussion.", kr: "모두 토론에 적극 참여해 주세요." },
+      { en: "Did you participate in the charity run last year?", kr: "작년에 자선 달리기에 참여했어요?" }
     ]
   },
   {
-    id: "L2-136",
-    word: "pertain",
-    meaning: "관련되다",
+    id: "L2-479",
+    word: "appointment",
+    meaning: "예약, 약속",
     examples: [
-      { en: "The rules pertaining to student conduct are listed here.", kr: "학생 행동에 관련된 규칙들이 여기에 나열되어 있습니다." },
-      { en: "The questions mainly pertain to your work experience.", kr: "그 질문들은 주로 당신의 업무 경험과 관련됩니다." }
+      { en: "I have a dentist appointment at three, so I'll leave early.", kr: "3시에 치과 예약이 있어서 일찍 나갈게요." },
+      { en: "Can I make an appointment for next Tuesday?", kr: "다음 주 화요일로 예약할 수 있을까요?" }
     ]
   },
   {
@@ -4843,8 +4843,8 @@ const wordsLevel2_Part2 = [
     word: "potential",
     meaning: "잠재적인, 잠재력",
     examples: [
-      { en: "The company has the potential to grow rapidly.", kr: "그 회사는 급속히 성장할 잠재력을 가지고 있습니다." },
-      { en: "We are looking for potential candidates for the job.", kr: "우리는 그 일자리에 대한 잠재적인 후보자들을 찾고 있습니다." }
+      { en: "I think this idea has a lot of potential.", kr: "이 아이디어 잠재력이 크다고 생각해요." },
+      { en: "We're meeting a potential client tomorrow.", kr: "내일 잠재 고객을 만나요." }
     ]
   },
   {
@@ -4852,8 +4852,8 @@ const wordsLevel2_Part2 = [
     word: "precede",
     meaning: "선행하다, 앞서다",
     examples: [
-      { en: "The discovery of gravity was preceded by years of study.", kr: "중력의 발견에 앞서 수년간의 연구가 있었습니다." },
-      { en: "A warning light precedes a major system failure.", kr: "경고등은 주요 시스템 오류에 앞서 나타납니다." }
+      { en: "The movie is preceded by a short cartoon.", kr: "영화 시작 전에 짧은 만화가 앞서 상영돼요." },
+      { en: "Lightning always precedes thunder during a storm.", kr: "폭풍이 칠 때 번개는 항상 천둥보다 앞서요." }
     ]
   },
   {
@@ -4861,8 +4861,8 @@ const wordsLevel2_Part2 = [
     word: "predict",
     meaning: "예측하다",
     examples: [
-      { en: "It is hard to predict the weather accurately.", kr: "날씨를 정확하게 예측하기는 어렵습니다." },
-      { en: "Analysts predict a rise in the stock market.", kr: "분석가들은 주식 시장의 상승을 예측합니다." }
+      { en: "Nobody can predict the future.", kr: "아무도 미래를 예측할 수 없어." },
+      { en: "They predicted rain, so bring an umbrella.", kr: "비가 온다고 예측했으니까 우산 챙겨." }
     ]
   },
   {
@@ -4870,17 +4870,17 @@ const wordsLevel2_Part2 = [
     word: "preserve",
     meaning: "보존하다",
     examples: [
-      { en: "The society works to preserve historic buildings.", kr: "그 협회는 역사적인 건물들을 보존하기 위해 노력합니다." },
-      { en: "We must preserve our natural environment.", kr: "우리는 우리의 자연 환경을 보존해야 합니다." }
+      { en: "They're trying to preserve the old buildings downtown.", kr: "시내의 오래된 건물들을 보존하려고 하고 있어요." },
+      { en: "Salt helps preserve the meat longer.", kr: "소금은 고기를 더 오래 보존하는 데 도움이 돼요." }
     ]
   },
   {
     id: "L2-141",
     word: "prioritize",
-    meaning: "우선순위를 정하다",
+    meaning: "우선순위를 정하다, 우선시하다",
     examples: [
-      { en: "You need to prioritize your tasks for the day.", kr: "당신은 오늘 해야 할 일들의 우선순위를 정해야 합니다." },
-      { en: "The company will prioritize customer service.", kr: "그 회사는 고객 서비스를 우선순위로 둘 것입니다." }
+      { en: "You need to prioritize your tasks today.", kr: "오늘 할 일의 우선순위를 정해야 해." },
+      { en: "I'm trying to prioritize my health this year.", kr: "올해는 건강을 우선시하려고 해요." }
     ]
   },
   {
@@ -4888,26 +4888,26 @@ const wordsLevel2_Part2 = [
     word: "prohibit",
     meaning: "금지하다",
     examples: [
-      { en: "Smoking is prohibited in public areas.", kr: "공공장소에서는 흡연이 금지됩니다." },
-      { en: "The contract prohibits early termination.", kr: "그 계약은 조기 해지를 금지합니다." }
+      { en: "Smoking is prohibited inside the building.", kr: "건물 안에서는 흡연이 금지돼 있어요." },
+      { en: "Are pets prohibited in this apartment?", kr: "이 아파트는 반려동물이 금지예요?" }
     ]
   },
   {
     id: "L2-143",
     word: "promote",
-    meaning: "촉진하다, 승진시키다",
+    meaning: "승진시키다, 홍보하다, 촉진하다",
     examples: [
-      { en: "The campaign aims to promote healthy eating.", kr: "그 캠페인은 건강한 식습관을 촉진하는 것을 목표로 합니다." },
-      { en: "She was promoted to the position of manager.", kr: "그녀는 관리자 직책으로 승진되었습니다." }
+      { en: "She was promoted to manager last month.", kr: "그녀는 지난달에 매니저로 승진했어요." },
+      { en: "We're running ads to promote the new menu.", kr: "새 메뉴를 홍보하려고 광고를 하고 있어요." }
     ]
   },
   {
     id: "L2-144",
     word: "refine",
-    meaning: "정제하다, 개선하다",
+    meaning: "다듬다, 개선하다, 정제하다",
     examples: [
-      { en: "We need to refine our search method.", kr: "우리는 우리의 검색 방법을 개선해야 합니다." },
-      { en: "The oil is refined before it can be used.", kr: "그 기름은 사용되기 전에 정제됩니다." }
+      { en: "Let's refine the plan a bit more.", kr: "계획을 좀 더 다듬어 보자." },
+      { en: "You can refine your search by price.", kr: "가격 조건으로 검색을 더 정교하게 다듬을 수 있어요." }
     ]
   },
   {
@@ -4915,8 +4915,8 @@ const wordsLevel2_Part2 = [
     word: "regulate",
     meaning: "규제하다, 조절하다",
     examples: [
-      { en: "The agency regulates the safety of food and drugs.", kr: "그 기관은 식품과 약품의 안전을 규제합니다." },
-      { en: "A thermostat regulates the temperature.", kr: "온도 조절기가 온도를 조절합니다." }
+      { en: "The thermostat regulates the room temperature.", kr: "온도 조절기가 방 온도를 조절해 줘요." },
+      { en: "The government should regulate these apps more strictly.", kr: "정부가 이런 앱들을 더 엄격하게 규제해야 해요." }
     ]
   },
   {
@@ -4924,8 +4924,8 @@ const wordsLevel2_Part2 = [
     word: "relevant",
     meaning: "관련된, 적절한",
     examples: [
-      { en: "Do you have any relevant work experience?", kr: "관련된 업무 경험이 있습니까?" },
-      { en: "Please stick to the relevant facts.", kr: "관련된 사실들에만 집중해 주세요." }
+      { en: "Do you have any relevant work experience?", kr: "관련된 업무 경험이 있으세요?" },
+      { en: "That's not really relevant to what we're discussing.", kr: "그건 지금 우리가 얘기하는 거랑 별로 관련이 없어요." }
     ]
   },
   {
@@ -4933,8 +4933,8 @@ const wordsLevel2_Part2 = [
     word: "rely",
     meaning: "의지하다, 믿다",
     examples: [
-      { en: "You can rely on her honesty.", kr: "당신은 그녀의 정직함을 믿을 수 있습니다." },
-      { en: "Many people rely on public transport.", kr: "많은 사람들이 대중교통에 의지합니다." }
+      { en: "You can always rely on me.", kr: "언제든 나한테 의지해도 돼." },
+      { en: "I rely on my phone for everything.", kr: "난 모든 걸 휴대폰에 의지해." }
     ]
   },
   {
@@ -4942,17 +4942,17 @@ const wordsLevel2_Part2 = [
     word: "replicate",
     meaning: "복제하다, 재현하다",
     examples: [
-      { en: "Scientists are trying to replicate the experiment results.", kr: "과학자들은 그 실험 결과를 재현하려고 노력하고 있습니다." },
-      { en: "The software can replicate data across multiple servers.", kr: "그 소프트웨어는 여러 서버에 데이터를 복제할 수 있습니다." }
+      { en: "Scientists couldn't replicate the results.", kr: "과학자들은 그 결과를 재현하지 못했어요." },
+      { en: "I tried to replicate my grandma's recipe, but failed.", kr: "할머니 레시피를 재현해 보려 했는데 실패했어." }
     ]
   },
   {
     id: "L2-149",
     word: "retain",
-    meaning: "유지하다, 보유하다",
+    meaning: "유지하다, 보유하다, 기억하다",
     examples: [
-      { en: "She has managed to retain her sense of humor.", kr: "그녀는 유머 감각을 유지하는 데 성공했습니다." },
-      { en: "The soil can retain a lot of water.", kr: "그 흙은 많은 물을 보유할 수 있습니다." }
+      { en: "She managed to retain her sense of humor.", kr: "그녀는 유머 감각을 끝까지 유지했어요." },
+      { en: "It's hard to retain new words without reviewing.", kr: "복습 안 하면 새 단어를 기억하기 어려워요." }
     ]
   },
   {
@@ -4960,17 +4960,17 @@ const wordsLevel2_Part2 = [
     word: "reveal",
     meaning: "드러내다, 밝히다",
     examples: [
-      { en: "The investigation revealed the truth.", kr: "그 조사는 진실을 드러냈습니다." },
-      { en: "He refused to reveal his source of information.", kr: "그는 자신의 정보 출처를 밝히기를 거부했습니다." }
+      { en: "He refused to reveal his source.", kr: "그는 정보 출처를 밝히기를 거부했어요." },
+      { en: "Don't reveal the ending! I haven't seen it yet.", kr: "결말 밝히지 마! 아직 못 봤단 말이야." }
     ]
   },
   {
     id: "L2-151",
     word: "scheme",
-    meaning: "계획, 책략",
+    meaning: "계략, 수법, 계획",
     examples: [
-      { en: "The government launched a new social security scheme.", kr: "정부는 새로운 사회 보장 계획을 시작했습니다." },
-      { en: "He was caught trying to devise a fraudulent scheme.", kr: "그는 사기성 책략을 꾸미려다 잡혔습니다." }
+      { en: "It's a get-rich-quick scheme. Don't fall for it.", kr: "그거 일확천금 사기 수법이야. 넘어가지 마." },
+      { en: "He came up with a scheme to skip work.", kr: "그는 회사 빠질 계략을 꾸몄어." }
     ]
   },
   {
@@ -4978,8 +4978,8 @@ const wordsLevel2_Part2 = [
     word: "scope",
     meaning: "범위",
     examples: [
-      { en: "The scope of the project is very broad.", kr: "그 프로젝트의 범위는 매우 광범위합니다." },
-      { en: "We decided to limit the scope of our research.", kr: "우리는 연구 범위를 제한하기로 결정했습니다." }
+      { en: "That's beyond the scope of this project.", kr: "그건 이 프로젝트의 범위를 벗어나요." },
+      { en: "Let's limit the scope of the discussion.", kr: "논의 범위를 좀 제한해 봐요." }
     ]
   },
   {
@@ -4987,17 +4987,17 @@ const wordsLevel2_Part2 = [
     word: "secure",
     meaning: "안전한, 확보하다",
     examples: [
-      { en: "Please ensure your connection is secure.", kr: "연결이 안전한지 확인해 주세요." },
-      { en: "The team worked hard to secure the contract.", kr: "팀은 그 계약을 확보하기 위해 열심히 일했습니다." }
+      { en: "Is this Wi-Fi connection secure?", kr: "이 와이파이 연결 안전해요?" },
+      { en: "We finally secured the contract!", kr: "드디어 계약을 확보했어요!" }
     ]
   },
   {
     id: "L2-154",
     word: "shift",
-    meaning: "변화, 이동하다",
+    meaning: "변화, 교대 근무",
     examples: [
-      { en: "There has been a dramatic shift in public opinion.", kr: "여론에 극적인 변화가 있었습니다." },
-      { en: "She shifted her weight from one foot to the other.", kr: "그녀는 한 발에서 다른 발로 체중을 이동했습니다." }
+      { en: "There's been a big shift in how people shop.", kr: "사람들이 쇼핑하는 방식에 큰 변화가 있었어요." },
+      { en: "I'm working the night shift this week.", kr: "이번 주엔 야간 교대 근무를 해요." }
     ]
   },
   {
@@ -5005,17 +5005,17 @@ const wordsLevel2_Part2 = [
     word: "substitute",
     meaning: "대체하다, 대용품",
     examples: [
-      { en: "You can substitute chicken for beef in this recipe.", kr: "이 레시피에서는 쇠고기 대신 닭고기를 써도 됩니다." },
-      { en: "Honey is a healthy substitute for sugar.", kr: "꿀은 설탕의 건강한 대용품입니다." }
+      { en: "You can substitute chicken for beef in this recipe.", kr: "이 레시피에선 소고기 대신 닭고기를 써도 돼요." },
+      { en: "Honey is a healthy substitute for sugar.", kr: "꿀은 설탕 대신 쓰기 좋은 건강한 대용품이에요." }
     ]
   },
   {
     id: "L2-156",
     word: "terminate",
-    meaning: "종료하다, 끝내다",
+    meaning: "종료하다, 해지하다",
     examples: [
-      { en: "The company decided to terminate his employment.", kr: "회사는 그의 고용을 종료하기로 결정했습니다." },
-      { en: "The train terminates at the next station.", kr: "그 기차는 다음 역에서 운행을 종료합니다." }
+      { en: "I want to terminate my phone contract early.", kr: "휴대폰 계약을 일찍 해지하고 싶어요." },
+      { en: "They terminated his contract after just two months.", kr: "두 달 만에 그 사람 계약을 종료했대." }
     ]
   },
   {
@@ -5023,8 +5023,8 @@ const wordsLevel2_Part2 = [
     word: "tolerate",
     meaning: "용인하다, 참다, 견디다",
     examples: [
-      { en: "We will not tolerate any form of discrimination.", kr: "우리는 어떤 형태의 차별도 용인하지 않을 것입니다." },
-      { en: "Plants that tolerate dry conditions are hard to find.", kr: "건조한 환경을 견디는 식물은 찾기 어렵습니다." }
+      { en: "I can't tolerate rude people.", kr: "난 무례한 사람들은 못 참아." },
+      { en: "My stomach can't tolerate spicy food anymore.", kr: "내 위는 이제 매운 음식을 못 견뎌." }
     ]
   },
   {
@@ -5032,8 +5032,8 @@ const wordsLevel2_Part2 = [
     word: "transfer",
     meaning: "이전하다, 이체하다, 갈아타다",
     examples: [
-      { en: "He transferred money from his savings account.", kr: "그는 저축 계좌에서 돈을 이체했습니다." },
-      { en: "You will need to transfer to a different line at the next station.", kr: "다음 역에서 다른 노선으로 갈아타야 합니다." }
+      { en: "I'll transfer the money to you tonight.", kr: "오늘 밤에 돈 이체해 줄게." },
+      { en: "You'll need to transfer to Line 2 at the next station.", kr: "다음 역에서 2호선으로 갈아타셔야 해요." }
     ]
   },
   {
@@ -5041,8 +5041,8 @@ const wordsLevel2_Part2 = [
     word: "transform",
     meaning: "변형시키다, 완전히 바꾸다",
     examples: [
-      { en: "The internet has transformed the way we communicate.", kr: "인터넷은 우리가 소통하는 방식을 완전히 바꾸어 놓았습니다." },
-      { en: "The renovation transformed the old building into a modern office.", kr: "그 리노베이션은 오래된 건물을 현대적인 사무실로 탈바꿈시켰습니다." }
+      { en: "The internet has transformed the way we communicate.", kr: "인터넷은 우리가 소통하는 방식을 완전히 바꿔 놓았어요." },
+      { en: "They transformed the garage into a small studio.", kr: "그들은 차고를 작은 작업실로 탈바꿈시켰어요." }
     ]
   },
   {
@@ -5050,8 +5050,8 @@ const wordsLevel2_Part2 = [
     word: "unanimous",
     meaning: "만장일치의",
     examples: [
-      { en: "The vote was a unanimous decision.", kr: "그 투표는 만장일치의 결정이었습니다." },
-      { en: "All members were unanimous in their approval.", kr: "모든 구성원들이 만장일치로 승인했습니다." }
+      { en: "The team's decision was unanimous.", kr: "팀의 결정은 만장일치였어요." },
+      { en: "We were unanimous: pizza for dinner!", kr: "만장일치로 저녁은 피자로 결정!" }
     ]
   },
   {
@@ -5059,26 +5059,26 @@ const wordsLevel2_Part2 = [
     word: "utilize",
     meaning: "활용하다, 이용하다",
     examples: [
-      { en: "We must utilize every moment of our time.", kr: "우리는 우리 시간의 모든 순간을 활용해야 합니다." },
-      { en: "The company utilizes solar power to save energy.", kr: "그 회사는 에너지를 절약하기 위해 태양광 에너지를 이용합니다." }
+      { en: "We should utilize the extra space better.", kr: "남는 공간을 더 잘 활용해야 해요." },
+      { en: "The company utilizes solar power to cut costs.", kr: "그 회사는 비용을 줄이려고 태양광 에너지를 이용해요." }
     ]
   },
   {
     id: "L2-162",
     word: "validate",
-    meaning: "입증하다, 확인하다",
+    meaning: "확인하다, 인정해 주다, 입증하다",
     examples: [
-      { en: "The research findings validate her hypothesis.", kr: "그 연구 결과는 그녀의 가설을 입증합니다." },
-      { en: "You need to validate your ticket before boarding the train.", kr: "기차에 탑승하기 전에 티켓을 확인해야 합니다." }
+      { en: "Don't forget to validate your ticket before boarding.", kr: "탑승하기 전에 승차권 확인받는 거 잊지 마." },
+      { en: "Sometimes you just need someone to validate your feelings.", kr: "가끔은 그냥 누군가 내 감정을 인정해 줬으면 할 때가 있잖아." }
     ]
   },
   {
     id: "L2-163",
     word: "compile",
-    meaning: "편집하다, 수집하다",
+    meaning: "모아서 정리하다, 취합하다",
     examples: [
-      { en: "The library compiled a list of recommended readings.", kr: "도서관은 추천 도서 목록을 편집했습니다." },
-      { en: "He spent a year compiling the data for his thesis.", kr: "그는 논문을 위한 데이터를 수집하는 데 1년을 보냈습니다." }
+      { en: "I compiled a list of restaurants for our trip.", kr: "여행 때 갈 식당 목록을 모아서 정리해 뒀어." },
+      { en: "Can you compile the survey results by Monday?", kr: "월요일까지 설문 결과 취합해 줄래요?" }
     ]
   },
   {
@@ -5086,8 +5086,8 @@ const wordsLevel2_Part2 = [
     word: "decline",
     meaning: "감소하다, 거절하다",
     examples: [
-      { en: "The number of people visiting the site has declined.", kr: "그 사이트를 방문하는 사람들의 수가 감소했습니다." },
-      { en: "She politely declined the dinner invitation.", kr: "그녀는 저녁 식사 초대를 정중하게 거절했습니다." }
+      { en: "Sorry, your card was declined.", kr: "죄송하지만 카드 승인이 거절됐어요." },
+      { en: "Sales have been declining since last summer.", kr: "작년 여름부터 매출이 계속 감소하고 있어요." }
     ]
   },
   {
@@ -5095,26 +5095,26 @@ const wordsLevel2_Part2 = [
     word: "draft",
     meaning: "초안, 초안을 작성하다",
     examples: [
-      { en: "The legal team prepared the initial draft of the contract.", kr: "법률 팀은 계약서의 초기 초안을 준비했습니다." },
-      { en: "I need to draft a letter to the editor.", kr: "나는 편집자에게 보낼 편지의 초안을 작성해야 합니다." }
+      { en: "Can you look over my first draft?", kr: "내 초안 좀 봐 줄래?" },
+      { en: "I need to draft an email to the client.", kr: "고객한테 보낼 이메일 초안을 써야 해요." }
     ]
   },
   {
     id: "L2-166",
     word: "enforce",
-    meaning: "집행하다, 강요하다",
+    meaning: "시행하다, 집행하다, 강제하다",
     examples: [
-      { en: "New rules will be strictly enforced starting tomorrow.", kr: "새로운 규칙들은 내일부터 엄격하게 집행될 것입니다." },
-      { en: "The teacher tried to enforce silence in the classroom.", kr: "선생님은 교실에서 침묵을 강요하려고 했습니다." }
+      { en: "The new rules will be strictly enforced from tomorrow.", kr: "새 규칙은 내일부터 엄격하게 시행돼요." },
+      { en: "Nobody really enforces the dress code here.", kr: "여기선 아무도 복장 규정을 딱히 강제하지 않아요." }
     ]
   },
   {
     id: "L2-167",
     word: "expel",
-    meaning: "추방하다, 쫓아내다",
+    meaning: "퇴학시키다, 쫓아내다",
     examples: [
-      { en: "The club voted to expel the member for misconduct.", kr: "클럽은 비행으로 그 구성원을 추방하기로 투표했습니다." },
-      { en: "He was expelled from school for cheating.", kr: "그는 부정행위로 학교에서 퇴학당했습니다." }
+      { en: "He was expelled from school for cheating.", kr: "그는 부정행위로 학교에서 퇴학당했어요." },
+      { en: "If you fight again, you'll be expelled.", kr: "또 싸우면 쫓겨날 거야." }
     ]
   },
   {
@@ -5122,8 +5122,8 @@ const wordsLevel2_Part2 = [
     word: "fictional",
     meaning: "허구의, 가상의",
     examples: [
-      { en: "The characters in the movie are completely fictional.", kr: "그 영화 속 인물들은 완전히 허구입니다." },
-      { en: "He wrote a history of a fictional kingdom.", kr: "그는 가상의 왕국에 대한 역사를 썼습니다." }
+      { en: "The characters in the show are completely fictional.", kr: "그 드라마 속 인물들은 완전히 허구예요." },
+      { en: "Is that town real or fictional?", kr: "그 마을은 실제로 있는 데야, 아니면 가상이야?" }
     ]
   },
   {
@@ -5131,44 +5131,44 @@ const wordsLevel2_Part2 = [
     word: "hesitate",
     meaning: "망설이다, 주저하다",
     examples: [
-      { en: "She hesitated before replying to the difficult question.", kr: "그녀는 어려운 질문에 답하기 전에 망설였습니다." },
-      { en: "Please do not hesitate to contact us.", kr: "저희에게 연락하는 것을 주저하지 마세요." }
+      { en: "Please don't hesitate to contact us.", kr: "언제든 주저하지 말고 연락 주세요." },
+      { en: "She hesitated before answering my question.", kr: "그녀는 내 질문에 대답하기 전에 망설였어." }
     ]
   },
   {
     id: "L2-170",
     word: "implement",
-    meaning: "실행하다, 이행하다",
+    meaning: "실행하다, 시행하다, 도입하다",
     examples: [
-      { en: "The challenge now is how to implement the plan.", kr: "이제 문제는 그 계획을 어떻게 실행하느냐입니다." },
-      { en: "We need time to fully implement the new procedures.", kr: "우리는 새로운 절차를 완전히 이행하는 데 시간이 필요합니다." }
+      { en: "When are we going to implement the new system?", kr: "새 시스템을 언제 도입해요?" },
+      { en: "It's a great idea, but hard to implement.", kr: "좋은 아이디어지만 실행하기가 어려워요." }
     ]
   },
   {
     id: "L2-171",
     word: "inflict",
-    meaning: "가하다, 고통을 주다",
+    meaning: "(피해·고통을) 가하다, 입히다",
     examples: [
-      { en: "The fire inflicted serious damage on the historic building.", kr: "그 화재는 역사적인 건물에 심각한 피해를 가했습니다." },
-      { en: "Why would you inflict such pain on an innocent person?", kr: "왜 무고한 사람에게 그런 고통을 줍니까?" }
+      { en: "The storm inflicted serious damage on the town.", kr: "폭풍이 마을에 심각한 피해를 입혔어요." },
+      { en: "Why would you inflict that pain on yourself?", kr: "왜 굳이 스스로에게 그런 고통을 가해?" }
     ]
   },
   {
     id: "L2-172",
     word: "intervene",
-    meaning: "개입하다, 중재하다",
+    meaning: "개입하다, 끼어들다",
     examples: [
-      { en: "The police had to intervene to stop the fight.", kr: "경찰은 싸움을 멈추기 위해 개입해야 했습니다." },
-      { en: "She decided not to intervene in her children's argument.", kr: "그녀는 아이들의 말다툼에 개입하지 않기로 했습니다." }
+      { en: "The teacher had to intervene to stop the fight.", kr: "선생님이 싸움을 말리려고 개입해야 했어요." },
+      { en: "I don't want to intervene, but you two need to talk.", kr: "끼어들고 싶진 않은데, 너희 둘 얘기 좀 해야 할 것 같아." }
     ]
   },
   {
     id: "L2-173",
     word: "legitimate",
-    meaning: "합법적인, 정당한",
+    meaning: "정당한, 합법적인, 진짜인",
     examples: [
-      { en: "Only the court can declare the document legitimate.", kr: "오직 법원만이 그 문서가 합법적임을 선언할 수 있습니다." },
-      { en: "He had a legitimate complaint about the service.", kr: "그는 그 서비스에 대해 정당한 불만을 가지고 있었습니다." }
+      { en: "He had a legitimate complaint about the service.", kr: "그는 서비스에 대해 정당한 불만이 있었어요." },
+      { en: "Is this website legitimate or a scam?", kr: "이 웹사이트 합법적인 곳이야, 아니면 사기야?" }
     ]
   },
   {
@@ -5176,26 +5176,26 @@ const wordsLevel2_Part2 = [
     word: "manipulate",
     meaning: "조종하다, 조작하다",
     examples: [
-      { en: "He tried to manipulate the public into supporting his policy.", kr: "그는 대중을 조종하여 자신의 정책을 지지하도록 하려고 했습니다." },
-      { en: "The data was manipulated to show a better result.", kr: "그 데이터는 더 나은 결과를 보여주기 위해 조작되었습니다." }
+      { en: "I feel like he's trying to manipulate me.", kr: "그 사람이 날 조종하려는 것 같아." },
+      { en: "The photos were clearly manipulated.", kr: "그 사진들은 확실히 조작됐어요." }
     ]
   },
   {
     id: "L2-175",
     word: "marginal",
-    meaning: "미미한, 한계의",
+    meaning: "미미한, 아주 적은",
     examples: [
-      { en: "The differences between the two products are only marginal.", kr: "두 제품 간의 차이는 단지 미미합니다." },
-      { en: "They live on the marginal land near the desert.", kr: "그들은 사막 근처의 한계적인 땅에서 살고 있습니다." }
+      { en: "The difference between the two phones is marginal.", kr: "두 폰의 차이는 미미해요." },
+      { en: "We saw only a marginal improvement in sales.", kr: "매출은 미미하게 개선됐을 뿐이에요." }
     ]
   },
   {
     id: "L2-176",
     word: "overwhelm",
-    meaning: "압도하다, 제압하다",
+    meaning: "압도하다, 감당 못 하게 하다",
     examples: [
-      { en: "The scale of the disaster threatened to overwhelm the aid efforts.", kr: "재난의 규모가 구호 노력을 압도할 위협이 되었습니다." },
-      { en: "I was overwhelmed by the sudden workload.", kr: "나는 갑작스러운 업무량에 압도당했습니다." }
+      { en: "I'm totally overwhelmed with work right now.", kr: "지금 일이 너무 많아서 감당이 안 돼." },
+      { en: "The view from the top just overwhelmed me.", kr: "정상에서 본 경치에 그냥 압도됐어." }
     ]
   },
   {
@@ -5203,8 +5203,8 @@ const wordsLevel2_Part2 = [
     word: "paradox",
     meaning: "역설",
     examples: [
-      { en: "The film presents a paradox: the war to end all wars.", kr: "그 영화는 역설을 제시합니다: 모든 전쟁을 끝내기 위한 전쟁." },
-      { en: "It is a paradox that the more we know, the more we realize we don't know.", kr: "우리가 더 많이 알수록, 우리가 모른다는 것을 더 많이 깨닫는 것은 역설입니다." }
+      { en: "It's a paradox: the more I rest, the more tired I feel.", kr: "역설이야. 쉬면 쉴수록 더 피곤하게 느껴져." },
+      { en: "Isn't it a paradox that free apps make the most money?", kr: "무료 앱이 돈을 제일 많이 번다는 게 역설 아니야?" }
     ]
   },
   {
@@ -5212,26 +5212,26 @@ const wordsLevel2_Part2 = [
     word: "preliminary",
     meaning: "예비의, 사전의",
     examples: [
-      { en: "The team conducted a preliminary test run.", kr: "팀은 예비 시험 운행을 실시했습니다." },
-      { en: "We are waiting for the preliminary results of the election.", kr: "우리는 선거의 잠정 결과를 기다리고 있습니다." }
+      { en: "These are just the preliminary results.", kr: "이건 그냥 예비 결과일 뿐이에요." },
+      { en: "We had a preliminary meeting to discuss the budget.", kr: "예산을 논의하려고 사전 회의를 했어요." }
     ]
   },
   {
     id: "L2-179",
     word: "prosecute",
-    meaning: "기소하다, 소추하다",
+    meaning: "기소하다",
     examples: [
-      { en: "The state decided not to prosecute the case due to lack of evidence.", kr: "주는 증거 부족으로 그 사건을 기소하지 않기로 결정했습니다." },
-      { en: "Anyone who breaks the law will be prosecuted.", kr: "법을 어기는 사람은 누구나 소추될 것입니다." }
+      { en: "The sign says shoplifters will be prosecuted.", kr: "표지판에 물건 훔치면 기소된다고 쓰여 있어." },
+      { en: "Do you think they'll prosecute him?", kr: "검찰이 그 사람을 기소할 것 같아?" }
     ]
   },
   {
     id: "L2-180",
     word: "reiterate",
-    meaning: "반복하다, 되풀이하다",
+    meaning: "되풀이하다, 다시 말하다",
     examples: [
-      { en: "Let me reiterate the importance of being on time.", kr: "시간을 지키는 것의 중요성을 다시 한번 반복하겠습니다." },
-      { en: "He reiterated his innocence during the interview.", kr: "그는 인터뷰 동안 자신의 무죄를 거듭 주장했습니다." }
+      { en: "Let me reiterate how important it is to be on time.", kr: "시간 지키는 게 얼마나 중요한지 다시 한번 말할게요." },
+      { en: "He reiterated that he had nothing to do with it.", kr: "그는 자기는 그 일과 아무 상관이 없다고 거듭 말했어요." }
     ]
   },
   {
@@ -5239,26 +5239,26 @@ const wordsLevel2_Part2 = [
     word: "restrict",
     meaning: "제한하다, 한정하다",
     examples: [
-      { en: "The law restricts the sale of alcohol to minors.", kr: "그 법은 미성년자에게 술 판매를 제한합니다." },
-      { en: "We must restrict our food intake to lose weight.", kr: "우리는 체중 감량을 위해 음식 섭취를 제한해야 합니다." }
+      { en: "The app restricts screen time for kids.", kr: "그 앱은 아이들 화면 사용 시간을 제한해요." },
+      { en: "I'm restricting sugar to lose some weight.", kr: "살 좀 빼려고 설탕을 제한하고 있어." }
     ]
   },
   {
     id: "L2-182",
     word: "revenue",
-    meaning: "수익, 세입",
+    meaning: "수익, 매출",
     examples: [
-      { en: "The company's annual revenue reached a record high.", kr: "그 회사의 연간 수익은 기록적인 최고치에 도달했습니다." },
-      { en: "The government collects most of its revenue through taxes.", kr: "정부는 대부분의 세입을 세금을 통해 징수합니다." }
+      { en: "Our revenue went up twenty percent this year.", kr: "올해 우리 매출이 20퍼센트 올랐어요." },
+      { en: "Most of the app's revenue comes from ads.", kr: "그 앱 수익의 대부분은 광고에서 나와요." }
     ]
   },
   {
     id: "L2-183",
     word: "speculate",
-    meaning: "추측하다, 투기하다",
+    meaning: "추측하다",
     examples: [
-      { en: "We can only speculate on the reasons for the delay.", kr: "우리는 지연의 이유에 대해 추측만 할 수 있을 뿐입니다." },
-      { en: "He made a fortune by speculating in property.", kr: "그는 부동산에 투기하여 큰돈을 벌었습니다." }
+      { en: "We can only speculate about why he quit.", kr: "그가 왜 그만뒀는지는 추측만 할 수 있을 뿐이야." },
+      { en: "I don't want to speculate until we know more.", kr: "더 알게 되기 전엔 추측하고 싶지 않아요." }
     ]
   },
   {
@@ -5266,8 +5266,8 @@ const wordsLevel2_Part2 = [
     word: "specialize",
     meaning: "전문으로 하다",
     examples: [
-      { en: "This restaurant specializes in seafood dishes.", kr: "이 식당은 해산물 요리를 전문으로 합니다." },
-      { en: "She chose to specialize in tax law.", kr: "그녀는 세법을 전문으로 하기로 선택했습니다." }
+      { en: "This restaurant specializes in seafood.", kr: "이 식당은 해산물을 전문으로 해요." },
+      { en: "What do you specialize in?", kr: "어떤 분야를 전문으로 하세요?" }
     ]
   },
   {
@@ -5284,8 +5284,8 @@ const wordsLevel2_Part2 = [
     word: "sustainable",
     meaning: "지속 가능한",
     examples: [
-      { en: "We are seeking a sustainable solution for clean water.", kr: "우리는 깨끗한 물을 위한 지속 가능한 해결책을 찾고 있습니다." },
-      { en: "Sustainable energy sources are vital for the planet.", kr: "지속 가능한 에너지원은 지구에 필수적입니다." }
+      { en: "I try to buy more sustainable products these days.", kr: "요즘엔 지속 가능한 제품을 더 사려고 해요." },
+      { en: "Working eighty hours a week isn't sustainable.", kr: "일주일에 80시간 일하는 건 지속 가능하지 않아요." }
     ]
   },
   {
@@ -5293,17 +5293,17 @@ const wordsLevel2_Part2 = [
     word: "tempt",
     meaning: "유혹하다",
     examples: [
-      { en: "The offer of a higher salary tempted her to leave her current job.", kr: "더 높은 급여 제안은 그녀가 현재 직장을 떠나도록 유혹했습니다." },
-      { en: "The smell of fresh bread tempted me into the bakery.", kr: "갓 구운 빵 냄새가 나를 빵집 안으로 유혹했습니다." }
+      { en: "Don't tempt me. I'm on a diet!", kr: "유혹하지 마. 나 다이어트 중이야!" },
+      { en: "The higher salary tempted her to switch jobs.", kr: "더 높은 연봉의 유혹에 그녀는 이직하고 싶어졌어요." }
     ]
   },
   {
-    id: "L2-188",
-    word: "transcend",
-    meaning: "초월하다",
+    id: "L2-480",
+    word: "schedule",
+    meaning: "일정, 스케줄, 일정을 잡다",
     examples: [
-      { en: "Art is a way to transcend our daily problems.", kr: "예술은 우리의 일상적인 문제들을 초월하는 방법입니다." },
-      { en: "His talent for leadership transcends his age.", kr: "그의 리더십 재능은 그의 나이를 초월합니다." }
+      { en: "Let me check my schedule and get back to you.", kr: "제 일정 확인해 보고 다시 연락드릴게요." },
+      { en: "Can we schedule the meeting for Friday morning?", kr: "회의를 금요일 오전으로 잡을 수 있을까요?" }
     ]
   },
   {
@@ -5311,71 +5311,71 @@ const wordsLevel2_Part2 = [
     word: "undergo",
     meaning: "겪다, (검사·수술 등을) 받다",
     examples: [
-      { en: "The patient will undergo a series of tests.", kr: "그 환자는 일련의 검사를 받을 것입니다." },
-      { en: "The product has undergone several design changes.", kr: "그 제품은 몇 가지 디자인 변경을 겪었습니다." }
+      { en: "My dad is undergoing surgery next week.", kr: "우리 아빠가 다음 주에 수술을 받으세요." },
+      { en: "The office is undergoing renovations, so it's noisy.", kr: "사무실이 리모델링 공사 중이라 시끄러워요." }
     ]
   },
   {
     id: "L2-190",
     word: "undermine",
-    meaning: "약화시키다, 훼손하다",
+    meaning: "약화시키다, 깎아내리다",
     examples: [
-      { en: "Criticism can undermine a child's confidence.", kr: "비판은 아이의 자신감을 약화시킬 수 있습니다." },
-      { en: "The scandal undermined the politician's reputation.", kr: "그 스캔들은 그 정치인의 명성을 훼손했습니다." }
+      { en: "Don't let criticism undermine your confidence.", kr: "비판 때문에 자신감이 약해지게 두지 마." },
+      { en: "He keeps undermining me in front of the boss.", kr: "그는 상사 앞에서 계속 나를 깎아내려." }
     ]
   },
   {
     id: "L2-191",
     word: "verify",
-    meaning: "확인하다, 검증하다",
+    meaning: "확인하다, 인증하다, 검증하다",
     examples: [
-      { en: "Please verify the information with the original source.", kr: "원래 출처와 대조하여 정보를 확인해 주세요." },
-      { en: "The device is used to verify the authenticity of bank notes.", kr: "그 장치는 지폐의 진위를 검증하는 데 사용됩니다." }
+      { en: "Please verify your email address to continue.", kr: "계속하려면 이메일 주소를 인증해 주세요." },
+      { en: "Let me verify the information before we post it.", kr: "올리기 전에 정보부터 확인할게요." }
     ]
   },
   {
     id: "L2-192",
     word: "vulnerable",
-    meaning: "취약한",
+    meaning: "취약한, 무방비한, 상처받기 쉬운",
     examples: [
-      { en: "Elderly people are particularly vulnerable to cold weather.", kr: "노인들은 특히 추운 날씨에 취약합니다." },
-      { en: "The fortress was vulnerable to attack from the sea.", kr: "그 요새는 바다로부터의 공격에 취약했습니다." }
+      { en: "Older people are more vulnerable to the flu.", kr: "어르신들은 독감에 더 취약해요." },
+      { en: "I felt really vulnerable after sharing my story.", kr: "내 얘기를 털어놓고 나니까 완전히 무방비해진 기분이었어." }
     ]
   },
   {
     id: "L2-193",
     word: "withdraw",
-    meaning: "철회하다, 인출하다",
+    meaning: "인출하다, 철회하다",
     examples: [
-      { en: "He threatened to withdraw his support for the party.", kr: "그는 당에 대한 자신의 지지를 철회하겠다고 위협했습니다." },
-      { en: "I need to withdraw $100 from my account.", kr: "나는 계좌에서 100달러를 인출해야 합니다." }
+      { en: "I need to withdraw some cash from the ATM.", kr: "ATM에서 현금 좀 인출해야 해." },
+      { en: "He withdrew his offer at the last minute.", kr: "그는 마지막 순간에 제안을 철회했어." }
     ]
   },
   {
     id: "L2-194",
     word: "advocate",
-    meaning: "옹호하다, 지지자",
+    meaning: "지지하다, 옹호하다, 옹호자",
     examples: [
-      { en: "She is a passionate advocate for mental health.", kr: "그녀는 정신 건강을 위한 열정적인 지지자입니다." },
-      { en: "The group advocates for stricter environmental laws.", kr: "그 단체는 더 엄격한 환경법을 옹호합니다." }
+      { en: "She's a passionate advocate for mental health.", kr: "그녀는 정신 건강을 위한 열정적인 옹호자예요." },
+      { en: "I strongly advocate taking breaks during work.", kr: "난 일하는 중간중간 쉬는 걸 강력하게 지지해." }
     ]
   },
   {
     id: "L2-195",
     word: "allegedly",
-    meaning: "전하는 바에 의하면, ~했다고 알려진",
+    meaning: "~라고 알려진, 듣기로는",
     examples: [
-      { en: "The suspect allegedly confessed to the crime.", kr: "그 용의자는 범죄를 자백한 것으로 알려졌습니다." },
-      { en: "He was arrested for allegedly selling stolen goods.", kr: "그는 훔친 물건을 판매한 혐의로 체포되었습니다." }
+      { en: "He allegedly stole money from the company.", kr: "그가 회사 돈을 훔쳤다는 혐의를 받고 있대." },
+      { en: "Allegedly, the restaurant is closing next month.", kr: "듣기로는 그 식당이 다음 달에 문 닫는대." }
     ]
   },
   {
     id: "L2-196",
     word: "conscious",
-    meaning: "의식하는, 자각하는",
+    meaning: "의식하는, 의식이 있는",
     examples: [
-      { en: "She was conscious of being watched.", kr: "그녀는 감시당하고 있다는 것을 의식하고 있었습니다." },
-      { en: "We must be environmentally conscious in our decisions.", kr: "우리는 결정을 내릴 때 환경을 의식해야 합니다." }
+      { en: "I'm very conscious of my weight these days.", kr: "요즘 몸무게를 많이 의식하고 있어." },
+      { en: "Was he conscious when the ambulance arrived?", kr: "구급차가 왔을 때 그 사람 의식이 있었어요?" }
     ]
   },
   {
@@ -5383,35 +5383,35 @@ const wordsLevel2_Part2 = [
     word: "discrepancy",
     meaning: "불일치, 차이",
     examples: [
-      { en: "There is a major discrepancy between the two accounts of the event.", kr: "그 사건에 대한 두 설명 사이에 큰 불일치가 있습니다." },
-      { en: "The audit revealed a discrepancy in the company's books.", kr: "감사는 회사 장부에서 차이(불일치)를 밝혀냈습니다." }
+      { en: "There's a discrepancy between the bill and the receipt.", kr: "청구서랑 영수증 금액이 서로 불일치해요." },
+      { en: "Can you explain this discrepancy in the numbers?", kr: "숫자가 왜 이렇게 차이가 나는지 설명해 줄래요?" }
     ]
   },
   {
     id: "L2-198",
     word: "mandatory",
-    meaning: "의무적인, 필수적인",
+    meaning: "의무적인, 필수의",
     examples: [
-      { en: "It is mandatory to attend the safety briefing.", kr: "안전 브리핑에 참석하는 것은 의무적입니다." },
-      { en: "The government made wearing masks mandatory in public spaces.", kr: "정부는 공공장소에서 마스크 착용을 의무화했습니다." }
+      { en: "Attendance at the safety meeting is mandatory.", kr: "안전 회의 참석은 필수예요." },
+      { en: "Is it mandatory to wear a helmet here?", kr: "여기서 헬멧 쓰는 게 의무예요?" }
     ]
   },
   {
     id: "L2-199",
     word: "necessity",
-    meaning: "필요성, 필수품",
+    meaning: "필수품, 필요성",
     examples: [
-      { en: "Is a car a luxury or a necessity for you?", kr: "자동차는 당신에게 사치품입니까, 아니면 필수품입니까?" },
-      { en: "There is no necessity for you to apologize.", kr: "당신이 사과할 필요성은 없습니다." }
+      { en: "Is a car a luxury or a necessity for you?", kr: "너한테 차는 사치품이야, 필수품이야?" },
+      { en: "Coffee is a necessity for me in the morning.", kr: "아침엔 커피가 나한테 필수품이야." }
     ]
   },
   {
     id: "L2-200",
     word: "obvious",
-    meaning: "분명한, 명백한",
+    meaning: "분명한, 뻔한",
     examples: [
-      { en: "The solution to the problem was quite obvious.", kr: "그 문제의 해결책은 아주 분명했습니다." },
-      { en: "It was obvious that the company was in trouble.", kr: "그 회사가 곤경에 처했다는 것은 명백했습니다." }
+      { en: "Isn't it obvious? She likes you!", kr: "뻔하지 않아? 그녀가 너 좋아하잖아!" },
+      { en: "The answer seems obvious, but it's not.", kr: "답이 뻔해 보이지만 그렇지 않아요." }
     ]
   }
 ];
@@ -5420,10 +5420,10 @@ const wordsLevel2_Part3 = [
   {
     id: "L2-201",
     word: "orient",
-    meaning: "방향을 잡다, 지향하게 하다",
+    meaning: "방향을 잡다, ~을 대상으로 하다, 지향하게 하다",
     examples: [
-      { en: "It is difficult to orient yourself in the dark forest.", kr: "어두운 숲속에서 방향을 잡는 것은 어렵습니다." },
-      { en: "The company’s strategy is oriented towards innovation.", kr: "그 회사의 전략은 혁신을 지향합니다." }
+      { en: "Give me a minute to orient myself; this station is huge.", kr: "방향 좀 잡게 잠깐만, 이 역 진짜 크다." },
+      { en: "The workshop is oriented toward beginners, so don't worry.", kr: "그 워크숍은 초보자 위주라서 걱정 안 해도 돼." }
     ]
   },
   {
@@ -5431,62 +5431,62 @@ const wordsLevel2_Part3 = [
     word: "overlap",
     meaning: "겹치다, 중복되다",
     examples: [
-      { en: "The two projects have a significant overlap in scope.", kr: "두 프로젝트는 범위에 상당한 중복이 있습니다." },
-      { en: "The new schedule is designed so that no classes overlap.", kr: "새로운 시간표는 어떤 수업도 겹치지 않도록 설계되었습니다." }
+      { en: "Our meetings overlap, so I can't make both.", kr: "회의 시간이 겹쳐서 둘 다는 못 가요." },
+      { en: "Your job and mine overlap a lot, don't they?", kr: "네 일이랑 내 일이 많이 겹치지 않아?" }
     ]
   },
   {
     id: "L2-203",
     word: "panel",
-    meaning: "패널, 토론자단",
+    meaning: "패널, 토론자단, 판",
     examples: [
-      { en: "The expert panel discussed the effects of climate change.", kr: "전문가 토론자단은 기후 변화의 영향을 논의했습니다." },
-      { en: "Solar panels are being installed on the roof.", kr: "태양광 패널이 지붕에 설치되고 있습니다." }
+      { en: "I'm speaking on a panel at the conference next week.", kr: "다음 주 학회에서 패널 토론자로 나가요." },
+      { en: "We're thinking about putting solar panels on our roof.", kr: "우리 집 지붕에 태양광 패널을 달까 생각 중이에요." }
     ]
   },
   {
     id: "L2-204",
     word: "pose",
-    meaning: "제기하다, 자세를 취하다",
+    meaning: "(위험 등을) 초래하다, (질문을) 제기하다, 포즈를 취하다",
     examples: [
-      { en: "The disease poses a serious threat to public health.", kr: "그 질병은 공중 보건에 심각한 위협을 제기합니다." },
-      { en: "The model was asked to pose for the photographer.", kr: "그 모델은 사진작가를 위해 자세를 취해 달라고 요청받았습니다." }
+      { en: "Does this storm pose any risk to our flight?", kr: "이 폭풍이 우리 비행기에 위험이 될까요?" },
+      { en: "Okay, everyone pose for the picture and smile!", kr: "자, 다들 사진 찍게 포즈 잡고 웃어!" }
     ]
   },
   {
     id: "L2-205",
     word: "prevalent",
-    meaning: "널리 퍼진, 일반적인",
+    meaning: "널리 퍼진, 흔한",
     examples: [
-      { en: "The illness is more prevalent in tropical countries.", kr: "그 질병은 열대 국가에서 더 널리 퍼져 있습니다." },
-      { en: "Smartphone addiction is increasingly prevalent among teenagers.", kr: "스마트폰 중독은 십 대들 사이에서 점점 더 널리 퍼지고 있습니다." }
+      { en: "Back pain is really prevalent among office workers.", kr: "허리 통증은 직장인들 사이에서 정말 흔해요." },
+      { en: "That kind of scam is more prevalent than you think.", kr: "그런 사기가 생각보다 훨씬 흔해." }
     ]
   },
   {
     id: "L2-206",
     word: "profound",
-    meaning: "심오한, 지대한",
+    meaning: "깊은, 심오한, 엄청난",
     examples: [
-      { en: "The book contains a profound message about life.", kr: "그 책은 삶에 대한 심오한 메시지를 담고 있습니다." },
-      { en: "The war had a profound effect on the economy.", kr: "그 전쟁은 경제에 지대한 영향을 미쳤습니다." }
+      { en: "That movie had a profound effect on me.", kr: "그 영화는 나한테 엄청난 영향을 줬어." },
+      { en: "Wow, that's a pretty profound thing to say.", kr: "와, 꽤 심오한 말인데." }
     ]
   },
   {
     id: "L2-207",
     word: "prompt",
-    meaning: "촉발하다, 즉각적인",
+    meaning: "~하게 하다, 촉발하다, 즉각적인",
     examples: [
-      { en: "The high risk prompted a change in strategy.", kr: "높은 위험이 전략 변화를 촉발했습니다." },
-      { en: "We need a prompt response from the client.", kr: "우리는 고객으로부터 즉각적인 응답이 필요합니다." }
+      { en: "What prompted you to quit your job?", kr: "뭐 때문에 회사를 그만두게 된 거예요?" },
+      { en: "Thanks for the prompt reply; I really appreciate it.", kr: "빨리 답장해 주셔서 정말 감사해요." }
     ]
   },
   {
     id: "L2-208",
     word: "qualify",
-    meaning: "자격을 얻다, 한정하다",
+    meaning: "자격을 얻다, 자격이 되다",
     examples: [
-      { en: "You must pass the exam to qualify as a doctor.", kr: "의사가 되기 위해 시험에 합격하여 자격을 얻어야 합니다." },
-      { en: "I would like to qualify my earlier statement.", kr: "저는 제 이전 진술을 한정하고 싶습니다." }
+      { en: "Do I qualify for the student discount?", kr: "저도 학생 할인 받을 자격이 되나요?" },
+      { en: "She finally qualified as a nurse last year.", kr: "그녀는 작년에 드디어 간호사 자격을 땄어요." }
     ]
   },
   {
@@ -5503,17 +5503,17 @@ const wordsLevel2_Part3 = [
     word: "recollection",
     meaning: "기억, 회상",
     examples: [
-      { en: "He has no recollection of the accident.", kr: "그는 그 사고에 대한 아무런 기억이 없습니다." },
-      { en: "I have a vague recollection of meeting her before.", kr: "나는 전에 그녀를 만났던 희미한 기억이 있습니다." }
+      { en: "I have no recollection of saying that.", kr: "내가 그런 말을 한 기억이 전혀 없어." },
+      { en: "I have a vague recollection of meeting her before.", kr: "전에 그녀를 만난 기억이 어렴풋이 나요." }
     ]
   },
   {
     id: "L2-211",
     word: "refer",
-    meaning: "언급하다, 참조하다",
+    meaning: "언급하다, 가리키다, 참고하다",
     examples: [
-      { en: "I refer you to the table on page 5.", kr: "5페이지의 표를 참조하시기 바랍니다." },
-      { en: "The speaker did not refer to the recent controversy.", kr: "연사는 최근 논란에 대해 언급하지 않았습니다." }
+      { en: "Wait, who exactly are you referring to?", kr: "잠깐, 정확히 누구 얘기하는 거야?" },
+      { en: "Feel free to refer to your notes during the talk.", kr: "발표하는 동안 메모 참고해도 괜찮아요." }
     ]
   },
   {
@@ -5530,8 +5530,8 @@ const wordsLevel2_Part3 = [
     word: "reluctant",
     meaning: "꺼리는, 마지못해 하는",
     examples: [
-      { en: "She was reluctant to admit her mistake.", kr: "그녀는 자신의 실수를 인정하기를 꺼렸습니다." },
-      { en: "The government was reluctant to impose new taxes.", kr: "정부는 새로운 세금을 부과하기를 꺼렸습니다." }
+      { en: "She was reluctant to admit her mistake.", kr: "그녀는 자기 실수를 인정하기 꺼렸어요." },
+      { en: "I'm a bit reluctant to lend him money again.", kr: "그 사람한테 또 돈 빌려주기는 좀 꺼려져요." }
     ]
   },
   {
@@ -5539,62 +5539,62 @@ const wordsLevel2_Part3 = [
     word: "reside",
     meaning: "거주하다",
     examples: [
-      { en: "He has resided in this city for over twenty years.", kr: "그는 이 도시에서 20년 이상 거주했습니다." },
-      { en: "The president resides at the White House.", kr: "대통령은 백악관에 거주합니다." }
+      { en: "How long have you resided in the United States?", kr: "미국에 거주하신 지 얼마나 되셨어요?" },
+      { en: "Please list everyone who resides at this address.", kr: "이 주소에 거주하는 사람을 모두 적어 주세요." }
     ]
   },
   {
     id: "L2-215",
     word: "restrain",
-    meaning: "억제하다, 제지하다",
+    meaning: "억누르다, 참다, 제지하다",
     examples: [
-      { en: "She had to restrain her anger during the argument.", kr: "그녀는 논쟁 중에 자신의 분노를 억제해야 했습니다." },
-      { en: "The animal was restrained by a short leash.", kr: "그 동물은 짧은 줄에 의해 제지되었습니다." }
+      { en: "I had to restrain myself from laughing during the meeting.", kr: "회의 중에 웃음 참느라 혼났어요." },
+      { en: "Can you restrain your dog? He's jumping on everyone.", kr: "개 좀 붙잡아 줄래요? 사람들한테 막 뛰어오르잖아요." }
     ]
   },
   {
     id: "L2-216",
     word: "rigid",
-    meaning: "엄격한, 뻣뻣한, 융통성 없는",
+    meaning: "엄격한, 융통성 없는, 딱딱한",
     examples: [
-      { en: "The school has a rigid set of rules.", kr: "그 학교는 엄격한 일련의 규칙을 가지고 있습니다." },
-      { en: "The elderly man's joints were rigid and painful.", kr: "그 노인의 관절은 뻣뻣하고 통증이 있었습니다." }
+      { en: "My boss is so rigid about the dress code.", kr: "우리 상사는 복장 규정에 너무 융통성이 없어." },
+      { en: "The schedule is too rigid; can we make it more flexible?", kr: "일정이 너무 딱딱하게 정해져 있어요. 좀 더 유연하게 할 수 있을까요?" }
     ]
   },
   {
     id: "L2-217",
     word: "sequence",
-    meaning: "순서, 연속, 서열",
+    meaning: "순서, 연속, (영화의) 장면",
     examples: [
-      { en: "The DNA sequence was analyzed by the scientists.", kr: "DNA 서열이 과학자들에 의해 분석되었습니다." },
-      { en: "Please put the pictures in the correct sequence.", kr: "사진들을 올바른 순서대로 놓아 주세요." }
+      { en: "Please put the pictures in the correct sequence.", kr: "사진들을 올바른 순서대로 놓아 주세요." },
+      { en: "I loved the opening sequence of that movie.", kr: "그 영화 오프닝 장면 정말 좋았어." }
     ]
   },
   {
     id: "L2-218",
     word: "spatial",
-    meaning: "공간의",
+    meaning: "공간의, 공간적인",
     examples: [
-      { en: "Children need to develop good spatial awareness.", kr: "아이들은 좋은 공간 인지 능력을 개발할 필요가 있습니다." },
-      { en: "The map shows the spatial distribution of the population.", kr: "그 지도는 인구의 공간적 분포를 보여줍니다." }
+      { en: "I have terrible spatial awareness; I bump into everything.", kr: "나 공간 감각이 진짜 없어서 맨날 여기저기 부딪혀." },
+      { en: "Good drivers have strong spatial skills, especially when parking.", kr: "운전 잘하는 사람들은 공간 감각이 좋아, 특히 주차할 때." }
     ]
   },
   {
     id: "L2-219",
     word: "specify",
-    meaning: "명시하다, 구체화하다",
+    meaning: "명시하다, 구체적으로 말하다",
     examples: [
-      { en: "Please specify the type of computer you need.", kr: "필요한 컴퓨터의 유형을 명시해 주세요." },
-      { en: "The contract specifies the terms of the agreement.", kr: "그 계약서는 합의 조건을 명시하고 있습니다." }
+      { en: "Please specify the type of computer you need.", kr: "필요한 컴퓨터 종류를 구체적으로 말씀해 주세요." },
+      { en: "Did they specify a time for the delivery?", kr: "배송 시간을 구체적으로 정해 줬어요?" }
     ]
   },
   {
     id: "L2-220",
     word: "static",
-    meaning: "정적인, 고정된",
+    meaning: "정적인, 변화 없는, (전파) 잡음",
     examples: [
-      { en: "Static images are often less engaging than videos.", kr: "정적인 이미지는 동영상보다 덜 흥미로운 경우가 많습니다." },
-      { en: "Inflation remained static for three consecutive months.", kr: "인플레이션은 3개월 연속으로 고정된 상태를 유지했습니다." }
+      { en: "The radio's full of static; I can't hear anything.", kr: "라디오에 잡음이 너무 심해서 하나도 안 들려." },
+      { en: "My salary has been static for three years.", kr: "내 월급은 3년째 그대로야." }
     ]
   },
   {
@@ -5609,28 +5609,28 @@ const wordsLevel2_Part3 = [
   {
     id: "L2-222",
     word: "supplement",
-    meaning: "보충하다, 보충제",
+    meaning: "보충하다, 영양제, 보충제",
     examples: [
-      { en: "She takes a vitamin C supplement every morning.", kr: "그녀는 매일 아침 비타민 C 보충제를 복용합니다." },
-      { en: "We decided to supplement the main meal with a salad.", kr: "우리는 메인 식사를 샐러드로 보충하기로 결정했습니다." }
+      { en: "She takes a vitamin C supplement every morning.", kr: "그녀는 매일 아침 비타민 C 영양제를 먹어요." },
+      { en: "I drive for a delivery app to supplement my income.", kr: "수입을 보충하려고 배달 앱으로 운전 일을 해요." }
     ]
   },
   {
     id: "L2-223",
     word: "suspend",
-    meaning: "중단하다, 매달다",
+    meaning: "중단하다, 정지시키다, 정학시키다",
     examples: [
-      { en: "The game was suspended due to heavy rain.", kr: "그 경기는 폭우로 인해 중단되었습니다." },
-      { en: "A heavy chandelier was suspended from the ceiling.", kr: "무거운 샹들리에가 천장에 매달려 있었습니다." }
+      { en: "The game was suspended due to heavy rain.", kr: "폭우 때문에 경기가 중단됐어요." },
+      { en: "He got suspended from school for fighting.", kr: "걔 싸워서 정학 당했어." }
     ]
   },
   {
     id: "L2-224",
     word: "tendency",
-    meaning: "경향, 추세",
+    meaning: "경향, 성향",
     examples: [
-      { en: "He has a tendency to procrastinate.", kr: "그는 미루는 경향이 있습니다." },
-      { en: "The current tendency is toward smaller cars.", kr: "현재의 추세는 더 작은 차로 향하고 있습니다." }
+      { en: "He has a tendency to procrastinate.", kr: "그는 일을 미루는 경향이 있어요." },
+      { en: "I have a tendency to talk too fast when I'm nervous.", kr: "저는 긴장하면 말이 너무 빨라지는 경향이 있어요." }
     ]
   },
   {
@@ -5645,19 +5645,19 @@ const wordsLevel2_Part3 = [
   {
     id: "L2-226",
     word: "unify",
-    meaning: "통합하다, 통일하다",
+    meaning: "통합하다, 하나로 만들다",
     examples: [
-      { en: "The leader's goal was to unify the divided nation.", kr: "그 지도자의 목표는 분열된 국가를 통합하는 것이었습니다." },
-      { en: "The new system will unify all the databases.", kr: "새로운 시스템은 모든 데이터베이스를 통일할 것입니다." }
+      { en: "The new app will unify all our accounts in one place.", kr: "새 앱으로 우리 계정을 전부 한곳에 통합할 거예요." },
+      { en: "Nothing unifies a team like a tough deadline.", kr: "빠듯한 마감만큼 팀을 하나로 뭉치게 하는 건 없어." }
     ]
   },
   {
     id: "L2-227",
     word: "viable",
-    meaning: "실행 가능한, 생존 가능한",
+    meaning: "실행 가능한, 현실성 있는",
     examples: [
-      { en: "The committee is looking for a viable solution.", kr: "위원회는 실행 가능한 해결책을 찾고 있습니다." },
-      { en: "The seed must be viable to grow into a plant.", kr: "그 씨앗은 식물로 자라기 위해 생존 가능해야 합니다." }
+      { en: "Is that really a viable option for us?", kr: "그게 우리한테 정말 실행 가능한 방법일까?" },
+      { en: "Without more funding, the business just isn't viable.", kr: "자금이 더 없으면 그 사업은 현실성이 없어요." }
     ]
   },
   {
@@ -5665,26 +5665,26 @@ const wordsLevel2_Part3 = [
     word: "whereas",
     meaning: "반면에",
     examples: [
-      { en: "Some people like coffee, whereas others prefer tea.", kr: "어떤 사람들은 커피를 좋아하는 반면에, 다른 사람들은 차를 선호합니다." },
-      { en: "He is tall, whereas his brother is quite short.", kr: "그는 키가 큰 반면에, 그의 동생은 꽤 작습니다." }
+      { en: "Some people like coffee, whereas others prefer tea.", kr: "커피를 좋아하는 사람이 있는 반면, 차를 더 좋아하는 사람도 있어요." },
+      { en: "I'm a morning person, whereas my husband loves staying up late.", kr: "나는 아침형 인간인 반면, 남편은 늦게까지 깨어 있는 걸 좋아해." }
     ]
   },
   {
     id: "L2-229",
     word: "accompany",
-    meaning: "동행하다, 수반하다",
+    meaning: "동행하다, 함께 가다, 동반하다",
     examples: [
-      { en: "Children must be accompanied by an adult.", kr: "어린이는 성인을 동반해야 합니다." },
-      { en: "The storm was accompanied by strong winds.", kr: "그 폭풍은 강한 바람을 동반했습니다." }
+      { en: "Children must be accompanied by an adult.", kr: "어린이는 반드시 보호자와 동반해야 합니다." },
+      { en: "Would you like me to accompany you to the hospital?", kr: "병원까지 같이 가 드릴까요?" }
     ]
   },
   {
     id: "L2-230",
     word: "acknowledge",
-    meaning: "인정하다, 승인하다",
+    meaning: "인정하다, 아는 척하다",
     examples: [
-      { en: "He acknowledged that he was wrong.", kr: "그는 자신이 틀렸다는 것을 인정했습니다." },
-      { en: "The gift was sent to acknowledge her hard work.", kr: "그 선물은 그녀의 노고를 인정하는 뜻으로 보내졌습니다." }
+      { en: "He finally acknowledged that he was wrong.", kr: "그는 결국 자기가 틀렸다고 인정했어요." },
+      { en: "She didn't even acknowledge me when I said hi.", kr: "내가 인사했는데 그녀는 아는 척도 안 했어." }
     ]
   },
   {
@@ -5701,80 +5701,80 @@ const wordsLevel2_Part3 = [
     word: "confidential",
     meaning: "기밀의, 비밀의",
     examples: [
-      { en: "This document is highly confidential and should not be shared.", kr: "이 문서는 극비이므로 공유되어서는 안 됩니다." },
-      { en: "All patient information remains strictly confidential.", kr: "모든 환자 정보는 엄격하게 비밀로 유지됩니다." }
+      { en: "Keep this confidential, okay? I haven't told anyone else.", kr: "이거 비밀로 해 줘, 알았지? 아직 아무한테도 말 안 했어." },
+      { en: "All patient information remains strictly confidential.", kr: "모든 환자 정보는 철저히 비밀로 유지됩니다." }
     ]
   },
   {
     id: "L2-233",
     word: "contrast",
-    meaning: "대조, 대조되다",
+    meaning: "대조, 차이, 대조를 이루다",
     examples: [
-      { en: "There is a sharp contrast between the rich and the poor.", kr: "부유한 사람들과 가난한 사람들 사이에 뚜렷한 대조가 있습니다." },
-      { en: "His dark suit contrasted sharply with the white wall.", kr: "그의 어두운 정장은 흰 벽과 뚜렷하게 대조되었습니다." }
+      { en: "There's such a contrast between city life and country life.", kr: "도시 생활이랑 시골 생활은 정말 대조적이에요." },
+      { en: "In contrast to last year, sales are way up.", kr: "작년과는 대조적으로 매출이 확 늘었어요." }
     ]
   },
   {
     id: "L2-234",
     word: "coordinate",
-    meaning: "조정하다, 협력하다",
+    meaning: "조율하다, 조정하다, 협력하다",
     examples: [
-      { en: "We need to coordinate our efforts with the other team.", kr: "우리는 다른 팀과 우리의 노력을 조정해야 합니다." },
-      { en: "She works to coordinate schedules for all executives.", kr: "그녀는 모든 경영진의 일정을 조정하기 위해 일합니다." }
+      { en: "We need to coordinate with the other team first.", kr: "먼저 다른 팀이랑 조율해야 해요." },
+      { en: "She coordinates schedules for all the executives.", kr: "그녀가 임원들 일정을 전부 조율해요." }
     ]
   },
   {
     id: "L2-235",
     word: "dedicate",
-    meaning: "헌신하다, 바치다",
+    meaning: "바치다, 헌신하다",
     examples: [
-      { en: "He dedicated his life to helping the poor.", kr: "그는 가난한 사람들을 돕는 데 자신의 삶을 헌신했습니다." },
-      { en: "The monument is dedicated to the fallen soldiers.", kr: "그 기념비는 전사한 군인들에게 바쳐졌습니다." }
+      { en: "He dedicated his life to helping the poor.", kr: "그는 가난한 사람들을 돕는 데 평생을 바쳤어요." },
+      { en: "I'd like to dedicate this song to my mom.", kr: "이 노래를 엄마께 바치고 싶어요." }
     ]
   },
   {
     id: "L2-236",
     word: "devote",
-    meaning: "헌신하다, 전념하다, (시간을) 바치다",
+    meaning: "(시간·노력을) 쏟다, 바치다, 전념하다",
     examples: [
-      { en: "She devoted herself to her career.", kr: "그녀는 자신의 경력에 헌신했습니다." },
-      { en: "I devote a few hours every day to exercise.", kr: "나는 매일 몇 시간을 운동에 할애합니다." }
+      { en: "I want to devote more time to my family this year.", kr: "올해는 가족한테 시간을 더 쏟고 싶어요." },
+      { en: "I devote a few hours every day to exercise.", kr: "저는 매일 몇 시간씩 운동에 할애해요." }
     ]
   },
   {
     id: "L2-237",
     word: "dispose",
-    meaning: "처리하다, 처분하다",
+    meaning: "(of와 함께) 처리하다, 버리다",
     examples: [
-      { en: "We need to dispose of the old equipment safely.", kr: "우리는 오래된 장비를 안전하게 처리해야 합니다." },
-      { en: "The document was disposed of according to protocol.", kr: "그 문서는 규정에 따라 처분되었습니다." }
+      { en: "Where can I dispose of these old batteries?", kr: "이 폐건전지는 어디에 버리면 돼요?" },
+      { en: "Please dispose of your trash before leaving the room.", kr: "방에서 나가기 전에 쓰레기를 버려 주세요." }
     ]
   },
   {
     id: "L2-238",
     word: "duration",
-    meaning: "지속 기간",
+    meaning: "지속 기간, (~하는) 동안",
     examples: [
-      { en: "The contract is for a duration of three years.", kr: "그 계약의 기간은 3년입니다." },
-      { en: "She slept for the entire duration of the flight.", kr: "그녀는 비행 시간 내내 잠을 잤습니다." }
+      { en: "What's the total duration of the course?", kr: "그 강좌 총 기간이 얼마나 돼요?" },
+      { en: "She slept for the entire duration of the flight.", kr: "그녀는 비행하는 동안 내내 잠만 잤어요." }
     ]
   },
   {
     id: "L2-239",
     word: "exceed",
-    meaning: "초과하다",
+    meaning: "초과하다, 넘어서다",
     examples: [
-      { en: "The cost should not exceed $1000.", kr: "비용은 1000달러를 초과해서는 안 됩니다." },
-      { en: "His performance exceeded all expectations.", kr: "그의 성과는 모든 기대를 넘어섰습니다." }
+      { en: "Your bag can't exceed twenty-three kilograms.", kr: "가방은 23킬로그램을 초과하면 안 돼요." },
+      { en: "Honestly, the hotel exceeded all my expectations.", kr: "솔직히 그 호텔은 기대를 훨씬 넘어섰어요." }
     ]
   },
   {
     id: "L2-240",
     word: "exhibit",
-    meaning: "전시하다, 나타내다",
+    meaning: "전시하다, (증상·특징을) 보이다",
     examples: [
-      { en: "The museum will exhibit a collection of rare coins.", kr: "그 박물관은 희귀 동전 컬렉션을 전시할 것입니다." },
-      { en: "He did not exhibit any signs of distress.", kr: "그는 어떤 고통의 징후도 나타내지 않았습니다." }
+      { en: "My friend is exhibiting her paintings at a café downtown.", kr: "친구가 시내 카페에서 자기 그림을 전시하고 있어." },
+      { en: "Has he exhibited any other symptoms?", kr: "다른 증상을 보인 적 있나요?" }
     ]
   },
   {
@@ -5789,19 +5789,19 @@ const wordsLevel2_Part3 = [
   {
     id: "L2-242",
     word: "finite",
-    meaning: "유한한",
+    meaning: "유한한, 한정된",
     examples: [
-      { en: "The earth's resources are finite.", kr: "지구의 자원은 유한합니다." },
-      { en: "We only have a finite amount of time to complete the work.", kr: "우리는 그 작업을 완료할 유한한 양의 시간만 가지고 있습니다." }
+      { en: "Remember, our budget is finite, so choose wisely.", kr: "기억해, 예산은 한정돼 있으니까 잘 골라." },
+      { en: "Time is finite, so let's not waste it arguing.", kr: "시간은 한정돼 있으니까 말다툼하느라 낭비하지 말자." }
     ]
   },
   {
     id: "L2-243",
     word: "foundation",
-    meaning: "기초, 재단",
+    meaning: "기초, 토대, 재단",
     examples: [
-      { en: "A strong educational foundation is important for success.", kr: "강력한 교육적 기초는 성공에 중요합니다." },
-      { en: "She established a foundation to help homeless people.", kr: "그녀는 노숙자들을 돕기 위한 재단을 설립했습니다." }
+      { en: "Trust is the foundation of any good relationship.", kr: "신뢰는 모든 좋은 관계의 기초예요." },
+      { en: "She set up a foundation to help homeless people.", kr: "그녀는 노숙인을 돕는 재단을 세웠어요." }
     ]
   },
   {
@@ -5809,26 +5809,26 @@ const wordsLevel2_Part3 = [
     word: "inevitable",
     meaning: "피할 수 없는, 불가피한",
     examples: [
-      { en: "Change is an inevitable part of life.", kr: "변화는 삶의 피할 수 없는 부분입니다." },
-      { en: "The war became inevitable after the final talks failed.", kr: "마지막 회담이 실패한 후 전쟁은 불가피하게 되었습니다." }
+      { en: "Change is an inevitable part of life.", kr: "변화는 삶에서 피할 수 없는 부분이에요." },
+      { en: "With this traffic, being late is inevitable.", kr: "이렇게 막히면 지각은 피할 수 없겠다." }
     ]
   },
   {
     id: "L2-245",
     word: "inspect",
-    meaning: "검사하다, 조사하다",
+    meaning: "검사하다, 점검하다, 살펴보다",
     examples: [
-      { en: "Safety officers will inspect the factory next week.", kr: "안전 담당관들이 다음 주에 공장을 검사할 것입니다." },
-      { en: "He carefully inspected the old map.", kr: "그는 오래된 지도를 조심스럽게 조사했습니다." }
+      { en: "Security will inspect your bag at the entrance.", kr: "입구에서 보안 요원이 가방을 검사할 거예요." },
+      { en: "Inspect the car carefully before you rent it.", kr: "렌트하기 전에 차를 꼼꼼히 점검하세요." }
     ]
   },
   {
     id: "L2-246",
     word: "instruct",
-    meaning: "지시하다, 가르치다",
+    meaning: "지시하다, 알려 주다",
     examples: [
-      { en: "The lawyer instructed his assistant to prepare the documents.", kr: "변호사는 조수에게 서류를 준비하라고 지시했습니다." },
-      { en: "She instructs students in the art of painting.", kr: "그녀는 학생들에게 그림 그리는 기술을 가르칩니다." }
+      { en: "The nurse instructed me not to eat before the test.", kr: "간호사가 검사 전에 아무것도 먹지 말라고 지시했어요." },
+      { en: "Just do as the guide instructs, and you'll be fine.", kr: "가이드가 지시하는 대로만 하면 괜찮을 거예요." }
     ]
   },
   {
@@ -5843,19 +5843,19 @@ const wordsLevel2_Part3 = [
   {
     id: "L2-248",
     word: "internal",
-    meaning: "내부의",
+    meaning: "내부의, 체내의",
     examples: [
-      { en: "The company announced an internal restructuring plan.", kr: "그 회사는 내부 구조 조정 계획을 발표했습니다." },
-      { en: "She suffered some internal injuries in the crash.", kr: "그녀는 충돌로 약간의 내부 부상을 입었습니다." }
+      { en: "This is just an internal memo, so don't share it.", kr: "이건 내부 메모일 뿐이니까 공유하지 마." },
+      { en: "The doctors are checking him for internal bleeding.", kr: "의사들이 그 사람한테 내출혈이 있는지 확인하고 있어요." }
     ]
   },
   {
     id: "L2-249",
     word: "locate",
-    meaning: "위치를 찾다, 위치시키다",
+    meaning: "(위치를) 찾아내다, ~에 위치하다",
     examples: [
-      { en: "We couldn't locate the source of the noise.", kr: "우리는 그 소음의 근원을 찾을 수 없었습니다." },
-      { en: "The office is located in the city center.", kr: "그 사무실은 시내 중심에 위치해 있습니다." }
+      { en: "We couldn't locate the source of the noise.", kr: "소음이 어디서 나는지 찾아내지 못했어요." },
+      { en: "Our office is located right next to the subway station.", kr: "저희 사무실은 지하철역 바로 옆에 위치해 있어요." }
     ]
   },
   {
@@ -5870,10 +5870,10 @@ const wordsLevel2_Part3 = [
   {
     id: "L2-251",
     word: "mature",
-    meaning: "성숙한, 만기가 되다",
+    meaning: "성숙한, 어른스러운",
     examples: [
-      { en: "She is very mature for her age.", kr: "그녀는 나이에 비해 매우 성숙합니다." },
-      { en: "The bonds will mature in ten years.", kr: "그 채권은 10년 후에 만기가 될 것입니다." }
+      { en: "She's very mature for her age.", kr: "그 애는 나이에 비해 정말 성숙해요." },
+      { en: "Come on, try to be a little more mature about this.", kr: "에이, 이 일은 좀 더 어른스럽게 받아들여 봐." }
     ]
   },
   {
@@ -5881,26 +5881,26 @@ const wordsLevel2_Part3 = [
     word: "modify",
     meaning: "수정하다, 변경하다",
     examples: [
-      { en: "We need to modify the design slightly.", kr: "우리는 디자인을 약간 수정할 필요가 있습니다." },
-      { en: "The contract can only be modified with written consent.", kr: "그 계약서는 서면 동의가 있어야만 변경될 수 있습니다." }
+      { en: "Can I modify my order? No onions, please.", kr: "주문 좀 수정할 수 있을까요? 양파 빼 주세요." },
+      { en: "We need to modify the design slightly.", kr: "디자인을 조금 수정해야 해요." }
     ]
   },
   {
     id: "L2-253",
     word: "multiple",
-    meaning: "다수의, 복합적인",
+    meaning: "여러, 다수의",
     examples: [
-      { en: "The suspect had multiple aliases.", kr: "그 용의자는 다수의 가명을 가지고 있었습니다." },
-      { en: "The problem has multiple contributing factors.", kr: "그 문제에는 여러 복합적인 원인이 있습니다." }
+      { en: "I've called him multiple times, but he won't pick up.", kr: "걔한테 여러 번 전화했는데 안 받아." },
+      { en: "You can select multiple answers on this form.", kr: "이 양식에서는 답을 여러 개 고를 수 있어요." }
     ]
   },
   {
     id: "L2-254",
     word: "oblige",
-    meaning: "의무적으로 만들다, 호의를 베풀다",
+    meaning: "의무를 지우다, (부탁을) 들어주다",
     examples: [
-      { en: "The law obliges parents to send their children to school.", kr: "그 법은 부모들이 자녀를 학교에 보내도록 의무적으로 만듭니다." },
-      { en: "I was happy to oblige when she asked for help.", kr: "그녀가 도움을 요청했을 때 나는 기꺼이 호의를 베풀었습니다." }
+      { en: "I was happy to oblige when she asked for help.", kr: "그녀가 도와 달라고 해서 기꺼이 들어줬어요." },
+      { en: "You're not obliged to answer that question.", kr: "그 질문에 대답할 의무는 없어요." }
     ]
   },
   {
@@ -5915,28 +5915,28 @@ const wordsLevel2_Part3 = [
   {
     id: "L2-256",
     word: "occupy",
-    meaning: "점령하다, 차지하다",
+    meaning: "차지하다, 사용 중이다, 점령하다",
     examples: [
-      { en: "The military began to occupy the city.", kr: "군대는 그 도시를 점령하기 시작했습니다." },
-      { en: "The sofa occupies too much space in the room.", kr: "그 소파는 방에서 너무 많은 공간을 차지합니다." }
+      { en: "Excuse me, is this seat occupied?", kr: "실례지만 이 자리 사용 중인가요?" },
+      { en: "The sofa occupies too much space in the room.", kr: "소파가 방에서 공간을 너무 많이 차지해요." }
     ]
   },
   {
     id: "L2-257",
     word: "optimum",
-    meaning: "최적의, 최고의",
+    meaning: "최적의",
     examples: [
-      { en: "The machine operates at an optimum temperature.", kr: "그 기계는 최적의 온도에서 작동합니다." },
-      { en: "We need to find the optimum solution for the problem.", kr: "우리는 그 문제에 대한 최적의 해결책을 찾아야 합니다." }
+      { en: "What's the optimum time to post on social media?", kr: "SNS에 글 올리기 최적의 시간이 언제예요?" },
+      { en: "Eight hours is the optimum amount of sleep for me.", kr: "나한테는 8시간이 최적의 수면 시간이야." }
     ]
   },
   {
     id: "L2-258",
     word: "parallel",
-    meaning: "평행한, 유사한",
+    meaning: "평행한, 나란한, 유사점",
     examples: [
-      { en: "The road runs parallel to the river.", kr: "그 도로는 강과 평행하게 이어집니다." },
-      { en: "There are many parallel cases in history.", kr: "역사에는 많은 유사한 사례들이 있습니다." }
+      { en: "The road runs parallel to the river.", kr: "그 도로는 강과 나란히 뻗어 있어요." },
+      { en: "I see a lot of parallels between our two situations.", kr: "우리 둘 상황에 유사한 점이 많은 것 같아." }
     ]
   },
   {
@@ -5962,8 +5962,8 @@ const wordsLevel2_Part3 = [
     word: "presume",
     meaning: "추정하다, 가정하다, 감히 ~하다",
     examples: [
-      { en: "I presume you are here for the meeting.", kr: "당신이 회의 때문에 여기에 왔다고 추정합니다." },
-      { en: "Do not presume to tell me what to do.", kr: "감히 나에게 이래라저래라 하지 마세요." }
+      { en: "I presume you're here for the meeting?", kr: "회의 때문에 오신 걸로 짐작되는데, 맞죠?" },
+      { en: "Don't presume to tell me what to do.", kr: "감히 나한테 이래라저래라 하지 마." }
     ]
   },
   {
@@ -5971,8 +5971,8 @@ const wordsLevel2_Part3 = [
     word: "previous",
     meaning: "이전의",
     examples: [
-      { en: "She had no previous experience in this field.", kr: "그녀는 이 분야에서 이전의 경험이 없었습니다." },
-      { en: "This year's results are better than the previous year's.", kr: "올해 결과는 이전 해보다 더 좋습니다." }
+      { en: "Do you have any previous experience in sales?", kr: "이전에 영업 경험 있으세요?" },
+      { en: "I liked the previous version of the app better.", kr: "그 앱 이전 버전이 더 좋았어." }
     ]
   },
   {
@@ -5980,8 +5980,8 @@ const wordsLevel2_Part3 = [
     word: "priority",
     meaning: "우선순위",
     examples: [
-      { en: "Safety is our top priority.", kr: "안전은 우리의 최우선순위입니다." },
-      { en: "The company made cost-cutting a high priority.", kr: "그 회사는 비용 절감을 높은 우선순위로 두었습니다." }
+      { en: "Safety is our top priority.", kr: "안전이 저희의 최우선 순위예요." },
+      { en: "My family is my priority right now.", kr: "지금은 가족이 제 우선순위예요." }
     ]
   },
   {
@@ -5996,19 +5996,19 @@ const wordsLevel2_Part3 = [
   {
     id: "L2-265",
     word: "quote",
-    meaning: "인용하다, 견적을 내다",
+    meaning: "인용하다, 견적(을 내다)",
     examples: [
-      { en: "He likes to quote from famous poems.", kr: "그는 유명한 시들을 인용하는 것을 좋아합니다." },
-      { en: "The builder quoted me a low price for the renovation.", kr: "건축업자는 나에게 리노베이션에 대해 낮은 견적을 냈습니다." }
+      { en: "Can you give me a quote for painting the kitchen?", kr: "부엌 페인트칠 견적 좀 내 주실 수 있어요?" },
+      { en: "Don't quote me on that, but I think it's true.", kr: "확실한 건 아니니까 내 말이라고 옮기진 마, 근데 맞는 것 같아." }
     ]
   },
   {
     id: "L2-266",
     word: "random",
-    meaning: "무작위의, 임의의",
+    meaning: "무작위의, 임의의, 낯선",
     examples: [
-      { en: "The winner was chosen at random.", kr: "당첨자는 무작위로 선택되었습니다." },
-      { en: "The experiment used a random sample of the population.", kr: "그 실험은 인구의 임의의 표본을 사용했습니다." }
+      { en: "The winner was chosen at random.", kr: "당첨자는 무작위로 뽑혔어요." },
+      { en: "A random guy just asked me for my number.", kr: "웬 모르는 남자가 방금 내 번호를 물어봤어." }
     ]
   },
   {
@@ -6016,17 +6016,17 @@ const wordsLevel2_Part3 = [
     word: "range",
     meaning: "범위, 다양하다",
     examples: [
-      { en: "The prices range from $10 to $50.", kr: "가격은 10달러에서 50달러까지 다양합니다." },
-      { en: "The store carries a wide range of products.", kr: "그 가게는 광범위한 제품들을 취급합니다." }
+      { en: "The prices range from $10 to $50.", kr: "가격은 10달러에서 50달러까지 해요." },
+      { en: "The store carries a wide range of products.", kr: "그 가게는 정말 다양한 제품을 팔아요." }
     ]
   },
   {
     id: "L2-268",
     word: "release",
-    meaning: "풀어주다, 공개하다",
+    meaning: "개봉하다, 공개하다, 놓다(풀어 주다)",
     examples: [
-      { en: "The film will be released next month.", kr: "그 영화는 다음 달에 공개될 것입니다." },
-      { en: "They decided to release the hostage.", kr: "그들은 인질을 풀어주기로 결정했습니다." }
+      { en: "The film will be released next month.", kr: "그 영화는 다음 달에 개봉해요." },
+      { en: "Don't release the brake until I tell you.", kr: "내가 말할 때까지 브레이크 놓지 마." }
     ]
   },
   {
@@ -6131,10 +6131,10 @@ const wordsLevel2_Part3 = [
   {
     id: "L2-280",
     word: "uniform",
-    meaning: "균일한, 통일된, 제복",
+    meaning: "유니폼, 제복, 균일한",
     examples: [
-      { en: "All the students wore a school uniform.", kr: "모든 학생들은 교복을 입었습니다." },
-      { en: "We need a uniform standard for all data.", kr: "우리는 모든 데이터에 대한 통일된 기준이 필요합니다." }
+      { en: "Do you have to wear a uniform at work?", kr: "직장에서 유니폼 입어야 해요?" },
+      { en: "Let's keep the font uniform across all the slides.", kr: "모든 슬라이드에서 글꼴을 균일하게 맞추자." }
     ]
   },
   {
@@ -6149,10 +6149,10 @@ const wordsLevel2_Part3 = [
   {
     id: "L2-282",
     word: "vision",
-    meaning: "시력, 비전",
+    meaning: "시력, 시야, 비전",
     examples: [
-      { en: "She has perfect 20/20 vision.", kr: "그녀는 완벽한 20/20 시력을 가지고 있습니다." },
-      { en: "The founder had a great vision for the company.", kr: "설립자는 회사에 대한 위대한 비전을 가지고 있었습니다." }
+      { en: "My vision gets blurry when I'm tired.", kr: "피곤하면 시야가 흐려져요." },
+      { en: "I really like the CEO's vision for the company.", kr: "대표님이 그리는 회사의 비전이 정말 마음에 들어요." }
     ]
   },
   {
@@ -6160,35 +6160,35 @@ const wordsLevel2_Part3 = [
     word: "welfare",
     meaning: "복지",
     examples: [
-      { en: "The government is committed to improving child welfare.", kr: "정부는 아동 복지 개선에 전념하고 있습니다." },
-      { en: "We must consider the welfare of the animals.", kr: "우리는 동물들의 복지를 고려해야 합니다." }
+      { en: "We should think about the welfare of the animals.", kr: "동물들의 복지도 생각해야 해요." },
+      { en: "Is the company doing enough for employee welfare?", kr: "회사가 직원 복지에 충분히 신경 쓰고 있을까요?" }
     ]
   },
   {
     id: "L2-284",
     word: "accommodate",
-    meaning: "수용하다, 편의를 제공하다",
+    meaning: "수용하다, (요구를) 들어주다",
     examples: [
-      { en: "The hotel can accommodate up to 300 guests.", kr: "그 호텔은 최대 300명의 손님을 수용할 수 있습니다." },
-      { en: "We will try to accommodate your request.", kr: "저희는 당신의 요청을 수용하도록 노력하겠습니다." }
+      { en: "The hotel can accommodate up to 300 guests.", kr: "그 호텔은 손님을 최대 300명까지 수용할 수 있어요." },
+      { en: "We'll do our best to accommodate your request.", kr: "요청하신 대로 해 드릴 수 있도록 최선을 다할게요." }
     ]
   },
   {
     id: "L2-285",
     word: "anticipate",
-    meaning: "예상하다, 기대하다",
+    meaning: "예상하다, 예측하다",
     examples: [
-      { en: "We anticipate a large crowd for the concert.", kr: "우리는 콘서트에 많은 인파를 예상합니다." },
-      { en: "She is eagerly anticipating her trip to Europe.", kr: "그녀는 유럽 여행을 간절히 기대하고 있습니다." }
+      { en: "We don't anticipate any delays, but I'll keep you posted.", kr: "지연은 없을 거라 예상하지만 계속 알려 드릴게요." },
+      { en: "I didn't anticipate this much traffic on a Sunday.", kr: "일요일에 차가 이렇게 막힐 줄은 예상 못 했어." }
     ]
   },
   {
     id: "L2-286",
     word: "authorize",
-    meaning: "승인하다, 권한을 부여하다",
+    meaning: "승인하다, 허가하다",
     examples: [
-      { en: "Only the manager can authorize this transaction.", kr: "오직 관리자만이 이 거래를 승인할 수 있습니다." },
-      { en: "I authorized my agent to act on my behalf.", kr: "나는 내 대리인에게 나를 대신하여 행동할 권한을 부여했습니다." }
+      { en: "Only the manager can authorize a refund.", kr: "환불은 매니저만 승인할 수 있어요." },
+      { en: "Did you authorize this charge on your card?", kr: "이 카드 결제 직접 승인하신 거 맞아요?" }
     ]
   },
   {
@@ -6196,17 +6196,17 @@ const wordsLevel2_Part3 = [
     word: "component",
     meaning: "구성 요소, 부품",
     examples: [
-      { en: "Trust is a key component of a good relationship.", kr: "신뢰는 좋은 관계의 핵심 구성 요소입니다." },
-      { en: "The machine has many moving components.", kr: "그 기계는 많은 움직이는 부품들을 가지고 있습니다." }
+      { en: "Trust is a key component of a good relationship.", kr: "신뢰는 좋은 관계의 핵심 구성 요소예요." },
+      { en: "Can I just replace that one component instead?", kr: "그 부품 하나만 교체하면 안 될까요?" }
     ]
   },
   {
     id: "L2-288",
     word: "confer",
-    meaning: "협의하다, 수여하다",
+    meaning: "상의하다, 협의하다",
     examples: [
-      { en: "The doctors will confer on the best course of treatment.", kr: "의사들은 최선의 치료 과정에 대해 협의할 것입니다." },
-      { en: "The university conferred an honorary degree upon her.", kr: "그 대학은 그녀에게 명예 학위를 수여했습니다." }
+      { en: "Give me a minute to confer with my team.", kr: "팀이랑 잠깐 상의할 시간 좀 주세요." },
+      { en: "The judges are conferring before they announce the winner.", kr: "심사위원들이 우승자 발표 전에 협의하고 있어요." }
     ]
   },
   {
@@ -6214,8 +6214,8 @@ const wordsLevel2_Part3 = [
     word: "curriculum",
     meaning: "교육 과정, 커리큘럼",
     examples: [
-      { en: "The school introduced a new science curriculum.", kr: "그 학교는 새로운 과학 교육 과정을 도입했습니다." },
-      { en: "She designed the curriculum for the online course.", kr: "그녀는 온라인 강좌를 위한 커리큘럼을 설계했습니다." }
+      { en: "What's on the curriculum this semester?", kr: "이번 학기 커리큘럼에 뭐 있어?" },
+      { en: "She designed the curriculum for the online course.", kr: "그녀가 그 온라인 강좌의 커리큘럼을 짰어요." }
     ]
   },
   {
@@ -6223,26 +6223,26 @@ const wordsLevel2_Part3 = [
     word: "deduct",
     meaning: "공제하다, 빼다",
     examples: [
-      { en: "The company will deduct tax from your salary.", kr: "회사는 당신의 급여에서 세금을 공제할 것입니다." },
-      { en: "You can deduct the cost of the uniforms.", kr: "당신은 제복 비용을 공제할 수 있습니다." }
+      { en: "They deduct taxes straight from my paycheck.", kr: "세금은 내 월급에서 바로 공제돼." },
+      { en: "They'll deduct the damage from your deposit.", kr: "파손된 부분은 보증금에서 빼고 돌려줄 거예요." }
     ]
   },
   {
     id: "L2-291",
     word: "deploy",
-    meaning: "배치하다, (시스템을) 도입하다",
+    meaning: "배치하다, 파병하다, (시스템을) 배포하다",
     examples: [
-      { en: "The military will deploy more troops to the area.", kr: "군대는 그 지역에 더 많은 병력을 배치할 것입니다." },
-      { en: "The company decided to deploy a new security system.", kr: "그 회사는 새로운 보안 시스템을 도입하기로 결정했습니다." }
+      { en: "We're deploying the update to all users tonight.", kr: "오늘 밤 모든 사용자에게 업데이트를 배포할 거예요." },
+      { en: "My brother's unit is being deployed overseas next month.", kr: "우리 형 부대가 다음 달에 해외로 파병된대." }
     ]
   },
   {
     id: "L2-292",
     word: "dynamic",
-    meaning: "역동적인, 활발한",
+    meaning: "역동적인, 활기찬",
     examples: [
-      { en: "The economy of the region is very dynamic.", kr: "그 지역의 경제는 매우 역동적입니다." },
-      { en: "She is a dynamic speaker who always engages the audience.", kr: "그녀는 항상 청중을 사로잡는 활발한 연사입니다." }
+      { en: "I like working here; the atmosphere is really dynamic.", kr: "여기서 일하는 거 좋아요, 분위기가 정말 활기차요." },
+      { en: "She's a dynamic speaker who always grabs the audience.", kr: "그녀는 늘 청중을 사로잡는 역동적인 연사예요." }
     ]
   },
   {
@@ -6257,10 +6257,10 @@ const wordsLevel2_Part3 = [
   {
     id: "L2-294",
     word: "exclusively",
-    meaning: "오로지, 배타적으로",
+    meaning: "오로지, ~전용으로, 독점적으로",
     examples: [
-      { en: "The shop sells products exclusively for women.", kr: "그 가게는 오로지 여성을 위한 제품만을 판매합니다." },
-      { en: "The resort is exclusively for guests over 18.", kr: "그 리조트는 오로지 18세 이상의 손님만 이용할 수 있습니다." }
+      { en: "This offer is exclusively for our members.", kr: "이 혜택은 오로지 회원 전용이에요." },
+      { en: "The pool is exclusively for hotel guests.", kr: "그 수영장은 호텔 투숙객 전용이에요." }
     ]
   },
   {
@@ -6277,26 +6277,26 @@ const wordsLevel2_Part3 = [
     word: "fundamentally",
     meaning: "근본적으로",
     examples: [
-      { en: "The two sides are fundamentally opposed on the issue.", kr: "양측은 그 문제에 대해 근본적으로 반대합니다." },
-      { en: "His view of the world has fundamentally changed.", kr: "세상에 대한 그의 견해가 근본적으로 바뀌었습니다." }
+      { en: "We fundamentally disagree on this, and that's okay.", kr: "우리는 이 문제에 근본적으로 생각이 달라, 그래도 괜찮아." },
+      { en: "Moving abroad fundamentally changed how I see things.", kr: "해외로 이사하면서 세상을 보는 방식이 근본적으로 바뀌었어요." }
     ]
   },
   {
     id: "L2-297",
     word: "guarantee",
-    meaning: "보장하다, 보증",
+    meaning: "보장하다, 장담하다, 보증",
     examples: [
-      { en: "The company guarantees to deliver within 24 hours.", kr: "그 회사는 24시간 이내에 배달할 것을 보장합니다." },
-      { en: "The product comes with a five-year guarantee.", kr: "그 제품은 5년 보증이 함께 제공됩니다." }
+      { en: "I can't guarantee it'll be ready by Friday.", kr: "금요일까지 준비된다고 장담은 못 해요." },
+      { en: "Does this come with a money-back guarantee?", kr: "이거 환불 보증 되나요?" }
     ]
   },
   {
     id: "L2-298",
     word: "immune",
-    meaning: "면역이 된, 면제되는",
+    meaning: "면역이 있는, 영향을 받지 않는",
     examples: [
-      { en: "She is immune to that particular disease.", kr: "그녀는 그 특정 질병에 면역이 되었습니다." },
-      { en: "Diplomats are immune from local laws.", kr: "외교관들은 현지 법률로부터 면제됩니다." }
+      { en: "I had chickenpox as a kid, so I'm immune.", kr: "어렸을 때 수두를 앓아서 면역이 있어요." },
+      { en: "After years in sales, I'm immune to rejection.", kr: "영업 몇 년 하다 보니 거절에는 면역이 됐어요." }
     ]
   },
   {
@@ -6304,8 +6304,8 @@ const wordsLevel2_Part3 = [
     word: "index",
     meaning: "지수, 색인",
     examples: [
-      { en: "The stock market index rose sharply today.", kr: "오늘 주식 시장 지수가 급격히 상승했습니다." },
-      { en: "Check the index at the back of the book for the topic.", kr: "그 주제를 찾으려면 책 뒤편의 색인을 확인하세요." }
+      { en: "Did you see the stock index today? It's way up.", kr: "오늘 주가 지수 봤어? 엄청 올랐어." },
+      { en: "Check the index at the back of the book.", kr: "책 뒤쪽에 있는 색인을 확인해 봐." }
     ]
   },
   {
@@ -6332,19 +6332,19 @@ const wordsLevel2_Part4 = [
   {
     id: "L2-302",
     word: "isolate",
-    meaning: "고립시키다, 분리하다",
+    meaning: "격리하다, 고립시키다, 분리하다",
     examples: [
-      { en: "Patients with the virus are isolated from others.", kr: "바이러스 환자들은 다른 사람들로부터 고립됩니다." },
-      { en: "The research aims to isolate the cause of the disease.", kr: "그 연구는 질병의 원인을 분리하는 것을 목표로 합니다." }
+      { en: "If you test positive, you'll need to isolate for five days.", kr: "양성이 나오면 5일 동안 격리해야 해요." },
+      { en: "Working from home can feel really isolating sometimes.", kr: "재택근무는 가끔 정말 고립된 느낌이 들어요." }
     ]
   },
   {
     id: "L2-303",
     word: "likewise",
-    meaning: "마찬가지로, 또한",
+    meaning: "마찬가지로, 저도요",
     examples: [
-      { en: "The North Coast is beautiful; likewise, the South Coast has stunning scenery.", kr: "북쪽 해안은 아름답습니다. 마찬가지로, 남쪽 해안도 멋진 풍경을 가지고 있습니다." },
-      { en: "He apologized to me, and I did likewise to him.", kr: "그는 나에게 사과했고, 나도 마찬가지로 그에게 사과했습니다." }
+      { en: "Likewise! It's great to finally meet you in person.", kr: "저도요! 드디어 직접 만나서 반가워요." },
+      { en: "He apologized to me, and I did likewise.", kr: "그가 나한테 사과해서 나도 마찬가지로 사과했어." }
     ]
   },
   {
@@ -6361,26 +6361,26 @@ const wordsLevel2_Part4 = [
     word: "maximize",
     meaning: "극대화하다",
     examples: [
-      { en: "We need to maximize our profits this quarter.", kr: "우리는 이번 분기에 수익을 극대화해야 합니다." },
-      { en: "The system is designed to maximize energy efficiency.", kr: "그 시스템은 에너지 효율성을 극대화하도록 설계되었습니다." }
+      { en: "We need to maximize our profits this quarter.", kr: "이번 분기에는 수익을 극대화해야 해요." },
+      { en: "How can I maximize my time on a short trip?", kr: "짧은 여행에서 시간을 최대한 활용하려면 어떻게 해야 할까요?" }
     ]
   },
   {
     id: "L2-306",
     word: "minimum",
-    meaning: "최소한의, 최소",
+    meaning: "최소, 최소한의",
     examples: [
-      { en: "The minimum age for this job is 18.", kr: "이 일자리의 최소 연령은 18세입니다." },
-      { en: "You should spend a minimum of two hours studying.", kr: "당신은 최소한 두 시간은 공부해야 합니다." }
+      { en: "Is there a minimum order for free delivery?", kr: "무료 배송받으려면 최소 주문 금액이 있나요?" },
+      { en: "Please keep the noise to a minimum after 10 p.m.", kr: "밤 10시 이후에는 소음을 최소한으로 줄여 주세요." }
     ]
   },
   {
     id: "L2-307",
     word: "neglect",
-    meaning: "방치하다, 소홀히 하다",
+    meaning: "소홀히 하다, 방치하다",
     examples: [
-      { en: "He neglected his duties and was fired.", kr: "그는 자신의 임무를 소홀히 하여 해고되었습니다." },
-      { en: "The garden was overgrown and showed signs of neglect.", kr: "정원은 무성했고 방치된 징후를 보였습니다." }
+      { en: "I've been neglecting my health lately.", kr: "요즘 건강을 너무 소홀히 했어요." },
+      { en: "Don't neglect your friends just because you're busy.", kr: "바쁘다고 친구들한테 소홀하면 안 돼." }
     ]
   },
   {
@@ -6395,10 +6395,10 @@ const wordsLevel2_Part4 = [
   {
     id: "L2-309",
     word: "ongoing",
-    meaning: "진행 중인",
+    meaning: "진행 중인, 계속되는",
     examples: [
-      { en: "The security breach is part of an ongoing investigation.", kr: "그 보안 침해는 진행 중인 조사의 일부입니다." },
-      { en: "We are monitoring the ongoing development of the project.", kr: "우리는 프로젝트의 진행 중인 개발을 모니터링하고 있습니다." }
+      { en: "This is an ongoing problem; we need a real fix.", kr: "이건 계속되는 문제라서 제대로 된 해결책이 필요해요." },
+      { en: "Sorry, I can't comment; it's an ongoing investigation.", kr: "죄송하지만 진행 중인 수사라서 말씀드릴 수 없어요." }
     ]
   },
   {
@@ -6406,8 +6406,8 @@ const wordsLevel2_Part4 = [
     word: "oversee",
     meaning: "감독하다, 관리하다",
     examples: [
-      { en: "A manager was hired to oversee the daily operations.", kr: "매일의 운영을 감독하기 위해 관리자가 고용되었습니다." },
-      { en: "He oversees the production of over 50 products.", kr: "그는 50개가 넘는 제품의 생산을 관리합니다." }
+      { en: "Who's going to oversee the project while you're away?", kr: "자리 비우신 동안 프로젝트는 누가 감독해요?" },
+      { en: "My job is to oversee the daily operations here.", kr: "제 일은 여기 일상 운영을 관리하는 거예요." }
     ]
   },
   {
@@ -6420,12 +6420,12 @@ const wordsLevel2_Part4 = [
     ]
   },
   {
-    id: "L2-312",
-    word: "periodical",
-    meaning: "정기 간행물",
+    id: "L2-481",
+    word: "mistake",
+    meaning: "실수, 잘못",
     examples: [
-      { en: "The library subscribes to many academic periodicals.", kr: "그 도서관은 많은 학술 정기 간행물을 구독합니다." },
-      { en: "This periodical is published four times a year.", kr: "이 정기 간행물은 1년에 네 번 발행됩니다." }
+      { en: "Sorry, I think there's a mistake on my bill.", kr: "죄송한데, 계산서에 뭔가 잘못된 것 같아요." },
+      { en: "Don't worry, everyone makes mistakes on their first day.", kr: "걱정 마, 첫날엔 다들 실수해." }
     ]
   },
   {
@@ -6433,8 +6433,8 @@ const wordsLevel2_Part4 = [
     word: "persuade",
     meaning: "설득하다",
     examples: [
-      { en: "Can you persuade him to change his mind?", kr: "당신은 그가 마음을 바꾸도록 설득할 수 있습니까?" },
-      { en: "She tried to persuade the jury of his innocence.", kr: "그녀는 배심원단에게 그의 무죄를 설득하려고 노력했습니다." }
+      { en: "Can you persuade him to change his mind?", kr: "그 사람 마음 바꾸게 좀 설득해 줄 수 있어요?" },
+      { en: "My friends finally persuaded me to try skydiving.", kr: "친구들이 결국 날 설득해서 스카이다이빙을 해 보게 됐어." }
     ]
   },
   {
@@ -6451,8 +6451,8 @@ const wordsLevel2_Part4 = [
     word: "predominantly",
     meaning: "주로, 대부분",
     examples: [
-      { en: "The population of the town is predominantly young.", kr: "그 마을의 인구는 주로 젊습니다." },
-      { en: "The team is predominantly composed of software engineers.", kr: "그 팀은 대부분 소프트웨어 엔지니어들로 구성되어 있습니다." }
+      { en: "Our customers are predominantly young women.", kr: "우리 고객은 주로 젊은 여성이에요." },
+      { en: "The team is predominantly engineers, so meetings get technical.", kr: "팀원이 대부분 엔지니어라 회의가 기술적으로 흘러가요." }
     ]
   },
   {
@@ -6476,10 +6476,10 @@ const wordsLevel2_Part4 = [
   {
     id: "L2-318",
     word: "protocol",
-    meaning: "규약, 의정서",
+    meaning: "규약, 절차, 규정",
     examples: [
-      { en: "The diplomats followed the strict diplomatic protocol.", kr: "외교관들은 엄격한 외교 규약을 따랐습니다." },
-      { en: "All data transfers must adhere to the security protocol.", kr: "모든 데이터 전송은 보안 규약을 준수해야 합니다." }
+      { en: "What's the protocol if someone gets hurt at work?", kr: "회사에서 누가 다치면 어떤 절차를 따라야 해요?" },
+      { en: "Sorry, it's protocol; I need to see your ID.", kr: "죄송하지만 규정상 신분증을 확인해야 해요." }
     ]
   },
   {
@@ -6487,17 +6487,17 @@ const wordsLevel2_Part4 = [
     word: "rational",
     meaning: "합리적인, 이성적인",
     examples: [
-      { en: "We need to make a rational decision based on facts.", kr: "우리는 사실에 근거하여 합리적인 결정을 내려야 합니다." },
-      { en: "Humans are generally considered rational beings.", kr: "인간은 일반적으로 이성적인 존재로 간주됩니다." }
+      { en: "Let's try to make a rational decision, not an emotional one.", kr: "감정적으로 말고 이성적으로 결정해 보자." },
+      { en: "That's not a rational reason to quit your job.", kr: "그건 회사를 그만둘 합리적인 이유가 아니야." }
     ]
   },
   {
     id: "L2-320",
     word: "recover",
-    meaning: "회복하다, 되찾다",
+    meaning: "회복하다, 되찾다, 복구하다",
     examples: [
-      { en: "It took him months to fully recover from the surgery.", kr: "그가 수술에서 완전히 회복하는 데 몇 달이 걸렸습니다." },
-      { en: "The police managed to recover the stolen paintings.", kr: "경찰은 도난당한 그림들을 되찾는 데 성공했습니다." }
+      { en: "It took me months to fully recover from surgery.", kr: "수술 후 완전히 회복하는 데 몇 달 걸렸어요." },
+      { en: "Can you help me recover my deleted files?", kr: "삭제된 파일 복구하는 것 좀 도와줄래요?" }
     ]
   },
   {
@@ -6577,8 +6577,8 @@ const wordsLevel2_Part4 = [
     word: "shrink",
     meaning: "줄어들다, 축소되다",
     examples: [
-      { en: "The sweater shrank when I washed it in hot water.", kr: "그 스웨터는 뜨거운 물에 세탁했을 때 줄어들었습니다." },
-      { en: "The company's profits began to shrink.", kr: "그 회사의 이익이 축소되기 시작했습니다." }
+      { en: "My sweater shrank when I washed it in hot water.", kr: "뜨거운 물에 빨았더니 스웨터가 줄어들었어." },
+      { en: "Our team keeps shrinking, but the work doesn't.", kr: "팀은 계속 줄어드는데 일은 안 줄어." }
     ]
   },
   {
@@ -6593,10 +6593,10 @@ const wordsLevel2_Part4 = [
   {
     id: "L2-331",
     word: "stabilize",
-    meaning: "안정시키다",
+    meaning: "안정시키다, 안정되다",
     examples: [
-      { en: "The government took measures to stabilize the currency.", kr: "정부는 통화를 안정시키기 위한 조치를 취했습니다." },
-      { en: "His condition has stabilized after the operation.", kr: "그의 상태는 수술 후 안정되었습니다." }
+      { en: "His condition has stabilized after the operation.", kr: "수술 후에 그의 상태가 안정됐어요." },
+      { en: "I hope prices stabilize after the holidays.", kr: "연휴 지나면 물가가 좀 안정되면 좋겠어요." }
     ]
   },
   {
@@ -6622,8 +6622,8 @@ const wordsLevel2_Part4 = [
     word: "suffice",
     meaning: "충분하다",
     examples: [
-      { en: "A small note should suffice to explain the delay.", kr: "작은 메모가 지연을 설명하는 데 충분할 것입니다." },
-      { en: "Two large pizzas should suffice for the party.", kr: "두 개의 큰 피자가 파티에 충분할 것입니다." }
+      { en: "A short email should suffice; no need for a meeting.", kr: "짧은 이메일이면 충분해요, 회의까지 할 필요는 없어요." },
+      { en: "Two large pizzas should suffice for the party.", kr: "피자 큰 거 두 판이면 파티에 충분할 거야." }
     ]
   },
   {
@@ -6631,8 +6631,8 @@ const wordsLevel2_Part4 = [
     word: "summary",
     meaning: "요약",
     examples: [
-      { en: "The report provided a summary of the main findings.", kr: "그 보고서는 주요 발견 사항에 대한 요약을 제공했습니다." },
-      { en: "Please give me a quick summary of the meeting.", kr: "회의 내용을 간단히 요약해 주세요." }
+      { en: "In summary, we need more time and more money.", kr: "요약하자면, 시간이랑 돈이 더 필요해요." },
+      { en: "Please give me a quick summary of the meeting.", kr: "회의 내용 간단히 요약해 주세요." }
     ]
   },
   {
@@ -6647,10 +6647,10 @@ const wordsLevel2_Part4 = [
   {
     id: "L2-337",
     word: "target",
-    meaning: "목표, 목표로 하다",
+    meaning: "목표, 대상, 목표로 하다",
     examples: [
-      { en: "Our target market is young adults.", kr: "우리의 목표 시장은 젊은 성인들입니다." },
-      { en: "The advertisement is targeted at health-conscious consumers.", kr: "그 광고는 건강을 의식하는 소비자들을 목표로 합니다." }
+      { en: "Our target market is young adults.", kr: "우리 목표 시장은 젊은 성인층이에요." },
+      { en: "Are we still on target to finish by Friday?", kr: "우리 아직 금요일까지 끝낸다는 목표대로 가고 있어요?" }
     ]
   },
   {
@@ -6665,10 +6665,10 @@ const wordsLevel2_Part4 = [
   {
     id: "L2-339",
     word: "theory",
-    meaning: "이론",
+    meaning: "이론, 가설",
     examples: [
-      { en: "He proposed a new theory of economic growth.", kr: "그는 경제 성장의 새로운 이론을 제안했습니다." },
-      { en: "In theory, this plan should work perfectly.", kr: "이론상으로는 이 계획이 완벽하게 작동해야 합니다." }
+      { en: "I have a theory about why he quit.", kr: "걔가 왜 그만뒀는지 나 나름의 가설이 있어." },
+      { en: "In theory, this plan should work perfectly.", kr: "이론상으로는 이 계획이 완벽하게 통해야 해요." }
     ]
   },
   {
@@ -6710,19 +6710,19 @@ const wordsLevel2_Part4 = [
   {
     id: "L2-344",
     word: "volume",
-    meaning: "용량, 부피, 음량",
+    meaning: "음량, 볼륨, 양",
     examples: [
-      { en: "The volume of the box is 10 cubic meters.", kr: "그 상자의 부피는 10세제곱미터입니다." },
-      { en: "Please turn down the volume of the television.", kr: "텔레비전의 볼륨(음량)을 낮춰 주세요." }
+      { en: "Can you turn the volume down a little?", kr: "볼륨 좀 줄여 줄래?" },
+      { en: "We've had a huge volume of orders this week.", kr: "이번 주에 주문량이 엄청 많았어요." }
     ]
   },
   {
     id: "L2-345",
     word: "warrant",
-    meaning: "정당화하다, 영장",
+    meaning: "영장, ~할 만하다(정당화하다)",
     examples: [
-      { en: "The situation did not warrant such extreme measures.", kr: "그 상황은 그러한 극단적인 조치를 정당화하지 않았습니다." },
-      { en: "The police obtained a search warrant for the house.", kr: "경찰은 그 집에 대한 수색 영장을 얻었습니다." }
+      { en: "The police have a warrant to search the house.", kr: "경찰이 그 집 수색 영장을 갖고 있어요." },
+      { en: "A small mistake like that doesn't warrant firing him.", kr: "그런 작은 실수로 그를 해고할 만하진 않아요." }
     ]
   },
   {
@@ -6737,10 +6737,10 @@ const wordsLevel2_Part4 = [
   {
     id: "L2-347",
     word: "access",
-    meaning: "접근, 접근하다",
+    meaning: "접근, 이용 권한, 접속하다",
     examples: [
-      { en: "Only authorized personnel have access to the server.", kr: "인가된 직원만이 서버에 접근할 수 있습니다." },
-      { en: "How can I access my email account?", kr: "제 이메일 계정에 어떻게 접근할 수 있습니까?" }
+      { en: "Do you have access to the shared drive?", kr: "공유 드라이브 접근 권한 있어요?" },
+      { en: "How can I access my email account?", kr: "제 이메일 계정에 어떻게 접속하죠?" }
     ]
   },
   {
@@ -6755,10 +6755,10 @@ const wordsLevel2_Part4 = [
   {
     id: "L2-349",
     word: "alter",
-    meaning: "변경하다, 바꾸다",
+    meaning: "바꾸다, 변경하다, (옷을) 수선하다",
     examples: [
-      { en: "The design was altered to fit the client's needs.", kr: "그 디자인은 고객의 요구에 맞게 변경되었습니다." },
-      { en: "She decided to alter her lifestyle for health reasons.", kr: "그녀는 건강상의 이유로 자신의 생활 방식을 바꾸기로 결정했습니다." }
+      { en: "Can you alter these pants? They're a bit long.", kr: "이 바지 수선해 주실 수 있어요? 좀 길어서요." },
+      { en: "Nothing will alter my decision at this point.", kr: "이제 와서 뭐가 있어도 제 결정은 안 바뀌어요." }
     ]
   },
   {
@@ -6766,8 +6766,8 @@ const wordsLevel2_Part4 = [
     word: "analogy",
     meaning: "비유, 유사점",
     examples: [
-      { en: "He drew an analogy between a computer and a brain.", kr: "그는 컴퓨터와 뇌 사이의 비유를 들었습니다." },
-      { en: "The teacher explained the concept using an analogy.", kr: "선생님은 비유를 사용하여 개념을 설명했습니다." }
+      { en: "Let me use an analogy to explain it.", kr: "비유를 들어서 설명해 볼게요." },
+      { en: "That's a good analogy; now I finally get it.", kr: "좋은 비유네요, 이제야 이해가 돼요." }
     ]
   },
   {
@@ -6775,8 +6775,8 @@ const wordsLevel2_Part4 = [
     word: "aware",
     meaning: "알고 있는, 자각하는",
     examples: [
-      { en: "Are you aware of the risks involved?", kr: "관련된 위험들을 알고 계십니까?" },
-      { en: "He was fully aware that he had made a mistake.", kr: "그는 자신이 실수를 저질렀다는 것을 완전히 자각하고 있었습니다." }
+      { en: "Are you aware that the store closes early today?", kr: "오늘 가게 일찍 닫는 거 알고 계세요?" },
+      { en: "I'm well aware that I made a mistake.", kr: "제가 실수한 거 잘 알고 있어요." }
     ]
   },
   {
@@ -6784,35 +6784,35 @@ const wordsLevel2_Part4 = [
     word: "commence",
     meaning: "시작하다",
     examples: [
-      { en: "The trial is due to commence next week.", kr: "그 재판은 다음 주에 시작될 예정입니다." },
-      { en: "We will commence with a brief introduction.", kr: "우리는 짧은 소개로 시작할 것입니다." }
+      { en: "Boarding will commence in about ten minutes.", kr: "탑승은 약 10분 후에 시작됩니다." },
+      { en: "The ceremony will commence at 2 p.m. sharp.", kr: "기념식은 오후 2시 정각에 시작됩니다." }
     ]
   },
   {
     id: "L2-353",
     word: "constitute",
-    meaning: "구성하다, ~이 되다",
+    meaning: "구성하다, (~을) 이루다, ~에 해당하다",
     examples: [
-      { en: "Women constitute the majority of the workforce.", kr: "여성들이 노동 인구의 다수를 구성합니다." },
-      { en: "His refusal to cooperate constitutes a breach of contract.", kr: "그의 협조 거부는 계약 위반이 됩니다." }
+      { en: "Women constitute the majority of our staff.", kr: "우리 직원 대다수를 여성이 이루고 있어요." },
+      { en: "Does this constitute a breach of contract?", kr: "이게 계약 위반에 해당하나요?" }
     ]
   },
   {
     id: "L2-354",
     word: "context",
-    meaning: "맥락, 상황",
+    meaning: "맥락, 상황, 전후 사정",
     examples: [
-      { en: "You must consider the historical context of the event.", kr: "당신은 그 사건의 역사적 맥락을 고려해야 합니다." },
-      { en: "The quote was taken out of context.", kr: "그 인용문은 맥락에서 벗어나 사용되었습니다." }
+      { en: "You took my words out of context.", kr: "내 말을 맥락 다 빼고 받아들였잖아." },
+      { en: "Can you give me a little more context?", kr: "전후 사정을 좀 더 설명해 줄래요?" }
     ]
   },
   {
     id: "L2-355",
     word: "contract",
-    meaning: "계약, 수축하다",
+    meaning: "계약, 계약서",
     examples: [
-      { en: "They signed a contract for a five-year lease.", kr: "그들은 5년 임대 계약에 서명했습니다." },
-      { en: "The metal contracts as it cools down.", kr: "그 금속은 식으면서 수축합니다." }
+      { en: "I just signed a two-year contract for my apartment.", kr: "아파트 2년 계약을 막 했어요." },
+      { en: "Did you read the contract before signing it?", kr: "서명하기 전에 계약서 읽어 봤어?" }
     ]
   },
   {
@@ -6863,19 +6863,19 @@ const wordsLevel2_Part4 = [
   {
     id: "L2-361",
     word: "economy",
-    meaning: "경제, 절약",
+    meaning: "경제, 경기, 이코노미석",
     examples: [
-      { en: "The national economy is showing signs of recovery.", kr: "국민 경제는 회복의 징후를 보이고 있습니다." },
-      { en: "For reasons of economy, we shared a hotel room.", kr: "절약을 위해 우리는 호텔 방을 함께 썼습니다." }
+      { en: "How's the economy affecting your business these days?", kr: "요즘 경기가 사업에 어떤 영향을 주고 있어요?" },
+      { en: "I always fly economy to save money.", kr: "돈 아끼려고 항상 이코노미석 타요." }
     ]
   },
   {
     id: "L2-362",
     word: "equate",
-    meaning: "동일시하다",
+    meaning: "동일시하다, 같게 여기다",
     examples: [
-      { en: "You shouldn't equate money with happiness.", kr: "당신은 돈과 행복을 동일시해서는 안 됩니다." },
-      { en: "Success is often equated with high earnings.", kr: "성공은 종종 높은 수입과 동일시됩니다." }
+      { en: "You shouldn't equate money with happiness.", kr: "돈이랑 행복을 동일시하면 안 돼." },
+      { en: "People often equate success with a high salary.", kr: "사람들은 흔히 성공을 높은 연봉과 동일시해요." }
     ]
   },
   {
@@ -6890,10 +6890,10 @@ const wordsLevel2_Part4 = [
   {
     id: "L2-364",
     word: "estimate",
-    meaning: "추정하다, 견적",
+    meaning: "추정하다, 견적, 추정치",
     examples: [
-      { en: "We estimate the cost of the project to be $50,000.", kr: "우리는 그 프로젝트의 비용을 50,000달러로 추정합니다." },
-      { en: "The mechanic gave me a rough estimate for the repairs.", kr: "정비공이 수리에 대한 대략적인 견적을 저에게 주었습니다." }
+      { en: "Can you give me a rough estimate for the repairs?", kr: "수리비 대략적인 견적 좀 내 주실 수 있어요?" },
+      { en: "I estimate it'll take about two hours to get there.", kr: "제 추정으로는 거기까지 두 시간쯤 걸릴 거예요." }
     ]
   },
   {
@@ -6901,17 +6901,17 @@ const wordsLevel2_Part4 = [
     word: "evident",
     meaning: "분명한, 명백한",
     examples: [
-      { en: "It was evident that she was unhappy.", kr: "그녀가 불행하다는 것은 분명했습니다." },
-      { en: "His talent became evident early in his career.", kr: "그의 재능은 경력 초기에 명백해졌습니다." }
+      { en: "It was evident that she was upset.", kr: "그녀가 속상해한다는 게 분명히 보였어요." },
+      { en: "It's evident that you put a lot of work into this.", kr: "여기에 공을 많이 들인 게 확실히 보여요." }
     ]
   },
   {
     id: "L2-366",
     word: "export",
-    meaning: "수출하다, 수출품",
+    meaning: "수출하다, (파일을) 내보내다, 수출품",
     examples: [
-      { en: "The country exports mainly machinery and vehicles.", kr: "그 나라는 주로 기계류와 차량을 수출합니다." },
-      { en: "Coffee is a major export of this region.", kr: "커피는 이 지역의 주요 수출품입니다." }
+      { en: "Korea exports a lot of cars and phones.", kr: "한국은 자동차랑 휴대폰을 많이 수출해요." },
+      { en: "Can you export this file as a PDF?", kr: "이 파일 PDF로 내보내 줄 수 있어요?" }
     ]
   },
   {
@@ -6926,28 +6926,28 @@ const wordsLevel2_Part4 = [
   {
     id: "L2-368",
     word: "finance",
-    meaning: "재정, 자금을 조달하다",
+    meaning: "자금을 대다, 금융, 재정",
     examples: [
-      { en: "The project needs external finance to proceed.", kr: "그 프로젝트는 진행하기 위해 외부 재정이 필요합니다." },
-      { en: "The company financed the new factory with a bank loan.", kr: "그 회사는 은행 대출로 새 공장에 자금을 조달했습니다." }
+      { en: "How are you planning to finance your new car?", kr: "새 차 살 자금은 어떻게 마련할 계획이에요?" },
+      { en: "She works in finance at a big bank.", kr: "그녀는 대형 은행에서 금융 쪽 일을 해요." }
     ]
   },
   {
     id: "L2-369",
     word: "formula",
-    meaning: "공식, 제조법",
+    meaning: "공식, 비결, 분유",
     examples: [
-      { en: "The scientist devised a new mathematical formula.", kr: "그 과학자는 새로운 수학 공식을 고안했습니다." },
-      { en: "The secret formula for the drink is highly guarded.", kr: "그 음료의 비밀 제조법은 엄격하게 보호됩니다." }
+      { en: "There's no magic formula for losing weight.", kr: "살 빼는 데 마법 같은 공식은 없어요." },
+      { en: "Does this baby formula need to be warmed up?", kr: "이 분유 데워야 해요?" }
     ]
   },
   {
     id: "L2-370",
     word: "function",
-    meaning: "기능, 작동하다",
+    meaning: "기능, 작동하다, 제 기능을 하다",
     examples: [
-      { en: "The main function of the heart is to pump blood.", kr: "심장의 주요 기능은 피를 펌프질하는 것입니다." },
-      { en: "The new software is functioning well.", kr: "새 소프트웨어는 잘 작동하고 있습니다." }
+      { en: "What's the function of this button?", kr: "이 버튼은 무슨 기능이에요?" },
+      { en: "I can't function without my morning coffee.", kr: "아침 커피 없으면 제 기능을 못 해요." }
     ]
   },
   {
@@ -6964,8 +6964,8 @@ const wordsLevel2_Part4 = [
     word: "income",
     meaning: "소득, 수입",
     examples: [
-      { en: "He has a steady income from his job.", kr: "그는 그의 직업에서 꾸준한 소득을 얻습니다." },
-      { en: "The charity relies on donations for its income.", kr: "그 자선 단체는 수입을 위해 기부에 의존합니다." }
+      { en: "It's hard to live on just one income.", kr: "한 사람 수입만으로 살기는 힘들어요." },
+      { en: "Do I need to report this side income?", kr: "이 부수입도 신고해야 하나요?" }
     ]
   },
   {
@@ -6980,10 +6980,10 @@ const wordsLevel2_Part4 = [
   {
     id: "L2-374",
     word: "individual",
-    meaning: "개인의, 개체",
+    meaning: "개인의, 개별의, 사람",
     examples: [
-      { en: "Each individual is responsible for their own actions.", kr: "각 개인은 자신의 행동에 책임이 있습니다." },
-      { en: "The test measures the development of each individual child.", kr: "그 테스트는 각 개별 아동의 발달을 측정합니다." }
+      { en: "We offer both group and individual lessons.", kr: "단체 수업이랑 개인 수업 둘 다 있어요." },
+      { en: "He's a strange individual, isn't he?", kr: "그 사람 좀 특이한 사람이지 않아?" }
     ]
   },
   {
@@ -7007,19 +7007,19 @@ const wordsLevel2_Part4 = [
   {
     id: "L2-377",
     word: "issue",
-    meaning: "문제, 발행하다",
+    meaning: "문제, 사안, 발급하다",
     examples: [
-      { en: "The company is facing a serious financial issue.", kr: "그 회사는 심각한 재정 문제에 직면하고 있습니다." },
-      { en: "The bank will issue a new type of credit card.", kr: "그 은행은 새로운 종류의 신용카드를 발행할 것입니다." }
+      { en: "Is there an issue with my order?", kr: "제 주문에 무슨 문제 있나요?" },
+      { en: "They issued me a new card after I lost mine.", kr: "카드를 잃어버려서 새 카드를 발급해 줬어요." }
     ]
   },
   {
     id: "L2-378",
     word: "labor",
-    meaning: "노동, 노력",
+    meaning: "노동, 인건비, 진통",
     examples: [
-      { en: "The project requires intensive physical labor.", kr: "그 프로젝트는 집중적인 육체 노동을 필요로 합니다." },
-      { en: "Years of hard labor finally paid off.", kr: "수년간의 힘든 노력이 마침내 결실을 맺었습니다." }
+      { en: "The repair cost is mostly labor, not parts.", kr: "수리비는 부품보다 대부분 인건비예요." },
+      { en: "She went into labor at two in the morning.", kr: "그녀는 새벽 2시에 진통이 시작됐어요." }
     ]
   },
   {
@@ -7027,17 +7027,17 @@ const wordsLevel2_Part4 = [
     word: "legal",
     meaning: "법적인, 합법적인",
     examples: [
-      { en: "You should seek legal advice before signing the document.", kr: "문서에 서명하기 전에 법적인 조언을 구해야 합니다." },
-      { en: "It is legal to park here for one hour.", kr: "여기에 한 시간 동안 주차하는 것은 합법적입니다." }
+      { en: "Is it legal to park here overnight?", kr: "여기 밤새 주차해도 합법이에요?" },
+      { en: "You should get legal advice before you sign that.", kr: "그거 서명하기 전에 법률 상담을 받아 봐." }
     ]
   },
   {
-    id: "L2-380",
-    word: "legislate",
-    meaning: "입법하다",
+    id: "L2-482",
+    word: "deserve",
+    meaning: "~할 자격이 있다, ~을 받을 만하다",
     examples: [
-      { en: "The parliament can legislate on matters of national security.", kr: "의회는 국가 안보 문제에 대해 입법할 수 있습니다." },
-      { en: "Congress legislated against discrimination in the workplace.", kr: "의회는 직장 내 차별을 금지하는 법을 제정했습니다." }
+      { en: "You worked so hard. You totally deserve this promotion.", kr: "정말 열심히 일했잖아요. 이번 승진은 충분히 받을 만해요." },
+      { en: "After this week, I deserve a long nap.", kr: "이번 주 보내고 나니까 나 낮잠 길게 잘 자격 있어." }
     ]
   },
   {
@@ -7054,8 +7054,8 @@ const wordsLevel2_Part4 = [
     word: "method",
     meaning: "방법, 방식",
     examples: [
-      { en: "We need a more efficient method of communication.", kr: "우리는 더 효율적인 통신 방법이 필요합니다." },
-      { en: "This new method reduces the processing time by half.", kr: "이 새로운 방식은 처리 시간을 절반으로 줄여줍니다." }
+      { en: "What's the best method for learning English?", kr: "영어를 배우는 가장 좋은 방법이 뭐예요?" },
+      { en: "What payment methods do you accept?", kr: "어떤 결제 방법을 받으세요?" }
     ]
   },
   {
@@ -7072,8 +7072,8 @@ const wordsLevel2_Part4 = [
     word: "percent",
     meaning: "퍼센트, 백분율",
     examples: [
-      { en: "Only ten percent of the applicants were accepted.", kr: "지원자 중 오직 10퍼센트만이 합격했습니다." },
-      { en: "The price increased by 5 percent last month.", kr: "지난달에 가격이 5퍼센트 상승했습니다." }
+      { en: "Only ten percent of the applicants were accepted.", kr: "지원자 중에 10퍼센트만 합격했어요." },
+      { en: "Do I need to leave a 20 percent tip here?", kr: "여기서 팁을 20퍼센트 남겨야 해요?" }
     ]
   },
   {
@@ -7099,8 +7099,8 @@ const wordsLevel2_Part4 = [
     word: "principle",
     meaning: "원칙, 원리",
     examples: [
-      { en: "The decision was based on sound moral principles.", kr: "그 결정은 건전한 도덕적 원칙들에 기반했습니다." },
-      { en: "The machine works on the principle of air pressure.", kr: "그 기계는 공기압의 원리로 작동합니다." }
+      { en: "I don't lie; it's a matter of principle.", kr: "난 거짓말 안 해, 원칙의 문제야." },
+      { en: "In principle, I agree, but the timing is bad.", kr: "원칙적으로는 동의하지만 타이밍이 안 좋아요." }
     ]
   },
   {
@@ -7133,10 +7133,10 @@ const wordsLevel2_Part4 = [
   {
     id: "L2-391",
     word: "research",
-    meaning: "연구, 연구하다",
+    meaning: "연구, 조사, 조사하다",
     examples: [
-      { en: "The scientist dedicated his life to cancer research.", kr: "그 과학자는 암 연구에 자신의 삶을 헌신했습니다." },
-      { en: "You should research the topic thoroughly before writing the essay.", kr: "에세이를 쓰기 전에 그 주제를 철저하게 연구해야 합니다." }
+      { en: "I did some research before buying this laptop.", kr: "이 노트북 사기 전에 조사를 좀 했어요." },
+      { en: "You should research the neighborhood before you move.", kr: "이사하기 전에 동네를 조사해 보는 게 좋아." }
     ]
   },
   {
@@ -7144,8 +7144,8 @@ const wordsLevel2_Part4 = [
     word: "respond",
     meaning: "응답하다, 반응하다",
     examples: [
-      { en: "Please respond to the invitation by Friday.", kr: "금요일까지 초대에 응답해 주세요." },
-      { en: "The patient did not respond well to the new medication.", kr: "그 환자는 새 약물에 잘 반응하지 않았습니다." }
+      { en: "Please respond to the invitation by Friday.", kr: "금요일까지 초대에 답해 주세요." },
+      { en: "Sorry I didn't respond sooner; I was swamped.", kr: "더 빨리 응답 못 해서 미안해요, 너무 바빴어요." }
     ]
   },
   {
@@ -7153,17 +7153,17 @@ const wordsLevel2_Part4 = [
     word: "role",
     meaning: "역할",
     examples: [
-      { en: "The government plays an important role in the economy.", kr: "정부는 경제에서 중요한 역할을 합니다." },
-      { en: "She played the leading role in the school play.", kr: "그녀는 학교 연극에서 주연 역할을 맡았습니다." }
+      { en: "What's your role on the team?", kr: "팀에서 무슨 역할 맡고 있어요?" },
+      { en: "She played the lead role in the school play.", kr: "그녀가 학교 연극에서 주연 역할을 맡았어요." }
     ]
   },
   {
     id: "L2-394",
     word: "section",
-    meaning: "부분, 구획",
+    meaning: "부분, 구역, 코너",
     examples: [
-      { en: "Read the third section of the textbook for homework.", kr: "숙제로 교과서의 세 번째 부분을 읽으세요." },
-      { en: "The garden is divided into several sections.", kr: "그 정원은 여러 구획으로 나뉘어 있습니다." }
+      { en: "Where's the frozen food section?", kr: "냉동식품 구역이 어디예요?" },
+      { en: "Read the third section of the textbook for homework.", kr: "숙제로 교과서 세 번째 부분을 읽어 오세요." }
     ]
   },
   {
@@ -7178,19 +7178,19 @@ const wordsLevel2_Part4 = [
   {
     id: "L2-396",
     word: "similar",
-    meaning: "유사한",
+    meaning: "비슷한, 유사한",
     examples: [
-      { en: "Our new product is similar to our competitor's.", kr: "우리의 새 제품은 경쟁사의 것과 유사합니다." },
-      { en: "They share similar interests in music and art.", kr: "그들은 음악과 예술에서 유사한 관심사를 공유합니다." }
+      { en: "Your jacket is really similar to mine.", kr: "네 재킷 내 거랑 진짜 비슷하다." },
+      { en: "We have similar tastes in music.", kr: "우리 음악 취향이 비슷해요." }
     ]
   },
   {
     id: "L2-397",
     word: "source",
-    meaning: "근원, 출처",
+    meaning: "출처, 원천, 근원",
     examples: [
-      { en: "The newspaper refused to reveal its source of information.", kr: "그 신문은 정보의 출처를 밝히기를 거부했습니다." },
-      { en: "The sun is our main source of energy.", kr: "태양은 우리의 주요 에너지 근원입니다." }
+      { en: "Where did you hear that? What's your source?", kr: "그거 어디서 들었어? 출처가 어디야?" },
+      { en: "Coffee is my main source of energy in the morning.", kr: "아침엔 커피가 제 주된 에너지원이에요." }
     ]
   },
   {
@@ -7198,8 +7198,8 @@ const wordsLevel2_Part4 = [
     word: "structure",
     meaning: "구조, 구성하다",
     examples: [
-      { en: "The building has a solid steel structure.", kr: "그 건물은 견고한 철강 구조를 가지고 있습니다." },
-      { en: "The course is structured to cover 10 topics.", kr: "그 과정은 10가지 주제를 다루도록 구성되어 있습니다." }
+      { en: "I like how this course is structured.", kr: "이 강좌가 구성된 방식이 마음에 들어요." },
+      { en: "We need a clearer structure for our weekly meetings.", kr: "주간 회의에 좀 더 명확한 구조가 필요해요." }
     ]
   },
   {
@@ -7244,10 +7244,10 @@ const wordsLevel3_Part1 = [
   {
     id: "L3-003",
     word: "amend",
-    meaning: "개정하다, 수정하다",
+    meaning: "수정하다, 개정하다",
     examples: [
-      { en: "The committee voted to amend the school policy.", kr: "위원회는 학교 정책을 개정하기 위해 투표했습니다." },
-      { en: "The lawyer asked me to amend the contract slightly.", kr: "변호사는 나에게 계약을 약간 수정해 달라고 요청했습니다." }
+      { en: "Can we amend the contract before we sign it?", kr: "서명하기 전에 계약서를 수정할 수 있을까요?" },
+      { en: "I need to amend my tax return. I made a mistake.", kr: "세금 신고서를 수정해야 해요. 실수를 했거든요." }
     ]
   },
   {
@@ -7271,10 +7271,10 @@ const wordsLevel3_Part1 = [
   {
     id: "L3-006",
     word: "arbitrary",
-    meaning: "임의적인, 독단적인",
+    meaning: "임의적인, 제멋대로인",
     examples: [
-      { en: "The selection process seemed entirely arbitrary.", kr: "선발 과정은 전적으로 임의적인 것처럼 보였습니다." },
-      { en: "We cannot accept such an arbitrary decision.", kr: "우리는 그러한 독단적인 결정을 받아들일 수 없습니다." }
+      { en: "Honestly, that rule seems totally arbitrary to me.", kr: "솔직히 그 규칙은 완전히 제멋대로인 것 같아요." },
+      { en: "Why seven o'clock? That deadline feels kind of arbitrary.", kr: "왜 7시예요? 그 마감 시간은 좀 임의로 정한 것 같아요." }
     ]
   },
   {
@@ -7282,8 +7282,8 @@ const wordsLevel3_Part1 = [
     word: "assert",
     meaning: "주장하다, 단언하다",
     examples: [
-      { en: "He asserted his innocence despite the evidence.", kr: "그는 증거에도 불구하고 자신의 무죄를 주장했습니다." },
-      { en: "You need to assert yourself in negotiations.", kr: "당신은 협상에서 자기 주장을 분명히 해야 합니다." }
+      { en: "You need to assert yourself more in meetings.", kr: "회의에서 좀 더 자기 의견을 분명히 말해야 해요." },
+      { en: "He keeps asserting that he did nothing wrong.", kr: "그는 자기가 잘못한 게 없다고 계속 주장해요." }
     ]
   },
   {
@@ -7300,17 +7300,17 @@ const wordsLevel3_Part1 = [
     word: "assume",
     meaning: "추정하다, (책임을) 맡다",
     examples: [
-      { en: "I assume you have read the documents.", kr: "당신이 문서들을 읽었다고 추정합니다." },
-      { en: "She will assume the role of team leader next month.", kr: "그녀는 다음 달에 팀 리더 역할을 맡을 것입니다." }
+      { en: "I assume you've already read the email?", kr: "이메일은 이미 읽으셨다고 생각해도 되죠?" },
+      { en: "Jake will assume the team leader role next month.", kr: "다음 달부터 제이크가 팀장 역할을 맡을 거예요." }
     ]
   },
   {
     id: "L3-010",
     word: "attribute",
-    meaning: "(~의) 덕분/탓으로 돌리다, 속성",
+    meaning: "(~의) 덕분/탓으로 돌리다, 자질, 속성",
     examples: [
-      { en: "He attributes his success to hard work and luck.", kr: "그는 자신의 성공을 노력과 운 덕분으로 돌립니다." },
-      { en: "Patience is an important attribute of a good teacher.", kr: "인내는 좋은 선생님의 중요한 속성입니다." }
+      { en: "He attributes his success to hard work and luck.", kr: "그는 자기 성공이 노력과 운 덕분이라고 해요." },
+      { en: "Patience is an important attribute of a good teacher.", kr: "인내심은 좋은 선생님의 중요한 자질이에요." }
     ]
   },
   {
@@ -7327,8 +7327,8 @@ const wordsLevel3_Part1 = [
     word: "cease",
     meaning: "중단하다, 멈추다",
     examples: [
-      { en: "The company will cease operations in the region.", kr: "그 회사는 그 지역에서 운영을 중단할 것입니다." },
-      { en: "The rain ceased shortly after we arrived.", kr: "우리가 도착한 직후 비가 멈췄습니다." }
+      { en: "Your kids never cease to amaze me.", kr: "너희 애들은 볼 때마다 날 놀라게 해." },
+      { en: "Thank goodness the noise finally ceased around midnight.", kr: "다행히 자정쯤 소음이 드디어 멈췄어요." }
     ]
   },
   {
@@ -7343,19 +7343,19 @@ const wordsLevel3_Part1 = [
   {
     id: "L3-014",
     word: "compatible",
-    meaning: "호환되는, 양립할 수 있는",
+    meaning: "호환되는, (서로) 잘 맞는",
     examples: [
       { en: "Is this new software compatible with my old computer?", kr: "이 새 소프트웨어가 제 오래된 컴퓨터와 호환되나요?" },
-      { en: "Their personalities are not compatible.", kr: "그들의 성격은 양립할 수 없습니다." }
+      { en: "We're just not compatible as roommates.", kr: "우린 룸메이트로는 정말 안 맞아." }
     ]
   },
   {
     id: "L3-015",
     word: "concede",
-    meaning: "인정하다, 양보하다",
+    meaning: "(마지못해) 인정하다",
     examples: [
-      { en: "He finally conceded that the opposing argument was stronger.", kr: "그는 마침내 반대 주장이 더 강력하다는 것을 인정했습니다." },
-      { en: "The government conceded to the protesters' demands.", kr: "정부는 시위대의 요구에 양보했습니다." }
+      { en: "Okay, I concede. You were right about the restaurant.", kr: "알았어, 인정할게. 그 식당은 네 말이 맞았어." },
+      { en: "He conceded defeat and congratulated the winner.", kr: "그는 패배를 인정하고 이긴 사람을 축하해 줬어요." }
     ]
   },
   {
@@ -7363,8 +7363,8 @@ const wordsLevel3_Part1 = [
     word: "concise",
     meaning: "간결한",
     examples: [
-      { en: "Please provide a concise summary of the findings.", kr: "조사 결과에 대한 간결한 요약을 제공해 주세요." },
-      { en: "The best articles are often clear and concise.", kr: "최고의 기사들은 종종 명확하고 간결합니다." }
+      { en: "Can you keep your answer short and concise?", kr: "답변을 짧고 간결하게 해 줄래요?" },
+      { en: "Her emails are always clear and concise.", kr: "그녀의 이메일은 항상 명확하고 간결해요." }
     ]
   },
   {
@@ -7372,17 +7372,17 @@ const wordsLevel3_Part1 = [
     word: "consensus",
     meaning: "합의, 의견 일치",
     examples: [
-      { en: "The committee reached a consensus after hours of discussion.", kr: "위원회는 몇 시간의 토론 끝에 합의에 도달했습니다." },
-      { en: "There is no scientific consensus on the topic yet.", kr: "그 주제에 대한 과학적 의견 일치는 아직 없습니다." }
+      { en: "We couldn't reach a consensus, so we'll meet again tomorrow.", kr: "합의를 못 해서 내일 다시 모이기로 했어요." },
+      { en: "Is there a consensus on where to have lunch?", kr: "점심 어디서 먹을지 의견 모였어요?" }
     ]
   },
   {
     id: "L3-018",
     word: "constrain",
-    meaning: "제약하다, 억누르다",
+    meaning: "제약하다, 얽매다",
     examples: [
-      { en: "The lack of funds severely constrained the project.", kr: "자금 부족이 프로젝트를 심각하게 제약했습니다." },
-      { en: "She felt constrained by her own high expectations.", kr: "그녀는 자신의 높은 기대치에 얽매여 있다고 느꼈습니다." }
+      { en: "We're constrained by a tight budget this year.", kr: "올해는 빠듯한 예산 때문에 제약이 많아요." },
+      { en: "I don't want to feel constrained by too many rules.", kr: "너무 많은 규칙에 얽매이고 싶지 않아요." }
     ]
   },
   {
@@ -7397,10 +7397,10 @@ const wordsLevel3_Part1 = [
   {
     id: "L3-020",
     word: "convert",
-    meaning: "전환하다, 변환하다",
+    meaning: "변환하다, 개조하다",
     examples: [
-      { en: "Can you convert this file to a PDF format?", kr: "이 파일을 PDF 형식으로 변환할 수 있습니까?" },
-      { en: "The old warehouse was converted into a modern loft.", kr: "그 오래된 창고는 현대적인 로프트로 개조되었습니다." }
+      { en: "Can you convert this file to a PDF?", kr: "이 파일 PDF로 변환해 줄 수 있어요?" },
+      { en: "They converted the garage into a home office.", kr: "그들은 차고를 홈오피스로 개조했어요." }
     ]
   },
   {
@@ -7408,8 +7408,8 @@ const wordsLevel3_Part1 = [
     word: "correlation",
     meaning: "상관관계",
     examples: [
-      { en: "The study found a strong correlation between exercise and health.", kr: "그 연구는 운동과 건강 사이에 강한 상관관계를 발견했습니다." },
-      { en: "Correlation does not always imply causation.", kr: "상관관계가 항상 인과 관계를 의미하는 것은 아닙니다." }
+      { en: "I think there's a correlation between stress and my headaches.", kr: "스트레스랑 제 두통 사이에 상관관계가 있는 것 같아요." },
+      { en: "That's just correlation, not proof that one causes the other.", kr: "그건 상관관계일 뿐이지, 하나가 다른 걸 일으킨다는 증거는 아니야." }
     ]
   },
   {
@@ -7458,12 +7458,12 @@ const wordsLevel3_Part1 = [
     ]
   },
   {
-    id: "L3-027",
-    word: "denote",
-    meaning: "나타내다, 표시하다",
+    id: "L3-655",
+    word: "meal",
+    meaning: "식사, 끼니",
     examples: [
-      { en: "The color red often denotes danger or warning.", kr: "빨간색은 종종 위험이나 경고를 나타냅니다." },
-      { en: "The symbol 'R' is used to denote electrical resistance.", kr: "기호 'R'은 전기 저항을 표시하는 데 사용됩니다." }
+      { en: "Thanks for the meal. Everything was great!", kr: "잘 먹었어요. 다 정말 맛있었어요!" },
+      { en: "I usually skip meals when I'm really busy at work.", kr: "회사에서 너무 바쁠 땐 보통 끼니를 걸러요." }
     ]
   },
   {
@@ -7471,8 +7471,8 @@ const wordsLevel3_Part1 = [
     word: "deprive",
     meaning: "빼앗다, 박탈하다",
     examples: [
-      { en: "Lack of sleep can deprive you of your energy.", kr: "수면 부족은 당신의 에너지를 빼앗을 수 있습니다." },
-      { en: "The court deprived the parent of custody.", kr: "법원은 그 부모의 양육권을 박탈했습니다." }
+      { en: "Crazy diets deprive your body of what it needs.", kr: "무리한 다이어트는 몸에 필요한 걸 빼앗아요." },
+      { en: "I'm so sleep-deprived, I can barely think.", kr: "잠을 너무 못 자서 머리가 잘 안 돌아가요." }
     ]
   },
   {
@@ -7498,17 +7498,17 @@ const wordsLevel3_Part1 = [
     word: "disclose",
     meaning: "공개하다, 밝히다, 드러내다",
     examples: [
-      { en: "The company refused to disclose its financial records.", kr: "그 회사는 재무 기록 공개를 거부했습니다." },
-      { en: "The journalist promised not to disclose her source.", kr: "그 기자는 자신의 출처를 드러내지 않겠다고 약속했습니다." }
+      { en: "Sorry, I'm not allowed to disclose that information.", kr: "죄송하지만 그 정보는 공개할 수 없어요." },
+      { en: "Did they disclose how much the deal was worth?", kr: "그 거래가 얼마짜리였는지 밝혔어요?" }
     ]
   },
   {
     id: "L3-032",
     word: "discriminate",
-    meaning: "차별하다, 구별하다",
+    meaning: "차별하다",
     examples: [
-      { en: "It is illegal to discriminate based on age or gender.", kr: "나이나 성별을 근거로 차별하는 것은 불법입니다." },
-      { en: "She can easily discriminate between good and bad wine.", kr: "그녀는 좋은 와인과 나쁜 와인을 쉽게 구별할 수 있습니다." }
+      { en: "It's illegal to discriminate based on age or gender.", kr: "나이나 성별로 차별하는 건 불법이에요." },
+      { en: "I felt like they discriminated against me because of my accent.", kr: "제 억양 때문에 차별당한 것 같았어요." }
     ]
   },
   {
@@ -7525,8 +7525,8 @@ const wordsLevel3_Part1 = [
     word: "distort",
     meaning: "왜곡하다",
     examples: [
-      { en: "The newspaper was accused of distorting the facts.", kr: "그 신문은 사실을 왜곡했다는 비난을 받았습니다." },
-      { en: "The funhouse mirror distorts your reflection.", kr: "그 놀이 공원 거울은 당신의 모습을 왜곡합니다." }
+      { en: "The media totally distorted what he actually said.", kr: "언론이 그가 실제로 한 말을 완전히 왜곡했어요." },
+      { en: "This mirror distorts everything. I look so tall!", kr: "이 거울은 다 왜곡돼 보여. 나 엄청 커 보여!" }
     ]
   },
   {
@@ -7541,10 +7541,10 @@ const wordsLevel3_Part1 = [
   {
     id: "L3-036",
     word: "domain",
-    meaning: "영역, 분야",
+    meaning: "분야, 영역, 도메인",
     examples: [
-      { en: "That subject is outside my domain of expertise.", kr: "그 주제는 제 전문 지식 영역 밖에 있습니다." },
-      { en: "Science is no longer the domain of experts only.", kr: "과학은 더 이상 전문가들만의 영역이 아닙니다." }
+      { en: "Sorry, that's not really my domain. Ask Kevin.", kr: "미안, 그건 내 분야가 아니야. 케빈한테 물어봐." },
+      { en: "Did you buy a domain name for your new site?", kr: "새 사이트용 도메인 이름 샀어?" }
     ]
   },
   {
@@ -7568,10 +7568,10 @@ const wordsLevel3_Part1 = [
   {
     id: "L3-039",
     word: "elevate",
-    meaning: "높이다, 향상시키다",
+    meaning: "높이다, (수준을) 끌어올리다",
     examples: [
-      { en: "The goal is to elevate the quality of public education.", kr: "목표는 공교육의 질을 높이는 것입니다." },
-      { en: "The stage was slightly elevated above the audience.", kr: "무대는 청중석보다 약간 높게 설치되어 있었습니다." }
+      { en: "Good lighting can really elevate your photos.", kr: "조명이 좋으면 사진 수준이 확 높아져요." },
+      { en: "Keep your leg elevated to reduce the swelling.", kr: "붓기가 빠지도록 다리를 높이 올려 두세요." }
     ]
   },
   {
@@ -7586,10 +7586,10 @@ const wordsLevel3_Part1 = [
   {
     id: "L3-041",
     word: "embed",
-    meaning: "깊숙이 박다, 삽입하다",
+    meaning: "삽입하다, 박다",
     examples: [
-      { en: "The stone was firmly embedded in the concrete.", kr: "그 돌은 콘크리트에 단단히 박혀 있었습니다." },
-      { en: "News websites often embed video clips in their articles.", kr: "뉴스 웹사이트들은 종종 기사에 동영상을 삽입합니다." }
+      { en: "Can you embed the video in the slide?", kr: "슬라이드에 그 영상을 삽입할 수 있어요?" },
+      { en: "There's a tiny piece of glass embedded in my foot.", kr: "발에 작은 유리 조각이 박혔어요." }
     ]
   },
   {
@@ -7597,8 +7597,8 @@ const wordsLevel3_Part1 = [
     word: "embrace",
     meaning: "포용하다, 받아들이다, 포옹하다",
     examples: [
-      { en: "We must embrace technological change to survive.", kr: "우리는 생존을 위해 기술적 변화를 받아들여야 합니다." },
-      { en: "She embraced her friend warmly at the airport.", kr: "그녀는 공항에서 친구를 따뜻하게 포옹했습니다." }
+      { en: "We need to embrace change instead of fighting it.", kr: "변화에 맞서기보다는 받아들여야 해요." },
+      { en: "She embraced her friend warmly at the airport.", kr: "그녀는 공항에서 친구를 꼭 껴안았어요." }
     ]
   },
   {
@@ -7611,30 +7611,30 @@ const wordsLevel3_Part1 = [
     ]
   },
   {
-    id: "L3-044",
-    word: "empirical",
-    meaning: "경험적인, 실증적인",
+    id: "L3-656",
+    word: "hungry",
+    meaning: "배고픈",
     examples: [
-      { en: "The conclusion is based on strong empirical evidence.", kr: "그 결론은 강력한 경험적 증거에 기반하고 있습니다." },
-      { en: "We need an empirical test to verify the theory.", kr: "우리는 그 이론을 검증하기 위해 실증적인 테스트가 필요합니다." }
+      { en: "I'm starving. Are you hungry too?", kr: "나 배고파 죽겠어. 너도 배고파?" },
+      { en: "Let's grab something to eat before we get too hungry.", kr: "너무 배고파지기 전에 뭐 좀 먹자." }
     ]
   },
   {
     id: "L3-045",
     word: "endeavor",
-    meaning: "노력, 시도하다",
+    meaning: "노력, 시도, 도전",
     examples: [
-      { en: "Success requires constant endeavor and dedication.", kr: "성공은 끊임없는 노력과 헌신을 필요로 합니다." },
-      { en: "He endeavored to finish the project on time.", kr: "그는 프로젝트를 제시간에 끝내려고 시도했습니다." }
+      { en: "Good luck with all your future endeavors!", kr: "앞으로의 모든 도전에 행운을 빌어요!" },
+      { en: "Starting a business is a risky endeavor.", kr: "창업은 위험 부담이 큰 도전이에요." }
     ]
   },
   {
     id: "L3-046",
     word: "endorse",
-    meaning: "지지하다, 보증하다",
+    meaning: "지지하다, 보증하다, (광고로) 홍보하다",
     examples: [
-      { en: "The organization publicly endorsed the candidate.", kr: "그 조직은 공개적으로 그 후보를 지지했습니다." },
-      { en: "Many athletes endorse sports brands.", kr: "많은 운동선수들이 스포츠 브랜드의 광고 모델로 활동합니다." }
+      { en: "I can't endorse a product I've never used.", kr: "써 보지도 않은 제품을 보증할 수는 없어요." },
+      { en: "Lots of athletes endorse sports brands.", kr: "많은 운동선수들이 스포츠 브랜드를 광고해요." }
     ]
   },
   {
@@ -7656,30 +7656,30 @@ const wordsLevel3_Part1 = [
     ]
   },
   {
-    id: "L3-049",
-    word: "entity",
-    meaning: "실체, 독립체",
+    id: "L3-657",
+    word: "cancel",
+    meaning: "취소하다",
     examples: [
-      { en: "The company is a separate legal entity.", kr: "그 회사는 별도의 법적 실체입니다." },
-      { en: "Scientists still debate whether a virus is a living entity.", kr: "과학자들은 바이러스가 살아 있는 실체인지 여전히 논쟁합니다." }
+      { en: "Sorry, I have to cancel our lunch today.", kr: "미안해요, 오늘 점심 약속 취소해야 할 것 같아요." },
+      { en: "Our flight got canceled because of the storm.", kr: "폭풍 때문에 비행기가 결항됐어요." }
     ]
   },
   {
     id: "L3-050",
     word: "equivalent",
-    meaning: "동등한, 상응하는",
+    meaning: "동등한, ~에 해당하는 (것)",
     examples: [
-      { en: "One euro is roughly equivalent to 1.1 US dollars.", kr: "1유로는 대략 1.1달러와 동등합니다." },
-      { en: "She has an equivalent level of experience.", kr: "그녀는 동등한 수준의 경험을 가지고 있습니다." }
+      { en: "What's the Korean equivalent of this word?", kr: "이 단어에 해당하는 한국어는 뭐예요?" },
+      { en: "Is this certificate equivalent to a college degree?", kr: "이 자격증이 대학 학위랑 동등한 건가요?" }
     ]
   },
   {
     id: "L3-051",
     word: "erode",
-    meaning: "침식하다, 약화시키다",
+    meaning: "침식하다, (서서히) 약화시키다",
     examples: [
-      { en: "Wind and rain slowly erode the rock formations.", kr: "바람과 비는 암석층을 서서히 침식시킵니다." },
-      { en: "Lack of trust can erode a relationship over time.", kr: "신뢰 부족은 시간이 지남에 따라 관계를 약화시킬 수 있습니다." }
+      { en: "Lies slowly erode trust in any relationship.", kr: "거짓말은 어떤 관계에서든 신뢰를 서서히 무너뜨려요." },
+      { en: "The beach is eroding a little more every year.", kr: "해변이 해마다 조금씩 더 깎여 나가고 있어요." }
     ]
   },
   {
@@ -7687,8 +7687,8 @@ const wordsLevel3_Part1 = [
     word: "ethical",
     meaning: "윤리적인",
     examples: [
-      { en: "The decision raises several ethical questions.", kr: "그 결정은 여러 윤리적인 질문을 제기합니다." },
-      { en: "We must adhere to the highest ethical standards.", kr: "우리는 최고의 윤리적 기준을 준수해야 합니다." }
+      { en: "Is it ethical to check your partner's phone?", kr: "애인 휴대폰을 확인하는 게 윤리적인가요?" },
+      { en: "I try to buy from ethical brands when I can.", kr: "가능하면 윤리적인 브랜드에서 사려고 해요." }
     ]
   },
   {
@@ -7696,8 +7696,8 @@ const wordsLevel3_Part1 = [
     word: "evoke",
     meaning: "불러일으키다",
     examples: [
-      { en: "The old photographs evoked happy memories.", kr: "오래된 사진들은 행복한 기억들을 불러일으켰습니다." },
-      { en: "The speech was meant to evoke a sense of national pride.", kr: "그 연설은 국가적 자부심을 불러일으키기 위해 의도되었습니다." }
+      { en: "The old photos evoked so many happy memories.", kr: "오래된 사진들을 보니 행복했던 기억이 많이 떠올랐어요." },
+      { en: "The smell of rain evokes my childhood in the countryside.", kr: "비 냄새를 맡으면 시골에서 보낸 어린 시절이 떠올라요." }
     ]
   },
   {
@@ -7730,10 +7730,10 @@ const wordsLevel3_Part1 = [
   {
     id: "L3-057",
     word: "exert",
-    meaning: "행사하다, 발휘하다",
+    meaning: "(힘·영향력을) 행사하다, 무리해서 애쓰다",
     examples: [
-      { en: "He had to exert all his strength to lift the rock.", kr: "그는 바위를 들기 위해 자신의 모든 힘을 발휘해야 했습니다." },
-      { en: "The new rules exert pressure on small businesses.", kr: "새 규칙들은 소기업에 압력을 행사합니다." }
+      { en: "Don't exert yourself too much. You just got out of the hospital.", kr: "너무 무리하지 마. 퇴원한 지 얼마 안 됐잖아." },
+      { en: "My parents exert a lot of pressure on me about grades.", kr: "부모님이 성적 때문에 나한테 압박을 많이 줘." }
     ]
   },
   {
@@ -7768,8 +7768,8 @@ const wordsLevel3_Part1 = [
     word: "extract",
     meaning: "추출하다, 뽑아내다",
     examples: [
-      { en: "It is difficult to extract the oil from the seed.", kr: "그 씨앗에서 기름을 추출하는 것은 어렵습니다." },
-      { en: "The dentist had to extract a painful tooth.", kr: "치과 의사는 고통스러운 이를 뽑아내야 했습니다." }
+      { en: "I had a wisdom tooth extracted yesterday.", kr: "어제 사랑니를 뽑았어요." },
+      { en: "This app can extract text from photos.", kr: "이 앱은 사진에서 글자를 추출할 수 있어요." }
     ]
   },
   {
@@ -7777,8 +7777,8 @@ const wordsLevel3_Part1 = [
     word: "feasible",
     meaning: "실행 가능한",
     examples: [
-      { en: "We need a feasible plan that can be implemented quickly.", kr: "우리는 빠르게 시행할 수 있는 실행 가능한 계획이 필요합니다." },
-      { en: "Is it technically feasible to build the bridge here?", kr: "여기에 다리를 건설하는 것이 기술적으로 실행 가능합니까?" }
+      { en: "Is that plan even feasible with our budget?", kr: "그 계획이 우리 예산으로 실행 가능하긴 해요?" },
+      { en: "Finishing by Friday just isn't feasible.", kr: "금요일까지 끝내는 건 현실적으로 실행 불가능해요." }
     ]
   },
   {
@@ -7795,8 +7795,8 @@ const wordsLevel3_Part1 = [
     word: "fund",
     meaning: "자금, 자금을 대다",
     examples: [
-      { en: "The charity needs more funds to continue its work.", kr: "그 자선단체는 작업을 계속하기 위해 더 많은 자금이 필요합니다." },
-      { en: "The project was fully funded by a private investor.", kr: "그 프로젝트는 개인 투자자에 의해 완전히 자금을 지원받았습니다." }
+      { en: "We're raising funds for the local animal shelter.", kr: "지역 동물 보호소를 위해 기금을 모으고 있어요." },
+      { en: "Who's going to fund this project?", kr: "이 프로젝트 자금은 누가 대요?" }
     ]
   },
   {
@@ -7804,8 +7804,8 @@ const wordsLevel3_Part1 = [
     word: "fundamental",
     meaning: "근본적인, 기본적인",
     examples: [
-      { en: "Honesty is a fundamental principle of our business.", kr: "정직은 우리 사업의 근본적인 원칙입니다." },
-      { en: "The report describes the fundamental issues facing the company.", kr: "그 보고서는 회사가 직면한 기본적인 문제들을 설명합니다." }
+      { en: "There's a fundamental problem with this plan.", kr: "이 계획에는 근본적인 문제가 있어요." },
+      { en: "Trust is fundamental in any relationship.", kr: "신뢰는 어떤 관계에서든 가장 기본이에요." }
     ]
   },
   {
@@ -7813,8 +7813,8 @@ const wordsLevel3_Part1 = [
     word: "generalize",
     meaning: "일반화하다",
     examples: [
-      { en: "It is wrong to generalize about an entire group of people.", kr: "어떤 집단 전체에 대해 일반화하는 것은 잘못입니다." },
-      { en: "The theory attempts to generalize the results to all living things.", kr: "그 이론은 결과를 모든 생명체에 일반화하려고 시도합니다." }
+      { en: "You can't generalize about a whole country from one person.", kr: "한 사람만 보고 나라 전체를 일반화하면 안 돼요." },
+      { en: "I don't want to generalize, but most kids love pizza.", kr: "일반화하고 싶진 않지만, 대부분의 아이들은 피자를 좋아하잖아요." }
     ]
   },
   {
@@ -7840,17 +7840,17 @@ const wordsLevel3_Part1 = [
     word: "hypothesis",
     meaning: "가설",
     examples: [
-      { en: "The experiment tested the scientist's main hypothesis.", kr: "그 실험은 과학자의 주요 가설을 시험했습니다." },
-      { en: "We formed a hypothesis about the cause of the disease.", kr: "우리는 그 질병의 원인에 대한 가설을 세웠습니다." }
+      { en: "That's just a hypothesis. We need to test it.", kr: "그건 가설일 뿐이에요. 검증해 봐야 해요." },
+      { en: "My hypothesis is that people skip breakfast because they're busy.", kr: "내 가설은 사람들이 바빠서 아침을 거른다는 거야." }
     ]
   },
   {
     id: "L3-070",
     word: "identical",
-    meaning: "동일한",
+    meaning: "동일한, 똑같은",
     examples: [
-      { en: "The two houses are virtually identical in appearance.", kr: "그 두 집은 외관상 사실상 동일합니다." },
-      { en: "The witness described an event identical to the one in the police report.", kr: "그 증인은 경찰 보고서의 내용과 동일한 사건을 묘사했습니다." }
+      { en: "You and your sister look almost identical!", kr: "너랑 언니랑 거의 똑같이 생겼다!" },
+      { en: "These two shirts are identical except for the color.", kr: "이 두 셔츠는 색깔만 빼고 똑같아요." }
     ]
   },
   {
@@ -7867,8 +7867,8 @@ const wordsLevel3_Part1 = [
     word: "immigrant",
     meaning: "이민자",
     examples: [
-      { en: "Many immigrants come here seeking a better life.", kr: "많은 이민자들이 더 나은 삶을 찾아 이곳으로 옵니다." },
-      { en: "The city has a large population of first-generation immigrants.", kr: "그 도시는 많은 1세대 이민자 인구를 가지고 있습니다." }
+      { en: "My grandparents were immigrants from Korea.", kr: "우리 조부모님은 한국에서 온 이민자셨어요." },
+      { en: "Lots of immigrants run small businesses in this neighborhood.", kr: "이 동네에는 작은 가게를 하는 이민자들이 많아요." }
     ]
   },
   {
@@ -7885,8 +7885,8 @@ const wordsLevel3_Part1 = [
     word: "impose",
     meaning: "부과하다, 강요하다",
     examples: [
-      { en: "The government imposed a ban on smoking in all public parks.", kr: "정부는 모든 공공 공원에 흡연 금지 조치를 부과했습니다." },
-      { en: "Do not impose your views on others.", kr: "당신의 견해를 다른 사람에게 강요하지 마세요." }
+      { en: "They're going to impose a new tax on sugary drinks.", kr: "설탕 음료에 새 세금을 부과한대요." },
+      { en: "Don't impose your opinions on other people.", kr: "네 생각을 다른 사람들한테 강요하지 마." }
     ]
   },
   {
@@ -7899,30 +7899,30 @@ const wordsLevel3_Part1 = [
     ]
   },
   {
-    id: "L3-076",
-    word: "incidence",
-    meaning: "발생률",
+    id: "L3-658",
+    word: "hurry",
+    meaning: "서두르다, 서두름",
     examples: [
-      { en: "The incidence of the disease is higher among the elderly.", kr: "그 질병의 발생률은 노인들 사이에서 더 높습니다." },
-      { en: "We are trying to reduce the incidence of traffic accidents.", kr: "우리는 교통사고 발생률을 줄이려고 노력하고 있습니다." }
+      { en: "Hurry up, or we'll miss the train!", kr: "서둘러, 안 그러면 기차 놓쳐!" },
+      { en: "No hurry. Just send it when you're ready.", kr: "급할 거 없어요. 준비되면 보내 주세요." }
     ]
   },
   {
     id: "L3-077",
     word: "incorporate",
-    meaning: "통합하다, 포함하다",
+    meaning: "포함하다, 반영하다, 통합하다",
     examples: [
-      { en: "We should incorporate the new features into the next version.", kr: "우리는 새로운 기능들을 다음 버전에 통합해야 합니다." },
-      { en: "The new company incorporated the assets of the old one.", kr: "새 회사는 이전 회사의 자산들을 포함했습니다." }
+      { en: "Let's incorporate their feedback into the next version.", kr: "그쪽 피드백을 다음 버전에 반영해요." },
+      { en: "I try to incorporate more vegetables into my meals.", kr: "식단에 채소를 더 많이 넣으려고 해요." }
     ]
   },
   {
     id: "L3-078",
     word: "indigenous",
-    meaning: "토착의, 고유의",
+    meaning: "토착의, 토종의, 원주민의",
     examples: [
-      { en: "The indigenous people of the island have a unique culture.", kr: "그 섬의 토착민들은 독특한 문화를 가지고 있습니다." },
-      { en: "This plant is indigenous to the mountainous region.", kr: "이 식물은 산악 지역 고유의 것입니다." }
+      { en: "Is this plant indigenous to Korea?", kr: "이 식물은 한국 토종이에요?" },
+      { en: "We visited a museum about the island's indigenous people.", kr: "섬 원주민에 관한 박물관에 다녀왔어요." }
     ]
   },
   {
@@ -7930,17 +7930,17 @@ const wordsLevel3_Part1 = [
     word: "induce",
     meaning: "유도하다, 유발하다",
     examples: [
-      { en: "The advertisement was designed to induce consumers to buy the product.", kr: "그 광고는 소비자들이 제품을 구매하도록 유도하기 위해 고안되었습니다." },
-      { en: "Loud noises can induce stress and headaches.", kr: "큰 소음은 스트레스와 두통을 유발할 수 있습니다." }
+      { en: "The doctor decided to induce labor last night.", kr: "의사가 어젯밤에 유도 분만을 하기로 했어요." },
+      { en: "Some medicines can induce drowsiness, so be careful.", kr: "어떤 약은 졸음을 유발할 수 있으니 조심하세요." }
     ]
   },
   {
     id: "L3-080",
     word: "infer",
-    meaning: "추론하다",
+    meaning: "추론하다, 짐작하다",
     examples: [
-      { en: "What can you infer from the speaker's tone of voice?", kr: "연사의 목소리 톤에서 무엇을 추론할 수 있습니까?" },
-      { en: "We infer meaning based on the context.", kr: "우리는 맥락에 기반하여 의미를 추론합니다." }
+      { en: "From her tone, I inferred that she was upset.", kr: "말투로 봐서 그녀가 화났다고 짐작했어요." },
+      { en: "So should I infer that you're not coming?", kr: "그럼 너 안 온다고 짐작하면 되는 거야?" }
     ]
   },
   {
@@ -7973,19 +7973,19 @@ const wordsLevel3_Part1 = [
   {
     id: "L3-084",
     word: "insight",
-    meaning: "통찰력",
+    meaning: "통찰(력), 깊은 이해",
     examples: [
-      { en: "Her deep insight helped solve the complex problem.", kr: "그녀의 깊은 통찰력이 복잡한 문제를 해결하는 데 도움이 되었습니다." },
-      { en: "The book provides great insight into the culture.", kr: "그 책은 그 문화에 대한 훌륭한 통찰력을 제공합니다." }
+      { en: "Thanks, that's a really helpful insight.", kr: "고마워요, 정말 도움 되는 통찰이네요." },
+      { en: "Living abroad gave me insight into different cultures.", kr: "해외에 살면서 다른 문화를 깊이 이해하게 됐어요." }
     ]
   },
   {
     id: "L3-085",
     word: "instance",
-    meaning: "사례, 경우",
+    meaning: "예, 사례, 경우",
     examples: [
-      { en: "For instance, look at the graph on page 7.", kr: "예를 들어, 7페이지의 그래프를 보세요." },
-      { en: "The crime was a rare instance of violence in the town.", kr: "그 범죄는 그 마을에서 드문 폭력 사례였습니다." }
+      { en: "I love outdoor sports. For instance, hiking and surfing.", kr: "저는 야외 스포츠를 좋아해요. 예를 들면 등산이랑 서핑이요." },
+      { en: "In this instance, I think we should make an exception.", kr: "이번 경우에는 예외를 두는 게 좋을 것 같아요." }
     ]
   },
   {
@@ -8000,19 +8000,19 @@ const wordsLevel3_Part1 = [
   {
     id: "L3-087",
     word: "integral",
-    meaning: "필수적인, 불가결한",
+    meaning: "필수적인, 없어서는 안 될",
     examples: [
-      { en: "Teamwork is an integral part of the company's success.", kr: "팀워크는 회사 성공의 필수적인 부분입니다." },
-      { en: "Music is integral to the film's emotional impact.", kr: "음악은 그 영화가 주는 감동에 필수적입니다." }
+      { en: "You're an integral part of this team.", kr: "당신은 이 팀에 없어서는 안 될 사람이에요." },
+      { en: "Music is an integral part of the movie.", kr: "음악은 이 영화에서 빼놓을 수 없는 부분이에요." }
     ]
   },
   {
     id: "L3-088",
     word: "intense",
-    meaning: "강렬한, 극심한",
+    meaning: "강렬한, (강도가) 센, 극심한",
     examples: [
-      { en: "The workout requires intense physical effort.", kr: "그 운동은 강렬한 육체적 노력을 요구합니다." },
-      { en: "There was intense pressure to finish the project on time.", kr: "프로젝트를 제시간에 끝내야 한다는 극심한 압박이 있었습니다." }
+      { en: "That workout was way too intense for me.", kr: "그 운동은 나한테 너무 강도가 셌어." },
+      { en: "The pressure at work has been really intense lately.", kr: "요즘 회사에서 압박이 정말 심해요." }
     ]
   },
   {
@@ -8043,12 +8043,12 @@ const wordsLevel3_Part1 = [
     ]
   },
   {
-    id: "L3-092",
-    word: "intrinsic",
-    meaning: "고유한, 본질적인",
+    id: "L3-659",
+    word: "delicious",
+    meaning: "맛있는",
     examples: [
-      { en: "The painting has immense intrinsic value.", kr: "그 그림은 그 자체로 엄청난 가치를 지니고 있습니다." },
-      { en: "The ability to learn is an intrinsic human trait.", kr: "학습 능력은 인간의 본질적인 특성입니다." }
+      { en: "Wow, this pasta is absolutely delicious!", kr: "와, 이 파스타 진짜 맛있다!" },
+      { en: "Do you know any place with delicious Korean food around here?", kr: "이 근처에 한국 음식 맛있는 데 알아요?" }
     ]
   },
   {
@@ -8092,8 +8092,8 @@ const wordsLevel3_Part1 = [
     word: "layer",
     meaning: "층, 겹",
     examples: [
-      { en: "The cake consists of three layers of cream and sponge.", kr: "그 케이크는 세 겹의 크림과 스폰지로 구성되어 있습니다." },
-      { en: "The archaeological dig revealed several layers of ancient civilization.", kr: "그 고고학 발굴은 고대 문명의 여러 층들을 드러냈습니다." }
+      { en: "This cake has three layers of cream and sponge.", kr: "이 케이크는 크림이랑 스펀지가 세 층으로 되어 있어요." },
+      { en: "It's cold out, so wear a few layers.", kr: "밖이 추우니까 옷을 몇 겹 껴입어." }
     ]
   },
   {
@@ -8108,10 +8108,10 @@ const wordsLevel3_Part1 = [
   {
     id: "L3-099",
     word: "license",
-    meaning: "면허, 허가",
+    meaning: "면허(증), 허가",
     examples: [
-      { en: "You need a license to drive a motorcycle.", kr: "오토바이를 운전하려면 면허가 필요합니다." },
-      { en: "The company obtained a license to sell software overseas.", kr: "그 회사는 해외에서 소프트웨어를 판매할 허가를 얻었습니다." }
+      { en: "You need a special license to drive a motorcycle.", kr: "오토바이를 운전하려면 별도 면허가 필요해요." },
+      { en: "Did you remember to bring your driver's license?", kr: "운전면허증 챙겼어?" }
     ]
   },
   {
@@ -8119,8 +8119,8 @@ const wordsLevel3_Part1 = [
     word: "logic",
     meaning: "논리",
     examples: [
-      { en: "There is a flaw in your argument's logic.", kr: "당신 주장의 논리에 결함이 있습니다." },
-      { en: "We used simple logic to solve the puzzle.", kr: "우리는 퍼즐을 풀기 위해 단순한 논리를 사용했습니다." }
+      { en: "Sorry, I don't follow your logic here.", kr: "미안, 여기서 네 논리가 이해가 안 돼." },
+      { en: "There's no logic in buying a car you can't afford.", kr: "감당도 못 할 차를 사는 건 논리적으로 말이 안 돼." }
     ]
   }
 ];
@@ -8131,8 +8131,8 @@ const wordsLevel3_Part2 = [
     word: "magnitude",
     meaning: "규모, 크기",
     examples: [
-      { en: "The earthquake was of a high magnitude.", kr: "그 지진은 규모가 매우 컸습니다." },
-      { en: "We underestimated the magnitude of the problem.", kr: "우리는 문제의 크기를 과소평가했습니다." }
+      { en: "I don't think you understand the magnitude of this problem.", kr: "이 문제의 규모를 잘 모르시는 것 같아요." },
+      { en: "Did you hear? It was a magnitude 6 earthquake.", kr: "들었어? 규모 6의 지진이었대." }
     ]
   },
   {
@@ -8147,10 +8147,10 @@ const wordsLevel3_Part2 = [
   {
     id: "L3-103",
     word: "mechanism",
-    meaning: "메커니즘, 장치",
+    meaning: "장치, 메커니즘, 체계",
     examples: [
-      { en: "The old clock has a complex internal mechanism.", kr: "그 오래된 시계는 복잡한 내부 장치를 가지고 있습니다." },
-      { en: "We need a mechanism to resolve disputes.", kr: "우리는 분쟁을 해결할 메커니즘이 필요합니다." }
+      { en: "The lock mechanism on this door is broken.", kr: "이 문의 잠금장치가 고장 났어요." },
+      { en: "We need a better mechanism for handling customer complaints.", kr: "고객 불만을 처리할 더 나은 체계가 필요해요." }
     ]
   },
   {
@@ -8183,19 +8183,19 @@ const wordsLevel3_Part2 = [
   {
     id: "L3-107",
     word: "mutual",
-    meaning: "상호의, 공통의",
+    meaning: "서로의, 상호의, 공통의",
     examples: [
-      { en: "The negotiation led to a mutual agreement.", kr: "그 협상은 상호 합의로 이어졌습니다." },
-      { en: "They share a mutual interest in photography.", kr: "그들은 사진에 대한 공통의 관심을 공유합니다." }
+      { en: "We met through a mutual friend.", kr: "서로 아는 친구 소개로 만났어요." },
+      { en: "We broke up by mutual agreement, so there's no drama.", kr: "서로 합의해서 헤어진 거라 별문제 없어." }
     ]
   },
   {
     id: "L3-108",
     word: "notable",
-    meaning: "주목할 만한, 저명한",
+    meaning: "주목할 만한, 눈에 띄는",
     examples: [
-      { en: "The company achieved a notable increase in sales.", kr: "그 회사는 주목할 만한 매출 증가를 달성했습니다." },
-      { en: "He is a notable figure in the history of science.", kr: "그는 과학 역사에서 저명한 인물입니다." }
+      { en: "The most notable change is the new design.", kr: "가장 눈에 띄는 변화는 새 디자인이에요." },
+      { en: "Is there anything notable on the agenda today?", kr: "오늘 안건 중에 주목할 만한 거 있어요?" }
     ]
   },
   {
@@ -8212,17 +8212,17 @@ const wordsLevel3_Part2 = [
     word: "notorious",
     meaning: "악명 높은",
     examples: [
-      { en: "The bank robber was notorious for his daring escapes.", kr: "그 은행 강도는 대담한 탈출로 악명 높았습니다." },
-      { en: "The restaurant is notorious for its poor service.", kr: "그 식당은 형편없는 서비스로 악명이 높습니다." }
+      { en: "This road is notorious for traffic jams.", kr: "이 길은 교통 체증으로 악명 높아요." },
+      { en: "That restaurant is notorious for its terrible service.", kr: "그 식당은 서비스가 형편없기로 악명 높아요." }
     ]
   },
   {
-    id: "L3-111",
-    word: "notwithstanding",
-    meaning: "~에도 불구하고",
+    id: "L3-660",
+    word: "confused",
+    meaning: "혼란스러운, 헷갈리는",
     examples: [
-      { en: "Notwithstanding the high cost, the project proceeded.", kr: "높은 비용에도 불구하고, 프로젝트는 진행되었습니다." },
-      { en: "His lack of experience notwithstanding, he got the job.", kr: "그의 경험 부족에도 불구하고, 그는 그 일자리를 얻었습니다." }
+      { en: "Sorry, I'm a little confused. Can you explain that again?", kr: "죄송한데 좀 헷갈려요. 다시 설명해 주실래요?" },
+      { en: "I always get confused by the subway map here.", kr: "여기 지하철 노선도는 볼 때마다 헷갈려요." }
     ]
   },
   {
@@ -8230,8 +8230,8 @@ const wordsLevel3_Part2 = [
     word: "objective",
     meaning: "객관적인, 목표",
     examples: [
-      { en: "We need an objective assessment of the situation.", kr: "우리는 상황에 대한 객관적인 평가가 필요합니다." },
-      { en: "The primary objective is to increase customer satisfaction.", kr: "주요 목표는 고객 만족을 높이는 것입니다." }
+      { en: "Try to be objective. Don't take it personally.", kr: "객관적으로 생각해 봐. 개인적으로 받아들이지 말고." },
+      { en: "What's the main objective of this meeting?", kr: "이번 회의의 주요 목표가 뭐예요?" }
     ]
   },
   {
@@ -8248,17 +8248,17 @@ const wordsLevel3_Part2 = [
     word: "outcome",
     meaning: "결과, 성과",
     examples: [
-      { en: "The outcome of the meeting was positive.", kr: "회의 결과는 긍정적이었습니다." },
-      { en: "We are waiting for the final outcome of the negotiation.", kr: "우리는 협상의 최종 결과를 기다리고 있습니다." }
+      { en: "Whatever the outcome, I'm proud of you.", kr: "결과가 어떻든 난 네가 자랑스러워." },
+      { en: "I'm still waiting for the outcome of the interview.", kr: "아직 면접 결과를 기다리고 있어요." }
     ]
   },
   {
     id: "L3-115",
     word: "output",
-    meaning: "산출, 출력",
+    meaning: "생산량, 산출(물), 출력",
     examples: [
-      { en: "The factory's output increased significantly this month.", kr: "그 공장의 산출이 이번 달에 상당히 증가했습니다." },
-      { en: "The printer provides a high-quality output.", kr: "그 프린터는 고품질 출력을 제공합니다." }
+      { en: "Our team's output has really gone up this month.", kr: "이번 달 우리 팀 생산량이 확 늘었어요." },
+      { en: "Plug the speakers into the audio output.", kr: "스피커를 오디오 출력 단자에 꽂아." }
     ]
   },
   {
@@ -8282,19 +8282,19 @@ const wordsLevel3_Part2 = [
   {
     id: "L3-118",
     word: "paradigm",
-    meaning: "패러다임, 전형",
+    meaning: "패러다임, (사고의) 틀",
     examples: [
-      { en: "The invention marked a paradigm shift in technology.", kr: "그 발명은 기술의 패러다임 변화를 나타냈습니다." },
-      { en: "His work is a paradigm of academic excellence.", kr: "그의 작품은 학문적 우수성의 전형입니다." }
+      { en: "Remote work caused a paradigm shift in how we work.", kr: "재택근무가 일하는 방식에 패러다임 전환을 가져왔어요." },
+      { en: "Smartphones created a whole new paradigm for shopping.", kr: "스마트폰이 쇼핑에 완전히 새로운 패러다임을 만들었어요." }
     ]
   },
   {
     id: "L3-119",
     word: "parameter",
-    meaning: "매개변수, 기준",
+    meaning: "기준, (정해진) 범위",
     examples: [
-      { en: "We must define the parameters of the study clearly.", kr: "우리는 연구의 매개변수(기준)를 명확하게 정의해야 합니다." },
-      { en: "The budget set strict financial parameters.", kr: "예산은 엄격한 재정적 기준을 설정했습니다." }
+      { en: "Let's set some parameters before we start the project.", kr: "프로젝트 시작 전에 기준을 좀 정해 둡시다." },
+      { en: "We have to work within the parameters of the budget.", kr: "예산 범위 안에서 일해야 해요." }
     ]
   },
   {
@@ -8329,8 +8329,8 @@ const wordsLevel3_Part2 = [
     word: "phenomenon",
     meaning: "현상",
     examples: [
-      { en: "Global warming is a complex phenomenon.", kr: "지구 온난화는 복잡한 현상입니다." },
-      { en: "The sudden popularity of the song was an unusual phenomenon.", kr: "그 노래의 갑작스러운 인기는 특이한 현상이었습니다." }
+      { en: "The northern lights are an amazing natural phenomenon.", kr: "오로라는 정말 놀라운 자연 현상이에요." },
+      { en: "That song going viral overnight was a strange phenomenon.", kr: "그 노래가 하룻밤 만에 뜬 건 이상한 현상이었어요." }
     ]
   },
   {
@@ -8354,10 +8354,10 @@ const wordsLevel3_Part2 = [
   {
     id: "L3-126",
     word: "prior",
-    meaning: "이전의, 앞선",
+    meaning: "이전의, (prior to) ~ 전에",
     examples: [
-      { en: "You need prior experience for this job.", kr: "당신은 이 일자리를 위해 이전의 경험이 필요합니다." },
-      { en: "The event occurred prior to the signing of the agreement.", kr: "그 사건은 계약 체결에 앞서 발생했습니다." }
+      { en: "Do I need any prior experience for this job?", kr: "이 일에 이전 경력이 필요한가요?" },
+      { en: "Please arrive 30 minutes prior to departure.", kr: "출발 30분 전까지 도착해 주세요." }
     ]
   },
   {
@@ -8401,8 +8401,8 @@ const wordsLevel3_Part2 = [
     word: "quantity",
     meaning: "양",
     examples: [
-      { en: "We need a large quantity of raw materials.", kr: "우리는 많은 양의 원자재가 필요합니다." },
-      { en: "The quantity of food provided was not sufficient.", kr: "제공된 음식의 양은 충분하지 않았습니다." }
+      { en: "When it comes to friends, I prefer quality over quantity.", kr: "친구는 양보다 질이라고 생각해요." },
+      { en: "Do you sell these in large quantities?", kr: "이거 대량으로도 파세요?" }
     ]
   },
   {
@@ -8410,8 +8410,8 @@ const wordsLevel3_Part2 = [
     word: "quota",
     meaning: "할당량",
     examples: [
-      { en: "Each department has a specific sales quota to meet.", kr: "각 부서는 충족해야 할 특정 판매 할당량이 있습니다." },
-      { en: "The import quota was limited by the government.", kr: "수입 할당량이 정부에 의해 제한되었습니다." }
+      { en: "I still need two more sales to hit my quota.", kr: "할당량을 채우려면 아직 두 건 더 팔아야 해요." },
+      { en: "We each have a monthly quota of calls to make.", kr: "우리는 각자 매달 채워야 하는 통화 할당량이 있어요." }
     ]
   },
   {
@@ -8419,8 +8419,8 @@ const wordsLevel3_Part2 = [
     word: "radical",
     meaning: "근본적인, 급진적인",
     examples: [
-      { en: "The company needs a radical overhaul of its management.", kr: "그 회사는 경영 방식을 근본적으로 개편해야 합니다." },
-      { en: "He holds radical political views.", kr: "그는 급진적인 정치적 견해를 가지고 있습니다." }
+      { en: "We need a radical change, not small fixes.", kr: "작은 수정이 아니라 근본적인 변화가 필요해요." },
+      { en: "Some of his political views are pretty radical.", kr: "그의 정치적 견해 중 일부는 꽤 급진적이에요." }
     ]
   },
   {
@@ -8471,10 +8471,10 @@ const wordsLevel3_Part2 = [
   {
     id: "L3-139",
     word: "reflect",
-    meaning: "반영하다, 반사하다",
+    meaning: "반영하다, 비추다",
     examples: [
-      { en: "The calm water clearly reflects the sky.", kr: "잔잔한 물이 하늘을 명확하게 반사합니다." },
-      { en: "The policy should reflect the needs of the community.", kr: "정책은 지역 사회의 필요를 반영해야 합니다." }
+      { en: "Your grades don't reflect how smart you are.", kr: "성적이 네 똑똑함을 반영하는 건 아니야." },
+      { en: "The lake reflects the mountains perfectly.", kr: "호수에 산이 그대로 비쳐요." }
     ]
   },
   {
@@ -8482,8 +8482,8 @@ const wordsLevel3_Part2 = [
     word: "reform",
     meaning: "개혁하다, 개혁",
     examples: [
-      { en: "The government promised to reform the education system.", kr: "정부는 교육 시스템을 개혁하겠다고 약속했습니다." },
-      { en: "Tax reform is a major political issue.", kr: "세제 개혁은 주요 정치적 쟁점입니다." }
+      { en: "The new president promised to reform the tax system.", kr: "새 대통령이 세금 제도를 개혁하겠다고 약속했어요." },
+      { en: "Do you think school reform will actually help kids?", kr: "학교 개혁이 실제로 아이들한테 도움이 될까요?" }
     ]
   },
   {
@@ -8525,19 +8525,19 @@ const wordsLevel3_Part2 = [
   {
     id: "L3-145",
     word: "reproduce",
-    meaning: "번식하다, 복제하다",
+    meaning: "복제하다, 재현하다",
     examples: [
-      { en: "The artist has the sole right to reproduce his work.", kr: "그 예술가는 자신의 작품을 복제할 유일한 권리를 가지고 있습니다." },
-      { en: "Many species of fish reproduce during the spring.", kr: "많은 종의 물고기가 봄 동안 번식합니다." }
+      { en: "You can't reproduce these photos without permission.", kr: "허락 없이 이 사진들을 복제하면 안 돼요." },
+      { en: "I can't reproduce the bug on my computer.", kr: "제 컴퓨터에서는 그 버그가 재현이 안 돼요." }
     ]
   },
   {
     id: "L3-146",
     word: "resort",
-    meaning: "(수단에) 의지하다, 리조트",
+    meaning: "(최후 수단에) 의지하다, 리조트",
     examples: [
-      { en: "They had to resort to force to open the door.", kr: "그들은 문을 열기 위해 결국 힘을 써야 했습니다." },
-      { en: "We are planning a trip to a seaside resort.", kr: "우리는 해변 리조트로 여행을 계획하고 있습니다." }
+      { en: "I hope we don't have to resort to cutting jobs.", kr: "인원 감축이라는 수단까지 쓰는 일은 없었으면 좋겠어요." },
+      { en: "We stayed at a beach resort in Bali.", kr: "발리에 있는 해변 리조트에서 묵었어요." }
     ]
   },
   {
@@ -8552,10 +8552,10 @@ const wordsLevel3_Part2 = [
   {
     id: "L3-148",
     word: "retrieve",
-    meaning: "되찾다, 회수하다",
+    meaning: "되찾다, 가져오다, 회수하다",
     examples: [
-      { en: "I need to retrieve the file from the backup server.", kr: "저는 백업 서버에서 파일을 되찾아와야 합니다." },
-      { en: "The dog was trained to retrieve objects.", kr: "그 개는 물건을 물어 오도록 훈련되었습니다." }
+      { en: "I need to retrieve some files from my old laptop.", kr: "예전 노트북에서 파일 몇 개를 꺼내 와야 해요." },
+      { en: "The dog ran to retrieve the ball.", kr: "개가 공을 물어 오려고 달려갔어요." }
     ]
   },
   {
@@ -8590,8 +8590,8 @@ const wordsLevel3_Part2 = [
     word: "scenario",
     meaning: "시나리오, 예상되는 상황",
     examples: [
-      { en: "We prepared for several worst-case scenarios.", kr: "우리는 몇 가지 최악의 시나리오에 대비했습니다." },
-      { en: "In the best scenario, we will finish by Friday.", kr: "최상의 시나리오라면 우리는 금요일까지 끝낼 것입니다." }
+      { en: "Let's plan for the worst-case scenario.", kr: "최악의 시나리오에 대비해서 계획을 세워 두자." },
+      { en: "In the best-case scenario, we'll finish by Friday.", kr: "최상의 시나리오라면 금요일까지 끝낼 수 있어요." }
     ]
   },
   {
@@ -8606,10 +8606,10 @@ const wordsLevel3_Part2 = [
   {
     id: "L3-154",
     word: "security",
-    meaning: "보안, 안전",
+    meaning: "보안, 안전, 안정",
     examples: [
-      { en: "Data security is a top priority for the company.", kr: "데이터 보안은 회사의 최우선 과제입니다." },
-      { en: "The new system ensures personal security.", kr: "새로운 시스템은 개인의 안전을 보장합니다." }
+      { en: "It took forever to get through airport security.", kr: "공항 보안 검색대 통과하는 데 한참 걸렸어요." },
+      { en: "Job security is more important to me than salary.", kr: "저한텐 연봉보다 고용 안정이 더 중요해요." }
     ]
   },
   {
@@ -8633,10 +8633,10 @@ const wordsLevel3_Part2 = [
   {
     id: "L3-157",
     word: "statute",
-    meaning: "법규, 법령",
+    meaning: "법령, (statute of limitations) 공소시효",
     examples: [
-      { en: "The new statute requires all citizens to pay the fee.", kr: "새 법령은 모든 시민들이 수수료를 지불하도록 요구합니다." },
-      { en: "The action violates an old state statute.", kr: "그 행위는 오래된 주 법규를 위반합니다." }
+      { en: "Is there a statute of limitations on this kind of crime?", kr: "이런 범죄에도 공소시효가 있나요?" },
+      { en: "Is there a statute of limitations on unpaid parking tickets?", kr: "안 낸 주차 딱지에도 시효가 있어요?" }
     ]
   },
   {
@@ -8653,8 +8653,8 @@ const wordsLevel3_Part2 = [
     word: "survey",
     meaning: "설문 조사, 조사하다",
     examples: [
-      { en: "We conducted a detailed survey of customer satisfaction.", kr: "우리는 고객 만족에 대한 상세한 설문 조사를 실시했습니다." },
-      { en: "The team surveyed the damage after the hurricane.", kr: "팀은 허리케인 후 피해를 조사했습니다." }
+      { en: "Could you take a few minutes to fill out our survey?", kr: "잠깐 시간 내서 설문 조사 좀 작성해 주실래요?" },
+      { en: "We surveyed our customers, and most want longer hours.", kr: "고객들을 조사해 봤더니 대부분 영업시간을 늘려 주길 원했어요." }
     ]
   },
   {
@@ -8669,10 +8669,10 @@ const wordsLevel3_Part2 = [
   {
     id: "L3-161",
     word: "symbol",
-    meaning: "상징",
+    meaning: "상징, 기호",
     examples: [
-      { en: "The white dove is a symbol of peace.", kr: "흰 비둘기는 평화의 상징입니다." },
-      { en: "The logo is a powerful symbol of the brand.", kr: "그 로고는 브랜드의 강력한 상징입니다." }
+      { en: "The white dove is a symbol of peace.", kr: "흰 비둘기는 평화의 상징이에요." },
+      { en: "What does this symbol on the washing label mean?", kr: "세탁 라벨에 있는 이 기호는 무슨 뜻이에요?" }
     ]
   },
   {
@@ -8689,8 +8689,8 @@ const wordsLevel3_Part2 = [
     word: "theme",
     meaning: "주제, 테마",
     examples: [
-      { en: "The main theme of the novel is love and loss.", kr: "그 소설의 주요 주제는 사랑과 상실입니다." },
-      { en: "They decorated the room with a space theme.", kr: "그들은 방을 우주 테마로 장식했습니다." }
+      { en: "What's the theme of the party this year?", kr: "올해 파티 테마가 뭐야?" },
+      { en: "Friendship is the main theme of the movie.", kr: "우정이 그 영화의 주된 주제예요." }
     ]
   },
   {
@@ -8698,17 +8698,17 @@ const wordsLevel3_Part2 = [
     word: "transition",
     meaning: "과도기, 전환",
     examples: [
-      { en: "The country is undergoing a smooth transition to a new government.", kr: "그 나라는 새 정부로의 순조로운 전환을 겪고 있습니다." },
-      { en: "The transition from school to work can be difficult.", kr: "학교에서 직장으로의 전환은 어려울 수 있습니다." }
+      { en: "The transition from school to work was hard for me.", kr: "학교에서 직장으로 넘어가는 전환기가 저한텐 힘들었어요." },
+      { en: "We're in a transition period, so things are a bit messy.", kr: "지금은 과도기라 좀 정신없어요." }
     ]
   },
   {
     id: "L3-165",
     word: "trend",
-    meaning: "경향, 유행",
+    meaning: "유행, 추세, 경향",
     examples: [
-      { en: "We are analyzing the current market trend.", kr: "우리는 현재 시장의 경향을 분석하고 있습니다." },
-      { en: "The latest fashion trend is bright colors.", kr: "최신 패션 유행은 밝은 색상입니다." }
+      { en: "Is this a new trend on social media?", kr: "이거 SNS에서 새로 유행하는 거야?" },
+      { en: "More people work remotely now. It's a growing trend.", kr: "요즘 재택근무하는 사람이 늘고 있어요. 점점 커지는 추세예요." }
     ]
   },
   {
@@ -8725,17 +8725,17 @@ const wordsLevel3_Part2 = [
     word: "unprecedented",
     meaning: "전례 없는",
     examples: [
-      { en: "The crisis was of an unprecedented scale.", kr: "그 위기는 전례 없는 규모였습니다." },
-      { en: "The technology achieved an unprecedented speed.", kr: "그 기술은 전례 없는 속도를 달성했습니다." }
+      { en: "We're living in unprecedented times.", kr: "우리는 전례 없는 시대를 살고 있어요." },
+      { en: "Prices have gone up at an unprecedented rate this year.", kr: "올해 물가가 전례 없는 속도로 올랐어요." }
     ]
   },
   {
     id: "L3-168",
     word: "utility",
-    meaning: "유용성, 공공시설",
+    meaning: "공공요금, 공과금, 공공시설",
     examples: [
-      { en: "The utility of the new feature is questionable.", kr: "새 기능의 유용성은 의문스럽습니다." },
-      { en: "We have to pay the utility bills every month.", kr: "우리는 매달 공과금을 내야 합니다." }
+      { en: "Does the rent include utilities?", kr: "월세에 공과금도 포함돼요?" },
+      { en: "My utility bills went way up this winter.", kr: "이번 겨울에 공과금이 확 올랐어요." }
     ]
   },
   {
@@ -8743,17 +8743,17 @@ const wordsLevel3_Part2 = [
     word: "valid",
     meaning: "유효한, 타당한",
     examples: [
-      { en: "Is this parking ticket still valid?", kr: "이 주차권은 아직 유효합니까?" },
-      { en: "She provided a valid reason for her delay.", kr: "그녀는 자신의 지연에 대한 타당한 이유를 제시했습니다." }
+      { en: "Is this parking ticket still valid?", kr: "이 주차권 아직 유효해요?" },
+      { en: "That's a valid point. I hadn't thought of that.", kr: "타당한 지적이네요. 그건 생각 못 했어요." }
     ]
   },
   {
     id: "L3-170",
     word: "vehicle",
-    meaning: "차량, 수단",
+    meaning: "차량, 탈것",
     examples: [
-      { en: "The insurance covers all types of motor vehicles.", kr: "그 보험은 모든 종류의 자동차를 보장합니다." },
-      { en: "Art is a powerful vehicle for social change.", kr: "예술은 사회 변화를 위한 강력한 수단입니다." }
+      { en: "Is your vehicle parked in the visitor lot?", kr: "차량을 방문자 주차장에 세우셨어요?" },
+      { en: "No vehicles are allowed in this area on weekends.", kr: "주말에는 이 구역에 차량 진입이 금지돼요." }
     ]
   },
   {
@@ -8761,17 +8761,17 @@ const wordsLevel3_Part2 = [
     word: "venue",
     meaning: "장소",
     examples: [
-      { en: "The venue for the concert has been changed.", kr: "콘서트 장소가 변경되었습니다." },
-      { en: "We need to find a suitable venue for the conference.", kr: "우리는 컨퍼런스를 위한 적절한 장소를 찾아야 합니다." }
+      { en: "The venue for the concert has been changed.", kr: "콘서트 장소가 바뀌었어요." },
+      { en: "We still haven't found a venue for the wedding.", kr: "아직 결혼식 장소를 못 구했어요." }
     ]
   },
   {
     id: "L3-172",
     word: "versus",
-    meaning: "~ 대(對)",
+    meaning: "~ 대(對), ~와 비교하여",
     examples: [
-      { en: "It's a game of experience versus youth.", kr: "그것은 경험 대 젊음의 경기입니다." },
-      { en: "The final match is Korea versus Japan.", kr: "결승전은 한국 대 일본의 경기입니다." }
+      { en: "It's Korea versus Japan in the final tonight.", kr: "오늘 밤 결승은 한국 대 일본이에요." },
+      { en: "Let's compare the cost of renting versus buying.", kr: "월세로 사는 거랑 집을 사는 거랑 비용을 비교해 보자." }
     ]
   },
   {
@@ -8779,17 +8779,17 @@ const wordsLevel3_Part2 = [
     word: "via",
     meaning: "~을 통하여, ~을 경유하여",
     examples: [
-      { en: "I sent the documents via email.", kr: "저는 이메일을 통하여 서류를 보냈습니다." },
-      { en: "We flew to New York via London.", kr: "우리는 런던을 경유하여 뉴욕으로 비행했습니다." }
+      { en: "I'll send you the file via email.", kr: "파일은 이메일로 보내 드릴게요." },
+      { en: "We're flying to New York via Chicago.", kr: "시카고를 경유해서 뉴욕으로 가요." }
     ]
   },
   {
     id: "L3-174",
     word: "virtual",
-    meaning: "가상의, 사실상의",
+    meaning: "가상의, 온라인의",
     examples: [
-      { en: "They held a virtual meeting using video conferencing.", kr: "그들은 화상 회의를 사용하여 가상 회의를 개최했습니다." },
-      { en: "The company has a virtual monopoly on the market.", kr: "그 회사는 시장을 사실상 독점하고 있습니다." }
+      { en: "Can we just have a virtual meeting instead?", kr: "대신 그냥 온라인 회의로 하면 안 될까요?" },
+      { en: "It's a virtual tour, so you can see the house online.", kr: "가상 투어라서 온라인으로 집을 볼 수 있어요." }
     ]
   },
   {
@@ -8797,26 +8797,26 @@ const wordsLevel3_Part2 = [
     word: "visible",
     meaning: "눈에 보이는",
     examples: [
-      { en: "The stars were clearly visible in the night sky.", kr: "별들이 밤하늘에 명확하게 보였습니다." },
-      { en: "There was a visible difference in their performance.", kr: "그들의 성과에는 눈에 보이는 차이가 있었습니다." }
+      { en: "The mountains are clearly visible from my window.", kr: "제 방 창문에서 산이 선명하게 보여요." },
+      { en: "Is the stain still visible after washing?", kr: "빨았는데도 얼룩이 아직 보여요?" }
     ]
   },
   {
     id: "L3-176",
     word: "voluntary",
-    meaning: "자발적인",
+    meaning: "자발적인, 자율적인",
     examples: [
-      { en: "Participation in the survey is completely voluntary.", kr: "설문 조사 참여는 완전히 자발적입니다." },
-      { en: "She works at the hospital on a voluntary basis.", kr: "그녀는 병원에서 자원봉사로 일합니다." }
+      { en: "Don't worry, the survey is completely voluntary.", kr: "걱정 마세요, 설문 참여는 완전히 자율이에요." },
+      { en: "Is the training mandatory or voluntary?", kr: "그 교육은 필수예요, 아니면 자율이에요?" }
     ]
   },
   {
-    id: "L3-177",
-    word: "whereby",
-    meaning: "~하는 것에 의하여",
+    id: "L3-661",
+    word: "complicated",
+    meaning: "복잡한",
     examples: [
-      { en: "They established a system whereby members could vote online.", kr: "그들은 구성원들이 온라인으로 투표할 수 있는 시스템을 확립했습니다." },
-      { en: "We made an agreement whereby each person pays half the rent.", kr: "우리는 각자 집세의 절반을 내기로 하는 합의를 했습니다." }
+      { en: "It's complicated. I'll tell you about it later.", kr: "좀 복잡해. 나중에 얘기해 줄게." },
+      { en: "This form is way too complicated to fill out.", kr: "이 서류 작성하기 너무 복잡해요." }
     ]
   },
   {
@@ -8833,26 +8833,26 @@ const wordsLevel3_Part2 = [
     word: "wherever",
     meaning: "어디든지",
     examples: [
-      { en: "You can sit wherever you like.", kr: "당신은 원하는 어디든지 앉을 수 있습니다." },
-      { en: "Wherever you go, I will follow.", kr: "당신이 어디를 가든지, 나는 따라갈 것입니다." }
+      { en: "You can sit wherever you like.", kr: "편한 데 아무 데나 앉으세요." },
+      { en: "I'll go wherever the job takes me.", kr: "일 때문이라면 어디든지 갈 거예요." }
     ]
   },
   {
-    id: "L3-180",
-    word: "whilst",
-    meaning: "~하는 동안에, ~인 반면에",
+    id: "L3-662",
+    word: "ignore",
+    meaning: "무시하다, 모른 척하다",
     examples: [
-      { en: "I listened to music whilst studying.", kr: "저는 공부하는 동안에 음악을 들었습니다." },
-      { en: "The city has modern buildings, whilst the old town keeps its historic charm.", kr: "도시에는 현대적인 건물들이 있는 반면, 구시가지는 역사적인 매력을 간직하고 있습니다." }
+      { en: "Just ignore him. He's in a bad mood today.", kr: "그냥 신경 쓰지 마. 걔 오늘 기분 안 좋아." },
+      { en: "Why did you ignore my texts all weekend?", kr: "주말 내내 왜 내 문자 씹었어?" }
     ]
   },
   {
-    id: "L3-181",
-    word: "wholly",
-    meaning: "완전히",
+    id: "L3-663",
+    word: "relax",
+    meaning: "쉬다, 긴장을 풀다",
     examples: [
-      { en: "The decision was wholly supported by the staff.", kr: "그 결정은 직원들에 의해 완전히 지지받았습니다." },
-      { en: "His success was not wholly dependent on luck.", kr: "그의 성공은 전적으로 운에만 의존하는 것은 아니었습니다." }
+      { en: "I just want to stay home and relax this weekend.", kr: "이번 주말엔 그냥 집에서 쉬고 싶어요." },
+      { en: "Relax, the interview will go fine.", kr: "긴장 풀어, 면접 잘 될 거야." }
     ]
   },
   {
@@ -8860,8 +8860,8 @@ const wordsLevel3_Part2 = [
     word: "whose",
     meaning: "누구의",
     examples: [
-      { en: "Whose car is parked outside?", kr: "밖에 주차된 차는 누구의 것입니까?" },
-      { en: "He is the person whose advice I trust.", kr: "그는 제가 조언을 신뢰하는 사람입니다." }
+      { en: "Whose car is parked outside?", kr: "밖에 주차된 차 누구 거예요?" },
+      { en: "She's the person whose advice I trust most.", kr: "그녀는 내가 조언을 가장 믿는 사람이야." }
     ]
   },
   {
@@ -8878,8 +8878,8 @@ const wordsLevel3_Part2 = [
     word: "accurate",
     meaning: "정확한",
     examples: [
-      { en: "We need an accurate estimate of the total cost.", kr: "우리는 총 비용에 대한 정확한 추정치가 필요합니다." },
-      { en: "The measurement must be accurate to the millimeter.", kr: "그 측정은 밀리미터까지 정확해야 합니다." }
+      { en: "Is this map accurate? I think we're lost.", kr: "이 지도 정확한 거 맞아? 우리 길 잃은 것 같아." },
+      { en: "Can you give me an accurate estimate of the cost?", kr: "비용을 정확하게 견적 내 주실 수 있어요?" }
     ]
   },
   {
@@ -8887,17 +8887,17 @@ const wordsLevel3_Part2 = [
     word: "accountable",
     meaning: "책임이 있는",
     examples: [
-      { en: "The manager is accountable for the team's performance.", kr: "관리자는 팀의 성과에 책임이 있습니다." },
-      { en: "Every public servant should be held accountable.", kr: "모든 공무원은 책임을 져야 합니다." }
+      { en: "Who's going to be held accountable for this mistake?", kr: "이 실수는 누가 책임지게 되는 거예요?" },
+      { en: "I'm accountable for my team's results.", kr: "저는 우리 팀 성과에 책임이 있어요." }
     ]
   },
   {
     id: "L3-186",
     word: "adhere",
-    meaning: "고수하다, 들러붙다",
+    meaning: "(규칙 등을) 지키다, 고수하다",
     examples: [
-      { en: "We must adhere to the terms of the contract.", kr: "우리는 계약 조건을 고수해야 합니다." },
-      { en: "The sticker will not adhere to the wet surface.", kr: "그 스티커는 젖은 표면에 들러붙지 않을 것입니다." }
+      { en: "Please adhere to the dress code at the event.", kr: "행사에서는 복장 규정을 꼭 지켜 주세요." },
+      { en: "We really have to adhere to the deadline this time.", kr: "이번에는 마감 기한을 꼭 지켜야 해요." }
     ]
   },
   {
@@ -8912,10 +8912,10 @@ const wordsLevel3_Part2 = [
   {
     id: "L3-188",
     word: "bizarre",
-    meaning: "기이한, 특이한",
+    meaning: "기이한, 아주 이상한",
     examples: [
-      { en: "The artist is known for his bizarre sculptures.", kr: "그 예술가는 그의 기이한 조각품들로 알려져 있습니다." },
-      { en: "We heard a bizarre story about a talking dog.", kr: "우리는 말하는 개에 대한 특이한 이야기를 들었습니다." }
+      { en: "That was the most bizarre dream I've ever had.", kr: "살면서 꾼 꿈 중에 제일 기이했어." },
+      { en: "It's bizarre that nobody noticed the mistake.", kr: "아무도 그 실수를 못 알아챘다니 정말 이상하네요." }
     ]
   },
   {
@@ -8950,17 +8950,17 @@ const wordsLevel3_Part2 = [
     word: "consult",
     meaning: "상담하다, 참고하다",
     examples: [
-      { en: "You should consult a doctor about your symptoms.", kr: "증상에 대해 의사와 상담해야 합니다." },
-      { en: "Consult the map to find the correct direction.", kr: "올바른 방향을 찾기 위해 지도를 참고하세요." }
+      { en: "You should consult a doctor about your symptoms.", kr: "증상에 대해 의사와 상담해 보세요." },
+      { en: "Let me consult my calendar and get back to you.", kr: "제 일정표를 참고해 보고 다시 연락드릴게요." }
     ]
   },
   {
     id: "L3-193",
     word: "contrary",
-    meaning: "반대의",
+    meaning: "반대의, (on the contrary) 오히려",
     examples: [
-      { en: "On the contrary, I think he is right.", kr: "그와는 반대로, 저는 그가 옳다고 생각합니다." },
-      { en: "Contrary to popular belief, bats are not blind.", kr: "일반적인 믿음과 반대로, 박쥐는 앞을 못 보는 것이 아닙니다." }
+      { en: "I'm not tired. On the contrary, I feel great!", kr: "안 피곤해. 오히려 기분이 엄청 좋아!" },
+      { en: "Contrary to popular belief, bats aren't actually blind.", kr: "흔히 알려진 것과 반대로 박쥐는 사실 앞을 못 보는 게 아니에요." }
     ]
   },
   {
@@ -8968,8 +8968,8 @@ const wordsLevel3_Part2 = [
     word: "convenient",
     meaning: "편리한",
     examples: [
-      { en: "The location of the store is very convenient.", kr: "그 가게의 위치는 매우 편리합니다." },
-      { en: "A digital wallet is a convenient way to pay.", kr: "디지털 지갑은 편리한 결제 수단입니다." }
+      { en: "Is tomorrow at 3 convenient for you?", kr: "내일 3시가 편하세요?" },
+      { en: "The hotel is in a really convenient location.", kr: "호텔 위치가 정말 편리해요." }
     ]
   },
   {
@@ -8993,10 +8993,10 @@ const wordsLevel3_Part2 = [
   {
     id: "L3-197",
     word: "deficit",
-    meaning: "적자, 부족액",
+    meaning: "적자, 부족(분)",
     examples: [
-      { en: "The company reported a large financial deficit.", kr: "그 회사는 큰 재정 적자를 보고했습니다." },
-      { en: "He suffers from a sleep deficit.", kr: "그는 수면 부족에 시달립니다." }
+      { en: "The government is running a huge budget deficit.", kr: "정부가 막대한 재정 적자를 내고 있어요." },
+      { en: "I've got a serious sleep deficit this week.", kr: "이번 주에 잠이 너무 부족해요." }
     ]
   },
   {
@@ -9044,7 +9044,7 @@ const wordsLevel3_Part3 = [
     meaning: "어려움, 곤란",
     examples: [
       { en: "I had difficulty finding the hotel.", kr: "호텔을 찾느라 애를 먹었어요." },
-      { en: "The company is facing financial difficulties this year.", kr: "그 회사는 올해 재정적 어려움을 겪고 있어요." }
+      { en: "Let me know if you have any difficulty logging in.", kr: "로그인하는 데 어려움이 있으면 알려 주세요." }
     ]
   },
   {
@@ -9068,10 +9068,10 @@ const wordsLevel3_Part3 = [
   {
     id: "L3-500",
     word: "intention",
-    meaning: "의도, 의사",
+    meaning: "의도, 생각",
     examples: [
       { en: "I had no intention of hurting your feelings.", kr: "네 기분을 상하게 할 의도는 없었어." },
-      { en: "She announced her intention to run for mayor.", kr: "그녀는 시장 선거에 출마할 의사를 밝혔어요." }
+      { en: "I have every intention of paying you back.", kr: "돈은 꼭 갚을 생각이야." }
     ]
   },
   {
@@ -9086,10 +9086,10 @@ const wordsLevel3_Part3 = [
   {
     id: "L3-207",
     word: "expand",
-    meaning: "확장하다, 확대하다, 팽창하다",
+    meaning: "확장하다, 넓히다",
     examples: [
-      { en: "The company plans to expand its business into Europe.", kr: "그 회사는 유럽으로 사업을 확장할 계획입니다." },
-      { en: "Heat causes most gases to expand.", kr: "열은 대부분의 기체를 팽창하게 합니다." }
+      { en: "We're planning to expand our business into Europe next year.", kr: "내년에 유럽으로 사업을 확장할 계획이에요." },
+      { en: "I want to expand my network at this conference.", kr: "이번 컨퍼런스에서 인맥을 넓히고 싶어요." }
     ]
   },
   {
@@ -9106,17 +9106,17 @@ const wordsLevel3_Part3 = [
     word: "substantial",
     meaning: "상당한, 많은",
     examples: [
-      { en: "The company made a substantial profit last year.", kr: "그 회사는 작년에 상당한 이익을 냈습니다." },
+      { en: "That's a substantial amount of money to spend on a bag.", kr: "가방 하나에 쓰기엔 상당한 돈이네요." },
       { en: "There's been a substantial increase in rent this year.", kr: "올해 임대료가 상당히 올랐어요." }
     ]
   },
   {
     id: "L3-210",
     word: "external",
-    meaning: "외부의",
+    meaning: "외부의, 외장의",
     examples: [
-      { en: "The problem requires external consultation.", kr: "그 문제는 외부 자문을 필요로 합니다." },
-      { en: "The external walls of the house need painting.", kr: "집의 외부 벽은 페인트칠이 필요합니다." }
+      { en: "We might need some external help on this project.", kr: "이 프로젝트엔 외부 도움이 좀 필요할 것 같아요." },
+      { en: "Do I need an external hard drive for backups?", kr: "백업하려면 외장 하드가 필요할까요?" }
     ]
   },
   {
@@ -9158,9 +9158,9 @@ const wordsLevel3_Part3 = [
   {
     id: "L3-508",
     word: "innovation",
-    meaning: "혁신, 새로운 것",
+    meaning: "혁신",
     examples: [
-      { en: "Innovation is key to staying ahead of competitors.", kr: "경쟁사보다 앞서려면 혁신이 핵심이에요." },
+      { en: "Our boss keeps talking about innovation, but nothing changes.", kr: "우리 상사는 맨날 혁신 얘기만 하는데 바뀌는 건 없어요." },
       { en: "The smartphone was a huge innovation in technology.", kr: "스마트폰은 기술 분야의 엄청난 혁신이었어요." }
     ]
   },
@@ -9169,17 +9169,17 @@ const wordsLevel3_Part3 = [
     word: "furthermore",
     meaning: "게다가, 더욱이",
     examples: [
-      { en: "The book is insightful, and furthermore, it is entertaining.", kr: "그 책은 통찰력이 있으며, 게다가 재미있습니다." },
-      { en: "The cost is high; furthermore, the quality is low.", kr: "비용이 많이 듭니다. 더욱이, 품질이 낮습니다." }
+      { en: "The hotel was cheap, and furthermore, it was right by the beach.", kr: "호텔이 저렴했고, 게다가 바로 해변 옆이었어요." },
+      { en: "I don't have time, and furthermore, I'm not interested.", kr: "시간도 없고, 게다가 관심도 없어요." }
     ]
   },
   {
     id: "L3-217",
     word: "goal",
-    meaning: "목표",
+    meaning: "목표, (축구 등의) 골",
     examples: [
-      { en: "Our primary goal is customer satisfaction.", kr: "우리의 주요 목표는 고객 만족입니다." },
-      { en: "He scored a winning goal in the final minute.", kr: "그는 마지막 순간에 결승골을 넣었습니다." }
+      { en: "My goal this year is to run a half marathon.", kr: "올해 제 목표는 하프 마라톤을 뛰는 거예요." },
+      { en: "He scored the winning goal in the final minute.", kr: "그 선수가 마지막 1분에 결승골을 넣었어요." }
     ]
   },
   {
@@ -9194,28 +9194,28 @@ const wordsLevel3_Part3 = [
   {
     id: "L3-219",
     word: "graphic",
-    meaning: "그래픽의, 생생한",
+    meaning: "그래픽의, 생생한, 적나라한",
     examples: [
-      { en: "The report included graphic images of the damage.", kr: "그 보고서는 피해에 대한 생생한 이미지를 포함했습니다." },
-      { en: "She works as a graphic designer.", kr: "그녀는 그래픽 디자이너로 일합니다." }
+      { en: "That movie was way too graphic for me.", kr: "그 영화는 나한테 너무 적나라했어." },
+      { en: "She works as a graphic designer.", kr: "그녀는 그래픽 디자이너로 일해요." }
     ]
   },
   {
     id: "L3-220",
     word: "hence",
-    meaning: "그러므로, 따라서",
+    meaning: "그래서, 그러므로",
     examples: [
-      { en: "The battery is low; hence, the device will not work.", kr: "배터리가 부족합니다. 그러므로 장치가 작동하지 않을 것입니다." },
-      { en: "He is moving to London, hence the house sale.", kr: "그는 런던으로 이사할 예정이고, 따라서 집을 파는 것입니다." }
+      { en: "I didn't sleep last night, hence the coffee.", kr: "어젯밤에 잠을 못 잤어. 그래서 커피 마시는 거야." },
+      { en: "It's a family recipe, hence the name 'Grandma's Pie.'", kr: "집안 대대로 내려온 레시피라서 이름이 '할머니 파이'예요." }
     ]
   },
   {
     id: "L3-221",
     word: "hierarchy",
-    meaning: "계층, 계급 제도",
+    meaning: "위계질서, 계층",
     examples: [
-      { en: "The company has a clear management hierarchy.", kr: "그 회사는 명확한 경영 계층을 가지고 있습니다." },
-      { en: "He is trying to climb the social hierarchy.", kr: "그는 사회 계급 제도를 오르려고 노력하고 있습니다." }
+      { en: "There's not much hierarchy at our startup.", kr: "우리 스타트업은 위계질서가 별로 없어요." },
+      { en: "In Korean companies, hierarchy is really important.", kr: "한국 회사에서는 위계질서가 정말 중요해요." }
     ]
   },
   {
@@ -9233,7 +9233,7 @@ const wordsLevel3_Part3 = [
     meaning: "안정(성)",
     examples: [
       { en: "Many people value job stability more than a high salary.", kr: "많은 사람들이 높은 연봉보다 고용 안정을 더 중시해요." },
-      { en: "The central bank aims to maintain price stability.", kr: "중앙은행은 물가 안정을 유지하는 것을 목표로 합니다." }
+      { en: "The new update really improved the app's stability.", kr: "이번 업데이트로 앱 안정성이 정말 좋아졌어요." }
     ]
   },
   {
@@ -9241,8 +9241,8 @@ const wordsLevel3_Part3 = [
     word: "impact",
     meaning: "영향, 영향을 주다",
     examples: [
-      { en: "The new policy will impact all employees.", kr: "새 정책은 모든 직원에게 영향을 미칠 것입니다." },
-      { en: "The storm had a negative impact on the crops.", kr: "폭풍은 작물에 부정적인 영향을 미쳤습니다." }
+      { en: "How will the new policy impact our team?", kr: "새 정책이 우리 팀에 어떤 영향을 줄까요?" },
+      { en: "Your speech really had an impact on me.", kr: "네 연설이 나한테 정말 큰 영향을 줬어." }
     ]
   },
   {
@@ -9259,8 +9259,8 @@ const wordsLevel3_Part3 = [
     word: "implicate",
     meaning: "연루시키다, 관련시키다",
     examples: [
-      { en: "The documents implicate him in the crime.", kr: "그 문서들은 그가 범죄에 연루되었음을 시사합니다." },
-      { en: "He refused to speak, fearing he might implicate his friends.", kr: "그는 친구들을 연루시킬까 두려워 말하기를 거부했습니다." }
+      { en: "His own text messages implicated him in the scandal.", kr: "그 사람 문자 메시지 때문에 스캔들에 연루된 게 드러났대요." },
+      { en: "I don't want to implicate anyone without proof.", kr: "증거 없이 누구도 연루시키고 싶지 않아요." }
     ]
   },
   {
@@ -9455,10 +9455,10 @@ const wordsLevel3_Part3 = [
   {
     id: "L3-248",
     word: "leverage",
-    meaning: "영향력, 지렛대 효과, 활용하다",
+    meaning: "협상력, 영향력, 활용하다",
     examples: [
-      { en: "The company used its size as leverage in the negotiation.", kr: "그 회사는 협상에서 자사의 규모를 영향력으로 사용했습니다." },
-      { en: "We can leverage technology to improve efficiency.", kr: "우리는 효율성을 개선하기 위해 기술을 활용할 수 있습니다." }
+      { en: "We can use our size as leverage in the negotiation.", kr: "협상할 때 우리 회사 규모를 무기로 쓸 수 있어요." },
+      { en: "Let's leverage AI to save time on reports.", kr: "보고서 작업 시간을 줄이려면 AI를 활용해 보자." }
     ]
   },
   {
@@ -9655,8 +9655,8 @@ const wordsLevel3_Part3 = [
     word: "wage",
     meaning: "임금, 급여",
     examples: [
-      { en: "The city raised the minimum wage this year.", kr: "시는 올해 최저 임금을 인상했습니다." },
-      { en: "Many workers say their wages haven't kept up with prices.", kr: "많은 노동자들이 임금이 물가를 따라가지 못한다고 말합니다." }
+      { en: "Did you hear they raised the minimum wage again?", kr: "최저 임금 또 올랐다는 얘기 들었어?" },
+      { en: "My wages haven't gone up in three years.", kr: "3년째 월급이 안 올랐어요." }
     ]
   },
   {
@@ -9664,8 +9664,8 @@ const wordsLevel3_Part3 = [
     word: "opaque",
     meaning: "불투명한, 이해하기 어려운",
     examples: [
-      { en: "The windows were made of opaque glass for privacy.", kr: "창문은 사생활 보호를 위해 불투명한 유리로 만들어졌습니다." },
-      { en: "The legal document was opaque and full of jargon.", kr: "그 법률 문서는 이해하기 어렵고 전문 용어로 가득했습니다." }
+      { en: "We put opaque film on the bathroom window.", kr: "욕실 창문에 불투명 필름을 붙였어요." },
+      { en: "Their pricing is so opaque; I can't figure it out.", kr: "그 회사 가격 체계는 너무 불투명해서 도무지 모르겠어요." }
     ]
   },
   {
@@ -9752,37 +9752,37 @@ const wordsLevel3_Part3 = [
   {
     id: "L3-281",
     word: "articulate",
-    meaning: "분명히 표현하다",
+    meaning: "분명히 표현하다, 말로 표현하다",
     examples: [
-      { en: "She articulated her vision for the company very clearly.", kr: "그녀는 회사에 대한 자신의 비전을 매우 분명하게 표현했습니다." },
-      { en: "It was difficult for him to articulate his feelings.", kr: "그가 자신의 감정을 분명히 표현하는 것은 어려웠습니다." }
+      { en: "She articulated her ideas really clearly in the meeting.", kr: "그녀는 회의에서 자기 생각을 정말 분명하게 표현했어요." },
+      { en: "I find it hard to articulate how I feel.", kr: "내 감정을 말로 표현하기가 어려워." }
     ]
   },
   {
     id: "L3-282",
     word: "attest",
-    meaning: "증명하다, 입증하다",
+    meaning: "증언하다, 보증하다",
     examples: [
-      { en: "The growth figures attest to the success of the new strategy.", kr: "성장 수치는 새 전략의 성공을 증명합니다." },
-      { en: "I can personally attest to his honesty and integrity.", kr: "저는 그의 정직과 청렴함을 개인적으로 입증할 수 있습니다." }
+      { en: "I can attest to that; the food there is amazing.", kr: "그건 내가 보증해. 거기 음식 진짜 맛있어." },
+      { en: "Anyone who's worked with him can attest to his honesty.", kr: "그와 일해 본 사람이라면 누구나 그가 정직하다고 말해 줄 거예요." }
     ]
   },
   {
     id: "L3-283",
     word: "candid",
-    meaning: "솔직한, 정직한",
+    meaning: "솔직한",
     examples: [
-      { en: "I appreciate your candid opinion on the matter.", kr: "그 문제에 대한 당신의 솔직한 의견에 감사합니다." },
-      { en: "The politician was surprisingly candid about his failures.", kr: "그 정치인은 자신의 실패에 대해 놀라울 정도로 정직했습니다." }
+      { en: "Thanks for being so candid with me.", kr: "솔직하게 말해 줘서 고마워." },
+      { en: "To be candid, I don't think the plan will work.", kr: "솔직히 말하면 그 계획은 안 될 것 같아요." }
     ]
   },
   {
     id: "L3-284",
     word: "circulate",
-    meaning: "순환하다, (소문 등이) 퍼지다, 유통되다",
+    meaning: "순환하다, (소문 등이) 퍼지다",
     examples: [
-      { en: "The fan helps to circulate air throughout the room.", kr: "선풍기는 방 전체에 공기를 순환시키는 데 도움을 줍니다." },
-      { en: "The rumor began to circulate quickly through the office.", kr: "그 소문은 사무실 전체에 빠르게 퍼지기 시작했습니다." }
+      { en: "Open the window to let the air circulate.", kr: "공기가 통하게 창문 좀 열어." },
+      { en: "A rumor is circulating that our boss is quitting.", kr: "우리 상사가 그만둔다는 소문이 돌고 있어요." }
     ]
   },
   {
@@ -9813,39 +9813,39 @@ const wordsLevel3_Part3 = [
     ]
   },
   {
-    id: "L3-288",
-    word: "convene",
-    meaning: "소집하다, 회합하다",
+    id: "L3-664",
+    word: "awful",
+    meaning: "끔찍한, (기분이) 너무 안 좋은",
     examples: [
-      { en: "The committee will convene next week to discuss the proposal.", kr: "위원회는 다음 주에 그 제안을 논의하기 위해 소집될 것입니다." },
-      { en: "The global leaders convened for the annual summit.", kr: "세계 지도자들은 연례 정상회담을 위해 회합했습니다." }
+      { en: "The weather was awful during our whole trip.", kr: "여행 내내 날씨가 정말 최악이었어요." },
+      { en: "I feel awful about forgetting your birthday.", kr: "네 생일 깜빡해서 진짜 마음이 너무 안 좋아." }
     ]
   },
   {
     id: "L3-289",
     word: "curtail",
-    meaning: "축소하다, 줄이다",
+    meaning: "줄이다, 축소하다",
     examples: [
-      { en: "The company was forced to curtail spending on non-essential items.", kr: "그 회사는 비필수 품목에 대한 지출을 축소할 수밖에 없었습니다." },
-      { en: "We had to curtail our vacation due to the bad weather.", kr: "우리는 악천후 때문에 휴가를 줄여야 했습니다." }
+      { en: "We need to curtail spending until sales pick up.", kr: "매출이 회복될 때까지 지출을 줄여야 해요." },
+      { en: "Bad weather curtailed our vacation, so we came home early.", kr: "날씨가 안 좋아서 휴가를 줄이고 일찍 돌아왔어요." }
     ]
   },
   {
     id: "L3-290",
     word: "disperse",
-    meaning: "흩어지게 하다, 해산하다",
+    meaning: "흩어지다, 해산하다",
     examples: [
-      { en: "The police used tear gas to disperse the crowd.", kr: "경찰은 최루탄을 사용하여 군중을 해산시켰습니다." },
-      { en: "The seeds disperse by wind over a wide area.", kr: "씨앗들은 바람에 의해 넓은 지역에 흩어지게 됩니다." }
+      { en: "The crowd dispersed quickly after the concert ended.", kr: "콘서트가 끝나자 사람들이 금방 흩어졌어요." },
+      { en: "The police asked the protesters to disperse.", kr: "경찰이 시위대에게 해산하라고 했어요." }
     ]
   },
   {
     id: "L3-291",
     word: "divulge",
-    meaning: "누설하다, 폭로하다",
+    meaning: "(비밀을) 누설하다, 밝히다",
     examples: [
-      { en: "The journalist refused to divulge the name of his source.", kr: "그 기자는 자신의 출처의 이름을 누설하는 것을 거부했습니다." },
-      { en: "Do not divulge any confidential information to outsiders.", kr: "외부인에게 어떤 기밀 정보도 누설하지 마세요." }
+      { en: "I can't divulge the details yet, but it's big news.", kr: "아직 자세한 건 말할 수 없지만, 큰 소식이에요." },
+      { en: "Never divulge your password to anyone.", kr: "비밀번호는 절대 누구에게도 알려 주지 마세요." }
     ]
   },
   {
@@ -9860,19 +9860,19 @@ const wordsLevel3_Part3 = [
   {
     id: "L3-293",
     word: "expedite",
-    meaning: "신속히 처리하다",
+    meaning: "신속히 처리하다, 앞당기다",
     examples: [
-      { en: "We need to expedite the application process for urgent cases.", kr: "우리는 긴급한 사례를 위해 신청 절차를 신속히 처리해야 합니다." },
-      { en: "The new software will expedite data analysis.", kr: "새 소프트웨어는 데이터 분석을 신속히 처리할 것입니다." }
+      { en: "Can you expedite my order? I need it by Friday.", kr: "제 주문 좀 빨리 처리해 주실 수 있어요? 금요일까지 필요해요." },
+      { en: "Paying extra will expedite your visa application.", kr: "추가 요금을 내면 비자 신청이 더 빨리 처리돼요." }
     ]
   },
   {
     id: "L3-294",
     word: "foster",
-    meaning: "육성하다, 촉진하다",
+    meaning: "조성하다, 육성하다, (아이·동물을) 맡아 기르다",
     examples: [
-      { en: "The program aims to foster cooperation among the members.", kr: "그 프로그램은 구성원들 사이의 협력을 촉진하는 것을 목표로 합니다." },
-      { en: "Good leadership fosters trust and loyalty.", kr: "좋은 리더십은 신뢰와 충성심을 촉진합니다." }
+      { en: "We want to foster a friendly culture on our team.", kr: "우리 팀에 친근한 분위기를 만들어 가고 싶어요." },
+      { en: "They're fostering a puppy until it finds a home.", kr: "새 주인을 찾을 때까지 강아지를 임시 보호하고 있어요." }
     ]
   },
   {
@@ -9887,10 +9887,10 @@ const wordsLevel3_Part3 = [
   {
     id: "L3-296",
     word: "incur",
-    meaning: "(손해를) 입다, 발생시키다",
+    meaning: "(비용 등을) 발생시키다, (손해를) 입다",
     examples: [
-      { en: "The project incurred unexpected costs due to delays.", kr: "그 프로젝트는 지연 때문에 예상치 못한 비용을 발생시켰습니다." },
-      { en: "The company incurred heavy fines for violating the safety regulations.", kr: "그 회사는 안전 규정 위반으로 막대한 벌금을 물었습니다." }
+      { en: "You'll incur a late fee if you don't pay by Friday.", kr: "금요일까지 안 내면 연체료가 부과돼요." },
+      { en: "We incurred a lot of extra costs because of the delay.", kr: "지연 때문에 추가 비용이 많이 발생했어요." }
     ]
   },
   {
@@ -9907,8 +9907,8 @@ const wordsLevel3_Part3 = [
     word: "invincible",
     meaning: "무적의, 천하무적의",
     examples: [
-      { en: "The football team felt invincible after winning every game of the season.", kr: "그 축구팀은 시즌 전 경기에서 승리한 후 스스로 무적이라고 느꼈습니다." },
-      { en: "He believed he was invincible until he faced a major setback.", kr: "그는 큰 차질에 직면할 때까지 자신이 천하무적이라고 믿었습니다." }
+      { en: "When I was twenty, I felt invincible.", kr: "스무 살 때는 내가 천하무적인 줄 알았어." },
+      { en: "Our team looked invincible this season.", kr: "우리 팀은 이번 시즌에 무적처럼 보였어요." }
     ]
   },
   {
@@ -9953,10 +9953,10 @@ const wordsLevel3_Part4 = [
   {
     id: "L3-303",
     word: "permanent",
-    meaning: "영구적인",
+    meaning: "영구적인, 정규직의",
     examples: [
-      { en: "She is looking for a permanent position at the company.", kr: "그녀는 그 회사에서 영구적인(정규) 직책을 찾고 있습니다." },
-      { en: "The ink is permanent and cannot be washed out.", kr: "그 잉크는 영구적이며 지워지지 않습니다." }
+      { en: "Is this a permanent job or just a contract?", kr: "이거 정규직이에요, 아니면 그냥 계약직이에요?" },
+      { en: "Careful, that marker is permanent.", kr: "조심해, 그 마커는 안 지워지는 거야." }
     ]
   },
   {
@@ -10079,10 +10079,10 @@ const wordsLevel3_Part4 = [
   {
     id: "L3-588",
     word: "institution",
-    meaning: "기관, 제도",
+    meaning: "기관",
     examples: [
-      { en: "Banks and other financial institutions must follow strict rules.", kr: "은행과 기타 금융 기관은 엄격한 규정을 따라야 합니다." },
-      { en: "Marriage is one of the oldest social institutions.", kr: "결혼은 가장 오래된 사회 제도 중 하나입니다." }
+      { en: "Banks and other financial institutions are closed on holidays.", kr: "은행 같은 금융 기관은 공휴일에 문을 닫아요." },
+      { en: "He's worked at the same institution for thirty years.", kr: "그분은 같은 기관에서 30년 동안 일했어요." }
     ]
   },
   {
@@ -10226,7 +10226,7 @@ const wordsLevel3_Part4 = [
     meaning: "아무 데도 (없다), 어디에도",
     examples: [
       { en: "My keys are nowhere to be found.", kr: "열쇠가 어디에도 안 보여." },
-      { en: "This argument is going nowhere, so let's take a break.", kr: "이 논쟁은 아무 데도 이르지 못하니 잠깐 쉬자." }
+      { en: "This argument is going nowhere, so let's take a break.", kr: "이 논쟁은 끝이 안 나니까 잠깐 쉬자." }
     ]
   },
   {
@@ -10478,7 +10478,7 @@ const wordsLevel3_Part4 = [
     meaning: "믿을 수 없을 정도로, 엄청나게",
     examples: [
       { en: "The new phone is incredibly fast.", kr: "새 휴대폰은 믿을 수 없을 정도로 빨라요." },
-      { en: "I'm incredibly grateful for all your help this year.", kr: "올 한 해 도와주신 모든 것에 정말 엄청나게 감사해요." }
+      { en: "I'm incredibly grateful for all your help this year.", kr: "올 한 해 도와주셔서 정말 너무 감사해요." }
     ]
   },
   {
@@ -10549,8 +10549,8 @@ const wordsLevel3_Part4 = [
     word: "agriculture",
     meaning: "농업",
     examples: [
-      { en: "Agriculture is still important to the local economy.", kr: "농업은 여전히 지역 경제에 중요합니다." },
-      { en: "Climate change is a big threat to agriculture.", kr: "기후 변화는 농업에 큰 위협입니다." }
+      { en: "I studied agriculture because I want to run a farm.", kr: "농장을 운영하고 싶어서 농업을 공부했어요." },
+      { en: "Is agriculture still a big part of the economy here?", kr: "여기선 아직도 농업이 경제에서 큰 비중을 차지해요?" }
     ]
   },
   {
@@ -10608,39 +10608,39 @@ const wordsLevel3_Part4 = [
     ]
   },
   {
-    id: "L3-376",
-    word: "zenith",
-    meaning: "정점, 절정",
+    id: "L3-665",
+    word: "ridiculous",
+    meaning: "말도 안 되는, 터무니없는",
     examples: [
-      { en: "The company reached its financial zenith in the late 1990s.", kr: "그 회사는 1990년대 후반에 재정적 정점에 도달했습니다." },
-      { en: "The sun reached its zenith at noon.", kr: "태양은 정오에 하늘의 가장 높은 지점(정점)에 도달했습니다." }
+      { en: "Twelve dollars for a coffee? That's ridiculous!", kr: "커피 한 잔에 12달러요? 말도 안 돼요!" },
+      { en: "Stop being ridiculous. Nobody's mad at you.", kr: "말도 안 되는 소리 하지 마. 아무도 너한테 화 안 났어." }
     ]
   },
   {
-    id: "L3-377",
-    word: "zealous",
-    meaning: "열성적인, 열렬한",
+    id: "L3-666",
+    word: "grateful",
+    meaning: "고마워하는, 감사하는",
     examples: [
-      { en: "The zealous volunteer worked day and night on the project.", kr: "그 열성적인 자원봉사자는 프로젝트에 밤낮으로 일했습니다." },
-      { en: "She is a zealous supporter of environmental conservation.", kr: "그녀는 환경 보존의 열렬한 지지자입니다." }
+      { en: "I'm really grateful for all your help this week.", kr: "이번 주에 도와준 거 정말 고마워요." },
+      { en: "We'd be grateful if you could reply by Friday.", kr: "금요일까지 답변 주시면 감사하겠습니다." }
     ]
   },
   {
     id: "L3-378",
     word: "acutely",
-    meaning: "강렬하게, 예리하게",
+    meaning: "절실히, 예리하게",
     examples: [
-      { en: "The loss of the contract was acutely felt by the entire team.", kr: "계약 상실은 팀 전체에 강렬하게 느껴졌습니다." },
-      { en: "He is acutely aware of the risks involved.", kr: "그는 관련된 위험들을 예리하게 인식하고 있습니다." }
+      { en: "I'm acutely aware that we're behind schedule.", kr: "일정이 늦어지고 있다는 건 저도 뼈저리게 알고 있어요." },
+      { en: "I felt his absence acutely during the busy season.", kr: "바쁜 시즌에 그 사람 빈자리가 정말 크게 느껴졌어요." }
     ]
   },
   {
     id: "L3-379",
     word: "adequately",
-    meaning: "적절하게, 충분히",
+    meaning: "충분히, 적절하게",
     examples: [
-      { en: "The room was adequately heated for the cold weather.", kr: "그 방은 추운 날씨에 적절하게 난방되었습니다." },
-      { en: "She was adequately prepared for the difficult exam.", kr: "그녀는 어려운 시험에 충분히 준비되어 있었습니다." }
+      { en: "Are you adequately prepared for tomorrow's interview?", kr: "내일 면접 준비는 충분히 됐어요?" },
+      { en: "This jacket won't adequately protect you from the cold.", kr: "이 재킷으로는 추위를 충분히 막을 수 없을 거야." }
     ]
   },
   {
@@ -10655,10 +10655,10 @@ const wordsLevel3_Part4 = [
   {
     id: "L3-381",
     word: "briefly",
-    meaning: "간결하게, 짧게",
+    meaning: "잠깐, 간단히",
     examples: [
-      { en: "The chairman spoke briefly about the company's future.", kr: "의장은 회사의 미래에 대해 간결하게 말했습니다." },
-      { en: "I only saw her briefly in the hallway.", kr: "복도에서 그녀를 짧게(잠깐) 봤을 뿐입니다." }
+      { en: "Can I talk to you briefly after the meeting?", kr: "회의 끝나고 잠깐 얘기 좀 할 수 있을까요?" },
+      { en: "I only saw her briefly in the hallway.", kr: "복도에서 그녀를 잠깐 봤을 뿐이에요." }
     ]
   },
   {
@@ -10673,37 +10673,37 @@ const wordsLevel3_Part4 = [
   {
     id: "L3-383",
     word: "currently",
-    meaning: "현재",
+    meaning: "현재, 지금",
     examples: [
-      { en: "She is currently working on a new project.", kr: "그녀는 현재 새로운 프로젝트를 진행하고 있습니다." },
-      { en: "The store is currently closed for renovation.", kr: "그 가게는 현재 리노베이션으로 인해 문을 닫았습니다." }
+      { en: "I'm currently looking for a new job.", kr: "저 지금 새 직장 알아보고 있어요." },
+      { en: "Sorry, that item is currently out of stock.", kr: "죄송하지만 그 상품은 현재 품절이에요." }
     ]
   },
   {
     id: "L3-384",
     word: "distinctly",
-    meaning: "뚜렷하게, 명확하게",
+    meaning: "분명히, 뚜렷하게",
     examples: [
-      { en: "I distinctly remember meeting you last year.", kr: "저는 작년에 당신을 만났던 것을 뚜렷하게 기억합니다." },
-      { en: "The two voices sounded distinctly different.", kr: "두 목소리는 명확하게 다르게 들렸습니다." }
+      { en: "I distinctly remember meeting you last year.", kr: "작년에 만났던 게 분명히 기억나요." },
+      { en: "I distinctly heard someone knock on the door.", kr: "누가 문 두드리는 소리를 분명히 들었어." }
     ]
   },
   {
     id: "L3-385",
     word: "equally",
-    meaning: "동등하게",
+    meaning: "똑같이, 동등하게",
     examples: [
-      { en: "The profits were shared equally among the three partners.", kr: "이익은 세 파트너 사이에 동등하게 분배되었습니다." },
-      { en: "He is equally skilled in both painting and sculpture.", kr: "그는 회화와 조각 모두에 똑같이 능숙합니다." }
+      { en: "Let's split the bill equally.", kr: "계산은 똑같이 나눠서 하자." },
+      { en: "Both options are equally good, so you choose.", kr: "두 옵션 다 똑같이 좋으니까 네가 골라." }
     ]
   },
   {
     id: "L3-386",
     word: "essentially",
-    meaning: "본질적으로",
+    meaning: "사실상, 본질적으로",
     examples: [
-      { en: "The two proposals are essentially the same.", kr: "그 두 제안은 본질적으로 동일합니다." },
-      { en: "He is essentially an honest man, despite his mistakes.", kr: "그는 실수에도 불구하고 본질적으로 정직한 사람입니다." }
+      { en: "So essentially, you're saying we need more time?", kr: "그러니까 요컨대 시간이 더 필요하다는 말씀이시죠?" },
+      { en: "The two phones are essentially the same.", kr: "두 휴대폰은 사실상 똑같아요." }
     ]
   },
   {
@@ -10711,26 +10711,26 @@ const wordsLevel3_Part4 = [
     word: "eventually",
     meaning: "결국, 마침내",
     examples: [
-      { en: "The long argument eventually led to a compromise.", kr: "그 긴 논쟁은 결국 타협으로 이어졌습니다." },
-      { en: "After years of trying, he eventually succeeded.", kr: "수년간의 시도 끝에, 그는 결국 성공했습니다." }
+      { en: "Don't worry, you'll get used to it eventually.", kr: "걱정 마, 결국엔 익숙해질 거야." },
+      { en: "We eventually found the restaurant after getting lost twice.", kr: "두 번이나 길을 잃은 끝에 마침내 식당을 찾았어요." }
     ]
   },
   {
     id: "L3-388",
     word: "explicitly",
-    meaning: "명시적으로, 명확하게",
+    meaning: "분명히, 명시적으로",
     examples: [
-      { en: "The contract explicitly states the terms of payment.", kr: "계약서에는 지불 조건이 명시적으로 기재되어 있습니다." },
-      { en: "He was explicitly warned not to enter the restricted area.", kr: "그는 제한 구역에 들어가지 말라는 명확한 경고를 받았습니다." }
+      { en: "The lease explicitly says no pets allowed.", kr: "임대 계약서에 반려동물 금지라고 분명히 적혀 있어요." },
+      { en: "I explicitly told you not to touch my laptop.", kr: "내 노트북 건드리지 말라고 분명히 말했잖아." }
     ]
   },
   {
     id: "L3-389",
     word: "externally",
-    meaning: "외부적으로",
+    meaning: "외부에서, 겉으로",
     examples: [
-      { en: "The building was damaged externally, but the inside was fine.", kr: "그 건물은 외부적으로 손상되었지만, 내부는 괜찮았습니다." },
-      { en: "The company sought funding externally, not from its shareholders.", kr: "그 회사는 주주가 아닌 외부에서 자금을 조달했습니다." }
+      { en: "We decided to hire externally for the manager role.", kr: "매니저 자리는 외부에서 채용하기로 했어요." },
+      { en: "The car looks fine externally, but the engine's a mess.", kr: "그 차는 겉으로는 멀쩡한데 엔진이 엉망이에요." }
     ]
   },
   {
@@ -10763,19 +10763,19 @@ const wordsLevel3_Part4 = [
   {
     id: "L3-393",
     word: "initially",
-    meaning: "처음에",
+    meaning: "처음에, 원래",
     examples: [
-      { en: "Initially, I found the new job challenging, but I enjoy it now.", kr: "처음에 저는 새 직장이 힘들다고 느꼈지만, 지금은 즐깁니다." },
-      { en: "The project was initially planned to take six months.", kr: "그 프로젝트는 처음에 6개월이 걸리도록 계획되었습니다." }
+      { en: "Initially, I hated the new job, but now I love it.", kr: "처음엔 새 직장이 싫었는데 지금은 정말 좋아요." },
+      { en: "We initially planned to leave at six.", kr: "원래는 6시에 출발할 계획이었어요." }
     ]
   },
   {
     id: "L3-394",
     word: "invariably",
-    meaning: "변함없이, 언제나",
+    meaning: "어김없이, 언제나",
     examples: [
-      { en: "The bus is invariably late on rainy mornings.", kr: "그 버스는 비 오는 아침에는 변함없이 늦습니다." },
-      { en: "He invariably chooses the most difficult option.", kr: "그는 언제나 가장 어려운 옵션을 선택합니다." }
+      { en: "The bus is invariably late when it rains.", kr: "비가 오면 그 버스는 어김없이 늦어요." },
+      { en: "Whenever we eat out, he invariably orders the steak.", kr: "외식할 때마다 그는 어김없이 스테이크를 시켜요." }
     ]
   },
   {
@@ -10783,8 +10783,8 @@ const wordsLevel3_Part4 = [
     word: "largely",
     meaning: "주로, 대체로",
     examples: [
-      { en: "The success of the experiment was largely due to her efforts.", kr: "그 실험의 성공은 주로 그녀의 노력 덕분이었습니다." },
-      { en: "The group is largely composed of retired teachers.", kr: "그 그룹은 대체로 은퇴한 선생님들로 구성되어 있습니다." }
+      { en: "The trip was a success, largely thanks to you.", kr: "여행이 잘된 건 주로 네 덕분이야." },
+      { en: "Our customers are largely young professionals.", kr: "우리 고객은 대체로 젊은 직장인들이에요." }
     ]
   },
   {
@@ -10817,10 +10817,10 @@ const wordsLevel3_Part4 = [
   {
     id: "L3-399",
     word: "notably",
-    meaning: "특히, 현저하게",
+    meaning: "특히, 눈에 띄게",
     examples: [
-      { en: "Several large cities, notably London and Paris, experienced delays.", kr: "몇몇 대도시들, 특히 런던과 파리에서 지연이 발생했습니다." },
-      { en: "The quality of the final product was notably superior.", kr: "최종 제품의 품질은 현저하게 우수했습니다." }
+      { en: "The food was great, notably the seafood pasta.", kr: "음식이 다 맛있었는데, 특히 해산물 파스타가 좋았어요." },
+      { en: "Several of us, notably Jake, worked all weekend.", kr: "우리 중 몇몇, 특히 제이크는 주말 내내 일했어요." }
     ]
   },
   {
@@ -10828,8 +10828,8 @@ const wordsLevel3_Part4 = [
     word: "objectively",
     meaning: "객관적으로",
     examples: [
-      { en: "We must analyze the data calmly and objectively.", kr: "우리는 자료를 침착하고 객관적으로 분석해야 합니다." },
-      { en: "Try to look at the situation objectively, without emotion.", kr: "감정 없이 객관적으로 상황을 보려고 노력하세요." }
+      { en: "Objectively speaking, his idea is better than mine.", kr: "객관적으로 말하면 그 사람 아이디어가 내 것보다 나아." },
+      { en: "Try to look at the situation objectively.", kr: "상황을 객관적으로 보려고 해 봐." }
     ]
   }
 ];
@@ -10838,10 +10838,10 @@ const wordsLevel4_Part1 = [
   {
     id: "L4-001",
     word: "acquisition",
-    meaning: "습득, 인수",
+    meaning: "인수, 습득",
     examples: [
-      { en: "The company's acquisition of its rival caused a stir.", kr: "그 회사의 경쟁사 인수는 소동을 일으켰습니다." },
-      { en: "Language acquisition is easier for children than adults.", kr: "언어 습득은 성인보다 어린이에게 더 쉽습니다." }
+      { en: "Did you hear about the acquisition? We're getting new owners.", kr: "인수 소식 들었어? 우리 회사 주인이 바뀐대." },
+      { en: "Language acquisition is way easier for kids than adults.", kr: "언어 습득은 어른보다 아이들한테 훨씬 쉬워." }
     ]
   },
   {
@@ -10858,7 +10858,7 @@ const wordsLevel4_Part1 = [
     word: "automobile",
     meaning: "자동차",
     examples: [
-      { en: "The automobile industry is shifting toward electric cars.", kr: "자동차 산업이 전기차 쪽으로 옮겨 가고 있습니다." },
+      { en: "Back then, owning an automobile was a big deal.", kr: "그때는 자동차를 갖는 게 대단한 일이었어." },
       { en: "My grandfather bought his first automobile in 1965.", kr: "할아버지는 1965년에 첫 자동차를 사셨어요." }
     ]
   },
@@ -10867,8 +10867,8 @@ const wordsLevel4_Part1 = [
     word: "ambiguous",
     meaning: "모호한, 애매한",
     examples: [
-      { en: "The politician gave an ambiguous answer to the question.", kr: "그 정치인은 질문에 모호한 답변을 했습니다." },
-      { en: "Avoid ambiguous language in legal documents.", kr: "법률 문서에서는 애매한 언어를 피하세요." }
+      { en: "Sorry, your last email was a bit ambiguous. What did you mean?", kr: "죄송한데, 지난번 이메일이 좀 애매했어요. 무슨 뜻이었어요?" },
+      { en: "His answer was so ambiguous. I still don't know what he meant.", kr: "그 사람 대답이 너무 모호했어. 무슨 뜻인지 아직도 모르겠어." }
     ]
   },
   {
@@ -10883,19 +10883,19 @@ const wordsLevel4_Part1 = [
   {
     id: "L4-006",
     word: "antithesis",
-    meaning: "정반대, 대조",
+    meaning: "정반대",
     examples: [
-      { en: "War is the antithesis of peace.", kr: "전쟁은 평화의 정반대입니다." },
-      { en: "His laziness was the antithesis of his father's work ethic.", kr: "그의 게으름은 아버지의 근면한 직업 윤리와 대조적이었습니다." }
+      { en: "Honestly, he's the antithesis of a morning person.", kr: "솔직히 걔는 아침형 인간이랑 정반대야." },
+      { en: "This cramped hotel room is the antithesis of relaxation.", kr: "이 비좁은 호텔 방은 편안함과는 정반대야." }
     ]
   },
   {
     id: "L4-007",
     word: "apprehension",
-    meaning: "염려, 불안",
+    meaning: "불안, 걱정",
     examples: [
-      { en: "She felt apprehension about speaking in front of a large crowd.", kr: "그녀는 많은 군중 앞에서 말하는 것에 대한 불안을 느꼈습니다." },
-      { en: "The delay caused widespread apprehension among the investors.", kr: "그 지연은 투자자들 사이에 광범위한 염려를 야기했습니다." }
+      { en: "I had some apprehension about moving abroad, but it worked out.", kr: "해외로 이사하는 게 좀 불안했는데, 잘 풀렸어." },
+      { en: "Is there any apprehension about the new manager?", kr: "새 매니저에 대해 걱정하는 분위기가 있어요?" }
     ]
   },
   {
@@ -10919,10 +10919,10 @@ const wordsLevel4_Part1 = [
   {
     id: "L4-010",
     word: "augment",
-    meaning: "증가시키다, 늘리다",
+    meaning: "늘리다, 보강하다",
     examples: [
-      { en: "He augmented his income by teaching evening classes.", kr: "그는 저녁 수업을 가르쳐 수입을 증가시켰습니다." },
-      { en: "The goal is to augment the system's capacity by 50%.", kr: "목표는 시스템 용량을 50% 늘리는 것입니다." }
+      { en: "I teach on weekends to augment my income.", kr: "수입을 늘리려고 주말에 강의를 해." },
+      { en: "We need to augment the team with two more developers.", kr: "개발자 두 명을 더 충원해서 팀을 보강해야 해요." }
     ]
   },
   {
@@ -10955,10 +10955,10 @@ const wordsLevel4_Part1 = [
   {
     id: "L4-014",
     word: "comprise",
-    meaning: "구성하다, 이루다",
+    meaning: "~로 구성되다, 이루어지다",
     examples: [
-      { en: "The committee comprises experts from three different nations.", kr: "그 위원회는 세 개의 다른 국가에서 온 전문가들로 구성되어 있습니다." },
-      { en: "The novel is comprised of several short stories.", kr: "그 소설은 몇 편의 단편 소설로 이루어져 있습니다." }
+      { en: "Our team comprises five designers and two developers.", kr: "우리 팀은 디자이너 다섯 명과 개발자 두 명으로 구성돼 있어요." },
+      { en: "The tour comprises three days in Rome and two in Florence.", kr: "그 투어는 로마 3일, 피렌체 2일로 이루어져 있어요." }
     ]
   },
   {
@@ -10984,26 +10984,26 @@ const wordsLevel4_Part1 = [
     word: "conjecture",
     meaning: "추측, 짐작",
     examples: [
-      { en: "The cause of the fire is still a matter of conjecture.", kr: "화재의 원인은 여전히 추측의 문제입니다." },
-      { en: "The book offers interesting conjecture about the future of technology.", kr: "그 책은 기술의 미래에 대한 흥미로운 추측을 내놓습니다." }
+      { en: "That's just conjecture. We don't know what really happened.", kr: "그건 그냥 추측일 뿐이야. 실제로 무슨 일이 있었는지 우린 몰라." },
+      { en: "Everything you read online about it is pure conjecture.", kr: "그거에 대해 네가 온라인에서 읽은 건 다 순전히 짐작이야." }
     ]
   },
   {
     id: "L4-018",
     word: "constituent",
-    meaning: "구성 요소, 유권자",
+    meaning: "(지역구) 유권자, 구성 요소",
     examples: [
-      { en: "Oxygen is a major constituent of air.", kr: "산소는 공기의 주요 구성 요소입니다." },
-      { en: "The senator must respond to the needs of his constituents.", kr: "그 상원의원은 그의 유권자들의 요구에 응답해야 합니다." }
+      { en: "The senator should listen to her constituents more.", kr: "그 상원의원은 자기 지역 유권자들 말을 좀 더 들어야 해." },
+      { en: "Flour and water are the basic constituents of bread.", kr: "밀가루와 물이 빵의 기본 구성 요소야." }
     ]
   },
   {
     id: "L4-019",
     word: "contend",
-    meaning: "다투다, 주장하다",
+    meaning: "(문제와) 씨름하다, 주장하다",
     examples: [
-      { en: "The two athletes will contend for the gold medal.", kr: "두 선수는 금메달을 놓고 다툴 것입니다." },
-      { en: "He contends that the economic data is flawed.", kr: "그는 그 경제 자료가 결함이 있다고 주장합니다." }
+      { en: "I've had to contend with a lot of noise from my neighbors.", kr: "이웃집 소음이랑 계속 씨름해야 했어." },
+      { en: "He contends that the report is wrong, but nobody believes him.", kr: "그는 그 보고서가 틀렸다고 주장하는데, 아무도 안 믿어." }
     ]
   },
   {
@@ -11011,17 +11011,17 @@ const wordsLevel4_Part1 = [
     word: "contingent",
     meaning: "조건부의, ~에 달린",
     examples: [
-      { en: "Our success is contingent upon receiving the necessary funding.", kr: "우리의 성공은 필요한 자금 지원을 받는 것에 달려 있습니다(조건부입니다)." },
-      { en: "The job offer is contingent on passing a background check.", kr: "그 채용 제안은 신원 조회 통과를 조건으로 합니다." }
+      { en: "Our trip is contingent on whether I get time off.", kr: "우리 여행은 내가 휴가를 받을 수 있느냐에 달려 있어." },
+      { en: "The job offer is contingent on passing a background check.", kr: "그 채용 제안은 신원 조회를 통과하는 게 조건이에요." }
     ]
   },
   {
     id: "L4-021",
     word: "criterion",
-    meaning: "기준, 척도 (복수형: criteria)",
+    meaning: "기준",
     examples: [
-      { en: "Experience is the main criterion for the job.", kr: "경험은 그 일자리의 주요 기준입니다." },
-      { en: "The product was judged based on several quality criteria.", kr: "그 제품은 몇 가지 품질 척도에 근거하여 판단되었습니다." }
+      { en: "What's your main criterion for picking an apartment?", kr: "아파트 고를 때 너한테 제일 중요한 기준이 뭐야?" },
+      { en: "Price isn't my only criterion. Location matters too.", kr: "가격만 기준이 아니야. 위치도 중요해." }
     ]
   },
   {
@@ -11036,10 +11036,10 @@ const wordsLevel4_Part1 = [
   {
     id: "L4-023",
     word: "demographic",
-    meaning: "인구 통계학적인, 인구층",
+    meaning: "(특정) 연령층, 인구층, 인구 통계의",
     examples: [
-      { en: "The company focuses on the older adult demographic.", kr: "그 회사는 고령 성인층에 집중합니다." },
-      { en: "We analyze demographic changes to predict housing needs.", kr: "우리는 주택 수요를 예측하기 위해 인구 통계학적인 변화를 분석합니다." }
+      { en: "Our main demographic is people in their twenties.", kr: "우리 주요 타깃 연령층은 20대예요." },
+      { en: "That show isn't really aimed at my demographic.", kr: "그 프로그램은 딱히 내 연령층을 겨냥한 게 아니야." }
     ]
   },
   {
@@ -11065,8 +11065,8 @@ const wordsLevel4_Part1 = [
     word: "detrimental",
     meaning: "해로운, 손해를 입히는",
     examples: [
-      { en: "Lack of sleep is detrimental to long-term health.", kr: "수면 부족은 장기적인 건강에 해롭습니다." },
-      { en: "The scandal had a detrimental effect on the company's stock price.", kr: "그 스캔들은 회사 주가에 해로운 영향을 미쳤습니다." }
+      { en: "Staying up late is really detrimental to your health.", kr: "늦게까지 안 자는 건 건강에 정말 해로워." },
+      { en: "Skipping the meeting could be detrimental to your career.", kr: "그 회의에 빠지면 네 커리어에 손해가 될 수도 있어." }
     ]
   },
   {
@@ -11081,19 +11081,19 @@ const wordsLevel4_Part1 = [
   {
     id: "L4-028",
     word: "disseminate",
-    meaning: "보급하다, 퍼뜨리다",
+    meaning: "퍼뜨리다, 배포하다",
     examples: [
-      { en: "The new platform helps disseminate educational resources worldwide.", kr: "새로운 플랫폼은 교육 자료를 전 세계적으로 보급하는 데 도움을 줍니다." },
-      { en: "The media quickly disseminated the news of the discovery.", kr: "언론은 그 발견 소식을 빠르게 퍼뜨렸습니다." }
+      { en: "Can you disseminate this info to the whole team?", kr: "이 정보를 팀 전체에 배포해 줄 수 있어요?" },
+      { en: "Fake news gets disseminated so fast on social media.", kr: "가짜 뉴스는 SNS에서 정말 빠르게 퍼져." }
     ]
   },
   {
     id: "L4-029",
     word: "dissent",
-    meaning: "반대, 이의",
+    meaning: "반대 (의견), 이의",
     examples: [
-      { en: "Three members recorded their dissent from the majority decision.", kr: "세 명의 구성원이 다수 결정에 대한 반대를 기록했습니다." },
-      { en: "The committee was divided, with significant internal dissent.", kr: "위원회는 상당한 내부 이의로 분열되었습니다." }
+      { en: "There was a lot of dissent in the meeting about the new schedule.", kr: "새 일정에 대해 회의에서 반대 의견이 많았어." },
+      { en: "The boss doesn't tolerate any dissent, so nobody speaks up.", kr: "사장님이 반대 의견을 전혀 못 참아서 아무도 말을 안 해." }
     ]
   },
   {
@@ -11101,8 +11101,8 @@ const wordsLevel4_Part1 = [
     word: "dubious",
     meaning: "의심스러운, 미심쩍은",
     examples: [
-      { en: "The report made several dubious claims about the product's effectiveness.", kr: "그 보고서는 제품의 효능에 대해 몇 가지 의심스러운 주장을 했습니다." },
-      { en: "I was dubious about the sudden offer of help.", kr: "저는 갑작스러운 도움 제안에 대해 미심쩍었습니다." }
+      { en: "That deal sounds a little dubious to me.", kr: "그 거래는 나한테는 좀 미심쩍게 들려." },
+      { en: "I'm dubious about his excuse for being late again.", kr: "또 늦은 거에 대한 그 사람 핑계, 난 좀 의심스러워." }
     ]
   },
   {
@@ -11110,8 +11110,8 @@ const wordsLevel4_Part1 = [
     word: "eccentric",
     meaning: "별난, 특이한",
     examples: [
-      { en: "The inventor was known for his eccentric lifestyle.", kr: "그 발명가는 그의 별난 생활 방식으로 알려져 있었습니다." },
-      { en: "The artist painted the house in eccentric colors.", kr: "그 예술가는 집을 특이한 색으로 칠했습니다." }
+      { en: "My uncle is a bit eccentric, but he's really fun.", kr: "우리 삼촌은 좀 별나긴 한데 진짜 재밌어." },
+      { en: "She has really eccentric taste in clothes.", kr: "그녀는 옷 취향이 진짜 특이해." }
     ]
   },
   {
@@ -11119,8 +11119,8 @@ const wordsLevel4_Part1 = [
     word: "elicit",
     meaning: "이끌어내다, 유도하다",
     examples: [
-      { en: "The detective hoped to elicit a confession from the suspect.", kr: "탐정은 용의자로부터 자백을 이끌어내기를 희망했습니다." },
-      { en: "The comments elicited a strong reaction from the audience.", kr: "그 논평은 청중으로부터 강한 반응을 유도했습니다." }
+      { en: "My joke didn't elicit a single laugh.", kr: "내 농담은 웃음 한 번 못 끌어냈어." },
+      { en: "The survey is meant to elicit honest feedback from customers.", kr: "그 설문조사는 고객들한테서 솔직한 피드백을 끌어내려는 거예요." }
     ]
   },
   {
@@ -11137,26 +11137,26 @@ const wordsLevel4_Part1 = [
     word: "encompass",
     meaning: "포함하다, 아우르다",
     examples: [
-      { en: "The course will encompass history, politics, and economics.", kr: "그 과정은 역사, 정치, 경제를 모두 포함할 것입니다." },
-      { en: "The new park encompasses the entire valley.", kr: "새 공원은 계곡 전체를 아우릅니다." }
+      { en: "My job encompasses everything from sales to customer service.", kr: "내 업무는 영업부터 고객 서비스까지 다 포함해." },
+      { en: "The tour encompasses all the major sights in the city.", kr: "그 투어는 시내 주요 명소를 다 아울러요." }
     ]
   },
   {
     id: "L4-035",
     word: "entail",
-    meaning: "수반하다",
+    meaning: "수반하다, (일에) 포함되다",
     examples: [
-      { en: "The project will entail a significant amount of extra work.", kr: "그 프로젝트는 상당한 양의 추가 작업을 수반할 것입니다." },
-      { en: "Being a leader entails great responsibility.", kr: "리더가 되는 것은 큰 책임을 수반합니다." }
+      { en: "So what exactly does the job entail?", kr: "그래서 그 일엔 정확히 어떤 업무가 포함돼요?" },
+      { en: "Moving abroad entails a lot of paperwork.", kr: "해외로 이사하면 서류 작업이 엄청 따라와." }
     ]
   },
   {
     id: "L4-036",
     word: "equitable",
-    meaning: "공정한, 공평한",
+    meaning: "공평한, 공정한",
     examples: [
-      { en: "We are seeking an equitable solution for both parties.", kr: "우리는 양 당사자를 위한 공정한 해결책을 찾고 있습니다." },
-      { en: "The committee ensured an equitable distribution of resources.", kr: "위원회는 자원의 공평한 분배를 보장했습니다." }
+      { en: "Let's find an equitable way to split the bill.", kr: "계산을 공평하게 나눌 방법을 찾자." },
+      { en: "Is the workload really equitable across the team?", kr: "팀 내 업무량이 정말 공평한 거예요?" }
     ]
   },
   {
@@ -11164,8 +11164,8 @@ const wordsLevel4_Part1 = [
     word: "erroneous",
     meaning: "잘못된, 틀린",
     examples: [
-      { en: "The report contained several erroneous conclusions.", kr: "그 보고서에는 여러 개의 잘못된 결론이 포함되어 있었습니다." },
-      { en: "It was an erroneous belief that the sun revolved around the Earth.", kr: "태양이 지구 주위를 돈다는 것은 틀린 믿음이었습니다." }
+      { en: "There's an erroneous charge on my bill. Can you check it?", kr: "제 청구서에 잘못된 요금이 있어요. 확인해 주실 수 있어요?" },
+      { en: "Sorry, the info I gave you earlier was erroneous.", kr: "죄송해요, 아까 드린 정보가 틀린 거였어요." }
     ]
   },
   {
@@ -11173,8 +11173,8 @@ const wordsLevel4_Part1 = [
     word: "exacerbate",
     meaning: "악화시키다",
     examples: [
-      { en: "The new regulations will exacerbate the unemployment problem.", kr: "새로운 규정은 실업 문제를 악화시킬 것입니다." },
-      { en: "His refusal to apologize only exacerbated the conflict.", kr: "사과를 거부한 그의 태도는 갈등을 악화시키기만 했습니다." }
+      { en: "Yelling at him will only exacerbate the situation.", kr: "그 사람한테 소리 지르면 상황만 더 악화될 거야." },
+      { en: "Stress can really exacerbate my back pain.", kr: "스트레스는 내 허리 통증을 정말 악화시켜." }
     ]
   },
   {
@@ -11216,19 +11216,19 @@ const wordsLevel4_Part1 = [
   {
     id: "L4-043",
     word: "generic",
-    meaning: "일반적인, 포괄적인, 상표 없는",
+    meaning: "뻔한, 일반적인, 상표 없는",
     examples: [
-      { en: "The politician's speech was full of generic promises.", kr: "그 정치인의 연설은 일반적인 약속들로 가득했습니다." },
-      { en: "You can buy generic brands for less money.", kr: "더 적은 돈으로 무명 상표 제품을 살 수 있습니다." }
+      { en: "The generic version is just as good and much cheaper.", kr: "상표 없는 제품도 똑같이 좋고 훨씬 싸." },
+      { en: "His speech felt so generic, like he'd copied it online.", kr: "그 사람 연설이 너무 뻔했어, 인터넷에서 베낀 것처럼." }
     ]
   },
   {
     id: "L4-044",
     word: "homogeneous",
-    meaning: "균질의, 동질적인",
+    meaning: "동질적인, 균질한",
     examples: [
-      { en: "The mixture must be perfectly homogeneous before testing.", kr: "그 혼합물은 테스트 전에 완전히 균질해야 합니다." },
-      { en: "A truly homogeneous society is rare.", kr: "진정으로 동질적인 사회는 드뭅니다." }
+      { en: "Our team is too homogeneous. We need different perspectives.", kr: "우리 팀은 너무 동질적이야. 다양한 관점이 필요해." },
+      { en: "Mix the batter until it's completely homogeneous.", kr: "반죽이 완전히 균일해질 때까지 섞어." }
     ]
   },
   {
@@ -11245,53 +11245,53 @@ const wordsLevel4_Part1 = [
     word: "imminent",
     meaning: "임박한, 곧 닥칠",
     examples: [
-      { en: "The dark clouds suggested that a storm was imminent.", kr: "검은 구름은 폭풍이 임박했음을 시사했습니다." },
-      { en: "The company faced the imminent threat of bankruptcy.", kr: "그 회사는 곧 닥칠 파산 위협에 직면했습니다." }
+      { en: "The weather app says a storm is imminent. Let's head back.", kr: "날씨 앱에서 폭풍이 곧 닥친대. 돌아가자." },
+      { en: "Are there any imminent changes I should know about?", kr: "곧 있을 변경 사항 중에 제가 알아야 할 게 있나요?" }
     ]
   },
   {
     id: "L4-047",
     word: "impair",
-    meaning: "손상시키다, 악화시키다",
+    meaning: "손상시키다, (능력을) 떨어뜨리다",
     examples: [
-      { en: "Alcohol can impair driving ability.", kr: "알코올은 운전 능력을 손상시킬 수 있습니다." },
-      { en: "His health was severely impaired by the long illness.", kr: "그의 건강은 오랜 질병으로 심각하게 악화되었습니다." }
+      { en: "Even one drink can impair your driving.", kr: "한 잔만 마셔도 운전 능력이 떨어질 수 있어." },
+      { en: "Loud concerts can impair your hearing over time.", kr: "시끄러운 콘서트는 시간이 지나면 청력을 손상시킬 수 있어." }
     ]
   },
   {
-    id: "L4-048",
-    word: "impart",
-    meaning: "전달하다, 주다",
+    id: "L4-614",
+    word: "colleague",
+    meaning: "동료",
     examples: [
-      { en: "The old man imparted his wisdom to his grandchildren.", kr: "그 노인은 자신의 지혜를 손주들에게 전달했습니다." },
-      { en: "The spice imparts a pungent flavor to the sauce.", kr: "그 향신료는 소스에 톡 쏘는 풍미를 더해 줍니다." }
+      { en: "My colleague is covering for me while I'm on vacation.", kr: "제가 휴가 가 있는 동안 동료가 대신 일해 줘요." },
+      { en: "Let me introduce you to my colleague, Jenna.", kr: "제 동료 제나 소개해 드릴게요." }
     ]
   },
   {
     id: "L4-049",
     word: "implicit",
-    meaning: "암묵적인, 내포된",
+    meaning: "암묵적인, 은연중의",
     examples: [
-      { en: "There was an implicit understanding that he would pay for the dinner.", kr: "그가 저녁 식사 비용을 지불할 것이라는 암묵적인 이해가 있었습니다." },
-      { en: "The meaning was implicit in her tone of voice.", kr: "그 의미는 그녀의 목소리 톤에 내포되어 있었습니다." }
+      { en: "There was an implicit understanding that I'd pay for dinner.", kr: "저녁은 내가 사는 걸로 암묵적으로 다들 알고 있었어." },
+      { en: "Even if she didn't say it, the criticism was implicit.", kr: "그녀가 직접 말은 안 했어도, 비판이 은연중에 담겨 있었어." }
     ]
   },
   {
     id: "L4-050",
     word: "inadvertently",
-    meaning: "무심코, 부주의로",
+    meaning: "무심코, 실수로",
     examples: [
-      { en: "I inadvertently deleted the wrong file.", kr: "저는 무심코 잘못된 파일을 삭제했습니다." },
-      { en: "She inadvertently revealed the surprise party plans.", kr: "그녀는 부주의로 깜짝 파티 계획을 밝혔습니다." }
+      { en: "I inadvertently deleted the wrong file. Can you resend it?", kr: "실수로 엉뚱한 파일을 지웠어. 다시 보내 줄 수 있어?" },
+      { en: "She inadvertently spoiled the surprise party.", kr: "걔가 무심코 깜짝 파티를 들키게 해 버렸어." }
     ]
   },
   {
     id: "L4-051",
     word: "incoherent",
-    meaning: "일관성 없는, 앞뒤가 맞지 않는",
+    meaning: "앞뒤가 안 맞는, 횡설수설하는",
     examples: [
-      { en: "His arguments became rambling and incoherent.", kr: "그의 주장은 장황하고 일관성이 없어졌습니다." },
-      { en: "The witness gave a confusing and incoherent testimony.", kr: "그 증인은 혼란스럽고 앞뒤가 맞지 않는 증언을 했습니다." }
+      { en: "He was so drunk that he was totally incoherent.", kr: "그는 너무 취해서 완전히 횡설수설했어." },
+      { en: "Sorry if I sound incoherent. I've barely slept.", kr: "말이 앞뒤가 안 맞으면 미안해. 거의 못 잤거든." }
     ]
   },
   {
@@ -11315,10 +11315,10 @@ const wordsLevel4_Part1 = [
   {
     id: "L4-054",
     word: "indispensable",
-    meaning: "필수적인",
+    meaning: "없어서는 안 될, 필수적인",
     examples: [
-      { en: "A sharp knife is an indispensable tool for a chef.", kr: "날카로운 칼은 요리사에게 필수적인 도구입니다." },
-      { en: "She quickly proved herself indispensable to the project.", kr: "그녀는 빠르게 자신이 프로젝트에 필수적인 존재임을 입증했습니다." }
+      { en: "Honestly, my phone has become indispensable at work.", kr: "솔직히 휴대폰은 일할 때 없어서는 안 될 물건이 됐어." },
+      { en: "You've been indispensable to this project. Thank you.", kr: "당신은 이 프로젝트에 없어서는 안 될 사람이었어요. 고마워요." }
     ]
   },
   {
@@ -11335,8 +11335,8 @@ const wordsLevel4_Part1 = [
     word: "inherent",
     meaning: "내재하는, 본질적인",
     examples: [
-      { en: "Every job has its inherent risks.", kr: "모든 일에는 내재하는 위험이 있습니다." },
-      { en: "The product's design has an inherent flaw.", kr: "그 제품의 디자인에는 본질적인 결함이 있습니다." }
+      { en: "Every investment has some inherent risk, you know.", kr: "모든 투자에는 내재된 위험이 좀 있잖아." },
+      { en: "There's an inherent problem with this design.", kr: "이 디자인엔 본질적인 문제가 있어요." }
     ]
   },
   {
@@ -11344,8 +11344,8 @@ const wordsLevel4_Part1 = [
     word: "innate",
     meaning: "타고난, 선천적인",
     examples: [
-      { en: "She has an innate ability to lead.", kr: "그녀는 이끌 수 있는 타고난 능력을 가지고 있습니다." },
-      { en: "The behavior is innate, not learned.", kr: "그 행동은 학습된 것이 아니라 선천적입니다." }
+      { en: "She has an innate talent for making people laugh.", kr: "그녀는 사람들을 웃기는 타고난 재능이 있어." },
+      { en: "Do you think leadership is innate or learned?", kr: "리더십은 타고나는 거라고 생각해, 아니면 배우는 거라고 생각해?" }
     ]
   },
   {
@@ -11353,17 +11353,17 @@ const wordsLevel4_Part1 = [
     word: "insufficient",
     meaning: "불충분한",
     examples: [
-      { en: "The evidence was insufficient to convict him.", kr: "그 증거는 그에게 유죄를 선고하기에 불충분했습니다." },
-      { en: "The current budget is insufficient for our needs.", kr: "현재 예산은 우리의 필요에 불충분합니다." }
+      { en: "Sorry, your card was declined due to insufficient funds.", kr: "죄송하지만 잔액이 불충분해서 카드가 거절됐어요." },
+      { en: "Two days is insufficient time to finish this report.", kr: "이틀은 이 보고서를 끝내기엔 불충분한 시간이에요." }
     ]
   },
   {
     id: "L4-059",
     word: "integrity",
-    meaning: "청렴, 진실성, 완전성",
+    meaning: "정직함, 진실성, 온전함",
     examples: [
-      { en: "The committee questioned the integrity of the witness.", kr: "위원회는 증인의 진실성에 의문을 제기했습니다." },
-      { en: "We must ensure the integrity of the data.", kr: "우리는 자료의 완전성(훼손되지 않음)을 보장해야 합니다." }
+      { en: "I trust her because she has real integrity.", kr: "그녀는 정말 정직한 사람이라서 믿어." },
+      { en: "Don't cheat. Your integrity matters more than your grade.", kr: "커닝하지 마. 성적보다 네 정직함이 더 중요해." }
     ]
   },
   {
@@ -11405,10 +11405,10 @@ const wordsLevel4_Part1 = [
   {
     id: "L4-064",
     word: "irrelevant",
-    meaning: "무관한, 관계없는",
+    meaning: "무관한, 상관없는",
     examples: [
-      { en: "Your personal feelings are irrelevant to the professional discussion.", kr: "당신의 개인적인 감정은 전문적인 논의와 무관합니다." },
-      { en: "The judge dismissed the evidence as totally irrelevant.", kr: "판사는 그 증거를 완전히 관계없는 것으로 기각했습니다." }
+      { en: "Whether I like him is irrelevant. He's good at his job.", kr: "내가 그를 좋아하는지는 상관없어. 그는 일을 잘해." },
+      { en: "Sorry, that question is irrelevant to today's meeting.", kr: "죄송하지만, 그 질문은 오늘 회의와는 무관해요." }
     ]
   },
   {
@@ -11423,10 +11423,10 @@ const wordsLevel4_Part1 = [
   {
     id: "L4-066",
     word: "mandate",
-    meaning: "권한, 위임; 명령하다, 의무화하다",
+    meaning: "의무화하다, 명령하다",
     examples: [
-      { en: "The election gave the new leader a clear mandate for change.", kr: "그 선거는 새 지도자에게 변화를 위한 명확한 위임을 부여했습니다." },
-      { en: "The law mandates that all children must attend school.", kr: "그 법은 모든 아이들이 학교에 다니도록 의무화하고 있습니다." }
+      { en: "Our company mandates two office days a week now.", kr: "이제 우리 회사는 일주일에 이틀 출근을 의무화했어." },
+      { en: "Masks were mandated on public transport for a while.", kr: "한동안 대중교통에서 마스크 착용이 의무화됐었지." }
     ]
   },
   {
@@ -11434,35 +11434,35 @@ const wordsLevel4_Part1 = [
     word: "metaphor",
     meaning: "은유",
     examples: [
-      { en: "'Life is a journey' is a common metaphor.", kr: "'인생은 여정이다'는 흔한 은유입니다." },
-      { en: "The poet used nature metaphors to describe the human heart.", kr: "그 시인은 인간의 마음을 묘사하기 위해 자연 은유를 사용했습니다." }
+      { en: "Is that a metaphor, or do you actually mean it?", kr: "그거 은유야, 아니면 진짜 그런 뜻이야?" },
+      { en: "Life is a rollercoaster. It's a cheesy metaphor, but true.", kr: "인생은 롤러코스터야. 진부한 은유지만 사실이야." }
     ]
   },
   {
     id: "L4-068",
     word: "mitigate",
-    meaning: "완화하다, 경감시키다",
+    meaning: "완화하다, 줄이다",
     examples: [
-      { en: "We need to mitigate the risks associated with the investment.", kr: "우리는 투자와 관련된 위험을 완화해야 합니다." },
-      { en: "A public apology helped to mitigate the public's anger.", kr: "공개 사과는 대중의 분노를 경감시키는 데 도움이 되었습니다." }
+      { en: "How can we mitigate the risk of delays?", kr: "지연될 위험을 어떻게 줄일 수 있을까요?" },
+      { en: "Apologizing quickly helped mitigate the damage.", kr: "빨리 사과한 게 피해를 줄이는 데 도움이 됐어." }
     ]
   },
   {
     id: "L4-069",
     word: "monetary",
-    meaning: "통화의, 금전적인",
+    meaning: "금전적인, 통화의",
     examples: [
-      { en: "The central bank controls the nation's monetary policy.", kr: "중앙은행은 국가의 통화 정책을 통제합니다." },
-      { en: "He was motivated purely by monetary gain.", kr: "그는 순전히 금전적 이익을 위해 움직였습니다." }
+      { en: "The prize isn't monetary. It's just a trophy.", kr: "상금은 없어. 금전적인 상이 아니라 그냥 트로피야." },
+      { en: "The central bank is changing its monetary policy again.", kr: "중앙은행이 또 통화 정책을 바꾼대." }
     ]
   },
   {
     id: "L4-070",
     word: "nefarious",
-    meaning: "사악한, 흉악한",
+    meaning: "사악한, 못된",
     examples: [
-      { en: "The villain plotted a nefarious scheme to steal the artwork.", kr: "그 악당은 미술품을 훔치기 위한 흉악한 계획을 꾸몄습니다." },
-      { en: "The police uncovered a series of nefarious activities.", kr: "경찰은 일련의 사악한 활동들을 밝혀냈습니다." }
+      { en: "I'm not planning anything nefarious, I promise!", kr: "나쁜 짓 꾸미는 거 아니야, 진짜야!" },
+      { en: "That villain's plan is pretty nefarious.", kr: "그 악당 계획은 꽤 사악해." }
     ]
   },
   {
@@ -11495,19 +11495,19 @@ const wordsLevel4_Part1 = [
   {
     id: "L4-074",
     word: "pervasive",
-    meaning: "만연하는, 스며드는",
+    meaning: "만연한, 곳곳에 퍼진",
     examples: [
-      { en: "The pervasive influence of social media affects everyone.", kr: "소셜 미디어의 만연하는 영향은 모두에게 영향을 미칩니다." },
-      { en: "The pervasive smell of smoke filled the hotel lobby.", kr: "곳곳에 퍼진 연기 냄새가 호텔 로비를 가득 채웠습니다." }
+      { en: "Smartphone addiction is pretty pervasive these days.", kr: "요즘 스마트폰 중독이 꽤 만연해 있어." },
+      { en: "There's a pervasive smell of smoke in this hotel room.", kr: "이 호텔 방엔 담배 냄새가 곳곳에 배어 있어요." }
     ]
   },
   {
     id: "L4-075",
     word: "plausible",
-    meaning: "그럴듯한, 타당한",
+    meaning: "그럴듯한, 있을 법한",
     examples: [
-      { en: "The detective listened to the suspect's plausible alibi.", kr: "탐정은 용의자의 그럴듯한 알리바이를 들었습니다." },
-      { en: "We need a plausible explanation for the sudden loss of data.", kr: "우리는 갑작스러운 데이터 손실에 대한 타당한 설명이 필요합니다." }
+      { en: "That's a plausible excuse, but I don't buy it.", kr: "그럴듯한 핑계긴 한데, 난 안 믿어." },
+      { en: "His story sounds plausible, but something feels off.", kr: "그 사람 얘기가 그럴듯하게 들리긴 하는데, 뭔가 이상해." }
     ]
   },
   {
@@ -11515,17 +11515,17 @@ const wordsLevel4_Part1 = [
     word: "precedent",
     meaning: "선례, 전례",
     examples: [
-      { en: "The court's decision will set a legal precedent for similar cases.", kr: "법원의 결정은 유사한 사건들에 대한 법적 선례를 세울 것입니다." },
-      { en: "There is no precedent for this kind of economic policy.", kr: "이러한 종류의 경제 정책에 대한 전례가 없습니다." }
+      { en: "If we let him leave early, it'll set a precedent.", kr: "그 사람을 일찍 보내 주면 선례가 될 거야." },
+      { en: "There's no precedent for a situation like this.", kr: "이런 상황은 전례가 없어요." }
     ]
   },
   {
     id: "L4-077",
     word: "preclude",
-    meaning: "배제하다, 막다",
+    meaning: "막다, 불가능하게 하다",
     examples: [
-      { en: "The low price doesn't preclude the possibility of high quality.", kr: "낮은 가격이 높은 품질의 가능성을 배제하지 않습니다." },
-      { en: "His injury will preclude him from participating in the game.", kr: "그의 부상은 그가 게임에 참여하는 것을 막을 것입니다." }
+      { en: "My knee injury precludes me from running the marathon.", kr: "무릎 부상 때문에 마라톤을 뛸 수가 없어." },
+      { en: "Working part-time doesn't preclude you from getting benefits.", kr: "파트타임으로 일한다고 혜택을 못 받는 건 아니에요." }
     ]
   },
   {
@@ -11540,10 +11540,10 @@ const wordsLevel4_Part1 = [
   {
     id: "L4-079",
     word: "premise",
-    meaning: "전제, 가정",
+    meaning: "전제, (작품의) 기본 설정",
     examples: [
-      { en: "The entire film is based on a fantastic premise.", kr: "영화 전체는 환상적인 전제에 기반하고 있습니다." },
-      { en: "His argument rests on a shaky premise.", kr: "그의 주장은 불안정한 전제 위에 놓여 있습니다." }
+      { en: "The premise of the movie is great, but the ending's weak.", kr: "영화 기본 설정은 좋은데 결말이 약해." },
+      { en: "Your whole argument is based on a false premise.", kr: "네 주장은 전부 잘못된 전제에 기반하고 있어." }
     ]
   },
   {
@@ -11567,10 +11567,10 @@ const wordsLevel4_Part1 = [
   {
     id: "L4-082",
     word: "pristine",
-    meaning: "손상되지 않은, 깨끗한",
+    meaning: "새것 같은, 아주 깨끗한, 훼손되지 않은",
     examples: [
-      { en: "The archaeologists discovered a pristine ancient artifact.", kr: "고고학자들은 손상되지 않은 고대 유물을 발견했습니다." },
-      { en: "The mountain lake has pristine, clear water.", kr: "그 산악 호수는 깨끗하고 맑은 물을 가지고 있습니다." }
+      { en: "The car is ten years old but still in pristine condition.", kr: "그 차는 10년 됐는데 아직도 새것 같은 상태야." },
+      { en: "The beaches there are pristine. You'll love it.", kr: "거기 해변들은 정말 깨끗해. 너 엄청 좋아할 거야." }
     ]
   },
   {
@@ -11585,10 +11585,10 @@ const wordsLevel4_Part1 = [
   {
     id: "L4-084",
     word: "proposition",
-    meaning: "제의, 명제",
+    meaning: "제안, (해 볼 만한) 일",
     examples: [
-      { en: "The investor rejected the business proposition.", kr: "그 투자자는 사업 제의를 거절했습니다." },
-      { en: "The entire debate rests on a complex proposition.", kr: "그 전체 논쟁은 복잡한 명제 위에 놓여 있습니다." }
+      { en: "I have a business proposition for you. Interested?", kr: "너한테 사업 제안이 하나 있어. 관심 있어?" },
+      { en: "Living downtown is an expensive proposition.", kr: "시내에 사는 건 돈이 많이 드는 일이야." }
     ]
   },
   {
@@ -11603,19 +11603,19 @@ const wordsLevel4_Part1 = [
   {
     id: "L4-086",
     word: "quantify",
-    meaning: "정량화하다, 수량화하다",
+    meaning: "수치화하다, 정량화하다",
     examples: [
-      { en: "It is difficult to quantify the emotional impact of the tragedy.", kr: "그 비극의 감정적 영향을 정량화하기는 어렵습니다." },
-      { en: "We need to quantify the results before we present them.", kr: "우리는 결과를 발표하기 전에 수량화해야 합니다." }
+      { en: "It's hard to quantify how much she helped the team.", kr: "그녀가 팀에 얼마나 도움이 됐는지 수치화하긴 어려워." },
+      { en: "Can you quantify the savings for the presentation?", kr: "발표용으로 절감액을 수치로 정리해 줄 수 있어요?" }
     ]
   },
   {
     id: "L4-087",
     word: "rebuttal",
-    meaning: "반박, 항변",
+    meaning: "반박",
     examples: [
-      { en: "The lawyer presented a strong rebuttal to the prosecutor's claims.", kr: "변호사는 검찰 측 주장에 대한 강력한 반박을 제시했습니다." },
-      { en: "The politician issued a formal rebuttal to the criticism.", kr: "그 정치인은 그 비판에 대한 공식적인 항변을 발표했습니다." }
+      { en: "Do you have a rebuttal, or do you agree with me?", kr: "반박할 거 있어, 아니면 내 말에 동의해?" },
+      { en: "Each team gets two minutes for its rebuttal.", kr: "각 팀에 반박 시간이 2분씩 주어집니다." }
     ]
   },
   {
@@ -11630,19 +11630,19 @@ const wordsLevel4_Part1 = [
   {
     id: "L4-089",
     word: "relinquish",
-    meaning: "포기하다, 양도하다",
+    meaning: "넘겨주다, 포기하다",
     examples: [
-      { en: "The king was forced to relinquish his throne and leave the country.", kr: "그 왕은 왕위를 포기하고 나라를 떠나도록 강요받았습니다." },
-      { en: "She decided to relinquish her control over the family business.", kr: "그녀는 가족 사업에 대한 자신의 통제권을 양도하기로 결정했습니다." }
+      { en: "My dad finally relinquished control of the TV remote.", kr: "아빠가 드디어 TV 리모컨을 넘겨주셨어." },
+      { en: "She didn't want to relinquish her role as team leader.", kr: "그녀는 팀장 자리를 내놓고 싶어 하지 않았어." }
     ]
   },
   {
     id: "L4-090",
     word: "repertoire",
-    meaning: "레퍼토리, 연주 목록",
+    meaning: "레퍼토리, 할 줄 아는 것들",
     examples: [
-      { en: "The band has a wide repertoire covering multiple genres.", kr: "그 밴드는 여러 장르를 아우르는 광범위한 레퍼토리를 가지고 있습니다." },
-      { en: "The actor has an impressive repertoire of voices and accents.", kr: "그 배우는 다양한 목소리와 억양을 구사하는 인상적인 레퍼토리를 가지고 있습니다." }
+      { en: "Pasta is the only dish in my cooking repertoire.", kr: "내 요리 레퍼토리에 있는 건 파스타뿐이야." },
+      { en: "The band added some new songs to its repertoire.", kr: "그 밴드가 레퍼토리에 새 노래를 몇 곡 추가했어." }
     ]
   },
   {
@@ -11650,35 +11650,35 @@ const wordsLevel4_Part1 = [
     word: "resilience",
     meaning: "회복력, 탄력성",
     examples: [
-      { en: "The city showed great resilience after the earthquake.", kr: "그 도시는 지진 후 엄청난 회복력을 보여주었습니다." },
-      { en: "Emotional resilience is key to dealing with stress.", kr: "감정적 탄력성은 스트레스에 대처하는 핵심입니다." }
+      { en: "Kids have amazing resilience. She bounced back so quickly.", kr: "애들은 회복력이 놀라워. 그 애는 정말 금방 회복했어." },
+      { en: "This job requires a lot of resilience under pressure.", kr: "이 일은 압박 속에서도 버티는 회복력이 많이 필요해요." }
     ]
   },
   {
     id: "L4-092",
     word: "retrospect",
-    meaning: "회상, 회고",
+    meaning: "돌이켜 봄, 회고",
     examples: [
-      { en: "In retrospect, the decision was clearly a mistake.", kr: "돌이켜보면(회고해보면), 그 결정은 명백히 실수였습니다." },
+      { en: "In retrospect, taking that job was a mistake.", kr: "돌이켜 보면, 그 일자리를 받아들인 건 실수였어." },
       { en: "In retrospect, I should have studied harder in college.", kr: "돌이켜 보면, 대학 때 공부를 더 열심히 했어야 했어요." }
     ]
   },
   {
     id: "L4-093",
     word: "sanction",
-    meaning: "승인, 제재",
+    meaning: "제재, 승인",
     examples: [
-      { en: "The plan requires formal sanction from the CEO.", kr: "그 계획은 최고 경영자로부터 공식적인 승인을 필요로 합니다." },
-      { en: "The country faced international sanctions due to its policies.", kr: "그 나라는 정책 때문에 국제적인 제재에 직면했습니다." }
+      { en: "Did you hear? They're putting new sanctions on that country.", kr: "들었어? 그 나라에 새로운 제재를 가한대." },
+      { en: "We can't start without official sanction from headquarters.", kr: "본사의 공식 승인 없이는 시작할 수 없어요." }
     ]
   },
   {
     id: "L4-094",
     word: "scrutiny",
-    meaning: "정밀 조사, 자세히 살펴봄",
+    meaning: "면밀한 검토, 정밀 조사, 감시",
     examples: [
-      { en: "The company's finances came under intense government scrutiny.", kr: "그 회사의 재정은 강도 높은 정부의 정밀 조사를 받게 되었습니다." },
-      { en: "Every detail of the new design was subjected to close scrutiny.", kr: "새 디자인의 모든 세부 사항이 면밀한 검토를 받았습니다." }
+      { en: "The new CEO is under a lot of public scrutiny.", kr: "새 CEO는 대중의 감시를 많이 받고 있어." },
+      { en: "Your expense report won't survive close scrutiny.", kr: "네 경비 보고서는 꼼꼼히 검토하면 통과 못 할 거야." }
     ]
   },
   {
@@ -11686,8 +11686,8 @@ const wordsLevel4_Part1 = [
     word: "skeptical",
     meaning: "회의적인",
     examples: [
-      { en: "I am skeptical about the promises of quick success.", kr: "저는 빠른 성공 약속에 대해 회의적입니다." },
-      { en: "The board was initially skeptical of the new technology.", kr: "이사회는 처음에 새 기술에 대해 회의적이었습니다." }
+      { en: "I'm a little skeptical about those diet pills.", kr: "그 다이어트 약에 대해선 좀 회의적이야." },
+      { en: "My boss was skeptical at first, but she loved the idea.", kr: "상사가 처음엔 회의적이었는데, 결국 그 아이디어를 엄청 좋아했어." }
     ]
   },
   {
@@ -11704,8 +11704,8 @@ const wordsLevel4_Part1 = [
     word: "stance",
     meaning: "입장, 태도",
     examples: [
-      { en: "The government took a firm stance on the issue.", kr: "정부는 그 문제에 대해 확고한 입장을 취했습니다." },
-      { en: "His aggressive stance made negotiations difficult.", kr: "그의 공격적인 태도는 협상을 어렵게 만들었습니다." }
+      { en: "What's your stance on working from home?", kr: "재택근무에 대해 어떤 입장이세요?" },
+      { en: "My parents have a pretty strict stance on curfews.", kr: "우리 부모님은 통금에 대해 꽤 엄격한 입장이셔." }
     ]
   },
   {
@@ -11720,10 +11720,10 @@ const wordsLevel4_Part1 = [
   {
     id: "L4-099",
     word: "stigma",
-    meaning: "오명, 낙인",
+    meaning: "낙인, 오명, 편견",
     examples: [
-      { en: "The organization works to remove the stigma attached to mental illness.", kr: "그 조직은 정신 질환에 붙어 있는 오명을 제거하기 위해 노력합니다." },
-      { en: "Being associated with the scandal left a permanent stigma.", kr: "그 스캔들과 연관되는 것은 영구적인 낙인을 남겼습니다." }
+      { en: "There's still a stigma around seeing a therapist.", kr: "심리 상담 받는 것에 대한 낙인이 아직도 있어." },
+      { en: "Getting divorced doesn't carry the same stigma anymore.", kr: "이혼한다고 예전처럼 낙인찍히진 않아." }
     ]
   },
   {
@@ -11743,44 +11743,44 @@ const wordsLevel4_Part2 = [
     word: "subjective",
     meaning: "주관적인",
     examples: [
-      { en: "Art appreciation is highly subjective; everyone has a different opinion.", kr: "예술 감상은 매우 주관적입니다; 모든 사람이 다른 의견을 가지고 있습니다." },
-      { en: "His review was too subjective to be taken seriously.", kr: "그의 평론은 너무 주관적이어서 진지하게 받아들여지기 어려웠습니다." }
+      { en: "Taste in music is totally subjective, right?", kr: "음악 취향은 완전히 주관적인 거잖아, 그렇지?" },
+      { en: "That's just your subjective opinion, not a fact.", kr: "그건 그냥 네 주관적인 의견이지, 사실이 아니야." }
     ]
   },
   {
     id: "L4-102",
     word: "subsidiary",
-    meaning: "자회사의, 보조적인",
+    meaning: "자회사, 부수적인",
     examples: [
-      { en: "The bank has several subsidiary companies overseas.", kr: "그 은행은 해외에 여러 자회사를 두고 있습니다." },
-      { en: "This product is just a subsidiary part of the main system.", kr: "이 제품은 주 시스템의 단지 보조적인 부분입니다." }
+      { en: "I work for a subsidiary of a big Japanese company.", kr: "난 큰 일본 회사의 자회사에서 일해." },
+      { en: "That's a subsidiary issue. Let's focus on the main one.", kr: "그건 부수적인 문제야. 핵심 문제에 집중하자." }
     ]
   },
   {
     id: "L4-103",
     word: "subsidize",
-    meaning: "보조금을 주다",
+    meaning: "보조금을 주다, 비용을 지원하다",
     examples: [
-      { en: "The government will subsidize the public transportation system.", kr: "정부는 대중교통 시스템에 보조금을 줄 것입니다." },
-      { en: "The program is designed to subsidize education costs for low-income families.", kr: "그 프로그램은 저소득층 가정을 위한 교육비를 보조하도록 고안되었습니다." }
+      { en: "My company subsidizes our gym memberships.", kr: "우리 회사가 헬스장 회원권 비용을 지원해 줘." },
+      { en: "Should the government subsidize electric cars?", kr: "정부가 전기차에 보조금을 줘야 할까?" }
     ]
   },
   {
-    id: "L4-104",
-    word: "substantiate",
-    meaning: "입증하다, 실증하다",
+    id: "L4-615",
+    word: "reservation",
+    meaning: "예약",
     examples: [
-      { en: "You must substantiate your claims with solid evidence.", kr: "당신은 확실한 증거로 당신의 주장을 입증해야 합니다." },
-      { en: "The theory has yet to be fully substantiated by experiments.", kr: "그 이론은 아직 실험으로 완전히 실증되지 않았습니다." }
+      { en: "Hi, I have a reservation for two at seven.", kr: "안녕하세요, 7시에 두 명 예약했어요." },
+      { en: "Do I need to make a reservation for the tour?", kr: "그 투어 예약해야 하나요?" }
     ]
   },
   {
     id: "L4-105",
     word: "tentative",
-    meaning: "잠정적인, 머뭇거리는",
+    meaning: "잠정적인, 임시의, 머뭇거리는",
     examples: [
-      { en: "We have reached a tentative agreement, but it needs final approval.", kr: "우리는 잠정적인 합의에 도달했지만, 최종 승인이 필요합니다." },
-      { en: "His steps were tentative on the icy ground.", kr: "그의 발걸음은 얼음 위에서 머뭇거렸습니다." }
+      { en: "We have a tentative date for the wedding: June tenth.", kr: "결혼식 날짜를 잠정적으로 6월 10일로 정했어." },
+      { en: "Let's make a tentative plan and confirm it next week.", kr: "일단 잠정적인 계획을 세우고 다음 주에 확정하자." }
     ]
   },
   {
@@ -11793,21 +11793,21 @@ const wordsLevel4_Part2 = [
     ]
   },
   {
-    id: "L4-107",
-    word: "treatise",
-    meaning: "논문, 학술서",
+    id: "L4-616",
+    word: "headache",
+    meaning: "두통, 골칫거리",
     examples: [
-      { en: "He published a lengthy treatise on the history of economic thought.", kr: "그는 경제 사상의 역사에 대한 장문의 논문을 출판했습니다." },
-      { en: "The book is a scholarly treatise on early Roman law.", kr: "그 책은 초기 로마법에 대한 학술서입니다." }
+      { en: "I've had a headache since this morning.", kr: "아침부터 계속 머리가 아파요." },
+      { en: "Parking downtown is such a headache.", kr: "시내 주차는 진짜 골칫거리야." }
     ]
   },
   {
     id: "L4-108",
     word: "ubiquitous",
-    meaning: "어디에나 있는, 편재하는",
+    meaning: "어디에나 있는, 아주 흔한",
     examples: [
-      { en: "Mobile phones are now ubiquitous in modern society.", kr: "휴대폰은 이제 현대 사회에서 어디에나 있습니다(편재합니다)." },
-      { en: "The company aims to make its brand ubiquitous.", kr: "그 회사는 자사의 브랜드를 어디에나 있게 만드는 것을 목표로 합니다." }
+      { en: "Coffee shops are ubiquitous in Seoul. They're everywhere!", kr: "서울엔 커피숍이 어디에나 있어. 진짜 사방에 있어!" },
+      { en: "Those electric scooters have become ubiquitous downtown.", kr: "요즘 시내엔 어딜 가나 그 전동 킥보드가 있어." }
     ]
   },
   {
@@ -11824,8 +11824,8 @@ const wordsLevel4_Part2 = [
     word: "unilateral",
     meaning: "일방적인",
     examples: [
-      { en: "The CEO made a unilateral decision without consulting the board.", kr: "최고 경영자는 이사회와 상의 없이 일방적인 결정을 내렸습니다." },
-      { en: "The country's unilateral action led to international disapproval.", kr: "그 나라의 일방적인 행동은 국제적인 비난을 초래했습니다." }
+      { en: "My boss made a unilateral decision without asking us.", kr: "상사가 우리한테 묻지도 않고 일방적인 결정을 내렸어." },
+      { en: "You can't just make unilateral changes to our plans.", kr: "우리 계획을 그렇게 일방적으로 바꾸면 안 돼." }
     ]
   },
   {
@@ -11867,46 +11867,46 @@ const wordsLevel4_Part2 = [
   {
     id: "L4-115",
     word: "volatile",
-    meaning: "변동성이 심한, 휘발성의",
+    meaning: "변동이 심한, 불안정한, (성격이) 욱하는",
     examples: [
-      { en: "The political situation in the region remains highly volatile.", kr: "그 지역의 정치 상황은 여전히 매우 변동성이 심합니다." },
-      { en: "Gasoline is a highly volatile substance that evaporates quickly.", kr: "휘발유는 빠르게 증발하는 매우 휘발성의 물질입니다." }
+      { en: "The stock market has been really volatile this week.", kr: "이번 주 주식 시장이 정말 변동이 심했어." },
+      { en: "Be careful around him. He has a volatile temper.", kr: "그 사람 앞에선 조심해. 성격이 욱하는 편이야." }
     ]
   },
   {
-    id: "L4-116",
-    word: "zeal",
-    meaning: "열정, 열의",
+    id: "L4-617",
+    word: "luggage",
+    meaning: "짐, 수하물",
     examples: [
-      { en: "He pursued his goals with great zeal and determination.", kr: "그는 엄청난 열정과 결단력으로 자신의 목표를 추구했습니다." },
-      { en: "The new employee showed commendable zeal for his work.", kr: "새 직원은 자신의 일에 대해 칭찬할 만한 열의를 보였습니다." }
+      { en: "Can I leave my luggage here until check-in?", kr: "체크인할 때까지 짐을 여기 맡겨도 될까요?" },
+      { en: "My luggage didn't show up at baggage claim.", kr: "수하물 찾는 곳에 제 짐이 안 나왔어요." }
     ]
   },
   {
     id: "L4-117",
     word: "anomaly",
-    meaning: "변칙, 예외",
+    meaning: "이례적인 일, 이상 현상",
     examples: [
-      { en: "The test result was an anomaly that baffled the scientists.", kr: "그 테스트 결과는 과학자들을 당황하게 만든 변칙(예외)이었습니다." },
-      { en: "A calm period in this volatile market is a rare anomaly.", kr: "이 변동성 심한 시장에서의 평온한 기간은 희귀한 예외입니다." }
+      { en: "Last month's low sales were just an anomaly.", kr: "지난달 저조한 매출은 그냥 이례적인 일이었어." },
+      { en: "The system flagged an anomaly in your account.", kr: "시스템이 고객님 계정에서 이상 현상을 감지했어요." }
     ]
   },
   {
     id: "L4-118",
     word: "brevity",
-    meaning: "간결함, 짧음",
+    meaning: "간결함",
     examples: [
-      { en: "The speaker was praised for the brevity of his presentation.", kr: "그 연사는 발표의 간결함으로 칭찬받았습니다." },
-      { en: "The brevity of human life makes every moment precious.", kr: "인생의 짧음은 모든 순간을 소중하게 만듭니다." }
+      { en: "Brevity is key in emails. Nobody reads long ones.", kr: "이메일은 간결함이 핵심이야. 긴 건 아무도 안 읽어." },
+      { en: "For the sake of brevity, I'll skip the details.", kr: "간결하게 하려고 세부 사항은 건너뛸게요." }
     ]
   },
   {
     id: "L4-119",
     word: "coherent",
-    meaning: "일관성 있는, 논리 정연한",
+    meaning: "조리 있는, 일관성 있는",
     examples: [
-      { en: "She gave a clear and coherent explanation of the new policy.", kr: "그녀는 새 정책에 대해 명확하고 일관성 있는 설명을 했습니다." },
-      { en: "The paragraphs must be coherent and flow logically.", kr: "문단들은 일관성 있어야 하고 논리적으로 이어져야 합니다." }
+      { en: "I was too tired to give a coherent answer.", kr: "너무 피곤해서 조리 있게 대답을 못 했어." },
+      { en: "We need a more coherent plan before we pitch this.", kr: "이거 제안하기 전에 좀 더 일관성 있는 계획이 필요해요." }
     ]
   },
   {
@@ -11921,10 +11921,10 @@ const wordsLevel4_Part2 = [
   {
     id: "L4-121",
     word: "conviction",
-    meaning: "신념, 유죄 판결",
+    meaning: "확신, 신념, 유죄 판결",
     examples: [
-      { en: "He spoke with deep conviction about the need for reform.", kr: "그는 개혁의 필요성에 대해 깊은 신념을 가지고 말했습니다." },
-      { en: "He has a previous conviction for theft.", kr: "그는 절도로 유죄 판결을 받은 전과가 있습니다." }
+      { en: "She said it with such conviction that I believed her.", kr: "그녀가 너무 확신에 차서 말해서 믿었어." },
+      { en: "He had a previous conviction, so he didn't get the job.", kr: "그는 유죄 판결을 받은 전과가 있어서 그 일자리를 못 얻었어." }
     ]
   },
   {
@@ -11939,19 +11939,19 @@ const wordsLevel4_Part2 = [
   {
     id: "L4-123",
     word: "demeanor",
-    meaning: "태도, 품행",
+    meaning: "태도, 행동거지",
     examples: [
-      { en: "Her professional demeanor impressed the interviewers.", kr: "그녀의 전문적인 태도는 면접관들에게 깊은 인상을 주었습니다." },
-      { en: "The suspect's calm demeanor suggested he was innocent.", kr: "용의자의 침착한 품행은 그가 무죄임을 시사했습니다." }
+      { en: "Her calm demeanor really helped during the crisis.", kr: "위기 상황에서 그녀의 침착한 태도가 정말 도움이 됐어." },
+      { en: "His whole demeanor changed when his boss walked in.", kr: "상사가 들어오자 그의 태도가 완전히 바뀌었어." }
     ]
   },
   {
     id: "L4-124",
     word: "denounce",
-    meaning: "비난하다, 고발하다",
+    meaning: "(공개적으로) 비난하다, 규탄하다",
     examples: [
-      { en: "The organization denounced the recent human rights violations.", kr: "그 조직은 최근의 인권 침해를 비난했습니다." },
-      { en: "Whistleblowers often denounce illegal activities within a company.", kr: "내부 고발자들은 종종 회사 내의 불법 활동을 고발합니다." }
+      { en: "Lots of fans denounced the team's decision online.", kr: "많은 팬들이 온라인에서 그 팀의 결정을 비난했어." },
+      { en: "Why hasn't anyone denounced what he said?", kr: "왜 아무도 그 사람이 한 말을 비난하지 않는 거야?" }
     ]
   },
   {
@@ -11975,19 +11975,19 @@ const wordsLevel4_Part2 = [
   {
     id: "L4-127",
     word: "diffuse",
-    meaning: "퍼뜨리다, 산만한",
+    meaning: "퍼뜨리다, 퍼지다",
     examples: [
-      { en: "The scent of flowers diffused throughout the room.", kr: "꽃 향기가 방 전체에 퍼졌습니다." },
-      { en: "The speaker's argument was too diffuse and hard to follow.", kr: "그 연사의 주장은 너무 산만해서 따라가기 어려웠습니다." }
+      { en: "This lamp has a cover that diffuses the light nicely.", kr: "이 램프는 빛을 은은하게 퍼뜨리는 갓이 있어." },
+      { en: "The scent of the candle diffused through the whole room.", kr: "캔들 향이 방 전체에 퍼졌어." }
     ]
   },
   {
     id: "L4-128",
     word: "disconcerting",
-    meaning: "당황하게 만드는, 혼란스러운",
+    meaning: "당황스러운, 불안하게 만드는",
     examples: [
-      { en: "The sudden silence was disconcerting to everyone in the room.", kr: "갑작스러운 침묵은 방 안의 모두를 당황하게 만들었습니다." },
-      { en: "The constant surveillance created a disconcerting atmosphere.", kr: "끊임없는 감시는 혼란스러운 분위기를 조성했습니다." }
+      { en: "It's a little disconcerting when he stares like that.", kr: "그가 그렇게 빤히 쳐다보면 좀 당황스러워." },
+      { en: "The silence after my joke was pretty disconcerting.", kr: "내 농담 뒤에 흐른 침묵은 꽤 당황스러웠어." }
     ]
   },
   {
@@ -11995,35 +11995,35 @@ const wordsLevel4_Part2 = [
     word: "dismantle",
     meaning: "분해하다, 해체하다",
     examples: [
-      { en: "The engineers had to dismantle the machine to find the fault.", kr: "엔지니어들은 결함을 찾기 위해 기계를 분해해야 했습니다." },
-      { en: "The new administration promised to dismantle the old bureaucracy.", kr: "새 행정부는 구시대 관료제를 해체하겠다고 약속했습니다." }
+      { en: "We had to dismantle the bed to get it upstairs.", kr: "위층으로 옮기려고 침대를 분해해야 했어." },
+      { en: "Can you help me dismantle the tent?", kr: "텐트 해체하는 것 좀 도와줄래?" }
     ]
   },
   {
     id: "L4-130",
     word: "distraught",
-    meaning: "정신이 혼란한, 괴로운",
+    meaning: "몹시 괴로워하는, 제정신이 아닌",
     examples: [
-      { en: "She was so distraught after the accident that she couldn't speak.", kr: "그녀는 사고 후 너무 정신이 혼란하여 말할 수 없었습니다." },
-      { en: "The parents were distraught when their child went missing.", kr: "부모는 아이가 실종되었을 때 괴로워했습니다." }
+      { en: "She was distraught when her dog went missing.", kr: "강아지가 없어졌을 때 그녀는 제정신이 아니었어." },
+      { en: "He sounded distraught on the phone. Is he okay?", kr: "통화할 때 그 사람 엄청 괴로워하는 것 같았어. 괜찮대?" }
     ]
   },
   {
     id: "L4-131",
     word: "docile",
-    meaning: "유순한, 다루기 쉬운",
+    meaning: "순한, 유순한",
     examples: [
-      { en: "The large dog was surprisingly docile with small children.", kr: "그 큰 개는 어린 아이들에게 놀라울 정도로 유순했습니다." },
-      { en: "He wished his students were more docile and less rebellious.", kr: "그는 학생들이 더 다루기 쉽고 반항적이지 않기를 바랐습니다." }
+      { en: "Don't worry, our dog is very docile with kids.", kr: "걱정 마, 우리 개는 아이들한테 아주 순해." },
+      { en: "The horses here are docile, so beginners can ride them.", kr: "여기 말들은 순해서 초보자도 탈 수 있어요." }
     ]
   },
   {
     id: "L4-132",
     word: "ecstatic",
-    meaning: "열광적인, 황홀해하는",
+    meaning: "너무 기쁜, 황홀해하는",
     examples: [
-      { en: "The team's fans were ecstatic after winning the championship.", kr: "그 팀의 팬들은 챔피언십 우승 후 열광적이었습니다." },
-      { en: "She was ecstatic when she heard she got the job.", kr: "그녀는 합격 소식을 듣고 황홀할 만큼 기뻐했습니다." }
+      { en: "I was ecstatic when I heard I got the job!", kr: "합격 소식 들었을 때 날아갈 듯 기뻤어!" },
+      { en: "The kids are ecstatic about our trip to the amusement park.", kr: "애들이 놀이공원 간다고 엄청 기뻐하고 있어." }
     ]
   },
   {
@@ -12038,28 +12038,28 @@ const wordsLevel4_Part2 = [
   {
     id: "L4-134",
     word: "emulate",
-    meaning: "모방하다, 따라가다",
+    meaning: "본받다, 모방하다",
     examples: [
-      { en: "Young athletes often emulate the techniques of their heroes.", kr: "젊은 운동선수들은 종종 그들의 영웅들의 기술을 모방합니다." },
-      { en: "The company tried to emulate the success of its competitor.", kr: "그 회사는 경쟁사의 성공을 따라가려고 노력했습니다." }
+      { en: "I try to emulate my mentor's calm leadership style.", kr: "나는 멘토의 차분한 리더십 스타일을 본받으려고 해." },
+      { en: "Lots of startups try to emulate that company's success.", kr: "많은 스타트업들이 그 회사의 성공을 모방하려고 해." }
     ]
   },
   {
     id: "L4-135",
     word: "enigma",
-    meaning: "수수께끼, 불가사의",
+    meaning: "수수께끼, 불가사의한 사람",
     examples: [
-      { en: "The source of the mysterious signal remains an enigma.", kr: "그 신비한 신호의 출처는 여전히 수수께끼로 남아 있습니다." },
-      { en: "He has always been an enigma to his colleagues.", kr: "그는 항상 그의 동료들에게 불가사의한 존재였습니다." }
+      { en: "My new coworker is a total enigma. He never talks.", kr: "새 동료는 완전 수수께끼야. 말을 전혀 안 해." },
+      { en: "How she stays so calm is an enigma to me.", kr: "그녀가 어떻게 그렇게 침착한지 나한텐 수수께끼야." }
     ]
   },
   {
     id: "L4-136",
     word: "ephemeral",
-    meaning: "덧없는, 수명이 짧은",
+    meaning: "덧없는, 금방 사라지는",
     examples: [
-      { en: "Fame in the modern age is often ephemeral.", kr: "현대 시대의 명성은 종종 덧없습니다." },
-      { en: "The beauty of the sunset is an ephemeral moment.", kr: "일몰의 아름다움은 덧없이 지나가는 순간입니다." }
+      { en: "Social media trends are so ephemeral these days.", kr: "요즘 SNS 유행은 정말 금방 사라져." },
+      { en: "Enjoy the cherry blossoms while you can. They're ephemeral.", kr: "벚꽃 볼 수 있을 때 즐겨. 금방 사라지니까." }
     ]
   },
   {
@@ -12076,8 +12076,8 @@ const wordsLevel4_Part2 = [
     word: "inequality",
     meaning: "불평등",
     examples: [
-      { en: "Income inequality has grown in many countries.", kr: "많은 나라에서 소득 불평등이 커졌습니다." },
-      { en: "The report highlights gender inequality in the tech industry.", kr: "그 보고서는 기술 업계의 성 불평등을 강조합니다." }
+      { en: "Do you think income inequality is getting worse here?", kr: "여기 소득 불평등이 점점 심해지고 있다고 생각해?" },
+      { en: "There's still a lot of gender inequality in tech jobs.", kr: "IT 업계엔 아직도 성 불평등이 많아." }
     ]
   },
   {
@@ -12130,35 +12130,35 @@ const wordsLevel4_Part2 = [
     word: "hypothetical",
     meaning: "가상의, 가정의",
     examples: [
-      { en: "We discussed a hypothetical scenario to test the new rules.", kr: "우리는 새 규칙을 시험하기 위해 가상의 시나리오를 논의했습니다." },
-      { en: "The solution is purely hypothetical until we confirm the data.", kr: "그 해결책은 우리가 데이터를 확인할 때까지 순전히 가정에 불과합니다." }
+      { en: "Just a hypothetical question: what if you won the lottery?", kr: "그냥 가정해서 묻는 건데, 복권에 당첨되면 어떡할 거야?" },
+      { en: "Let's not worry about hypothetical problems yet.", kr: "아직 가상의 문제까지 걱정하지는 말자." }
     ]
   },
   {
     id: "L4-145",
     word: "illicit",
-    meaning: "불법적인, 부정한",
+    meaning: "불법의, 부정한",
     examples: [
-      { en: "The police cracked down on the illicit trade of rare artifacts.", kr: "경찰은 희귀 유물들의 불법 거래를 단속했습니다." },
-      { en: "They were accused of having an illicit affair.", kr: "그들은 불륜 관계를 맺었다는 비난을 받았습니다." }
+      { en: "They got caught selling illicit drugs near the school.", kr: "그들은 학교 근처에서 불법 약물을 팔다가 걸렸어." },
+      { en: "The drama is about an illicit affair between coworkers.", kr: "그 드라마는 직장 동료 사이의 부정한 관계, 즉 불륜에 관한 얘기야." }
     ]
   },
   {
-    id: "L4-146",
-    word: "impervious",
-    meaning: "영향받지 않는, 통과시키지 않는",
+    id: "L4-618",
+    word: "roommate",
+    meaning: "룸메이트, 같이 사는 사람",
     examples: [
-      { en: "The new coating makes the material impervious to water.", kr: "새 코팅은 그 재료를 물이 통과하지 않도록 만듭니다." },
-      { en: "He seemed impervious to criticism from his rivals.", kr: "그는 경쟁자들의 비판에 영향을 받지 않는 것처럼 보였습니다." }
+      { en: "My roommate always leaves dirty dishes in the sink.", kr: "내 룸메이트는 맨날 설거지거리를 싱크대에 쌓아 둬." },
+      { en: "Are you looking for a roommate to split the rent?", kr: "월세 나눠 낼 룸메이트 구하고 있어요?" }
     ]
   },
   {
-    id: "L4-147",
-    word: "impunity",
-    meaning: "처벌을 면함",
+    id: "L4-619",
+    word: "bargain",
+    meaning: "싸게 산 물건, 흥정하다",
     examples: [
-      { en: "The dictator acted with complete impunity, ignoring international law.", kr: "그 독재자는 국제법을 무시하며 완전히 처벌을 면한 채 행동했습니다." },
-      { en: "No one should be allowed to commit crimes with impunity.", kr: "어떤 누구도 처벌을 면한 채 범죄를 저지르는 것이 허용되어서는 안 됩니다." }
+      { en: "This jacket was only twenty bucks. What a bargain!", kr: "이 재킷 20달러밖에 안 했어. 완전 득템이야!" },
+      { en: "You can bargain with the vendors at the night market.", kr: "야시장에서는 상인들이랑 흥정할 수 있어요." }
     ]
   },
   {
@@ -12166,8 +12166,8 @@ const wordsLevel4_Part2 = [
     word: "inception",
     meaning: "시작, 개시",
     examples: [
-      { en: "The project has been successful since its inception five years ago.", kr: "그 프로젝트는 5년 전 시작(개시)된 이후로 성공적이었습니다." },
-      { en: "From the inception of the idea, we knew it would be revolutionary.", kr: "그 아이디어의 시작부터, 우리는 그것이 혁명적일 것임을 알았습니다." }
+      { en: "I've been on this project since its inception.", kr: "난 이 프로젝트 시작부터 함께했어." },
+      { en: "Since its inception, our club has doubled in size.", kr: "우리 동호회는 시작된 이후로 규모가 두 배가 됐어." }
     ]
   },
   {
@@ -12200,28 +12200,28 @@ const wordsLevel4_Part2 = [
   {
     id: "L4-152",
     word: "inertia",
-    meaning: "관성, 타성",
+    meaning: "타성, 관성",
     examples: [
-      { en: "The company's reluctance to change was a clear sign of corporate inertia.", kr: "변화를 꺼리는 그 회사의 태도는 기업의 타성을 보여주는 분명한 신호였습니다." },
-      { en: "The ball continued to roll due to inertia.", kr: "공은 관성 때문에 계속 굴러갔습니다." }
+      { en: "Honestly, I stay at this job mostly out of inertia.", kr: "솔직히 이 직장에 있는 건 거의 타성 때문이야." },
+      { en: "Hold on tight. Inertia pushes you forward when the bus stops.", kr: "꽉 잡아. 버스가 멈추면 관성 때문에 앞으로 쏠려." }
     ]
   },
   {
     id: "L4-153",
     word: "infallible",
-    meaning: "결코 틀리지 않는, 절대 확실한",
+    meaning: "절대 틀리지 않는, 완벽한",
     examples: [
-      { en: "She believes her instincts are infallible in business matters.", kr: "그녀는 자신의 직감이 사업 문제에서 결코 틀리지 않는다고 믿습니다." },
-      { en: "There is no infallible method for predicting the future.", kr: "미래를 예측하는 절대 확실한 방법은 없습니다." }
+      { en: "Relax, nobody's infallible. Everyone makes mistakes.", kr: "진정해, 절대 안 틀리는 사람은 없어. 누구나 실수해." },
+      { en: "My GPS isn't infallible. It got us lost yesterday.", kr: "내 내비도 완벽하진 않아. 어제 우리 길 잃게 했잖아." }
     ]
   },
   {
     id: "L4-154",
     word: "innocuous",
-    meaning: "무해한, 악의 없는",
+    meaning: "악의 없는, 무해한",
     examples: [
-      { en: "The mushroom looked poisonous, but it was actually innocuous.", kr: "그 버섯은 독성이 있어 보였지만, 실제로는 무해했습니다." },
-      { en: "He made an innocuous comment that was later misinterpreted.", kr: "그는 악의 없는 논평을 했지만 나중에 오해를 받았습니다." }
+      { en: "It was an innocuous question, but she got really upset.", kr: "악의 없는 질문이었는데, 그녀가 엄청 화를 냈어." },
+      { en: "Don't worry, that spider is totally innocuous.", kr: "걱정 마, 그 거미는 완전히 무해해." }
     ]
   },
   {
@@ -12236,28 +12236,28 @@ const wordsLevel4_Part2 = [
   {
     id: "L4-156",
     word: "intangible",
-    meaning: "무형의, 만질 수 없는",
+    meaning: "무형의, 눈에 보이지 않는",
     examples: [
-      { en: "The brand name has a large intangible value.", kr: "그 브랜드 이름은 큰 무형의 가치를 가지고 있습니다." },
-      { en: "Motivation and morale are intangible factors in a team's success.", kr: "동기 부여와 사기는 팀 성공의 무형적인 요소입니다." }
+      { en: "The job doesn't pay much, but the intangible benefits are great.", kr: "그 일은 돈은 많이 안 주지만, 눈에 보이지 않는 이점이 커." },
+      { en: "Trust is intangible, but it's what keeps a team together.", kr: "신뢰는 눈에 보이지 않지만, 팀을 하나로 묶어 주는 거야." }
     ]
   },
   {
     id: "L4-157",
     word: "intermittent",
-    meaning: "간헐적인",
+    meaning: "간헐적인, 끊겼다 이어졌다 하는",
     examples: [
-      { en: "The region is experiencing intermittent rain showers today.", kr: "그 지역은 오늘 간헐적인 소나기를 겪고 있습니다." },
-      { en: "The machine's performance suffered from intermittent power failures.", kr: "그 기계의 성능은 간헐적인 전력 공급 실패로 인해 저하되었습니다." }
+      { en: "The Wi-Fi here is intermittent, so my calls keep dropping.", kr: "여기 와이파이가 끊겼다 됐다 해서 통화가 계속 끊겨." },
+      { en: "There will be intermittent showers throughout the afternoon.", kr: "오후 내내 간헐적으로 소나기가 내리겠습니다." }
     ]
   },
   {
-    id: "L4-158",
-    word: "intrepid",
-    meaning: "용감한, 대담한",
+    id: "L4-620",
+    word: "annoyed",
+    meaning: "짜증 난, 언짢은",
     examples: [
-      { en: "The intrepid explorer ventured into the uncharted jungle.", kr: "그 용감한 탐험가는 지도에 없는 정글 속으로 모험을 떠났습니다." },
-      { en: "The newspaper praised the intrepid rescue team.", kr: "신문은 그 대담한 구조 팀을 칭찬했습니다." }
+      { en: "I'm annoyed that the bus was late again.", kr: "버스가 또 늦게 와서 짜증 나." },
+      { en: "Don't get annoyed, he's just trying to help.", kr: "짜증 내지 마, 그냥 도와주려는 거잖아." }
     ]
   },
   {
@@ -12310,8 +12310,8 @@ const wordsLevel4_Part2 = [
     word: "meticulous",
     meaning: "꼼꼼한, 세심한",
     examples: [
-      { en: "The accountant was meticulous in his attention to detail.", kr: "그 회계사는 세부 사항까지 꼼꼼하게 신경 썼습니다." },
-      { en: "The building plans require a meticulous review.", kr: "그 건물 계획은 세심한 검토를 필요로 합니다." }
+      { en: "She's meticulous about keeping her desk organized.", kr: "그녀는 책상 정리에 엄청 꼼꼼해." },
+      { en: "Thanks for the meticulous notes from the meeting.", kr: "회의 내용을 세심하게 정리해 줘서 고마워요." }
     ]
   },
   {
@@ -12326,10 +12326,10 @@ const wordsLevel4_Part2 = [
   {
     id: "L4-166",
     word: "nomadic",
-    meaning: "유목의, 방랑하는",
+    meaning: "유목의, 떠돌아다니는",
     examples: [
-      { en: "The tribe maintained a traditional nomadic lifestyle.", kr: "그 부족은 전통적인 유목 생활 방식을 유지했습니다." },
-      { en: "After graduation, he led a nomadic existence, traveling from city to city.", kr: "졸업 후, 그는 도시에서 도시로 여행하는 방랑하는 삶을 살았습니다." }
+      { en: "Working remotely lets me live a nomadic lifestyle.", kr: "원격 근무 덕분에 떠돌아다니는 생활을 할 수 있어." },
+      { en: "Some families in Mongolia are still nomadic.", kr: "몽골의 일부 가족들은 아직도 유목 생활을 해." }
     ]
   },
   {
@@ -12337,17 +12337,17 @@ const wordsLevel4_Part2 = [
     word: "novice",
     meaning: "초보자",
     examples: [
-      { en: "Even a complete novice can use this software easily.", kr: "완전한 초보자도 이 소프트웨어를 쉽게 사용할 수 있습니다." },
-      { en: "She is a novice at coding, but she learns quickly.", kr: "그녀는 코딩 초보자이지만, 빠르게 배웁니다." }
+      { en: "I'm a total novice at golf, so go easy on me.", kr: "나 골프 완전 초보자니까 살살 해 줘." },
+      { en: "This software is easy enough for a novice to use.", kr: "이 소프트웨어는 초보자도 쓸 만큼 쉬워요." }
     ]
   },
   {
     id: "L4-168",
     word: "oblivious",
-    meaning: "의식하지 못하는, 알아차리지 못하는",
+    meaning: "눈치채지 못하는, 의식하지 못하는",
     examples: [
-      { en: "He seemed completely oblivious to the danger he was in.", kr: "그는 자신이 처한 위험을 전혀 의식하지 못하는 것처럼 보였습니다." },
-      { en: "The driver was oblivious to the siren behind him.", kr: "그 운전자는 뒤에서 울리는 사이렌을 알아차리지 못했습니다." }
+      { en: "He was totally oblivious to the fact that she liked him.", kr: "그는 그녀가 자기를 좋아한다는 걸 전혀 눈치채지 못했어." },
+      { en: "People who text while walking are oblivious to traffic.", kr: "걸으면서 문자하는 사람들은 차가 오는 걸 의식하지 못해." }
     ]
   },
   {
@@ -12362,55 +12362,55 @@ const wordsLevel4_Part2 = [
   {
     id: "L4-170",
     word: "ostensibly",
-    meaning: "표면상으로는",
+    meaning: "표면상으로는, 겉으로는",
     examples: [
-      { en: "Ostensibly, the meeting was about the budget, but it was really about power.", kr: "표면상으로는 그 회의는 예산에 관한 것이었지만, 실제로는 권력에 관한 것이었습니다." },
-      { en: "She arrived late, ostensibly due to traffic.", kr: "그녀는 표면상으로는 교통 체증 때문에 늦게 도착했습니다." }
+      { en: "He called, ostensibly to say hi, but he wanted money.", kr: "걔가 겉으로는 안부 전화였는데, 사실은 돈이 필요했던 거야." },
+      { en: "The meeting was ostensibly about the budget.", kr: "그 회의는 표면상으로는 예산 얘기였어." }
     ]
   },
   {
     id: "L4-171",
     word: "palatable",
-    meaning: "맛있는, 구미에 맞는",
+    meaning: "먹을 만한, 받아들일 만한",
     examples: [
-      { en: "The meal was simple but surprisingly palatable.", kr: "그 식사는 단순했지만 놀랍도록 맛있었습니다." },
-      { en: "The contract terms were made more palatable to the union.", kr: "그 계약 조건들은 노조에 더 구미에 맞게 만들어졌습니다." }
+      { en: "Add some honey to make the medicine more palatable.", kr: "약이 좀 먹을 만하게 꿀을 조금 넣어." },
+      { en: "How can we make this news more palatable for the team?", kr: "이 소식을 팀이 좀 더 받아들일 만하게 하려면 어떻게 하죠?" }
     ]
   },
   {
     id: "L4-172",
     word: "peripheral",
-    meaning: "주변적인, 중요하지 않은",
+    meaning: "주변의, 부차적인",
     examples: [
-      { en: "The issue of office lighting is peripheral to the main budget discussion.", kr: "사무실 조명 문제는 주요 예산 논의에서 부차적인 문제입니다." },
-      { en: "We only need to focus on the central problem, not the peripheral details.", kr: "우리는 주변적인 세부 사항이 아니라 중심 문제에만 집중하면 됩니다." }
+      { en: "I saw something move in my peripheral vision.", kr: "주변 시야에서 뭔가 움직이는 게 보였어." },
+      { en: "Let's skip the peripheral details and get to the point.", kr: "부차적인 세부 사항은 건너뛰고 본론으로 가죠." }
     ]
   },
   {
     id: "L4-173",
     word: "perpetuate",
-    meaning: "영구화하다, 지속시키다",
+    meaning: "계속 이어지게 하다, 영속시키다",
     examples: [
-      { en: "We must not perpetuate the myth that hard work alone guarantees success.", kr: "우리는 열심히 일하는 것만이 성공을 보장한다는 신화를 영구화해서는 안 됩니다." },
-      { en: "The monument was built to perpetuate the memory of the soldiers.", kr: "그 기념비는 군인들의 기억을 영구화하기 위해 세워졌습니다." }
+      { en: "Jokes like that just perpetuate stereotypes.", kr: "그런 농담은 고정관념을 계속 이어지게 할 뿐이야." },
+      { en: "Let's not perpetuate that rumor. It's not even true.", kr: "그 소문이 계속 돌게 하지 말자. 사실도 아니야." }
     ]
   },
   {
     id: "L4-174",
     word: "philanthropy",
-    meaning: "박애, 자선",
+    meaning: "자선 (활동), 박애",
     examples: [
-      { en: "The billionaire is well known for his philanthropy and charitable donations.", kr: "그 억만장자는 자신의 박애와 자선 기부로 잘 알려져 있습니다." },
-      { en: "The foundation is dedicated to promoting philanthropy in developing nations.", kr: "그 재단은 개발 도상국에서 자선을 증진하는 데 전념하고 있습니다." }
+      { en: "After retiring, she got really into philanthropy.", kr: "은퇴 후에 그녀는 자선 활동에 푹 빠졌어." },
+      { en: "Is that real philanthropy or just good PR?", kr: "그게 진짜 자선이야, 아니면 그냥 이미지 관리야?" }
     ]
   },
   {
     id: "L4-175",
     word: "plummet",
-    meaning: "급락하다",
+    meaning: "급락하다, 뚝 떨어지다",
     examples: [
-      { en: "Stock prices plummeted after the sudden economic news.", kr: "갑작스러운 경제 뉴스 이후 주가가 급락했습니다." },
-      { en: "Temperatures plummeted overnight, and the roads froze.", kr: "밤사이 기온이 급락하면서 도로가 얼어붙었습니다." }
+      { en: "My phone battery plummeted to five percent in an hour.", kr: "휴대폰 배터리가 한 시간 만에 5퍼센트로 뚝 떨어졌어." },
+      { en: "Temperatures will plummet tonight, so dress warmly.", kr: "오늘 밤 기온이 뚝 떨어진대, 따뜻하게 입어." }
     ]
   },
   {
@@ -12418,8 +12418,8 @@ const wordsLevel4_Part2 = [
     word: "poignant",
     meaning: "가슴 아픈, 가슴 뭉클한",
     examples: [
-      { en: "The old letter contained a poignant reminder of his lost youth.", kr: "그 오래된 편지는 그의 잃어버린 젊은 시절을 가슴 아프게 떠올리게 했습니다." },
-      { en: "Her final performance was a poignant farewell to the stage.", kr: "그녀의 마지막 공연은 무대에 고하는 가슴 뭉클한 작별 인사였습니다." }
+      { en: "The ending of that movie was so poignant. I cried.", kr: "그 영화 결말이 너무 가슴 뭉클했어. 나 울었어." },
+      { en: "Her speech at the funeral was short but poignant.", kr: "장례식에서 그녀의 추도사는 짧았지만 가슴 아팠어." }
     ]
   },
   {
@@ -12427,26 +12427,26 @@ const wordsLevel4_Part2 = [
     word: "precarious",
     meaning: "불안정한, 위태로운",
     examples: [
-      { en: "The political situation in the region remains precarious.", kr: "그 지역의 정치 상황은 불안정한 상태로 남아 있습니다." },
-      { en: "The climber found himself in a precarious position on the cliff face.", kr: "그 등반가는 절벽에서 위태로운 처지에 놓였습니다." }
+      { en: "That ladder looks precarious. Let me hold it for you.", kr: "그 사다리 위태로워 보여. 내가 잡아 줄게." },
+      { en: "With no savings, my finances are pretty precarious right now.", kr: "모아 둔 돈이 없어서 지금 내 재정 상태가 꽤 불안정해." }
     ]
   },
   {
     id: "L4-178",
     word: "pragmatic",
-    meaning: "실용적인",
+    meaning: "현실적인, 실용적인",
     examples: [
-      { en: "The manager took a pragmatic approach to solving the problem.", kr: "그 관리자는 문제를 해결하기 위해 실용적인 접근 방식을 취했습니다." },
-      { en: "We need a more pragmatic budget that reflects the current reality.", kr: "우리는 현재의 현실을 반영하는 더 실용적인 예산이 필요합니다." }
+      { en: "Let's be pragmatic. We can't afford a new office.", kr: "현실적으로 생각하자. 새 사무실 얻을 돈은 없어." },
+      { en: "She's very pragmatic when it comes to money.", kr: "그녀는 돈 문제에 있어서는 아주 현실적이야." }
     ]
   },
   {
-    id: "L4-179",
-    word: "prodigious",
-    meaning: "엄청난, 경이로운",
+    id: "L4-621",
+    word: "relieved",
+    meaning: "안심한, 다행으로 여기는",
     examples: [
-      { en: "She has a prodigious talent for playing the piano.", kr: "그녀는 피아노 연주에 엄청난 재능을 가지고 있습니다." },
-      { en: "He ate a prodigious amount of food at dinner.", kr: "그는 저녁 식사 때 엄청난 양의 음식을 먹었습니다." }
+      { en: "I was so relieved when I found my wallet.", kr: "지갑 찾았을 때 정말 안심했어요." },
+      { en: "We're relieved the meeting got pushed to Friday.", kr: "회의가 금요일로 미뤄져서 다행이에요." }
     ]
   },
   {
@@ -12454,26 +12454,26 @@ const wordsLevel4_Part2 = [
     word: "propensity",
     meaning: "성향, 경향",
     examples: [
-      { en: "He has a propensity for telling exaggerated stories.", kr: "그는 과장된 이야기를 하는 성향이 있습니다." },
-      { en: "There is a natural human propensity to fear the unknown.", kr: "미지의 것을 두려워하는 자연스러운 인간의 경향이 있습니다." }
+      { en: "My brother has a propensity to exaggerate.", kr: "우리 형은 과장하는 경향이 있어." },
+      { en: "Little kids have a propensity for getting into trouble.", kr: "어린애들은 사고 치는 성향이 있잖아." }
     ]
   },
   {
     id: "L4-181",
     word: "proponent",
-    meaning: "옹호자, 지지자",
+    meaning: "지지자, 옹호자",
     examples: [
-      { en: "He is a leading proponent of renewable energy.", kr: "그는 재생 에너지의 선도적인 옹호자입니다." },
-      { en: "The proponents of the new law held a rally.", kr: "새 법의 지지자들은 집회를 열었습니다." }
+      { en: "I'm a big proponent of the four-day work week.", kr: "나는 주 4일 근무제의 열렬한 지지자야." },
+      { en: "Proponents of the plan say it'll save money.", kr: "그 계획 지지자들은 돈이 절약될 거라고 해." }
     ]
   },
   {
     id: "L4-182",
     word: "quell",
-    meaning: "진압하다, 가라앉히다",
+    meaning: "가라앉히다, 진압하다",
     examples: [
-      { en: "The police were called in to quell the riot.", kr: "경찰은 폭동을 진압하기 위해 소집되었습니다." },
-      { en: "She took a deep breath to quell her rising anxiety.", kr: "그녀는 치솟는 불안을 가라앉히기 위해 심호흡을 했습니다." }
+      { en: "The manager tried to quell the rumors about layoffs.", kr: "매니저가 정리해고 소문을 가라앉히려고 했어." },
+      { en: "I drink chamomile tea to quell my nerves.", kr: "긴장을 가라앉히려고 캐모마일 차를 마셔." }
     ]
   },
   {
@@ -12481,26 +12481,26 @@ const wordsLevel4_Part2 = [
     word: "rationalize",
     meaning: "합리화하다",
     examples: [
-      { en: "He tried to rationalize his impulsive purchase by saying it was an investment.", kr: "그는 충동적인 구매를 그것이 투자였다고 말하며 합리화하려고 노력했습니다." },
-      { en: "You can't rationalize bad behavior by blaming others.", kr: "다른 사람들을 비난함으로써 나쁜 행동을 합리화할 수 없습니다." }
+      { en: "Stop trying to rationalize buying another pair of shoes.", kr: "신발 또 산 걸 합리화하려고 하지 마." },
+      { en: "I rationalized skipping the gym because it was raining.", kr: "비가 와서 헬스장 안 간 걸 합리화했어." }
     ]
   },
   {
     id: "L4-184",
     word: "recluse",
-    meaning: "은둔자",
+    meaning: "은둔자, 사람을 피하는 사람",
     examples: [
-      { en: "The old artist lived as a recluse in the remote mountains.", kr: "그 나이든 예술가는 외딴 산에서 은둔자로 살았습니다." },
-      { en: "She became a recluse after the media scandal.", kr: "그녀는 언론 스캔들 이후 은둔자가 되었습니다." }
+      { en: "My neighbor is a bit of a recluse. I rarely see him.", kr: "옆집 사람은 좀 은둔자 같아. 거의 못 봐." },
+      { en: "Working from home turned me into a total recluse.", kr: "재택근무하다 보니 완전 은둔자가 됐어." }
     ]
   },
   {
     id: "L4-185",
     word: "recoup",
-    meaning: "만회하다, 되찾다",
+    meaning: "(손실을) 만회하다, 되찾다",
     examples: [
-      { en: "The company hopes to recoup its losses with the new product line.", kr: "그 회사는 새 제품 라인으로 손실을 만회하기를 희망합니다." },
-      { en: "It took him months to recoup his strength after the illness.", kr: "그가 병에서 회복한 후 힘을 되찾는 데는 몇 달이 걸렸습니다." }
+      { en: "It'll take years to recoup what I spent on this car.", kr: "이 차에 쓴 돈을 되찾으려면 몇 년은 걸릴 거야." },
+      { en: "The movie didn't even recoup its production costs.", kr: "그 영화는 제작비도 만회하지 못했어." }
     ]
   },
   {
@@ -12508,17 +12508,17 @@ const wordsLevel4_Part2 = [
     word: "refute",
     meaning: "반박하다",
     examples: [
-      { en: "The lawyer was able to refute the key witness's testimony.", kr: "그 변호사는 핵심 증인의 증언을 반박할 수 있었습니다." },
-      { en: "Scientists have yet to refute the controversial claims completely.", kr: "과학자들은 논란이 되는 주장을 완전히 반박하지 못했습니다." }
+      { en: "She couldn't refute anything I said, so she changed the subject.", kr: "그녀는 내 말을 하나도 반박하지 못해서 화제를 바꿨어." },
+      { en: "The company quickly refuted the rumors online.", kr: "그 회사는 온라인 소문을 재빨리 반박했어요." }
     ]
   },
   {
     id: "L4-187",
     word: "remorse",
-    meaning: "후회, 양심의 가책",
+    meaning: "후회, 뉘우침, 양심의 가책",
     examples: [
-      { en: "He felt deep remorse for having caused the accident.", kr: "그는 사고를 일으킨 것에 대해 깊은 후회를 느꼈습니다." },
-      { en: "The criminal showed no remorse for his actions.", kr: "그 범죄자는 자신의 행동에 대해 아무런 양심의 가책도 보이지 않았습니다." }
+      { en: "He showed no remorse for lying to us.", kr: "그는 우리한테 거짓말한 걸 전혀 뉘우치지 않았어." },
+      { en: "I felt a lot of remorse after yelling at my mom.", kr: "엄마한테 소리 지르고 나서 정말 후회됐어." }
     ]
   },
   {
@@ -12526,8 +12526,8 @@ const wordsLevel4_Part2 = [
     word: "reprehensible",
     meaning: "비난받을 만한",
     examples: [
-      { en: "His actions were utterly reprehensible and unacceptable.", kr: "그의 행동은 전적으로 비난받을 만하고 용납될 수 없었습니다." },
-      { en: "The politician was forced to resign due to his reprehensible conduct.", kr: "그 정치인은 비난받을 만한 행위로 인해 사임해야 했습니다." }
+      { en: "What he did to his coworker was reprehensible.", kr: "그가 동료한테 한 짓은 비난받을 만해." },
+      { en: "Cheating customers like that is absolutely reprehensible.", kr: "그렇게 고객을 속이는 건 정말 비난받을 만한 짓이에요." }
     ]
   },
   {
@@ -12542,55 +12542,55 @@ const wordsLevel4_Part2 = [
   {
     id: "L4-190",
     word: "rescind",
-    meaning: "철회하다, 폐지하다",
+    meaning: "철회하다, 취소하다",
     examples: [
-      { en: "The company decided to rescind the job offer due to budget cuts.", kr: "그 회사는 예산 삭감으로 인해 채용 제안을 철회하기로 결정했습니다." },
-      { en: "The city council voted to rescind the unpopular new tax.", kr: "시의회는 인기 없는 새 세금을 폐지하기로 투표했습니다." }
+      { en: "They rescinded my job offer after the budget cuts.", kr: "예산이 삭감된 후에 내 채용 제안이 철회됐어." },
+      { en: "Can I rescind my resignation? I changed my mind.", kr: "사직서를 철회할 수 있을까요? 마음이 바뀌었어요." }
     ]
   },
   {
-    id: "L4-191",
-    word: "resolute",
-    meaning: "단호한, 확고한",
+    id: "L4-622",
+    word: "fortunately",
+    meaning: "다행히, 운 좋게도",
     examples: [
-      { en: "She remained resolute in her decision to leave the job.", kr: "그녀는 직장을 떠나겠다는 결정에 단호한 태도를 유지했습니다." },
-      { en: "The leader showed a resolute commitment to achieving peace.", kr: "그 지도자는 평화를 달성하기 위한 확고한 헌신을 보여주었습니다." }
+      { en: "Fortunately, nobody got hurt in the accident.", kr: "다행히 그 사고로 다친 사람은 없었어요." },
+      { en: "I missed my train, but fortunately another one came soon.", kr: "기차를 놓쳤는데, 다행히 금방 다음 차가 왔어." }
     ]
   },
   {
-    id: "L4-192",
-    word: "revere",
-    meaning: "존경하다, 숭배하다",
+    id: "L4-623",
+    word: "elevator",
+    meaning: "엘리베이터",
     examples: [
-      { en: "The people revere the former president for his humanitarian work.", kr: "사람들은 인도주의적 활동을 펼친 전 대통령을 깊이 존경합니다." },
-      { en: "Many cultures revere certain animals as sacred.", kr: "많은 문화권에서 특정 동물들을 신성한 것으로 숭배합니다." }
+      { en: "The elevator's out of order, so let's take the stairs.", kr: "엘리베이터가 고장 났으니까 계단으로 가자." },
+      { en: "Take the elevator to the fifth floor.", kr: "엘리베이터 타고 5층으로 가세요." }
     ]
   },
   {
     id: "L4-193",
     word: "rhetoric",
-    meaning: "수사학, 미사여구",
+    meaning: "(말뿐인) 미사여구, 언사, 수사법",
     examples: [
-      { en: "The politician's speech was full of empty rhetoric and lacked substance.", kr: "그 정치인의 연설은 공허한 미사여구로 가득했고 실속이 없었습니다." },
-      { en: "She studied classical rhetoric to improve her persuasive speaking skills.", kr: "그녀는 설득력 있는 연설 기술을 향상시키기 위해 고전 수사학을 공부했습니다." }
+      { en: "That's just political rhetoric. Nothing will actually change.", kr: "그건 그냥 정치적인 미사여구야. 실제론 아무것도 안 바뀔 거야." },
+      { en: "I'm tired of all the angry rhetoric on the news.", kr: "뉴스에 나오는 격한 언사들에 질렸어." }
     ]
   },
   {
-    id: "L4-194",
-    word: "rife",
-    meaning: "가득한, 만연한",
+    id: "L4-624",
+    word: "spicy",
+    meaning: "매운, 얼큰한",
     examples: [
-      { en: "The historical documents were rife with errors and contradictions.", kr: "그 역사적 문서들은 오류와 모순으로 가득했습니다." },
-      { en: "Corruption is unfortunately rife in certain sectors of the industry.", kr: "부패는 불행하게도 산업의 특정 부문에서 만연합니다." }
+      { en: "Is this dish spicy? I can't handle much heat.", kr: "이 음식 매워요? 저 매운 거 잘 못 먹어요." },
+      { en: "I love spicy food, the hotter the better.", kr: "난 매운 음식 좋아해, 매울수록 좋아." }
     ]
   },
   {
     id: "L4-195",
     word: "rudimentary",
-    meaning: "기본적인, 초보적인",
+    meaning: "기초적인, 기본적인",
     examples: [
-      { en: "He only has a rudimentary understanding of complex mathematics.", kr: "그는 복잡한 수학에 대해 단지 기본적인 이해만 가지고 있습니다." },
-      { en: "The shelter was a rudimentary structure built from branches.", kr: "그 은신처는 나뭇가지로 지어진 초보적인 구조물이었습니다." }
+      { en: "I only speak rudimentary Spanish, so please speak slowly.", kr: "스페인어는 기초적인 수준밖에 못 하니까 천천히 말해 주세요." },
+      { en: "The cabin was pretty rudimentary. No Wi-Fi, no shower.", kr: "그 오두막은 꽤 기본적인 시설만 있었어. 와이파이도, 샤워실도 없었어." }
     ]
   },
   {
@@ -12598,8 +12598,8 @@ const wordsLevel4_Part2 = [
     word: "succinct",
     meaning: "간결한",
     examples: [
-      { en: "The professor asked for a succinct summary of the chapter.", kr: "교수님은 그 장에 대한 간결한 요약을 요청했습니다." },
-      { en: "His comments were succinct and to the point.", kr: "그의 논평은 간결하고 핵심적이었습니다." }
+      { en: "Please keep your update succinct. We're short on time.", kr: "업데이트는 간결하게 해 주세요. 시간이 별로 없어요." },
+      { en: "That was a succinct answer. I like it.", kr: "간결한 대답이네. 마음에 들어." }
     ]
   },
   {
@@ -12614,28 +12614,28 @@ const wordsLevel4_Part2 = [
   {
     id: "L4-198",
     word: "synergy",
-    meaning: "시너지 효과, 협력 작용",
+    meaning: "시너지 (효과)",
     examples: [
-      { en: "The merger was designed to create synergy between the two companies.", kr: "그 합병은 두 회사 사이에 시너지 효과를 창출하도록 설계되었습니다." },
-      { en: "Teamwork creates a synergy that is greater than the sum of its parts.", kr: "팀워크는 각 부분의 합보다 더 큰 시너지 효과를 창출합니다." }
+      { en: "There's great synergy between our design and sales teams.", kr: "우리 디자인팀과 영업팀 사이에 시너지가 엄청 좋아." },
+      { en: "Working together creates synergy we can't get alone.", kr: "함께 일하면 혼자서는 못 내는 시너지가 생겨." }
     ]
   },
   {
     id: "L4-199",
     word: "tacit",
-    meaning: "암묵적인",
+    meaning: "암묵적인, 무언의",
     examples: [
-      { en: "There was a tacit agreement that they would not discuss politics.", kr: "그들이 정치에 대해 논의하지 않겠다는 암묵적인 합의가 있었습니다." },
-      { en: "His nod was a tacit approval of the plan.", kr: "그의 고갯짓은 그 계획에 대한 암묵적인 승인이었습니다." }
+      { en: "We had a tacit agreement not to talk about work.", kr: "우리는 일 얘기는 안 하기로 암묵적으로 합의했어." },
+      { en: "I think his silence was tacit approval.", kr: "그의 침묵은 무언의 승인이었던 것 같아." }
     ]
   },
   {
-    id: "L4-200",
-    word: "tantamount",
-    meaning: "동등한, 마찬가지인",
+    id: "L4-625",
+    word: "dessert",
+    meaning: "디저트, 후식",
     examples: [
-      { en: "Refusing to answer was tantamount to admitting guilt.", kr: "대답을 거부한 것은 유죄를 인정하는 것과 마찬가지였습니다." },
-      { en: "Ignoring the warning signs is tantamount to inviting disaster.", kr: "경고 신호를 무시하는 것은 재난을 자초하는 것과 마찬가지입니다." }
+      { en: "Should we save room for dessert?", kr: "디저트 먹을 배는 남겨 둘까?" },
+      { en: "Can we see the dessert menu, please?", kr: "디저트 메뉴 좀 볼 수 있을까요?" }
     ]
   }
 ];
@@ -12646,17 +12646,17 @@ const wordsLevel4_Part3 = [
     word: "tenacious",
     meaning: "집요한, 끈기 있는",
     examples: [
-      { en: "He is a tenacious defender and rarely lets opponents score.", kr: "그는 끈기 있는 수비수이며 상대방이 득점하도록 좀처럼 내버려 두지 않습니다." },
-      { en: "The weed is surprisingly tenacious and difficult to remove.", kr: "그 잡초는 놀라울 정도로 끈질겨서 제거하기 어렵습니다." }
+      { en: "She's so tenacious; she never gives up on a deal.", kr: "그녀는 정말 끈질겨. 거래를 절대 포기하지 않아." },
+      { en: "You have to be tenacious when you're job hunting.", kr: "구직할 때는 끈기 있게 버텨야 해." }
     ]
   },
   {
     id: "L4-202",
     word: "salient",
-    meaning: "두드러진, 핵심적인",
+    meaning: "핵심적인, 두드러진",
     examples: [
-      { en: "The most salient feature of the new model is its battery life.", kr: "새 모델의 가장 중요한 특징은 배터리 수명입니다." },
-      { en: "She outlined the salient points of the proposal in her introduction.", kr: "그녀는 도입부에서 제안의 핵심 요점들을 간략히 설명했습니다." }
+      { en: "Just give me the salient points; I'm short on time.", kr: "시간이 별로 없으니까 핵심 요점만 말해 줘." },
+      { en: "What's the most salient difference between these two plans?", kr: "이 두 안의 가장 두드러진 차이가 뭐예요?" }
     ]
   },
   {
@@ -12671,10 +12671,10 @@ const wordsLevel4_Part3 = [
   {
     id: "L4-204",
     word: "superfluous",
-    meaning: "불필요한, 여분의",
+    meaning: "불필요한, 쓸데없는",
     examples: [
-      { en: "The last chapter contains superfluous details that can be cut.", kr: "마지막 장에는 삭제해도 되는 불필요한 세부 사항들이 포함되어 있습니다." },
-      { en: "Please eliminate all superfluous words from your essay.", kr: "당신의 에세이에서 모든 여분의 단어를 제거해 주세요." }
+      { en: "Let's cut the superfluous slides and keep it short.", kr: "불필요한 슬라이드는 빼고 짧게 가자." },
+      { en: "Honestly, half these kitchen gadgets are superfluous.", kr: "솔직히 이 주방 도구들 절반은 쓸데없어." }
     ]
   },
   {
@@ -12682,8 +12682,8 @@ const wordsLevel4_Part3 = [
     word: "esoteric",
     meaning: "난해한, 소수만 아는",
     examples: [
-      { en: "The text was full of esoteric references that only scholars understood.", kr: "그 글은 학자들만 이해하는 난해한 참고 자료들로 가득했습니다." },
-      { en: "He has an esoteric knowledge of rare musical instruments.", kr: "그는 희귀한 악기에 대한 소수만 아는 지식을 가지고 있습니다." }
+      { en: "His taste in music is a bit too esoteric for me.", kr: "걔 음악 취향은 나한텐 좀 너무 난해해." },
+      { en: "Sorry, that joke was pretty esoteric; only programmers get it.", kr: "미안, 그 농담 좀 난해했지. 프로그래머들만 알아들어." }
     ]
   },
   {
@@ -12691,8 +12691,8 @@ const wordsLevel4_Part3 = [
     word: "clandestine",
     meaning: "비밀의, 은밀한",
     examples: [
-      { en: "The couple held a clandestine meeting late at night.", kr: "그 커플은 늦은 밤에 비밀 회동을 가졌습니다." },
-      { en: "Clandestine operations were carried out by the intelligence agency.", kr: "정보국에 의해 은밀한 작전들이 수행되었습니다." }
+      { en: "They had a clandestine meeting before the merger was announced.", kr: "합병 발표 전에 그들이 비밀리에 만났대." },
+      { en: "Their clandestine office romance lasted two years.", kr: "그 둘의 은밀한 사내 연애는 2년이나 갔어." }
     ]
   },
   {
@@ -12700,8 +12700,8 @@ const wordsLevel4_Part3 = [
     word: "egregious",
     meaning: "지독한, 터무니없는",
     examples: [
-      { en: "The lawyer cited several egregious errors in the previous trial.", kr: "그 변호사는 이전 재판에서 몇 가지 터무니없는 오류들을 언급했습니다." },
-      { en: "It was an egregious violation of human rights.", kr: "그것은 지독한 인권 침해였습니다." }
+      { en: "That's an egregious mistake for a senior engineer.", kr: "선임 엔지니어가 하기엔 정말 터무니없는 실수야." },
+      { en: "The prices at this airport are egregious!", kr: "이 공항 물가는 진짜 터무니없어!" }
     ]
   },
   {
@@ -12709,44 +12709,44 @@ const wordsLevel4_Part3 = [
     word: "epitome",
     meaning: "전형, 완벽한 본보기",
     examples: [
-      { en: "He is the epitome of a modern, successful entrepreneur.", kr: "그는 현대적이고 성공적인 사업가의 완벽한 전형입니다." },
-      { en: "The old house was the epitome of rustic elegance.", kr: "그 오래된 집은 소박한 우아함의 본보기였습니다." }
+      { en: "This little café is the epitome of coziness.", kr: "이 작은 카페는 아늑함의 전형이야." },
+      { en: "My dad is the epitome of a gentleman.", kr: "우리 아빠는 신사의 전형이셔." }
     ]
   },
   {
     id: "L4-209",
     word: "hiatus",
-    meaning: "중단, 공백",
+    meaning: "일시 중단, 공백기",
     examples: [
-      { en: "The band announced a one-year hiatus to focus on solo projects.", kr: "그 밴드는 솔로 프로젝트에 집중하기 위해 1년 간의 중단을 발표했습니다." },
-      { en: "There was a brief hiatus in the conversation as the waiter approached.", kr: "웨이터가 다가오자 대화에 짧은 공백이 있었습니다." }
+      { en: "My favorite show is on hiatus until next spring.", kr: "내가 제일 좋아하는 드라마가 내년 봄까지 휴방이야." },
+      { en: "I'm taking a short hiatus from social media.", kr: "SNS는 잠깐 쉬는 중이야." }
     ]
   },
   {
     id: "L4-210",
     word: "impetus",
-    meaning: "추진력, 자극",
+    meaning: "계기, 자극, 추진력",
     examples: [
-      { en: "The new technology gave a fresh impetus to the industry.", kr: "새로운 기술은 그 산업에 새로운 추진력을 제공했습니다." },
-      { en: "The change in management provided the necessary impetus for reform.", kr: "경영진의 변화는 개혁을 위한 필수적인 자극을 제공했습니다." }
+      { en: "What was the impetus for starting your own business?", kr: "창업하게 된 계기가 뭐였어요?" },
+      { en: "That customer complaint was the impetus for the redesign.", kr: "그 고객 불만이 디자인 개편의 계기가 됐어요." }
     ]
   },
   {
     id: "L4-211",
     word: "lexicon",
-    meaning: "어휘, 어휘 목록",
+    meaning: "어휘, 용어",
     examples: [
-      { en: "The specialized lexicon of computer science is constantly expanding.", kr: "컴퓨터 과학의 전문 어휘는 끊임없이 확장되고 있습니다." },
-      { en: "He possessed a rich lexicon that allowed him to express himself precisely.", kr: "그는 자신을 정확하게 표현할 수 있는 풍부한 어휘를 갖추고 있었습니다." }
+      { en: "'Ghosting' has become part of the dating lexicon.", kr: "'고스팅'은 이제 연애 용어의 일부가 됐어." },
+      { en: "Every company has its own lexicon of acronyms.", kr: "회사마다 자기만의 약어 용어가 있어요." }
     ]
   },
   {
     id: "L4-212",
     word: "mercenary",
-    meaning: "돈을 위한, 용병",
+    meaning: "돈만 밝히는, 용병",
     examples: [
-      { en: "His motives were entirely mercenary; he only cared about the profit.", kr: "그의 동기는 전적으로 돈을 위한 것이었습니다; 그는 오직 이익에만 신경 썼습니다." },
-      { en: "The former general was hired as a mercenary by a foreign regime.", kr: "그 전직 장군은 외국 정권에 의해 용병으로 고용되었습니다." }
+      { en: "Don't be so mercenary; not everything is about money.", kr: "그렇게 돈만 밝히지 마. 모든 게 돈 문제는 아니잖아." },
+      { en: "The movie is about a mercenary hired to rescue a hostage.", kr: "그 영화는 인질 구출에 고용된 용병 이야기야." }
     ]
   },
   {
@@ -12763,17 +12763,17 @@ const wordsLevel4_Part3 = [
     word: "paramount",
     meaning: "가장 중요한",
     examples: [
-      { en: "The safety of the children is of paramount importance.", kr: "아이들의 안전이 가장 중요한 사항입니다." },
-      { en: "Quality is paramount to our reputation as a manufacturer.", kr: "품질은 제조업체로서 우리의 명성에 가장 중요합니다." }
+      { en: "For our team, customer privacy is paramount.", kr: "우리 팀에선 고객 개인정보 보호가 가장 중요해요." },
+      { en: "When you travel alone, safety is paramount.", kr: "혼자 여행할 땐 안전이 가장 중요해." }
     ]
   },
   {
     id: "L4-215",
     word: "pernicious",
-    meaning: "유해한, 치명적인",
+    meaning: "해로운, 악영향을 주는",
     examples: [
-      { en: "The pernicious effects of social isolation are well documented.", kr: "사회적 고립의 유해한 영향은 잘 기록되어 있습니다." },
-      { en: "His pernicious influence corrupted the whole organization.", kr: "그의 치명적인 영향은 조직 전체를 타락시켰습니다." }
+      { en: "Gossip can have a pernicious effect on team morale.", kr: "험담은 팀 사기에 해로운 영향을 줄 수 있어요." },
+      { en: "Comparing yourself to others online is a pernicious habit.", kr: "온라인에서 남과 비교하는 건 정말 해로운 습관이야." }
     ]
   },
   {
@@ -12808,17 +12808,17 @@ const wordsLevel4_Part3 = [
     word: "solace",
     meaning: "위로, 위안",
     examples: [
-      { en: "She found solace in her faith after the tragic loss.", kr: "그녀는 비극적인 상실 후에 자신의 믿음에서 위안을 찾았습니다." },
-      { en: "Music was the only solace he could find in his lonely life.", kr: "음악은 그가 외로운 삶에서 찾을 수 있는 유일한 위로였습니다." }
+      { en: "I take solace in knowing I did my best.", kr: "최선을 다했다는 걸 아니까 위안이 돼." },
+      { en: "Music was my only solace during that tough year.", kr: "그 힘든 해에 음악이 내 유일한 위로였어." }
     ]
   },
   {
     id: "L4-220",
     word: "transient",
-    meaning: "일시적인, 순간적인",
+    meaning: "일시적인, 잠깐의",
     examples: [
-      { en: "The feeling of happiness was unfortunately transient.", kr: "행복감은 불행히도 일시적이었습니다." },
-      { en: "The hotel provides accommodation for transient guests.", kr: "그 호텔은 일시적인(단기) 손님들을 위한 숙박 시설을 제공합니다." }
+      { en: "Don't worry, the side effects are usually transient.", kr: "걱정 마세요, 부작용은 보통 일시적이에요." },
+      { en: "Fame is transient, so enjoy it while it lasts.", kr: "명성은 일시적인 거니까 있을 때 즐겨." }
     ]
   },
   {
@@ -12905,10 +12905,10 @@ const wordsLevel4_Part3 = [
   {
     id: "L4-230",
     word: "disparate",
-    meaning: "서로 전혀 다른",
+    meaning: "서로 전혀 다른, 이질적인",
     examples: [
-      { en: "The research team brought together disparate fields of study.", kr: "그 연구팀은 서로 전혀 다른 연구 분야들을 한데 모았습니다." },
-      { en: "The city is characterized by disparate architectural styles.", kr: "그 도시는 서로 전혀 다른 건축 양식들로 특징지어집니다." }
+      { en: "Our team members come from disparate backgrounds.", kr: "우리 팀원들은 서로 전혀 다른 배경 출신이에요." },
+      { en: "It's hard to combine such disparate ideas into one plan.", kr: "이렇게 서로 전혀 다른 아이디어들을 한 계획으로 합치기는 어려워요." }
     ]
   },
   {
@@ -12995,10 +12995,10 @@ const wordsLevel4_Part3 = [
   {
     id: "L4-240",
     word: "innuendo",
-    meaning: "(악의적인) 암시, 넌지시 빗대어 말하기",
+    meaning: "빗대어 하는 말, 은근한 암시",
     examples: [
-      { en: "The rumor was spread through innuendo rather than direct accusation.", kr: "그 소문은 직접적인 비난보다는 암시를 통해 퍼졌습니다." },
-      { en: "The article was full of innuendo about his private life.", kr: "그 기사는 그의 사생활에 대한 은근한 암시로 가득했습니다." }
+      { en: "His jokes are always full of innuendo.", kr: "그 사람 농담은 늘 은근히 빗대는 말투성이야." },
+      { en: "I didn't like her innuendo about my long lunches.", kr: "내 점심시간이 길다고 은근히 빗대어 말한 거 별로였어." }
     ]
   },
   {
@@ -13022,10 +13022,10 @@ const wordsLevel4_Part3 = [
   {
     id: "L4-243",
     word: "juxtaposition",
-    meaning: "병치, 병렬",
+    meaning: "나란히 놓음, 대비, 병치",
     examples: [
-      { en: "The artist used the juxtaposition of bright and dark colors effectively.", kr: "그 예술가는 밝은 색과 어두운 색의 병치를 효과적으로 사용했습니다." },
-      { en: "The play works through the juxtaposition of comedy and tragedy.", kr: "그 연극은 희극과 비극의 병치를 통해 효과를 냅니다." }
+      { en: "I love the juxtaposition of old and new buildings here.", kr: "여기 옛 건물과 새 건물이 나란히 대비되는 게 너무 좋아." },
+      { en: "The juxtaposition of sweet and salty makes this dish amazing.", kr: "단맛과 짠맛을 나란히 대비시킨 게 이 요리의 매력이야." }
     ]
   },
   {
@@ -13051,8 +13051,8 @@ const wordsLevel4_Part3 = [
     word: "maverick",
     meaning: "독불장군, 이단아",
     examples: [
-      { en: "He was a maverick scientist who rejected conventional theories.", kr: "그는 전통적인 이론을 거부한 독불장군 과학자였습니다." },
-      { en: "The company encourages its employees to be mavericks and think differently.", kr: "그 회사는 직원들에게 이단아가 되어 다르게 생각하도록 장려합니다." }
+      { en: "He's a bit of a maverick and rarely follows the rules.", kr: "그는 좀 독불장군이라 규칙을 잘 안 따라." },
+      { en: "We need a maverick to shake things up around here.", kr: "여기 분위기를 확 바꿀 이단아가 필요해." }
     ]
   },
   {
@@ -13103,10 +13103,10 @@ const wordsLevel4_Part3 = [
   {
     id: "L4-252",
     word: "penchant",
-    meaning: "강한 기호, 경향",
+    meaning: "기호, 좋아하는 경향",
     examples: [
-      { en: "He has a penchant for collecting rare books.", kr: "그는 희귀한 책을 수집하는 강한 기호(경향)가 있습니다." },
-      { en: "She has a pronounced penchant for late-night snacking.", kr: "그녀는 늦은 밤에 간식을 먹는 뚜렷한 경향이 있습니다." }
+      { en: "She has a penchant for expensive shoes.", kr: "그녀는 유독 비싼 신발을 좋아해." },
+      { en: "I have a penchant for late-night snacks.", kr: "나는 야식을 좋아하는 편이야." }
     ]
   },
   {
@@ -13139,10 +13139,10 @@ const wordsLevel4_Part3 = [
   {
     id: "L4-256",
     word: "plethora",
-    meaning: "과다, 과잉",
+    meaning: "아주 많음, 과다",
     examples: [
-      { en: "The market offers a plethora of options for smartphone users.", kr: "시장은 스마트폰 사용자들에게 과다한 선택지를 제공합니다." },
-      { en: "A plethora of information can sometimes lead to confusion.", kr: "정보의 과잉은 때때로 혼란을 초래할 수 있습니다." }
+      { en: "This menu has a plethora of options; I can't decide.", kr: "이 메뉴는 선택지가 너무 많아서 못 고르겠어." },
+      { en: "There's a plethora of cafés around my office.", kr: "우리 회사 근처엔 카페가 아주 많아." }
     ]
   },
   {
@@ -13283,10 +13283,10 @@ const wordsLevel4_Part3 = [
   {
     id: "L4-272",
     word: "travesty",
-    meaning: "엉터리, 졸렬한 모방, 왜곡",
+    meaning: "엉터리, 말도 안 되는 일",
     examples: [
-      { en: "The whole trial was a travesty of justice.", kr: "그 재판 전체가 정의를 왜곡한 엉터리였습니다." },
-      { en: "His performance was a travesty of the original opera.", kr: "그의 공연은 원작 오페라를 졸렬하게 흉내 낸 것이었습니다." }
+      { en: "The trial was a total travesty of justice.", kr: "그 재판은 정의를 완전히 짓밟은 엉터리였어." },
+      { en: "It's a travesty that this movie didn't win anything.", kr: "이 영화가 상을 하나도 못 받다니 말도 안 되는 일이야." }
     ]
   },
   {
@@ -13319,10 +13319,10 @@ const wordsLevel4_Part3 = [
   {
     id: "L4-276",
     word: "untenable",
-    meaning: "옹호할 수 없는, 지탱할 수 없는",
+    meaning: "유지할 수 없는, 옹호할 수 없는",
     examples: [
-      { en: "The high costs made the business model financially untenable.", kr: "높은 비용은 그 사업 모델을 재정적으로 지탱할 수 없게 만들었습니다." },
-      { en: "His current argument is clearly untenable under cross-examination.", kr: "그의 현재 주장은 반대 심문 하에서 명확히 옹호할 수 없습니다." }
+      { en: "Working three jobs is untenable in the long run.", kr: "일을 세 개나 하는 건 길게 보면 유지할 수가 없어." },
+      { en: "Honestly, this situation is untenable for our team.", kr: "솔직히 이런 상황은 우리 팀이 더는 버틸 수 없어요." }
     ]
   },
   {
@@ -13353,12 +13353,12 @@ const wordsLevel4_Part3 = [
     ]
   },
   {
-    id: "L4-280",
-    word: "wanton",
-    meaning: "고의적인, 무자비한",
+    id: "L4-626",
+    word: "appetite",
+    meaning: "식욕, 입맛",
     examples: [
-      { en: "The report documented numerous acts of wanton destruction of property.", kr: "그 보고서는 수많은 고의적인 재산 파괴 행위를 기록했습니다." },
-      { en: "The general was accused of wanton disregard for civilian lives.", kr: "그 장군은 민간인의 생명을 무자비하게 무시했다는 혐의로 고발당했습니다." }
+      { en: "I've lost my appetite since I got sick.", kr: "아프고 나서 입맛이 없어졌어요." },
+      { en: "Don't eat snacks now, you'll spoil your appetite.", kr: "지금 간식 먹지 마, 그러면 밥 못 먹어." }
     ]
   },
   {
@@ -13373,10 +13373,10 @@ const wordsLevel4_Part3 = [
   {
     id: "L4-282",
     word: "belligerent",
-    meaning: "호전적인, 싸우기 좋아하는",
+    meaning: "공격적인, 시비조의, 호전적인",
     examples: [
-      { en: "The customer became belligerent after his request was denied.", kr: "그 고객은 자신의 요청이 거부된 후 호전적으로 변했습니다." },
-      { en: "The two countries maintained a belligerent relationship for decades.", kr: "두 나라는 수십 년 동안 적대적인 관계를 유지했습니다." }
+      { en: "The customer got belligerent when we refused a refund.", kr: "환불을 거절하자 그 손님이 공격적으로 변했어요." },
+      { en: "He gets belligerent after a few drinks.", kr: "걔는 술 몇 잔만 들어가면 시비조로 변해." }
     ]
   },
   {
@@ -13393,17 +13393,17 @@ const wordsLevel4_Part3 = [
     word: "circumvent",
     meaning: "피하다, 우회하다",
     examples: [
-      { en: "They found a clever way to circumvent the new tax laws.", kr: "그들은 새 세법을 피할 영리한 방법을 찾았습니다." },
-      { en: "We need to circumvent the red tape to get the project approved faster.", kr: "우리는 프로젝트를 더 빨리 승인받기 위해 관료적인 절차를 우회해야 합니다." }
+      { en: "Some people use a VPN to circumvent the block.", kr: "어떤 사람들은 차단을 우회하려고 VPN을 써." },
+      { en: "Please don't try to circumvent the approval process.", kr: "승인 절차를 피해 가려고 하지 마세요." }
     ]
   },
   {
-    id: "L4-285",
-    word: "confluence",
-    meaning: "합류점, 융합",
+    id: "L4-627",
+    word: "sore",
+    meaning: "아픈, 쑤시는",
     examples: [
-      { en: "The city is located at the confluence of two major rivers.", kr: "그 도시는 두 개의 주요 강이 합류하는 지점에 위치하고 있습니다." },
-      { en: "The innovation occurred at the confluence of several different technologies.", kr: "그 혁신은 몇 가지 다른 기술들의 융합 지점에서 발생했습니다." }
+      { en: "My legs are sore from yesterday's workout.", kr: "어제 운동해서 다리가 쑤셔." },
+      { en: "I have a sore throat, so I'm staying home.", kr: "목이 아파서 집에 있을게요." }
     ]
   },
   {
@@ -13427,19 +13427,19 @@ const wordsLevel4_Part3 = [
   {
     id: "L4-288",
     word: "credence",
-    meaning: "신뢰, 신용",
+    meaning: "신뢰, 신빙성",
     examples: [
-      { en: "The report lends credence to the idea that the economy is recovering.", kr: "그 보고서는 경제가 회복되고 있다는 생각에 신뢰를 더합니다." },
-      { en: "I can give no credence to such an absurd story.", kr: "저는 그런 터무니없는 이야기를 전혀 신뢰할 수 없습니다." }
+      { en: "I don't give much credence to online reviews.", kr: "난 온라인 후기를 그다지 신뢰하지 않아." },
+      { en: "His story gained credence when the photos came out.", kr: "사진이 나오자 그의 이야기가 신빙성을 얻었어." }
     ]
   },
   {
     id: "L4-289",
     word: "cynicism",
-    meaning: "냉소주의",
+    meaning: "냉소, 냉소주의",
     examples: [
-      { en: "The latest scandal only deepened the public's cynicism toward politics.", kr: "최근의 스캔들은 정치에 대한 대중의 냉소주의를 심화시켰을 뿐입니다." },
-      { en: "His initial enthusiasm was replaced by growing cynicism.", kr: "그의 초기 열정은 커져가는 냉소주의로 대체되었습니다." }
+      { en: "There's a lot of cynicism about politicians these days.", kr: "요즘 정치인들에 대한 냉소가 많아." },
+      { en: "I get your cynicism, but give the new boss a chance.", kr: "네 냉소적인 마음은 이해하는데, 새 상사한테 기회 좀 줘 봐." }
     ]
   },
   {
@@ -13454,10 +13454,10 @@ const wordsLevel4_Part3 = [
   {
     id: "L4-291",
     word: "dichotomy",
-    meaning: "양분, 이분법",
+    meaning: "이분법, 양분, 괴리",
     examples: [
-      { en: "Many people see a clear dichotomy between work and play.", kr: "많은 사람들은 일과 놀이 사이에 뚜렷한 이분법이 있다고 봅니다." },
-      { en: "The book explores the dichotomy between the public and private self.", kr: "그 책은 공적인 자아와 사적인 자아 사이의 이분법을 탐구합니다." }
+      { en: "That's a false dichotomy; you can be kind and still tough.", kr: "그건 잘못된 이분법이야. 친절하면서도 단호할 수 있잖아." },
+      { en: "There's a weird dichotomy between his online and real-life personality.", kr: "그 사람은 온라인 성격과 실제 성격 사이에 묘한 괴리가 있어." }
     ]
   },
   {
@@ -13506,21 +13506,21 @@ const wordsLevel4_Part3 = [
     ]
   },
   {
-    id: "L4-297",
-    word: "hegemony",
-    meaning: "패권, 지배권",
+    id: "L4-628",
+    word: "cough",
+    meaning: "기침, 기침하다",
     examples: [
-      { en: "The ancient city established its hegemony over the entire region.", kr: "그 고대 도시는 전체 지역에 대한 자신의 패권을 확립했습니다." },
-      { en: "The struggle for global economic hegemony is complex.", kr: "글로벌 경제 지배권을 위한 투쟁은 복잡합니다." }
+      { en: "I can't stop coughing. I think I'm catching a cold.", kr: "기침이 안 멈춰요. 감기 걸리려나 봐요." },
+      { en: "Do you have anything for a dry cough?", kr: "마른기침에 먹는 약 있어요?" }
     ]
   },
   {
     id: "L4-298",
     word: "incendiary",
-    meaning: "선동적인, 방화의",
+    meaning: "선동적인, 자극적인",
     examples: [
-      { en: "The speaker's incendiary comments sparked a heated debate.", kr: "그 연사의 선동적인 발언은 격렬한 논쟁을 촉발했습니다." },
-      { en: "The police suspected the fire was caused by an incendiary device.", kr: "경찰은 그 화재가 방화 장치로 인해 발생했다고 의심했습니다." }
+      { en: "His incendiary posts got him into big trouble.", kr: "그는 선동적인 게시물 때문에 큰 곤경에 빠졌어." },
+      { en: "Let's avoid incendiary topics like politics at dinner.", kr: "저녁 자리에선 정치 같은 자극적인 주제는 피하자." }
     ]
   },
   {
@@ -13594,8 +13594,8 @@ const wordsLevel4_Part4 = [
     word: "nascent",
     meaning: "초기 단계의, 막 생겨난",
     examples: [
-      { en: "The nascent space tourism industry is expected to grow rapidly.", kr: "초기 단계의 우주 관광 산업은 빠르게 성장할 것으로 예상됩니다." },
-      { en: "We must protect the nascent democratic institutions in the country.", kr: "우리는 그 나라의 초기의 민주 제도를 보호해야 합니다." }
+      { en: "Our app is still in its nascent stages, so expect bugs.", kr: "우리 앱은 아직 초기 단계라서 버그가 좀 있을 거예요." },
+      { en: "The startup scene here is still nascent, but it's growing fast.", kr: "여기 스타트업 생태계는 아직 초기 단계지만 빠르게 크고 있어." }
     ]
   },
   {
@@ -13655,10 +13655,10 @@ const wordsLevel4_Part4 = [
   {
     id: "L4-313",
     word: "prolific",
-    meaning: "다작하는, 다산의, 풍부한",
+    meaning: "다작하는, 왕성한",
     examples: [
-      { en: "Picasso was one of the most prolific artists of the 20th century.", kr: "피카소는 20세기 가장 다작하는 예술가 중 한 명이었습니다." },
-      { en: "Rabbits are known to be extremely prolific breeders.", kr: "토끼는 번식력이 매우 왕성한 것으로 알려져 있습니다." }
+      { en: "She's a prolific writer who publishes two books a year.", kr: "그녀는 1년에 책을 두 권씩 내는 다작 작가야." },
+      { en: "He's a prolific YouTuber; he uploads every single day.", kr: "그는 정말 왕성한 유튜버야. 매일 영상을 올려." }
     ]
   },
   {
@@ -13666,8 +13666,8 @@ const wordsLevel4_Part4 = [
     word: "prudent",
     meaning: "신중한, 현명한",
     examples: [
-      { en: "It was a prudent decision to save money before making a major purchase.", kr: "큰 구매를 하기 전에 돈을 저축하는 것은 신중한 결정이었습니다." },
-      { en: "A prudent investor diversifies their portfolio.", kr: "현명한 투자자는 자신의 포트폴리오를 다양화합니다." }
+      { en: "It'd be prudent to book the hotel early.", kr: "호텔은 일찍 예약하는 게 현명할 거야." },
+      { en: "Saving a little each month is the prudent thing to do.", kr: "매달 조금씩 저축하는 게 신중한 선택이야." }
     ]
   },
   {
@@ -13691,10 +13691,10 @@ const wordsLevel4_Part4 = [
   {
     id: "L4-317",
     word: "rancid",
-    meaning: "썩은 냄새가 나는, 맛이 변한",
+    meaning: "상한, 쩐내 나는",
     examples: [
-      { en: "The butter had been left out and turned rancid.", kr: "버터가 밖에 놓여져서 썩은 냄새가 나게 변했습니다." },
-      { en: "You should discard any food that smells rancid.", kr: "썩은 냄새가 나는 모든 음식은 버려야 합니다." }
+      { en: "Ugh, this butter smells rancid.", kr: "윽, 이 버터 상한 냄새 나." },
+      { en: "Throw out that oil; it's gone rancid.", kr: "그 기름 버려. 쩐내 나게 상했어." }
     ]
   },
   {
@@ -13736,10 +13736,10 @@ const wordsLevel4_Part4 = [
   {
     id: "L4-322",
     word: "subversive",
-    meaning: "체제 전복적인",
+    meaning: "체제 전복적인, 기존 질서를 뒤흔드는",
     examples: [
-      { en: "The government censored the play for its subversive political message.", kr: "정부는 그 연극의 체제 전복적인 정치적 메시지 때문에 검열했습니다." },
-      { en: "The activist was known for his subtle but highly subversive tactics.", kr: "그 활동가는 미묘하지만 매우 체제 전복적인 전술로 알려져 있었습니다." }
+      { en: "The band was known for its subversive lyrics.", kr: "그 밴드는 체제 전복적인 가사로 유명했어." },
+      { en: "Her humor is quietly subversive, and I love it.", kr: "그녀 유머는 은근히 기존 틀을 뒤흔들어서 너무 좋아." }
     ]
   },
   {
@@ -13752,12 +13752,12 @@ const wordsLevel4_Part4 = [
     ]
   },
   {
-    id: "L4-324",
-    word: "talisman",
-    meaning: "부적, 행운의 상징",
+    id: "L4-629",
+    word: "allergic",
+    meaning: "알레르기가 있는",
     examples: [
-      { en: "He carried a small wooden cross as a talisman for good luck.", kr: "그는 행운을 위한 부적으로 작은 나무 십자가를 가지고 다녔습니다." },
-      { en: "The ring was a family talisman, passed down through generations.", kr: "그 반지는 세대를 거쳐 전해 내려오는 가족의 행운의 상징이었습니다." }
+      { en: "I'm allergic to peanuts. Does this have any nuts?", kr: "저 땅콩 알레르기 있어요. 이거 견과류 들어 있어요?" },
+      { en: "My sister's allergic to cats, so she can't visit.", kr: "우리 언니가 고양이 알레르기가 있어서 못 와." }
     ]
   },
   {
@@ -13801,26 +13801,26 @@ const wordsLevel4_Part4 = [
     word: "waive",
     meaning: "포기하다, 면제하다",
     examples: [
-      { en: "The university decided to waive the application fee for all low-income students.", kr: "그 대학은 모든 저소득층 학생들에게 지원 수수료를 면제하기로 결정했습니다." },
-      { en: "He chose to waive his right to an attorney during the initial questioning.", kr: "그는 초기 심문 동안 변호사를 선임할 자신의 권리를 포기하기로 선택했습니다." }
+      { en: "Can you waive the late fee just this once?", kr: "이번 한 번만 연체료를 면제해 주실 수 있어요?" },
+      { en: "The hotel waived the cleaning charge for us.", kr: "호텔에서 청소비를 면제해 줬어요." }
     ]
   },
   {
     id: "L4-330",
     word: "wry",
-    meaning: "비꼬는, 씁쓸한",
+    meaning: "비꼬는 듯한, 씁쓸한",
     examples: [
-      { en: "He made a wry comment about his own inability to follow instructions.", kr: "그는 지시를 따르지 못하는 자신의 무능력에 대해 비꼬는 논평을 했습니다." },
-      { en: "She gave a wry smile, acknowledging the irony of the situation.", kr: "그녀는 그 상황의 아이러니를 인정하며 씁쓸한 미소를 지었습니다." }
+      { en: "She has a wry sense of humor.", kr: "그녀는 비꼬는 듯한 유머 감각이 있어." },
+      { en: "He gave a wry smile and said, 'Typical Monday.'", kr: "그는 씁쓸하게 웃으며 '역시 월요일이네'라고 했어." }
     ]
   },
   {
     id: "L4-331",
     word: "aberration",
-    meaning: "일탈, 이례적인 일, 변이",
+    meaning: "이례적인 일, 일탈",
     examples: [
-      { en: "The sudden drop in temperature was an aberration for this time of year.", kr: "갑작스러운 기온 하락은 이맘때로서는 이례적인 일이었습니다." },
-      { en: "He hoped that his recent failure was just an aberration.", kr: "그는 자신의 최근 실패가 일시적인 예외에 불과하기를 바랐습니다." }
+      { en: "Last night's loss was just an aberration.", kr: "어젯밤 패배는 그냥 이례적인 일이었어." },
+      { en: "This cold weather in May is a real aberration.", kr: "5월에 이렇게 추운 건 정말 이례적인 일이야." }
     ]
   },
   {
@@ -13851,12 +13851,12 @@ const wordsLevel4_Part4 = [
     ]
   },
   {
-    id: "L4-335",
-    word: "ascetic",
-    meaning: "금욕적인, 금욕주의자",
+    id: "L4-630",
+    word: "pharmacy",
+    meaning: "약국",
     examples: [
-      { en: "He lives an ascetic life, rejecting all forms of luxury.", kr: "그는 모든 종류의 사치를 거부하는 금욕적인 삶을 삽니다." },
-      { en: "The monk was a strict ascetic who meditated for hours daily.", kr: "그 승려는 매일 몇 시간 동안 명상하는 엄격한 금욕주의자였습니다." }
+      { en: "Is there a pharmacy open late around here?", kr: "이 근처에 늦게까지 하는 약국 있어요?" },
+      { en: "I'll pick up your prescription at the pharmacy.", kr: "내가 약국에서 네 처방약 받아 올게." }
     ]
   },
   {
@@ -13871,10 +13871,10 @@ const wordsLevel4_Part4 = [
   {
     id: "L4-337",
     word: "atrophy",
-    meaning: "위축(되다), 쇠퇴",
+    meaning: "위축되다, 퇴화하다",
     examples: [
-      { en: "Muscles can atrophy quickly if they are not used regularly.", kr: "근육은 규칙적으로 사용되지 않으면 빠르게 위축될 수 있습니다." },
-      { en: "The town suffered an intellectual atrophy after the university closed.", kr: "그 마을은 대학이 문을 닫은 후 지적인 쇠퇴를 겪었습니다." }
+      { en: "My leg muscles atrophied after weeks in a cast.", kr: "몇 주 깁스를 했더니 다리 근육이 위축됐어." },
+      { en: "If you don't practice, your language skills will atrophy.", kr: "연습 안 하면 언어 실력이 퇴화할 거야." }
     ]
   },
   {
@@ -13889,10 +13889,10 @@ const wordsLevel4_Part4 = [
   {
     id: "L4-339",
     word: "auspicious",
-    meaning: "길조의, 상서로운",
+    meaning: "길한, 상서로운",
     examples: [
-      { en: "The start of the new year was an auspicious time to launch the project.", kr: "새해의 시작은 그 프로젝트를 시작하기에 길한 시기였습니다." },
-      { en: "The team won its first game, an auspicious start to the season.", kr: "그 팀은 첫 경기에서 이겼는데, 시즌의 상서로운 출발이었습니다." }
+      { en: "Rain on our first day wasn't an auspicious start.", kr: "첫날부터 비라니, 그다지 길한 출발은 아니었네." },
+      { en: "In Korea, people often pick an auspicious date for weddings.", kr: "한국에서는 결혼식 날짜로 길한 날을 고르는 경우가 많아요." }
     ]
   },
   {
@@ -13905,30 +13905,30 @@ const wordsLevel4_Part4 = [
     ]
   },
   {
-    id: "L4-341",
-    word: "compendium",
-    meaning: "개요서, 모음집, 총람",
+    id: "L4-631",
+    word: "supervisor",
+    meaning: "상사, 관리자, 책임자",
     examples: [
-      { en: "The book is a compendium of modern philosophical thought.", kr: "그 책은 현대 철학 사상을 집대성한 개요서입니다." },
-      { en: "He created a compendium of all the relevant scientific papers.", kr: "그는 관련 과학 논문들을 모두 모은 모음집을 만들었습니다." }
+      { en: "I need to check with my supervisor first.", kr: "먼저 상사한테 확인해 봐야 해요." },
+      { en: "Can I speak to your supervisor, please?", kr: "책임자분이랑 얘기할 수 있을까요?" }
     ]
   },
   {
     id: "L4-342",
     word: "condone",
-    meaning: "묵과하다, 용납하다",
+    meaning: "용납하다, 묵인하다",
     examples: [
-      { en: "The school cannot condone cheating, regardless of the student's circumstances.", kr: "학교는 학생의 상황과 관계없이 부정행위를 용납할 수 없습니다." },
-      { en: "The government was criticized for condoning human rights abuses.", kr: "정부는 인권 침해를 묵과한 것에 대해 비난받았습니다." }
+      { en: "I don't condone cheating, but I get why he did it.", kr: "부정행위를 용납하진 않지만 그가 왜 그랬는지는 이해해." },
+      { en: "We won't condone that kind of behavior here.", kr: "여기선 그런 행동은 용납하지 않아요." }
     ]
   },
   {
     id: "L4-343",
     word: "conundrum",
-    meaning: "수수께끼, 난제",
+    meaning: "난제, 수수께끼",
     examples: [
-      { en: "The issue of climate change remains a significant global conundrum.", kr: "기후 변화 문제는 여전히 중요한 세계적인 난제로 남아 있습니다." },
-      { en: "The detective was faced with the ultimate conundrum: who committed the crime?", kr: "그 탐정은 궁극적인 수수께끼, 즉 누가 범죄를 저질렀는지에 직면했습니다." }
+      { en: "Pizza or tacos? That's a real conundrum.", kr: "피자냐 타코냐? 이거 진짜 난제다." },
+      { en: "Finding good childcare is a conundrum for working parents.", kr: "좋은 보육 시설 찾기는 맞벌이 부모에게 난제예요." }
     ]
   },
   {
@@ -13970,19 +13970,19 @@ const wordsLevel4_Part4 = [
   {
     id: "L4-348",
     word: "efficacy",
-    meaning: "효능, 효험",
+    meaning: "효능, 효과",
     examples: [
-      { en: "The clinical trials demonstrated the high efficacy of the new drug.", kr: "그 임상 시험은 새 약물의 높은 효능을 입증했습니다." },
-      { en: "Questions were raised about the efficacy of the current training program.", kr: "현재 훈련 프로그램의 효험에 대한 의문이 제기되었습니다." }
+      { en: "I'm a bit skeptical about the efficacy of these supplements.", kr: "이 영양제 효능은 좀 의심스러워." },
+      { en: "I heard the vaccine's efficacy drops after six months.", kr: "그 백신 효능이 6개월 후에는 떨어진다고 들었어." }
     ]
   },
   {
-    id: "L4-349",
-    word: "enmity",
-    meaning: "적대감, 원한",
+    id: "L4-632",
+    word: "paperwork",
+    meaning: "서류 작업, 서류",
     examples: [
-      { en: "The old business rivalry was characterized by deep enmity.", kr: "그 오래된 사업 경쟁은 깊은 적대감으로 특징지어졌습니다." },
-      { en: "He felt a sudden surge of enmity toward his betrayer.", kr: "그는 자신을 배신한 사람에게 갑자기 강한 원한을 느꼈습니다." }
+      { en: "I'm stuck at the office finishing paperwork.", kr: "서류 작업 마무리하느라 사무실에 붙잡혀 있어." },
+      { en: "You'll need to fill out some paperwork first.", kr: "먼저 서류 몇 장 작성하셔야 해요." }
     ]
   },
   {
@@ -14004,12 +14004,12 @@ const wordsLevel4_Part4 = [
     ]
   },
   {
-    id: "L4-352",
-    word: "extant",
-    meaning: "현존하는, 남아있는",
+    id: "L4-633",
+    word: "coupon",
+    meaning: "쿠폰, 할인권",
     examples: [
-      { en: "There are only a few extant copies of the original manuscript.", kr: "원래 원고의 현존하는 사본은 몇 부밖에 없습니다." },
-      { en: "The museum displays the oldest extant artifacts from the Roman era.", kr: "그 박물관은 로마 시대의 가장 오래된 남아있는 유물들을 전시합니다." }
+      { en: "Can I use this coupon on sale items?", kr: "이 쿠폰 세일 상품에도 쓸 수 있어요?" },
+      { en: "I got a coupon for a free coffee.", kr: "커피 무료 쿠폰 받았어." }
     ]
   },
   {
@@ -14040,12 +14040,12 @@ const wordsLevel4_Part4 = [
     ]
   },
   {
-    id: "L4-356",
-    word: "hallowed",
-    meaning: "신성한, 신성시되는",
+    id: "L4-634",
+    word: "tricky",
+    meaning: "까다로운, 곤란한",
     examples: [
-      { en: "Westminster Abbey is a hallowed place for British history.", kr: "웨스트민스터 사원은 영국 역사에 있어 신성한 장소입니다." },
-      { en: "The battlefield remains a hallowed ground, dedicated to the fallen soldiers.", kr: "그 전쟁터는 전사한 군인들에게 바쳐진 신성시되는 땅으로 남아 있습니다." }
+      { en: "This question's a little tricky. Let me think.", kr: "이 질문 좀 까다롭네요. 생각 좀 해 볼게요." },
+      { en: "Parking here can be tricky on weekends.", kr: "주말엔 여기 주차하기가 좀 어려울 수 있어요." }
     ]
   },
   {
@@ -14114,10 +14114,10 @@ const wordsLevel4_Part4 = [
   {
     id: "L4-364",
     word: "inundated",
-    meaning: "물에 잠긴, 쇄도하는",
+    meaning: "쇄도하는, 넘쳐나는, 파묻힌",
     examples: [
-      { en: "The coastal area was inundated by the storm surge.", kr: "그 해안 지역은 폭풍 해일에 물에 잠겼습니다." },
-      { en: "After the commercial, the call center was immediately inundated with orders.", kr: "광고가 나간 후, 콜센터에는 즉시 주문이 쇄도했습니다." }
+      { en: "I'm inundated with emails after my vacation.", kr: "휴가 갔다 왔더니 이메일이 산더미처럼 쏟아졌어." },
+      { en: "The shop was inundated with customers on Black Friday.", kr: "블랙프라이데이에 가게에 손님이 쇄도했어요." }
     ]
   },
   {
@@ -14141,10 +14141,10 @@ const wordsLevel4_Part4 = [
   {
     id: "L4-367",
     word: "latent",
-    meaning: "잠재적인, 숨어있는",
+    meaning: "잠재적인, 잠복한",
     examples: [
-      { en: "The virus can remain latent in the body for years.", kr: "그 바이러스는 수년간 체내에 잠복해 있을 수 있습니다." },
-      { en: "His artistic talent remained latent until he reached college.", kr: "그의 예술적 재능은 대학에 들어갈 때까지 숨어 있었습니다." }
+      { en: "Maybe you have a latent talent for cooking!", kr: "어쩌면 너한테 요리에 잠재된 재능이 있을지도 몰라!" },
+      { en: "The virus can stay latent for years before symptoms appear.", kr: "그 바이러스는 증상이 나타나기 전 몇 년간 잠복해 있을 수 있어요." }
     ]
   },
   {
@@ -14168,10 +14168,10 @@ const wordsLevel4_Part4 = [
   {
     id: "L4-370",
     word: "mercurial",
-    meaning: "변덕스러운, 활달한",
+    meaning: "변덕스러운, 기분이 자주 바뀌는",
     examples: [
-      { en: "The fashion industry is notoriously mercurial, with trends changing quickly.", kr: "패션 산업은 트렌드가 빠르게 바뀌어 변덕스럽기로 악명이 높습니다." },
-      { en: "His mercurial temperament made him difficult to work with.", kr: "그의 변덕스러운 기질은 그와 함께 일하기 어렵게 만들었습니다." }
+      { en: "My boss is so mercurial; I never know what mood he's in.", kr: "우리 상사는 너무 변덕스러워서 기분이 어떤지 도통 모르겠어." },
+      { en: "Her mercurial temper makes her hard to work with.", kr: "그녀는 변덕스러운 성격이라 같이 일하기 힘들어." }
     ]
   },
   {
@@ -14204,10 +14204,10 @@ const wordsLevel4_Part4 = [
   {
     id: "L4-374",
     word: "palliative",
-    meaning: "완화하는, 일시적인 처방",
+    meaning: "완화하는, 완화 치료의",
     examples: [
-      { en: "The new measures are merely palliative and do not address the root cause.", kr: "새 조치들은 단지 완화하는(일시적인) 것일 뿐 근본적인 원인을 다루지 않습니다." },
-      { en: "Palliative care focuses on relieving symptoms, not curing the disease.", kr: "완화 치료는 질병을 치료하는 것이 아니라 증상을 완화하는 데 중점을 둡니다." }
+      { en: "My grandmother is receiving palliative care at home.", kr: "할머니는 집에서 완화 치료를 받고 계세요." },
+      { en: "These painkillers are only palliative; they won't fix the problem.", kr: "이 진통제는 증상만 완화할 뿐 문제를 해결하진 못해요." }
     ]
   },
   {
@@ -14222,10 +14222,10 @@ const wordsLevel4_Part4 = [
   {
     id: "L4-376",
     word: "parochial",
-    meaning: "편협한, 지방의",
+    meaning: "편협한, 시야가 좁은",
     examples: [
-      { en: "The small town was characterized by a parochial outlook and resistance to change.", kr: "그 작은 마을은 편협한 시각과 변화에 대한 저항으로 특징지어졌습니다." },
-      { en: "We need to move beyond parochial concerns to address global issues.", kr: "우리는 세계적인 문제들을 다루기 위해 편협한 관심사를 넘어서야 합니다." }
+      { en: "His views are a bit parochial; he's never left his hometown.", kr: "그 사람 시각은 좀 편협해. 고향을 떠나 본 적이 없거든." },
+      { en: "Let's not be so parochial about our own department.", kr: "우리 부서만 생각하는 편협한 태도는 버리자." }
     ]
   },
   {
@@ -14328,12 +14328,12 @@ const wordsLevel4_Part4 = [
     ]
   },
   {
-    id: "L4-388",
-    word: "sally",
-    meaning: "돌격, 재치 있는 말",
+    id: "L4-635",
+    word: "handy",
+    meaning: "편리한, 가까이 있는",
     examples: [
-      { en: "The besieged soldiers made a desperate sally out of the castle gates.", kr: "포위된 병사들은 성문 밖으로 필사적인 돌격을 감행했습니다." },
-      { en: "His lecture was punctuated by witty sallies that kept the audience engaged.", kr: "그의 강의는 청중을 계속 집중하게 만드는 재치 있는 말들로 간간이 이어졌습니다." }
+      { en: "This app is really handy for splitting bills.", kr: "이 앱 더치페이할 때 진짜 편해." },
+      { en: "Keep your passport handy at the airport.", kr: "공항에서는 여권을 바로 꺼낼 수 있게 갖고 있어." }
     ]
   },
   {
@@ -14395,8 +14395,8 @@ const wordsLevel4_Part4 = [
     word: "titular",
     meaning: "명목상의, 제목과 같은 이름의",
     examples: [
-      { en: "The Queen is the titular head of the Commonwealth, but holds little real power.", kr: "여왕은 영연방의 명목상의 수장이지만, 실제 권한은 거의 없습니다." },
-      { en: "The titular character of the book appears only briefly.", kr: "그 책의 제목이 된 인물은 아주 잠깐만 등장합니다." }
+      { en: "The titular character only shows up at the very end.", kr: "제목에 나오는 그 인물은 맨 마지막에야 나와." },
+      { en: "He's just the titular head; his deputy makes the decisions.", kr: "그는 명목상의 대표일 뿐이고 결정은 부대표가 해." }
     ]
   },
   {
@@ -14461,17 +14461,17 @@ const wordsLevel5_Part1 = [
     word: "acumen",
     meaning: "통찰력, 안목",
     examples: [
-      { en: "Her business acumen allowed her to spot the emerging market trend.", kr: "그녀의 사업적 통찰력은 그녀가 떠오르는 시장 추세를 발견하도록 했습니다." },
-      { en: "The investor showed great financial acumen.", kr: "그 투자자는 뛰어난 재정적 안목을 보여주었습니다." }
+      { en: "She's got real business acumen; she always spots trends early.", kr: "그녀는 사업 감각이 진짜 좋아. 항상 트렌드를 일찍 알아채더라." },
+      { en: "You need some financial acumen to run your own startup.", kr: "직접 스타트업을 운영하려면 재정적 안목이 좀 있어야 해요." }
     ]
   },
   {
     id: "L5-402",
     word: "duly",
-    meaning: "적절히, 정식으로, 제때에",
+    meaning: "정식으로, 적절히",
     examples: [
       { en: "Your request has been duly noted, and we will respond soon.", kr: "요청 사항은 정식으로 접수되었으며 곧 답변드리겠습니다." },
-      { en: "The forms were duly signed and sent to headquarters.", kr: "서류는 적절히 서명되어 본사로 보내졌습니다." }
+      { en: "Duly noted. I'll keep that in mind next time.", kr: "잘 알겠어요. 다음번엔 명심할게요." }
     ]
   },
   {
@@ -14515,8 +14515,8 @@ const wordsLevel5_Part1 = [
     word: "apathy",
     meaning: "무관심, 무감각",
     examples: [
-      { en: "Voter apathy resulted in a very low election turnout.", kr: "유권자들의 무관심은 매우 낮은 선거 투표율을 초래했습니다." },
-      { en: "She met his problems with complete apathy.", kr: "그녀는 그의 문제들을 완전한 무관심으로 대했습니다." }
+      { en: "There's so much apathy about voting among young people.", kr: "젊은 사람들 사이에 투표에 대한 무관심이 정말 심해요." },
+      { en: "His apathy toward his own job is driving me crazy.", kr: "자기 일에 대한 그 사람의 무관심 때문에 미치겠어." }
     ]
   },
   {
@@ -14540,10 +14540,10 @@ const wordsLevel5_Part1 = [
   {
     id: "L5-011",
     word: "arcane",
-    meaning: "난해한, 소수만 아는, 불가사의한",
+    meaning: "난해한, 소수만 아는",
     examples: [
-      { en: "The ancient text was full of arcane symbols.", kr: "그 고대 문헌은 불가사의한 상징들로 가득했습니다." },
-      { en: "The tax rules are arcane and hard to follow.", kr: "그 세금 규정은 난해해서 따르기 어렵습니다." }
+      { en: "The tax rules are so arcane that I hired an accountant.", kr: "세금 규정이 너무 난해해서 회계사를 고용했어요." },
+      { en: "He knows a lot of arcane trivia about old movies.", kr: "그는 옛날 영화에 관해 아는 사람이 별로 없는 잡지식을 많이 알아요." }
     ]
   },
   {
@@ -14551,8 +14551,8 @@ const wordsLevel5_Part1 = [
     word: "arduous",
     meaning: "힘든, 고된",
     examples: [
-      { en: "Climbing Mount Everest is an arduous task.", kr: "에베레스트 산 등반은 고된 임무입니다." },
-      { en: "The team completed the arduous project under a tight deadline.", kr: "팀은 촉박한 마감 기한 내에 힘든 프로젝트를 완료했습니다." }
+      { en: "It was an arduous hike, but the view was worth it.", kr: "힘든 등산이었지만 경치가 그만한 가치가 있었어요." },
+      { en: "Moving across the country was a really arduous process.", kr: "나라 반대편으로 이사하는 건 정말 고된 과정이었어." }
     ]
   },
   {
@@ -14673,12 +14673,12 @@ const wordsLevel5_Part1 = [
     ]
   },
   {
-    id: "L5-026",
-    word: "censure",
-    meaning: "비난하다, 견책",
+    id: "L5-746",
+    word: "postpone",
+    meaning: "미루다, 연기하다",
     examples: [
-      { en: "The board voted to censure the director for his inappropriate conduct.", kr: "이사회는 부적절한 행위를 이유로 그 이사를 견책하기로 의결했습니다." },
-      { en: "He faced public censure after the scandal.", kr: "그는 스캔들 이후 대중의 비난에 직면했습니다." }
+      { en: "Can we postpone the meeting until Friday?", kr: "회의를 금요일로 미룰 수 있을까요?" },
+      { en: "They had to postpone their wedding because of the storm.", kr: "폭풍 때문에 그 사람들 결혼식을 연기해야 했대요." }
     ]
   },
   {
@@ -14722,8 +14722,8 @@ const wordsLevel5_Part1 = [
     word: "coercion",
     meaning: "강압, 강제",
     examples: [
-      { en: "He claimed the confession was made under police coercion.", kr: "그는 그 자백이 경찰의 강압 하에 이루어졌다고 주장했습니다." },
-      { en: "The company was accused of using coercion to make employees sign the contract.", kr: "그 회사는 직원들에게 계약서에 서명하도록 강제하기 위해 강압을 사용했다는 비난을 받았습니다." }
+      { en: "He says he only signed the contract under coercion.", kr: "그는 강압 때문에 어쩔 수 없이 계약서에 서명했다고 해요." },
+      { en: "That's not persuasion, that's coercion.", kr: "그건 설득이 아니라 강압이야." }
     ]
   },
   {
@@ -14772,12 +14772,12 @@ const wordsLevel5_Part1 = [
     ]
   },
   {
-    id: "L5-037",
-    word: "craven",
-    meaning: "겁 많은, 비겁한",
+    id: "L5-747",
+    word: "annoy",
+    meaning: "짜증 나게 하다, 귀찮게 하다",
     examples: [
-      { en: "The craven soldier abandoned his post during the attack.", kr: "그 겁 많은 병사는 공격 중에 자신의 진지를 버렸습니다." },
-      { en: "It was a craven decision to sacrifice his friend for personal safety.", kr: "자신의 안전을 위해 친구를 희생한 것은 비겁한 결정이었습니다." }
+      { en: "It really annoys me when people cut in line.", kr: "사람들이 새치기하면 진짜 짜증 나요." },
+      { en: "Stop annoying your brother and finish your homework.", kr: "동생 그만 귀찮게 하고 숙제 끝내." }
     ]
   },
   {
@@ -14812,8 +14812,8 @@ const wordsLevel5_Part1 = [
     word: "dearth",
     meaning: "부족, 결핍",
     examples: [
-      { en: "There is a severe dearth of affordable housing in the city.", kr: "그 도시에는 저렴한 주택의 심각한 부족이 있습니다." },
-      { en: "The critics noted a dearth of originality in the new movie.", kr: "비평가들은 새 영화의 독창성 결핍을 지적했습니다." }
+      { en: "There's a real dearth of good restaurants around here.", kr: "이 근처엔 괜찮은 식당이 정말 부족해." },
+      { en: "There's no dearth of opinions in this office.", kr: "이 사무실엔 의견이 부족할 일은 없어요." }
     ]
   },
   {
@@ -14839,8 +14839,8 @@ const wordsLevel5_Part1 = [
     word: "deference",
     meaning: "존중, 경의",
     examples: [
-      { en: "Out of deference to the elder statesman, he remained silent.", kr: "그 노(老)정치가에 대한 존중으로, 그는 침묵을 지켰습니다." },
-      { en: "The decision was made in deference to the wishes of the founder.", kr: "그 결정은 설립자의 바람에 대한 경의로 내려졌습니다." }
+      { en: "I kept quiet out of deference to my boss.", kr: "상사를 존중하는 뜻에서 아무 말 안 했어요." },
+      { en: "In deference to my parents, we had a small wedding.", kr: "부모님 뜻을 존중해서 우리는 결혼식을 작게 했어요." }
     ]
   },
   {
@@ -14929,8 +14929,8 @@ const wordsLevel5_Part1 = [
     word: "dissonance",
     meaning: "불협화음, 불일치",
     examples: [
-      { en: "The economic policy caused social dissonance and unrest.", kr: "그 경제 정책은 사회적 불일치와 불안을 야기했습니다." },
-      { en: "The avant-garde music was full of intentional dissonance.", kr: "그 아방가르드 음악은 의도적인 불협화음으로 가득했습니다." }
+      { en: "There's a weird dissonance between what he says and what he does.", kr: "그 사람은 말과 행동이 묘하게 안 맞아." },
+      { en: "The song uses dissonance to build tension.", kr: "그 노래는 불협화음을 써서 긴장감을 만들어요." }
     ]
   },
   {
@@ -15080,10 +15080,10 @@ const wordsLevel5_Part1 = [
   {
     id: "L5-071",
     word: "expedient",
-    meaning: "편의적인, 임시방편의",
+    meaning: "편의적인, 당장 유리한",
     examples: [
-      { en: "It was an expedient but unethical solution to the problem.", kr: "그것은 문제에 대한 편의적이지만 비윤리적인 해결책이었습니다." },
-      { en: "The manager chose the most expedient method to finish the job quickly.", kr: "매니저는 그 일을 빨리 끝내기 위해 가장 편의적인 방법을 택했습니다." }
+      { en: "It was expedient to just pay the fine and move on.", kr: "그냥 벌금 내고 넘어가는 게 당장은 편했어요." },
+      { en: "Cutting corners might be expedient, but it's risky.", kr: "대충 하는 게 당장은 편할지 몰라도 위험해요." }
     ]
   },
   {
@@ -15100,8 +15100,8 @@ const wordsLevel5_Part1 = [
     word: "fallacy",
     meaning: "오류, 잘못된 생각",
     examples: [
-      { en: "The idea that the Earth is flat is a long-debunked fallacy.", kr: "지구가 평평하다는 생각은 오래전에 반증된 오류입니다." },
-      { en: "His entire argument rested on a logical fallacy.", kr: "그의 주장 전체가 논리적 오류에 기반했습니다." }
+      { en: "It's a fallacy that you need a degree to succeed.", kr: "성공하려면 학위가 꼭 있어야 한다는 건 잘못된 생각이에요." },
+      { en: "His whole argument is based on a logical fallacy.", kr: "그 사람 주장은 전부 논리적 오류에 기반하고 있어." }
     ]
   },
   {
@@ -15152,10 +15152,10 @@ const wordsLevel5_Part1 = [
   {
     id: "L5-079",
     word: "fidelity",
-    meaning: "충실, 정확성",
+    meaning: "충실함, 정절, (음향의) 충실도",
     examples: [
-      { en: "The historical film was praised for its fidelity to the original events.", kr: "그 역사 영화는 원래 사건에 대한 충실성으로 칭찬받았습니다." },
-      { en: "The speakers reproduce music with remarkable fidelity.", kr: "그 스피커는 놀라울 정도로 정확하게 음악을 재현합니다." }
+      { en: "Trust and fidelity are the basis of any good marriage.", kr: "신뢰와 정절은 모든 좋은 결혼 생활의 기본이에요." },
+      { en: "These speakers play music with amazing fidelity.", kr: "이 스피커는 음악을 놀라울 정도로 원음 그대로 들려줘요." }
     ]
   },
   {
@@ -15269,10 +15269,10 @@ const wordsLevel5_Part1 = [
   {
     id: "L5-479",
     word: "invoke",
-    meaning: "(법·권리 등을) 들먹이다, 발동하다, 불러일으키다",
+    meaning: "(권리 등을) 행사하다, 들먹이다, 발동하다",
     examples: [
-      { en: "The suspect invoked his right to remain silent.", kr: "용의자는 묵비권을 행사했습니다." },
-      { en: "The old song invoked memories of my childhood.", kr: "그 옛 노래가 내 어린 시절의 추억을 불러일으켰어." }
+      { en: "You can always invoke your right to talk to a lawyer.", kr: "변호사와 얘기할 권리는 언제든지 행사할 수 있어요." },
+      { en: "He always invokes his years of experience to win arguments.", kr: "그는 말싸움에서 이기려고 늘 자기 경력을 들먹여." }
     ]
   },
   {
@@ -15289,8 +15289,8 @@ const wordsLevel5_Part1 = [
     word: "hubris",
     meaning: "오만, 자만",
     examples: [
-      { en: "The CEO’s hubris led him to ignore all warnings, causing the company’s downfall.", kr: "최고 경영자의 오만은 그가 모든 경고를 무시하도록 이끌었고, 회사의 몰락을 초래했습니다." },
-      { en: "Hubris is a common tragic flaw in classical literature.", kr: "오만은 고전 문학에서 흔한 비극적 결함입니다." }
+      { en: "His hubris made him ignore everyone's warnings.", kr: "그는 오만해서 모두의 경고를 무시했어요." },
+      { en: "Skipping the rehearsal was pure hubris.", kr: "리허설을 건너뛴 건 순전히 자만이었어." }
     ]
   },
   {
@@ -15445,8 +15445,8 @@ const wordsLevel5_Part2 = [
     word: "indiscriminate",
     meaning: "무차별적인, 무분별한",
     examples: [
-      { en: "The bombing caused indiscriminate destruction across the city.", kr: "그 폭격은 도시 전역에 무차별적인 파괴를 야기했습니다." },
-      { en: "He has an indiscriminate taste in music, listening to everything.", kr: "그는 모든 것을 듣는 무분별한 음악 취향을 가지고 있습니다." }
+      { en: "The indiscriminate use of antibiotics is a serious problem.", kr: "항생제를 무분별하게 쓰는 건 심각한 문제예요." },
+      { en: "Don't be so indiscriminate about who you give your number to.", kr: "전화번호를 그렇게 무분별하게 아무한테나 주지 마." }
     ]
   },
   {
@@ -15463,8 +15463,8 @@ const wordsLevel5_Part2 = [
     word: "inept",
     meaning: "서툰, 무능한",
     examples: [
-      { en: "The manager was criticized for his inept handling of the crisis.", kr: "그 관리자는 위기에 서툴게 대처하여 비판받았습니다." },
-      { en: "His attempts at humor were completely inept.", kr: "그의 유머 시도는 완전히 서툴렀습니다." }
+      { en: "I'm totally inept at small talk with strangers.", kr: "난 모르는 사람이랑 스몰토크하는 데 완전 서툴러." },
+      { en: "The company's inept response made the problem worse.", kr: "회사의 서툰 대응 때문에 문제가 더 커졌어요." }
     ]
   },
   {
@@ -15472,8 +15472,8 @@ const wordsLevel5_Part2 = [
     word: "infamous",
     meaning: "악명 높은",
     examples: [
-      { en: "The city is known for its infamous prison.", kr: "그 도시는 악명 높은 감옥으로 알려져 있습니다." },
-      { en: "He was arrested for the infamous theft of the diamond necklace.", kr: "그는 그 악명 높은 다이아몬드 목걸이 절도 혐의로 체포되었습니다." }
+      { en: "This intersection is infamous for its traffic jams.", kr: "이 교차로는 교통 체증으로 악명 높아요." },
+      { en: "Our boss is infamous for his endless meetings.", kr: "우리 사장님은 끝없는 회의로 악명이 높아." }
     ]
   },
   {
@@ -15497,10 +15497,10 @@ const wordsLevel5_Part2 = [
   {
     id: "L5-117",
     word: "insatiable",
-    meaning: "만족시킬 수 없는, 채울 수 없는",
+    meaning: "채울 수 없는, 끝없는",
     examples: [
-      { en: "He has an insatiable thirst for power and wealth.", kr: "그는 권력과 부에 대한 만족시킬 수 없는 갈증을 가지고 있습니다." },
-      { en: "The company's insatiable demand for raw materials led to environmental damage.", kr: "그 회사의 원자재에 대한 채울 수 없는 요구는 환경 피해로 이어졌습니다." }
+      { en: "My kids have an insatiable appetite for snacks.", kr: "우리 애들은 간식 욕심이 끝도 없어요." },
+      { en: "She has an insatiable curiosity about everything.", kr: "그녀는 모든 것에 대한 호기심이 끝이 없어." }
     ]
   },
   {
@@ -15515,10 +15515,10 @@ const wordsLevel5_Part2 = [
   {
     id: "L5-119",
     word: "insidious",
-    meaning: "교활한, 서서히 퍼지는",
+    meaning: "서서히 해를 끼치는, 은밀한",
     examples: [
-      { en: "The disease has an insidious onset, making it hard to detect early.", kr: "그 질병은 서서히 퍼지기 시작하여 조기 발견이 어렵습니다." },
-      { en: "The insidious propaganda slowly changed the public's opinion.", kr: "그 교활한 선전은 대중의 의견을 서서히 변화시켰습니다." }
+      { en: "Stress can have an insidious effect on your health.", kr: "스트레스는 건강을 서서히 갉아먹을 수 있어요." },
+      { en: "The problem was insidious; nobody noticed it for months.", kr: "그 문제는 은밀하게 진행돼서 몇 달 동안 아무도 몰랐어." }
     ]
   },
   {
@@ -15533,10 +15533,10 @@ const wordsLevel5_Part2 = [
   {
     id: "L5-121",
     word: "intractable",
-    meaning: "다루기 힘든, 고집 센",
+    meaning: "다루기 힘든, 해결하기 어려운",
     examples: [
-      { en: "The intractable problem required a radical new solution.", kr: "그 다루기 힘든 문제는 급진적인 새 해결책을 필요로 했습니다." },
-      { en: "The manager struggled with the most intractable employee.", kr: "그 관리자는 가장 고집 센 직원과 씨름했습니다." }
+      { en: "This bug has been an intractable problem for weeks.", kr: "이 버그는 몇 주째 해결이 안 되는 골칫거리예요." },
+      { en: "Traffic in this city seems like an intractable problem.", kr: "이 도시 교통 문제는 해결이 안 될 것 같아." }
     ]
   },
   {
@@ -15553,8 +15553,8 @@ const wordsLevel5_Part2 = [
     word: "intricate",
     meaning: "복잡한, 뒤얽힌",
     examples: [
-      { en: "The clock had an intricate design with many small moving parts.", kr: "그 시계는 작은 움직이는 부품들이 많은 복잡한 디자인을 가지고 있었습니다." },
-      { en: "The plot of the novel was so intricate that it required close attention.", kr: "그 소설의 줄거리는 너무 뒤얽혀서 세심한 주의를 요했습니다." }
+      { en: "Look at the intricate details on this old clock.", kr: "이 오래된 시계의 정교한 디테일 좀 봐." },
+      { en: "The plot was so intricate that I got lost halfway.", kr: "줄거리가 너무 복잡해서 중간에 헷갈렸어요." }
     ]
   },
   {
@@ -15686,10 +15686,10 @@ const wordsLevel5_Part2 = [
   {
     id: "L5-138",
     word: "litany",
-    meaning: "장황한 목록, 잦은 반복",
+    meaning: "장황한 목록, 줄줄이 늘어놓는 것",
     examples: [
-      { en: "He recited a litany of complaints about the restaurant's service.", kr: "그는 식당 서비스에 대한 장황한 불만 목록을 읊었습니다." },
-      { en: "The speech became a tiresome litany of past achievements.", kr: "그 연설은 과거 업적을 지루하게 늘어놓는 것이 되었습니다." }
+      { en: "He gave me a litany of excuses for being late.", kr: "그는 늦은 이유로 핑계를 줄줄이 늘어놨어." },
+      { en: "She had a whole litany of complaints about the hotel.", kr: "그녀는 그 호텔에 대한 불만을 한가득 늘어놨어요." }
     ]
   },
   {
@@ -15893,10 +15893,10 @@ const wordsLevel5_Part2 = [
   {
     id: "L5-161",
     word: "palpable",
-    meaning: "손으로 만질 수 있는, 명백한",
+    meaning: "확연한, 뚜렷이 느껴지는",
     examples: [
-      { en: "There was a palpable tension in the room before the vote.", kr: "투표 전에 방 안에는 손으로 만질 수 있는 듯한 긴장감이 있었습니다." },
-      { en: "The sense of relief among the survivors was palpable.", kr: "생존자들 사이의 안도감은 명백했습니다." }
+      { en: "The tension in the meeting room was palpable.", kr: "회의실 안의 긴장감이 확 느껴졌어요." },
+      { en: "Her excitement was palpable when she got the job offer.", kr: "입사 제안을 받았을 때 그녀의 설렘이 확연히 느껴졌어." }
     ]
   },
   {
@@ -16037,10 +16037,10 @@ const wordsLevel5_Part2 = [
   {
     id: "L5-177",
     word: "pundit",
-    meaning: "전문가, 권위자",
+    meaning: "(TV 등의) 논객, 전문가",
     examples: [
-      { en: "The news program featured a panel of political pundits.", kr: "그 뉴스 프로그램에는 정치 전문가 패널이 출연했습니다." },
-      { en: "He is regarded as a leading pundit in the field of cybersecurity.", kr: "그는 사이버 보안 분야의 선도적인 권위자로 간주됩니다." }
+      { en: "All the pundits on TV got the election wrong.", kr: "TV에 나온 논객들 예측이 전부 빗나갔어." },
+      { en: "I stopped listening to political pundits on cable news.", kr: "케이블 뉴스에 나오는 정치 논객들 얘기는 이제 안 들어요." }
     ]
   },
   {
@@ -16328,10 +16328,10 @@ const wordsLevel5_Part3 = [
   {
     id: "L5-209",
     word: "spurious",
-    meaning: "가짜의, 근거 없는",
+    meaning: "근거 없는, 가짜의",
     examples: [
-      { en: "The court dismissed the documents as spurious evidence.", kr: "법원은 그 문서들을 가짜 증거로 기각했습니다." },
-      { en: "He was criticized for making spurious claims about his ancestry.", kr: "그는 자신의 혈통에 대해 근거 없는 주장을 해서 비판받았습니다." }
+      { en: "His argument sounds smart, but it's completely spurious.", kr: "그 사람 주장은 똑똑하게 들리지만 완전히 근거 없는 거야." },
+      { en: "Just ignore those spurious claims you see online.", kr: "온라인에서 보이는 근거 없는 주장들은 그냥 무시해." }
     ]
   },
   {
@@ -16346,19 +16346,19 @@ const wordsLevel5_Part3 = [
   {
     id: "L5-211",
     word: "subliminal",
-    meaning: "잠재의식적인",
+    meaning: "잠재의식의, 무의식적인",
     examples: [
-      { en: "The advertisement contained subliminal messages designed to influence consumer choice.", kr: "그 광고는 소비자 선택에 영향을 미치도록 고안된 잠재의식적인 메시지를 포함했습니다." },
-      { en: "He felt a vague, subliminal fear that he couldn't explain.", kr: "그는 설명할 수 없는 모호하고 잠재의식적인 두려움을 느꼈습니다." }
+      { en: "Do you think ads use subliminal messages on us?", kr: "광고가 우리한테 잠재의식 메시지를 쓴다고 생각해?" },
+      { en: "Maybe that song had a subliminal effect on me.", kr: "그 노래가 나한테 무의식적으로 영향을 줬나 봐." }
     ]
   },
   {
     id: "L5-212",
     word: "subvert",
-    meaning: "전복시키다, 뒤엎다",
+    meaning: "뒤엎다, 전복시키다",
     examples: [
-      { en: "The hacker group sought to subvert the established security protocols.", kr: "그 해커 그룹은 확립된 보안 규약을 전복시키려 했습니다." },
-      { en: "The film was criticized for trying to subvert traditional values.", kr: "그 영화는 전통적인 가치를 뒤엎으려고 시도했다는 비판을 받았습니다." }
+      { en: "The movie totally subverts the usual superhero story.", kr: "그 영화는 뻔한 슈퍼히어로 이야기를 완전히 뒤집어요." },
+      { en: "I love shows that subvert your expectations.", kr: "예상을 뒤엎는 드라마가 좋아요." }
     ]
   },
   {
@@ -16382,9 +16382,9 @@ const wordsLevel5_Part3 = [
   {
     id: "L5-588",
     word: "sparse",
-    meaning: "드문드문한, 희박한, 부족한",
+    meaning: "드문드문한, 듬성듬성한, 휑한",
     examples: [
-      { en: "Information about the accident is still sparse.", kr: "그 사고에 대한 정보는 아직 부족합니다." },
+      { en: "The crowd was pretty sparse for a Friday night.", kr: "금요일 밤치고는 사람이 꽤 드문드문했어요." },
       { en: "The room was sparse, with just a bed and a desk.", kr: "그 방은 침대와 책상 하나뿐이라 휑했어요." }
     ]
   },
@@ -16436,19 +16436,19 @@ const wordsLevel5_Part3 = [
   {
     id: "L5-221",
     word: "tenuous",
-    meaning: "미약한, 희박한",
+    meaning: "미약한, 빈약한",
     examples: [
-      { en: "The connection between the two events is tenuous at best.", kr: "두 사건 사이의 연관성은 기껏해야 미약합니다." },
-      { en: "He has only a tenuous grasp of the facts.", kr: "그는 사실 관계를 아주 희미하게만 파악하고 있습니다." }
+      { en: "Honestly, the link between those two things seems pretty tenuous.", kr: "솔직히 그 둘 사이의 연관성은 좀 약해 보여요." },
+      { en: "I only have a tenuous grasp of tax rules.", kr: "저는 세금 규정을 어렴풋이만 알아요." }
     ]
   },
   {
     id: "L5-222",
     word: "tirade",
-    meaning: "장황한 비난 연설",
+    meaning: "장황한 비난, 길게 퍼붓는 독설",
     examples: [
-      { en: "The customer launched into a tirade about the poor service.", kr: "그 고객은 형편없는 서비스에 대해 장황한 비난 연설을 시작했습니다." },
-      { en: "The politician's speech was more a tirade than a policy announcement.", kr: "그 정치인의 연설은 정책 발표라기보다는 비난 연설에 가까웠습니다." }
+      { en: "My boss went on a tirade about the late reports.", kr: "사장님이 보고서가 늦었다고 한참 열을 내며 퍼부었어요." },
+      { en: "Sorry about that tirade; I was just really frustrated.", kr: "아까 막 퍼부어서 미안해. 그냥 너무 답답했어." }
     ]
   },
   {
@@ -16463,10 +16463,10 @@ const wordsLevel5_Part3 = [
   {
     id: "L5-224",
     word: "tout",
-    meaning: "크게 선전하다, 칭찬하다",
+    meaning: "크게 선전하다, 치켜세우다",
     examples: [
-      { en: "The company constantly touts its product as the best in the market.", kr: "그 회사는 끊임없이 자신의 제품을 시장 최고라고 크게 선전합니다." },
-      { en: "Critics tout the young author as the voice of a new generation.", kr: "비평가들은 그 젊은 작가를 새 세대의 목소리라고 칭찬합니다." }
+      { en: "They keep touting this phone as a total game changer.", kr: "그 회사는 이 폰이 판도를 바꿀 거라고 계속 떠들어대요." },
+      { en: "The hotel was touted as luxurious, but it was pretty basic.", kr: "그 호텔은 고급이라고 홍보됐는데 꽤 평범했어요." }
     ]
   },
   {
@@ -16553,10 +16553,10 @@ const wordsLevel5_Part3 = [
   {
     id: "L5-234",
     word: "unscrupulous",
-    meaning: "부도덕한, 무원칙한",
+    meaning: "부도덕한, 비양심적인, 악덕",
     examples: [
-      { en: "An unscrupulous dealer tried to sell me a fake product.", kr: "부도덕한 상인이 나에게 가짜 제품을 팔려고 했습니다." },
-      { en: "The company was shut down due to its unscrupulous business practices.", kr: "그 회사는 무원칙한 사업 관행 때문에 폐쇄되었습니다." }
+      { en: "An unscrupulous dealer tried to sell me a fake product.", kr: "양심 없는 판매상이 나한테 가짜 물건을 팔려고 했어." },
+      { en: "Watch out for unscrupulous landlords who keep your deposit.", kr: "보증금을 안 돌려주는 악덕 집주인을 조심하세요." }
     ]
   },
   {
@@ -16623,21 +16623,21 @@ const wordsLevel5_Part3 = [
     ]
   },
   {
-    id: "L5-242",
-    word: "venerable",
-    meaning: "존경할 만한, 유서 깊은",
+    id: "L5-748",
+    word: "brag",
+    meaning: "자랑하다, 뽐내다",
     examples: [
-      { en: "The venerable professor retired after decades of service to the university.", kr: "그 존경할 만한 교수는 대학에 수십 년 봉사한 후 은퇴했습니다." },
-      { en: "The venerable old church has stood for five centuries.", kr: "그 유서 깊은 교회는 500년 동안 그 자리를 지켜 왔습니다." }
+      { en: "He keeps bragging about his new car.", kr: "걔 계속 새 차 자랑만 해." },
+      { en: "I don't mean to brag, but I got the promotion.", kr: "자랑하려는 건 아닌데, 저 승진했어요." }
     ]
   },
   {
-    id: "L5-243",
-    word: "veracity",
-    meaning: "진실성, 정확성",
+    id: "L5-749",
+    word: "upfront",
+    meaning: "선불로, 미리, 솔직한",
     examples: [
-      { en: "The committee questioned the veracity of the witness's testimony.", kr: "위원회는 증인의 증언의 진실성에 의문을 제기했습니다." },
-      { en: "Journalists must always check the veracity of their sources.", kr: "기자들은 항상 출처의 진실성을 확인해야 합니다." }
+      { en: "Do I have to pay upfront, or can I pay later?", kr: "선불로 내야 하나요, 아니면 나중에 내도 되나요?" },
+      { en: "I'll be upfront with you, the budget is really tight.", kr: "솔직하게 말씀드릴게요, 예산이 정말 빠듯해요." }
     ]
   },
   {
@@ -16679,28 +16679,28 @@ const wordsLevel5_Part3 = [
   {
     id: "L5-248",
     word: "vindictive",
-    meaning: "앙심 깊은, 복수심 있는",
+    meaning: "앙심을 품은, 보복하려는",
     examples: [
-      { en: "He was accused of making a vindictive move against his business rival.", kr: "그는 자신의 사업 라이벌에게 앙심 깊은 행동을 했다는 비난을 받았습니다." },
-      { en: "Her vindictive nature made it impossible for her to forgive betrayal.", kr: "그녀의 복수심 있는 천성은 그녀가 배신을 용서하는 것을 불가능하게 만들었습니다." }
+      { en: "Don't be vindictive; just let it go.", kr: "앙심 품지 말고 그냥 잊어버려." },
+      { en: "My ex got really vindictive after we broke up.", kr: "전 애인이 헤어지고 나서 정말 앙심을 품고 굴었어." }
     ]
   },
   {
     id: "L5-249",
     word: "virulent",
-    meaning: "치명적인, 맹독성의, 악의에 찬",
+    meaning: "독한, 치명적인, 악의에 찬",
     examples: [
-      { en: "A virulent strain of the flu spread rapidly through the population.", kr: "독감의 치명적인 균주가 인구 전체에 빠르게 퍼졌습니다." },
-      { en: "The debate was characterized by virulent personal attacks.", kr: "그 토론은 악의에 찬 인신공격으로 얼룩졌습니다." }
+      { en: "That was a really virulent strain of flu going around.", kr: "그때 돌던 독감은 정말 독한 종류였어." },
+      { en: "The comments online got pretty virulent after the game.", kr: "경기 끝나고 온라인 댓글이 꽤 악랄해졌어." }
     ]
   },
   {
-    id: "L5-250",
-    word: "viscous",
-    meaning: "끈적끈적한, 점성이 있는",
+    id: "L5-750",
+    word: "workload",
+    meaning: "업무량, 일의 양",
     examples: [
-      { en: "Honey is a highly viscous liquid.", kr: "꿀은 매우 끈적끈적한 액체입니다." },
-      { en: "The thick, viscous substance was difficult to pour.", kr: "그 두껍고 점성이 있는 물질은 붓기 어려웠습니다." }
+      { en: "My workload has doubled since Jake left the team.", kr: "제이크가 팀을 떠난 뒤로 제 업무량이 두 배가 됐어요." },
+      { en: "Can we talk about splitting the workload more evenly?", kr: "업무량을 좀 더 고르게 나누는 것에 대해 얘기할 수 있을까요?" }
     ]
   },
   {
@@ -16751,10 +16751,10 @@ const wordsLevel5_Part3 = [
   {
     id: "L5-256",
     word: "xenophobia",
-    meaning: "외국인 혐오증",
+    meaning: "외국인 혐오",
     examples: [
-      { en: "The rise of nationalism often leads to xenophobia.", kr: "민족주의의 증가는 종종 외국인 혐오증으로 이어집니다." },
-      { en: "The organization works to combat racism and xenophobia.", kr: "그 조직은 인종차별과 외국인 혐오증에 맞서 싸우기 위해 노력합니다." }
+      { en: "Sadly, some tourists still face xenophobia here.", kr: "안타깝게도 여기서 아직도 외국인 혐오를 겪는 관광객들이 있어요." },
+      { en: "Blaming immigrants for everything is just xenophobia.", kr: "모든 걸 이민자 탓으로 돌리는 건 그냥 외국인 혐오야." }
     ]
   },
   {
@@ -16823,10 +16823,10 @@ const wordsLevel5_Part3 = [
   {
     id: "L5-264",
     word: "conclusively",
-    meaning: "결정적으로, 확실히",
+    meaning: "확실히, 결정적으로",
     examples: [
-      { en: "The evidence conclusively proved his innocence.", kr: "그 증거는 그의 무죄를 결정적으로 입증했습니다." },
-      { en: "The study did not conclusively establish a link between the two factors.", kr: "그 연구는 두 요인 사이의 연관성을 확실히 확립하지 못했습니다." }
+      { en: "We can't say conclusively that the update caused the crash.", kr: "업데이트 때문에 오류가 났다고 확실히 말할 수는 없어요." },
+      { en: "The test results conclusively ruled out an infection.", kr: "검사 결과 감염은 확실히 아닌 걸로 나왔어요." }
     ]
   },
   {
@@ -16848,12 +16848,12 @@ const wordsLevel5_Part3 = [
     ]
   },
   {
-    id: "L5-267",
-    word: "deftly",
-    meaning: "능숙하게, 교묘하게",
+    id: "L5-751",
+    word: "inconvenient",
+    meaning: "불편한, 곤란한",
     examples: [
-      { en: "The magician deftly made the card disappear.", kr: "마술사는 카드를 능숙하게 사라지게 만들었습니다." },
-      { en: "He deftly avoided answering the difficult question.", kr: "그는 어려운 질문에 대답하는 것을 교묘하게 피했습니다." }
+      { en: "Sorry, is this an inconvenient time to talk?", kr: "죄송한데, 지금 얘기하기 곤란하세요?" },
+      { en: "The new bus schedule is really inconvenient for me.", kr: "새 버스 시간표가 저한테는 정말 불편해요." }
     ]
   },
   {
@@ -17039,10 +17039,10 @@ const wordsLevel5_Part3 = [
   {
     id: "L5-288",
     word: "legitimately",
-    meaning: "합법적으로, 정당하게",
+    meaning: "정당하게, 진짜로",
     examples: [
-      { en: "The funds were acquired legitimately through years of investment.", kr: "그 자금은 수년간의 투자를 통해 합법적으로 획득되었습니다." },
-      { en: "He can legitimately claim the title.", kr: "그는 정당하게 그 칭호를 요구할 수 있습니다." }
+      { en: "Are you legitimately sick, or do you just want a day off?", kr: "너 진짜 아픈 거야, 아니면 그냥 하루 쉬고 싶은 거야?" },
+      { en: "You can legitimately ask for a refund in this case.", kr: "이 경우엔 정당하게 환불을 요청할 수 있어요." }
     ]
   },
   {
@@ -17050,8 +17050,8 @@ const wordsLevel5_Part3 = [
     word: "meticulously",
     meaning: "세심하게, 꼼꼼하게",
     examples: [
-      { en: "The historian meticulously checked every detail of the ancient document.", kr: "그 역사가(史家)는 고대 문서의 모든 세부 사항을 세심하게 확인했습니다." },
-      { en: "She meticulously planned every step of the complex operation.", kr: "그녀는 복잡한 작전의 모든 단계를 꼼꼼하게 계획했습니다." }
+      { en: "She meticulously planned every detail of our wedding.", kr: "그녀가 우리 결혼식의 세세한 부분까지 꼼꼼하게 계획했어요." },
+      { en: "I meticulously checked the numbers, but I still missed one.", kr: "숫자를 꼼꼼하게 확인했는데도 하나를 놓쳤어요." }
     ]
   },
   {
@@ -17150,7 +17150,7 @@ const wordsLevel5_Part3 = [
     meaning: "결핍, 부족, 박탈",
     examples: [
       { en: "Sleep deprivation makes it hard to focus at work.", kr: "수면 부족은 직장에서 집중하기 어렵게 만들어요." },
-      { en: "The report links child poverty to educational deprivation.", kr: "그 보고서는 아동 빈곤을 교육 결핍과 연관 짓습니다." }
+      { en: "Kids from poor families often face deprivation early on.", kr: "가난한 집 아이들은 어릴 때부터 결핍을 겪는 경우가 많아요." }
     ]
   }
 ];
@@ -17204,10 +17204,10 @@ const wordsLevel5_Part4 = [
   {
     id: "L5-306",
     word: "reiterated",
-    meaning: "반복하여 말한, 되풀이한",
+    meaning: "거듭 말하다, 다시 강조하다",
     examples: [
-      { en: "The importance of safety was reiterated at the start of the meeting.", kr: "회의 시작 때 안전의 중요성이 다시 강조되었습니다." },
-      { en: "He reiterated his promise to lower taxes.", kr: "그는 세금을 낮추겠다는 자신의 약속을 되풀이했습니다." }
+      { en: "I reiterated that the deadline is Friday, but nobody listened.", kr: "마감이 금요일이라고 거듭 말했는데 아무도 안 들었어요." },
+      { en: "The boss reiterated that nobody's getting laid off.", kr: "사장님이 아무도 해고되지 않는다고 다시 강조했어요." }
     ]
   },
   {
@@ -17242,8 +17242,8 @@ const wordsLevel5_Part4 = [
     word: "requisite",
     meaning: "필요한, 필수적인",
     examples: [
-      { en: "Having a degree is a requisite for this position.", kr: "이 직책에는 학위가 필수 요건입니다." },
-      { en: "He lacked the requisite skills for the difficult task.", kr: "그는 어려운 임무에 필요한 기술이 부족했습니다." }
+      { en: "Do you have the requisite experience for this role?", kr: "이 직무에 필요한 경력이 있으세요?" },
+      { en: "He has the requisite skills, but not the right attitude.", kr: "그는 필요한 기술은 있지만 태도가 별로예요." }
     ]
   },
   {
@@ -17305,8 +17305,8 @@ const wordsLevel5_Part4 = [
     word: "synthesis",
     meaning: "종합, 합성",
     examples: [
-      { en: "The book is a synthesis of many different philosophical traditions.", kr: "그 책은 많은 다른 철학적 전통들의 종합입니다." },
-      { en: "Chemical synthesis of the new compound was a complex process.", kr: "그 새로운 화합물의 화학적 합성은 복잡한 과정이었습니다." }
+      { en: "Her plan is a nice synthesis of both our ideas.", kr: "그녀의 계획은 우리 둘의 아이디어를 잘 종합한 거예요." },
+      { en: "Your body needs sunlight for vitamin D synthesis.", kr: "몸이 비타민 D를 합성하려면 햇빛이 필요해요." }
     ]
   },
   {
@@ -17337,12 +17337,12 @@ const wordsLevel5_Part4 = [
     ]
   },
   {
-    id: "L5-321",
-    word: "unfettered",
-    meaning: "구속되지 않은, 자유로운",
+    id: "L5-752",
+    word: "attire",
+    meaning: "복장, 옷차림",
     examples: [
-      { en: "The artist was given unfettered creative control over the project.", kr: "그 예술가는 프로젝트에 대한 구속되지 않은 창작 통제권을 부여받았습니다." },
-      { en: "The country enjoys unfettered access to the sea.", kr: "그 나라는 바다에 대한 자유로운 접근을 누립니다." }
+      { en: "Is casual attire okay for the party tonight?", kr: "오늘 밤 파티에 캐주얼 복장 괜찮아?" },
+      { en: "Business attire is required for tomorrow's client meeting.", kr: "내일 고객 미팅에는 정장 차림으로 와야 해요." }
     ]
   },
   {
@@ -17357,10 +17357,10 @@ const wordsLevel5_Part4 = [
   {
     id: "L5-323",
     word: "unwittingly",
-    meaning: "자신도 모르게, 부지불식간에",
+    meaning: "자신도 모르게, 무심코",
     examples: [
-      { en: "He unwittingly gave away the secret by mentioning the dates.", kr: "그는 날짜를 언급함으로써 자신도 모르게 비밀을 누설했습니다." },
-      { en: "The agent unwittingly became involved in the smuggling operation.", kr: "그 요원은 부지불식간에 밀수 작전에 연루되었습니다." }
+      { en: "I unwittingly spoiled the movie ending for her.", kr: "나도 모르게 걔한테 영화 결말을 스포해 버렸어." },
+      { en: "Many people unwittingly share fake news online.", kr: "많은 사람들이 자기도 모르게 온라인에서 가짜 뉴스를 공유해요." }
     ]
   },
   {
@@ -17456,10 +17456,10 @@ const wordsLevel5_Part4 = [
   {
     id: "L5-334",
     word: "antagonism",
-    meaning: "적대감, 반목",
+    meaning: "적대감, 반감",
     examples: [
-      { en: "There was open antagonism between the two rival teams.", kr: "두 라이벌 팀 사이에는 공개적인 적대감이 있었습니다." },
-      { en: "The political cartoon expressed public antagonism toward the new law.", kr: "그 정치 만화는 새 법에 대한 대중의 반목(적대감)을 표현했습니다." }
+      { en: "There's always been some antagonism between those two departments.", kr: "그 두 부서 사이엔 늘 어느 정도 적대감이 있었어요." },
+      { en: "I don't get the antagonism; we're on the same team.", kr: "왜 그렇게 적대적인지 모르겠어. 우리 같은 팀이잖아." }
     ]
   },
   {
@@ -17508,12 +17508,12 @@ const wordsLevel5_Part4 = [
     ]
   },
   {
-    id: "L5-340",
-    word: "cabal",
-    meaning: "음모단, 비밀 결사",
+    id: "L5-753",
+    word: "catchy",
+    meaning: "귀에 쏙 들어오는, 기억하기 쉬운, 중독성 있는",
     examples: [
-      { en: "A secret cabal of ministers plotted against the king.", kr: "장관들의 비밀 음모단이 왕을 상대로 음모를 꾸몄습니다." },
-      { en: "The investigation uncovered a powerful cabal operating within the corporation.", kr: "그 조사는 회사 내에서 운영되는 강력한 비밀 결사를 밝혀냈습니다." }
+      { en: "This song is so catchy, I can't stop humming it.", kr: "이 노래 너무 중독성 있어서 계속 흥얼거리게 돼." },
+      { en: "We need a catchy name for the new product.", kr: "신제품에 기억하기 쉬운 이름이 필요해요." }
     ]
   },
   {
@@ -17573,10 +17573,10 @@ const wordsLevel5_Part4 = [
   {
     id: "L5-347",
     word: "debacle",
-    meaning: "대실패, 붕괴",
+    meaning: "대실패, 대참사",
     examples: [
-      { en: "The launch of the new product was a complete debacle.", kr: "새 제품의 출시는 완전한 대실패였습니다." },
-      { en: "The sudden collapse of the empire was a historical debacle.", kr: "그 제국의 갑작스러운 붕괴는 역사적인 대실패였습니다." }
+      { en: "The product launch was a complete debacle.", kr: "그 제품 출시는 완전 대실패였어요." },
+      { en: "Remember the debacle at last year's company picnic?", kr: "작년 회사 야유회 때 있었던 대참사 기억나?" }
     ]
   },
   {
@@ -17726,10 +17726,10 @@ const wordsLevel5_Part4 = [
   {
     id: "L5-364",
     word: "eulogy",
-    meaning: "추도 연설, 찬사",
+    meaning: "추도사, 추도 연설",
     examples: [
-      { en: "The best friend delivered a heartfelt eulogy at the funeral.", kr: "가장 친한 친구는 장례식에서 진심 어린 추도 연설을 했습니다." },
-      { en: "The article was more a eulogy than a balanced critical review.", kr: "그 기사는 균형 잡힌 비판적인 평론이라기보다는 찬사에 가까웠습니다." }
+      { en: "Her best friend gave a beautiful eulogy at the funeral.", kr: "그녀의 절친이 장례식에서 감동적인 추도사를 했어요." },
+      { en: "I've been asked to give the eulogy, and I'm nervous.", kr: "추도사를 부탁받았는데 긴장돼요." }
     ]
   },
   {
@@ -17807,10 +17807,10 @@ const wordsLevel5_Part4 = [
   {
     id: "L5-373",
     word: "fiduciary",
-    meaning: "신탁의, 수탁자",
+    meaning: "수탁자, 수탁자의",
     examples: [
-      { en: "As a board member, she has a fiduciary duty to act in the best interest of the shareholders.", kr: "이사회 멤버로서, 그녀는 주주들의 최선의 이익을 위해 행동할 신탁의 의무가 있습니다." },
-      { en: "The lawyer serves as a fiduciary for the client's assets.", kr: "그 변호사는 고객 자산의 수탁자 역할을 합니다." }
+      { en: "Your financial advisor has a fiduciary duty to put you first.", kr: "재무 상담사는 고객인 너를 최우선으로 해야 하는 수탁자 의무가 있어." },
+      { en: "Is your advisor a fiduciary or just a salesperson?", kr: "네 상담사는 수탁자야, 아니면 그냥 판매원이야?" }
     ]
   },
   {
@@ -17852,10 +17852,10 @@ const wordsLevel5_Part4 = [
   {
     id: "L5-378",
     word: "homogenous",
-    meaning: "동질의, 균질의",
+    meaning: "동질적인, 균질한",
     examples: [
-      { en: "The soup was a perfectly homogenous mixture of vegetables and broth.", kr: "그 수프는 채소와 국물이 완벽하게 균질하게 섞여 있었습니다." },
-      { en: "The country has a relatively homogenous population.", kr: "그 나라는 비교적 동질적인 인구 구성을 가지고 있습니다." }
+      { en: "Our team is pretty homogenous, so we need more diverse views.", kr: "우리 팀은 다들 비슷해서 더 다양한 시각이 필요해요." },
+      { en: "Blend it until the mixture is homogenous.", kr: "고르게 섞일 때까지 갈아 주세요." }
     ]
   },
   {
@@ -17960,19 +17960,19 @@ const wordsLevel5_Part4 = [
   {
     id: "L5-390",
     word: "juggernaut",
-    meaning: "거대 세력, 막강한 존재",
+    meaning: "막강한 존재, 거대 세력",
     examples: [
-      { en: "The tech company has become an unstoppable global juggernaut.", kr: "그 기술 기업은 막을 수 없는 세계적 거대 세력이 되었습니다." },
-      { en: "The football team was an absolute juggernaut this season.", kr: "그 축구팀은 이번 시즌 그야말로 막강한 존재였습니다." }
+      { en: "That company has become a total juggernaut in streaming.", kr: "그 회사는 스트리밍 업계에서 완전 거대 공룡이 됐어." },
+      { en: "Our team was a juggernaut this season; nobody could beat us.", kr: "우리 팀은 이번 시즌에 무적이었어. 아무도 못 이겼어." }
     ]
   },
   {
     id: "L5-391",
     word: "lament",
-    meaning: "한탄하다, 슬퍼하다, 애가",
+    meaning: "한탄하다, 애석해하다",
     examples: [
-      { en: "The villagers lamented the destruction of their ancient temple.", kr: "마을 사람들은 그들의 고대 사원의 파괴를 한탄했습니다." },
-      { en: "The poem is a lament for lost youth.", kr: "그 시는 잃어버린 젊음을 슬퍼하는 애가입니다." }
+      { en: "He's always lamenting how expensive everything is now.", kr: "그는 요즘 다 너무 비싸다고 늘 한탄해요." },
+      { en: "My parents lament that nobody writes letters anymore.", kr: "부모님은 이제 아무도 편지를 안 쓴다고 아쉬워하세요." }
     ]
   },
   {
@@ -18005,10 +18005,10 @@ const wordsLevel5_Part4 = [
   {
     id: "L5-395",
     word: "luminous",
-    meaning: "빛나는, 밝은",
+    meaning: "빛나는, 야광의, 환한",
     examples: [
-      { en: "The clock face was painted with luminous material so it could be seen in the dark.", kr: "시계판은 어둠 속에서도 볼 수 있도록 빛나는 물질로 칠해졌습니다." },
-      { en: "She has a luminous personality that brightens the room.", kr: "그녀는 방을 밝게 만드는 빛나는 성격을 가지고 있습니다." }
+      { en: "My watch has luminous hands, so I can read it in the dark.", kr: "내 시계는 바늘이 야광이라 어두운 데서도 보여." },
+      { en: "Her skin looked luminous after the facial.", kr: "피부 관리 받고 나니 그녀 피부가 환하게 빛났어." }
     ]
   },
   {
@@ -18114,4 +18114,4 @@ const wordData = [
 ];
 
 // 학습 데이터 정리로 합쳐진 중복 단어: 예전 ID → 남은 같은 단어 ID (암기 기록 이어받기용, js/storage.js)
-const wordIdAliases = {"L1-102": "L1-066", "L1-196": "L1-137", "L1-199": "L1-149", "L1-304": "L1-160", "L1-307": "L1-154", "L1-308": "L1-125", "L1-311": "L1-180", "L1-314": "L1-152", "L1-318": "L1-198", "L1-322": "L1-263", "L1-323": "L1-163", "L1-324": "L1-124", "L1-327": "L1-176", "L1-330": "L1-148", "L1-331": "L1-161", "L1-332": "L1-174", "L1-334": "L1-115", "L1-335": "L1-156", "L1-336": "L1-135", "L1-338": "L1-201", "L1-344": "L1-137", "L1-346": "L1-189", "L1-347": "L1-130", "L1-348": "L1-249", "L1-350": "L1-242", "L1-351": "L1-173", "L1-352": "L1-143", "L1-360": "L1-214", "L1-365": "L1-176", "L1-366": "L1-110", "L1-368": "L1-150", "L1-369": "L1-302", "L1-370": "L1-222", "L1-372": "L1-242", "L1-374": "L1-241", "L1-378": "L1-174", "L1-379": "L1-148", "L1-382": "L1-313", "L1-383": "L1-339", "L1-386": "L1-310", "L1-389": "L1-349", "L1-390": "L1-147", "L1-392": "L1-242", "L1-394": "L1-273", "L1-396": "L1-235", "L1-398": "L1-309", "L1-399": "L1-236", "L1-400": "L1-122", "L2-002": "L1-227", "L2-015": "L1-190", "L2-019": "L1-357", "L2-212": "L2-145", "L2-221": "L2-079", "L2-225": "L2-049", "L2-231": "L2-163", "L2-247": "L2-125", "L2-250": "L2-175", "L2-255": "L2-133", "L2-259": "L2-016", "L2-260": "L2-138", "L2-264": "L2-142", "L2-269": "L2-147", "L2-270": "L2-214", "L2-273": "L2-076", "L2-274": "L2-077", "L2-275": "L2-155", "L2-276": "L2-021", "L2-277": "L2-081", "L2-278": "L2-082", "L2-279": "L2-189", "L2-281": "L2-226", "L2-293": "L2-090", "L2-295": "L2-091", "L2-300": "L2-037", "L2-301": "L2-172", "L2-304": "L2-175", "L2-308": "L2-132", "L2-311": "L2-135", "L2-314": "L2-138", "L2-316": "L2-261", "L2-317": "L2-141", "L2-321": "L2-144", "L2-322": "L2-145", "L2-323": "L2-098", "L2-324": "L2-071", "L2-325": "L2-072", "L2-326": "L2-149", "L2-327": "L2-271", "L2-328": "L2-217", "L2-330": "L2-078", "L2-332": "L2-079", "L2-333": "L2-155", "L2-336": "L2-223", "L2-338": "L2-156", "L2-340": "L2-189", "L2-342": "L2-022", "L2-343": "L2-162", "L2-346": "L2-085", "L2-348": "L2-284", "L2-356": "L1-263", "L2-357": "L1-320", "L2-358": "L2-007", "L2-359": "L2-088", "L2-360": "L2-008", "L2-363": "L2-009", "L2-367": "L2-010", "L2-371": "L2-036", "L2-373": "L2-013", "L2-375": "L2-126", "L2-376": "L2-014", "L2-381": "L1-190", "L2-383": "L2-041", "L2-385": "L1-271", "L2-386": "L1-131", "L2-388": "L2-017", "L2-389": "L1-163", "L2-390": "L1-357", "L2-395": "L2-075", "L2-399": "L2-023", "L2-400": "L2-001", "L3-001": "L2-194", "L3-002": "L2-102", "L3-004": "L2-350", "L3-005": "L2-285", "L3-008": "L2-028", "L3-011": "L2-103", "L3-013": "L2-105", "L3-019": "L2-233", "L3-022": "L2-024", "L3-023": "L2-164", "L3-024": "L2-110", "L3-025": "L2-007", "L3-026": "L2-031", "L3-029": "L2-088", "L3-030": "L2-030", "L3-033": "L2-237", "L3-035": "L2-112", "L3-037": "L2-165", "L3-038": "L2-292", "L3-040": "L2-113", "L3-043": "L2-090", "L3-047": "L2-166", "L3-048": "L2-114", "L3-054": "L2-034", "L3-055": "L2-239", "L3-056": "L2-115", "L3-058": "L2-240", "L3-059": "L2-116", "L3-060": "L2-060", "L3-063": "L2-117", "L3-067": "L2-011", "L3-068": "L2-062", "L3-071": "L2-063", "L3-073": "L2-012", "L3-075": "L2-120", "L3-081": "L2-092", "L3-082": "L2-121", "L3-083": "L2-122", "L3-086": "L2-037", "L3-089": "L2-125", "L3-090": "L2-126", "L3-091": "L2-172", "L3-093": "L2-038", "L3-094": "L2-302", "L3-095": "L2-127", "L3-096": "L2-128", "L3-098": "L2-065", "L3-102": "L2-175", "L3-104": "L2-066", "L3-105": "L2-252", "L3-106": "L2-130", "L3-109": "L2-132", "L3-113": "L2-201", "L3-116": "L2-202", "L3-117": "L2-203", "L3-120": "L2-016", "L3-121": "L2-067", "L3-122": "L2-042", "L3-124": "L2-204", "L3-125": "L2-205", "L3-127": "L1-163", "L3-128": "L2-206", "L3-129": "L2-318", "L3-130": "L2-208", "L3-134": "L2-266", "L3-135": "L2-070", "L3-136": "L2-319", "L3-138": "L2-211", "L3-141": "L2-098", "L3-142": "L2-071", "L3-143": "L2-146", "L3-144": "L2-148", "L3-147": "L2-215", "L3-149": "L2-182", "L3-150": "L2-216", "L3-151": "L2-272", "L3-153": "L2-152", "L3-155": "L2-078", "L3-156": "L2-331", "L3-158": "L2-335", "L3-160": "L2-097", "L3-162": "L2-224", "L3-166": "L2-160", "L3-178": "L2-228", "L3-183": "L2-193", "L3-187": "L2-195", "L3-189": "L3-014", "L3-190": "L2-107", "L3-191": "L2-196", "L3-195": "L2-056", "L3-196": "L2-290", "L3-198": "L2-291", "L3-199": "L2-236", "L3-200": "L2-197", "L3-201": "L3-036", "L3-202": "L2-238", "L3-203": "L2-292", "L3-204": "L2-033", "L3-205": "L2-115", "L3-206": "L2-240", "L3-208": "L2-116", "L3-209": "L2-366", "L3-211": "L3-062", "L3-212": "L2-369", "L3-213": "L2-243", "L3-214": "L2-118", "L3-215": "L3-064", "L3-218": "L2-062", "L3-222": "L2-063", "L3-223": "L3-072", "L3-225": "L2-170", "L3-227": "L2-012", "L3-228": "L3-074", "L3-229": "L2-120", "L3-230": "L3-076", "L3-231": "L3-077", "L3-232": "L3-079", "L3-233": "L3-080", "L3-234": "L2-092", "L3-235": "L2-121", "L3-236": "L2-122", "L3-237": "L3-084", "L3-238": "L3-085", "L3-239": "L3-087", "L3-240": "L3-088", "L3-241": "L2-038", "L3-242": "L2-302", "L3-243": "L2-377", "L3-244": "L2-127", "L3-245": "L2-378", "L3-246": "L2-379", "L3-247": "L2-380", "L3-249": "L2-065", "L3-250": "L3-099", "L3-251": "L2-303", "L3-252": "L2-305", "L3-253": "L3-103", "L3-254": "L2-129", "L3-255": "L2-040", "L3-256": "L2-306", "L3-257": "L2-252", "L3-258": "L2-130", "L3-259": "L2-253", "L3-260": "L3-107", "L3-261": "L2-307", "L3-262": "L2-095", "L3-263": "L2-131", "L3-264": "L3-108", "L3-265": "L2-132", "L3-266": "L3-110", "L3-267": "L3-112", "L3-268": "L2-133", "L3-269": "L2-041", "L3-270": "L2-309", "L3-272": "L2-134", "L3-273": "L2-257", "L3-274": "L2-201", "L3-275": "L3-114", "L3-276": "L3-115", "L3-277": "L2-310", "L3-278": "L2-176", "L3-279": "L2-202", "L3-285": "L2-288", "L3-287": "L3-018", "L3-297": "L2-121", "L3-299": "L3-248", "L3-300": "L3-119", "L3-301": "L2-258", "L3-302": "L2-312", "L3-304": "L2-067", "L3-305": "L2-042", "L3-306": "L3-123", "L3-307": "L2-068", "L3-308": "L2-139", "L3-309": "L2-315", "L3-310": "L2-178", "L3-311": "L2-261", "L3-312": "L3-126", "L3-313": "L1-163", "L3-314": "L2-142", "L3-315": "L2-206", "L3-316": "L2-143", "L3-317": "L2-318", "L3-318": "L2-208", "L3-319": "L3-131", "L3-320": "L3-132", "L3-321": "L3-133", "L3-322": "L2-266", "L3-323": "L2-267", "L3-324": "L2-319", "L3-326": "L2-320", "L3-327": "L2-211", "L3-328": "L3-139", "L3-329": "L3-140", "L3-330": "L2-145", "L3-331": "L2-098", "L3-332": "L2-071", "L3-333": "L2-146", "L3-334": "L2-148", "L3-335": "L3-145", "L3-336": "L3-146", "L3-337": "L2-215", "L3-338": "L3-148", "L3-339": "L2-182", "L3-340": "L2-271", "L3-341": "L2-216", "L3-342": "L2-272", "L3-343": "L3-152", "L3-344": "L2-152", "L3-345": "L3-154", "L3-346": "L2-217", "L3-347": "L2-078", "L3-348": "L2-331", "L3-349": "L3-157", "L3-350": "L2-335", "L3-351": "L3-159", "L3-352": "L2-223", "L3-353": "L3-161", "L3-354": "L2-337", "L3-355": "L2-224", "L3-356": "L3-163", "L3-357": "L3-164", "L3-358": "L3-165", "L3-359": "L2-160", "L3-360": "L3-167", "L3-361": "L3-168", "L3-362": "L3-170", "L3-363": "L3-171", "L3-364": "L3-172", "L3-365": "L3-173", "L3-366": "L3-174", "L3-367": "L3-175", "L3-368": "L3-176", "L3-369": "L2-283", "L3-370": "L2-228", "L3-371": "L3-177", "L3-372": "L3-180", "L3-373": "L3-181", "L3-374": "L3-182", "L3-380": "L2-195", "L3-382": "L2-108", "L3-390": "L2-296", "L3-391": "L3-216", "L3-392": "L3-220", "L3-396": "L2-303", "L3-397": "L2-040", "L3-398": "L2-066", "L4-002": "L3-186", "L4-003": "L2-102", "L4-005": "L2-350", "L4-008": "L3-006", "L4-009": "L3-007", "L4-011": "L2-352", "L4-012": "L3-014", "L4-013": "L2-107", "L4-015": "L3-015", "L4-016": "L2-055", "L4-022": "L2-164", "L4-024": "L2-111", "L4-025": "L2-088", "L4-027": "L2-197", "L4-033": "L3-044", "L4-040": "L3-062", "L4-041": "L2-117", "L4-042": "L3-294", "L4-045": "L3-069", "L4-053": "L3-078", "L4-055": "L2-121", "L4-060": "L2-125", "L4-061": "L2-172", "L4-062": "L3-092", "L4-063": "L3-298", "L4-065": "L2-173", "L4-071": "L3-111", "L4-072": "L3-118", "L4-073": "L2-016", "L4-078": "L2-178", "L4-080": "L2-261", "L4-081": "L2-205", "L4-085": "L2-318", "L4-088": "L2-180", "L4-098": "L2-220", "L4-106": "L2-188", "L4-109": "L2-190", "L4-111": "L3-167", "L4-112": "L2-162", "L4-114": "L2-227", "L4-120": "L3-016", "L4-122": "L3-289", "L4-137": "L3-293", "L4-143": "L3-221", "L4-213": "L3-271", "L4-304": "L4-068", "L4-307": "L4-070", "L5-007": "L4-117", "L5-014": "L4-337", "L5-016": "L4-339", "L5-029": "L4-284", "L5-032": "L4-285", "L5-038": "L4-288", "L5-039": "L4-289", "L5-048": "L4-291", "L5-052": "L4-230", "L5-056": "L4-031", "L5-059": "L4-207", "L5-063": "L4-349", "L5-065": "L4-136", "L5-066": "L4-208", "L5-091": "L4-297", "L5-092": "L4-209", "L5-095": "L4-210", "L5-096": "L4-147", "L5-101": "L3-069", "L5-116": "L4-154", "L5-124": "L3-092", "L5-147": "L4-069", "L5-149": "L4-070", "L5-152": "L3-110", "L5-156": "L3-271", "L5-158": "L4-170", "L5-160": "L4-374", "L5-162": "L4-376", "L5-171": "L4-256", "L5-173": "L4-179", "L5-175": "L4-180", "L5-179": "L4-182", "L5-183": "L4-183", "L5-184": "L4-087", "L5-185": "L4-184", "L5-186": "L4-187", "L5-188": "L4-188", "L5-190": "L4-190", "L5-191": "L4-191", "L5-192": "L4-192", "L5-193": "L4-193", "L5-194": "L4-194", "L5-195": "L4-195", "L5-196": "L4-388", "L5-197": "L4-093", "L5-198": "L4-094", "L5-199": "L4-095", "L5-213": "L4-204", "L5-217": "L4-199", "L5-226": "L4-220", "L5-227": "L4-272", "L5-231": "L4-108", "L5-235": "L4-276", "L5-252": "L4-115", "L5-253": "L4-280", "L5-255": "L4-330", "L5-257": "L3-376", "L5-258": "L3-378", "L5-259": "L3-379", "L5-261": "L2-195", "L5-262": "L3-381", "L5-265": "L2-108", "L5-266": "L3-383", "L5-269": "L3-384", "L5-271": "L3-385", "L5-272": "L3-386", "L5-273": "L3-387", "L5-274": "L3-388", "L5-275": "L3-389", "L5-277": "L2-296", "L5-278": "L3-216", "L5-279": "L3-220", "L5-280": "L4-050", "L5-282": "L3-393", "L5-283": "L3-394", "L5-287": "L3-395", "L5-290": "L2-040", "L5-291": "L2-066", "L5-292": "L3-399", "L5-293": "L3-400", "L5-294": "L4-170", "L5-307": "L4-089", "L5-318": "L4-200", "L5-322": "L4-110", "L5-328": "L4-331", "L5-329": "L5-002", "L5-335": "L4-006", "L5-352": "L4-291", "L5-357": "L4-207", "L5-360": "L4-136", "L5-365": "L4-038", "L5-376": "L4-297", "L5-380": "L4-046", "L5-384": "L4-298"};
+const wordIdAliases = {"L1-102": "L1-066", "L1-196": "L1-137", "L1-199": "L1-149", "L1-304": "L1-160", "L1-307": "L1-154", "L1-308": "L1-125", "L1-311": "L1-180", "L1-314": "L1-152", "L1-318": "L1-198", "L1-322": "L1-263", "L1-323": "L1-163", "L1-324": "L1-124", "L1-327": "L1-176", "L1-330": "L1-148", "L1-331": "L1-161", "L1-332": "L1-174", "L1-334": "L1-115", "L1-335": "L1-156", "L1-336": "L1-135", "L1-338": "L1-201", "L1-344": "L1-137", "L1-346": "L1-189", "L1-347": "L1-130", "L1-348": "L1-249", "L1-350": "L1-242", "L1-351": "L1-173", "L1-352": "L1-143", "L1-360": "L1-214", "L1-365": "L1-176", "L1-366": "L1-110", "L1-368": "L1-150", "L1-369": "L1-302", "L1-370": "L1-222", "L1-372": "L1-242", "L1-374": "L1-241", "L1-378": "L1-174", "L1-379": "L1-148", "L1-382": "L1-313", "L1-383": "L1-339", "L1-386": "L1-310", "L1-389": "L1-349", "L1-390": "L1-147", "L1-392": "L1-242", "L1-394": "L1-273", "L1-396": "L1-235", "L1-398": "L1-309", "L1-399": "L1-236", "L1-400": "L1-122", "L2-002": "L1-227", "L2-015": "L1-190", "L2-019": "L1-357", "L2-212": "L2-145", "L2-221": "L2-079", "L2-225": "L2-049", "L2-231": "L2-163", "L2-247": "L2-125", "L2-250": "L2-175", "L2-255": "L2-133", "L2-259": "L2-016", "L2-260": "L2-138", "L2-264": "L2-142", "L2-269": "L2-147", "L2-270": "L2-214", "L2-273": "L2-076", "L2-274": "L2-077", "L2-275": "L2-155", "L2-276": "L2-021", "L2-277": "L2-081", "L2-278": "L2-082", "L2-279": "L2-189", "L2-281": "L2-226", "L2-293": "L2-090", "L2-295": "L2-091", "L2-300": "L2-037", "L2-301": "L2-172", "L2-304": "L2-175", "L2-308": "L2-132", "L2-311": "L2-135", "L2-314": "L2-138", "L2-316": "L2-261", "L2-317": "L2-141", "L2-321": "L2-144", "L2-322": "L2-145", "L2-323": "L2-098", "L2-324": "L2-071", "L2-325": "L2-072", "L2-326": "L2-149", "L2-327": "L2-271", "L2-328": "L2-217", "L2-330": "L2-078", "L2-332": "L2-079", "L2-333": "L2-155", "L2-336": "L2-223", "L2-338": "L2-156", "L2-340": "L2-189", "L2-342": "L2-022", "L2-343": "L2-162", "L2-346": "L2-085", "L2-348": "L2-284", "L2-356": "L1-263", "L2-357": "L1-320", "L2-358": "L2-007", "L2-359": "L2-088", "L2-360": "L2-008", "L2-363": "L2-009", "L2-367": "L2-010", "L2-371": "L2-036", "L2-373": "L2-013", "L2-375": "L2-126", "L2-376": "L2-014", "L2-381": "L1-190", "L2-383": "L2-041", "L2-385": "L1-271", "L2-386": "L1-131", "L2-388": "L2-017", "L2-389": "L1-163", "L2-390": "L1-357", "L2-395": "L2-075", "L2-399": "L2-023", "L2-400": "L2-001", "L3-001": "L2-194", "L3-002": "L2-102", "L3-004": "L2-350", "L3-005": "L2-285", "L3-008": "L2-028", "L3-011": "L2-103", "L3-013": "L2-105", "L3-019": "L2-233", "L3-022": "L2-024", "L3-023": "L2-164", "L3-024": "L2-110", "L3-025": "L2-007", "L3-026": "L2-031", "L3-029": "L2-088", "L3-030": "L2-030", "L3-033": "L2-237", "L3-035": "L2-112", "L3-037": "L2-165", "L3-038": "L2-292", "L3-040": "L2-113", "L3-043": "L2-090", "L3-047": "L2-166", "L3-048": "L2-114", "L3-054": "L2-034", "L3-055": "L2-239", "L3-056": "L2-115", "L3-058": "L2-240", "L3-059": "L2-116", "L3-060": "L2-060", "L3-063": "L2-117", "L3-067": "L2-011", "L3-068": "L2-062", "L3-071": "L2-063", "L3-073": "L2-012", "L3-075": "L2-120", "L3-081": "L2-092", "L3-082": "L2-121", "L3-083": "L2-122", "L3-086": "L2-037", "L3-089": "L2-125", "L3-090": "L2-126", "L3-091": "L2-172", "L3-093": "L2-038", "L3-094": "L2-302", "L3-095": "L2-127", "L3-096": "L2-128", "L3-098": "L2-065", "L3-102": "L2-175", "L3-104": "L2-066", "L3-105": "L2-252", "L3-106": "L2-130", "L3-109": "L2-132", "L3-113": "L2-201", "L3-116": "L2-202", "L3-117": "L2-203", "L3-120": "L2-016", "L3-121": "L2-067", "L3-122": "L2-042", "L3-124": "L2-204", "L3-125": "L2-205", "L3-127": "L1-163", "L3-128": "L2-206", "L3-129": "L2-318", "L3-130": "L2-208", "L3-134": "L2-266", "L3-135": "L2-070", "L3-136": "L2-319", "L3-138": "L2-211", "L3-141": "L2-098", "L3-142": "L2-071", "L3-143": "L2-146", "L3-144": "L2-148", "L3-147": "L2-215", "L3-149": "L2-182", "L3-150": "L2-216", "L3-151": "L2-272", "L3-153": "L2-152", "L3-155": "L2-078", "L3-156": "L2-331", "L3-158": "L2-335", "L3-160": "L2-097", "L3-162": "L2-224", "L3-166": "L2-160", "L3-178": "L2-228", "L3-183": "L2-193", "L3-187": "L2-195", "L3-189": "L3-014", "L3-190": "L2-107", "L3-191": "L2-196", "L3-195": "L2-056", "L3-196": "L2-290", "L3-198": "L2-291", "L3-199": "L2-236", "L3-200": "L2-197", "L3-201": "L3-036", "L3-202": "L2-238", "L3-203": "L2-292", "L3-204": "L2-033", "L3-205": "L2-115", "L3-206": "L2-240", "L3-208": "L2-116", "L3-209": "L2-366", "L3-211": "L3-062", "L3-212": "L2-369", "L3-213": "L2-243", "L3-214": "L2-118", "L3-215": "L3-064", "L3-218": "L2-062", "L3-222": "L2-063", "L3-223": "L3-072", "L3-225": "L2-170", "L3-227": "L2-012", "L3-228": "L3-074", "L3-229": "L2-120", "L3-231": "L3-077", "L3-232": "L3-079", "L3-233": "L3-080", "L3-234": "L2-092", "L3-235": "L2-121", "L3-236": "L2-122", "L3-237": "L3-084", "L3-238": "L3-085", "L3-239": "L3-087", "L3-240": "L3-088", "L3-241": "L2-038", "L3-242": "L2-302", "L3-243": "L2-377", "L3-244": "L2-127", "L3-245": "L2-378", "L3-246": "L2-379", "L3-249": "L2-065", "L3-250": "L3-099", "L3-251": "L2-303", "L3-252": "L2-305", "L3-253": "L3-103", "L3-254": "L2-129", "L3-255": "L2-040", "L3-256": "L2-306", "L3-257": "L2-252", "L3-258": "L2-130", "L3-259": "L2-253", "L3-260": "L3-107", "L3-261": "L2-307", "L3-262": "L2-095", "L3-263": "L2-131", "L3-264": "L3-108", "L3-265": "L2-132", "L3-266": "L3-110", "L3-267": "L3-112", "L3-268": "L2-133", "L3-269": "L2-041", "L3-270": "L2-309", "L3-272": "L2-134", "L3-273": "L2-257", "L3-274": "L2-201", "L3-275": "L3-114", "L3-276": "L3-115", "L3-277": "L2-310", "L3-278": "L2-176", "L3-279": "L2-202", "L3-285": "L2-288", "L3-287": "L3-018", "L3-297": "L2-121", "L3-299": "L3-248", "L3-300": "L3-119", "L3-301": "L2-258", "L3-304": "L2-067", "L3-305": "L2-042", "L3-306": "L3-123", "L3-307": "L2-068", "L3-308": "L2-139", "L3-309": "L2-315", "L3-310": "L2-178", "L3-311": "L2-261", "L3-312": "L3-126", "L3-313": "L1-163", "L3-314": "L2-142", "L3-315": "L2-206", "L3-316": "L2-143", "L3-317": "L2-318", "L3-318": "L2-208", "L3-319": "L3-131", "L3-320": "L3-132", "L3-321": "L3-133", "L3-322": "L2-266", "L3-323": "L2-267", "L3-324": "L2-319", "L3-326": "L2-320", "L3-327": "L2-211", "L3-328": "L3-139", "L3-329": "L3-140", "L3-330": "L2-145", "L3-331": "L2-098", "L3-332": "L2-071", "L3-333": "L2-146", "L3-334": "L2-148", "L3-335": "L3-145", "L3-336": "L3-146", "L3-337": "L2-215", "L3-338": "L3-148", "L3-339": "L2-182", "L3-340": "L2-271", "L3-341": "L2-216", "L3-342": "L2-272", "L3-343": "L3-152", "L3-344": "L2-152", "L3-345": "L3-154", "L3-346": "L2-217", "L3-347": "L2-078", "L3-348": "L2-331", "L3-349": "L3-157", "L3-350": "L2-335", "L3-351": "L3-159", "L3-352": "L2-223", "L3-353": "L3-161", "L3-354": "L2-337", "L3-355": "L2-224", "L3-356": "L3-163", "L3-357": "L3-164", "L3-358": "L3-165", "L3-359": "L2-160", "L3-360": "L3-167", "L3-361": "L3-168", "L3-362": "L3-170", "L3-363": "L3-171", "L3-364": "L3-172", "L3-365": "L3-173", "L3-366": "L3-174", "L3-367": "L3-175", "L3-368": "L3-176", "L3-369": "L2-283", "L3-370": "L2-228", "L3-374": "L3-182", "L3-380": "L2-195", "L3-382": "L2-108", "L3-390": "L2-296", "L3-391": "L3-216", "L3-392": "L3-220", "L3-396": "L2-303", "L3-397": "L2-040", "L3-398": "L2-066", "L4-002": "L3-186", "L4-003": "L2-102", "L4-005": "L2-350", "L4-008": "L3-006", "L4-009": "L3-007", "L4-011": "L2-352", "L4-012": "L3-014", "L4-013": "L2-107", "L4-015": "L3-015", "L4-016": "L2-055", "L4-022": "L2-164", "L4-024": "L2-111", "L4-025": "L2-088", "L4-027": "L2-197", "L4-040": "L3-062", "L4-041": "L2-117", "L4-042": "L3-294", "L4-045": "L3-069", "L4-053": "L3-078", "L4-055": "L2-121", "L4-060": "L2-125", "L4-061": "L2-172", "L4-063": "L3-298", "L4-065": "L2-173", "L4-072": "L3-118", "L4-073": "L2-016", "L4-078": "L2-178", "L4-080": "L2-261", "L4-081": "L2-205", "L4-085": "L2-318", "L4-088": "L2-180", "L4-098": "L2-220", "L4-109": "L2-190", "L4-111": "L3-167", "L4-112": "L2-162", "L4-114": "L2-227", "L4-120": "L3-016", "L4-122": "L3-289", "L4-137": "L3-293", "L4-143": "L3-221", "L4-213": "L3-271", "L4-304": "L4-068", "L4-307": "L4-070", "L5-007": "L4-117", "L5-014": "L4-337", "L5-016": "L4-339", "L5-029": "L4-284", "L5-038": "L4-288", "L5-039": "L4-289", "L5-048": "L4-291", "L5-052": "L4-230", "L5-056": "L4-031", "L5-059": "L4-207", "L5-065": "L4-136", "L5-066": "L4-208", "L5-092": "L4-209", "L5-095": "L4-210", "L5-101": "L3-069", "L5-116": "L4-154", "L5-147": "L4-069", "L5-149": "L4-070", "L5-152": "L3-110", "L5-156": "L3-271", "L5-158": "L4-170", "L5-160": "L4-374", "L5-162": "L4-376", "L5-171": "L4-256", "L5-175": "L4-180", "L5-179": "L4-182", "L5-183": "L4-183", "L5-184": "L4-087", "L5-185": "L4-184", "L5-186": "L4-187", "L5-188": "L4-188", "L5-190": "L4-190", "L5-193": "L4-193", "L5-195": "L4-195", "L5-197": "L4-093", "L5-198": "L4-094", "L5-199": "L4-095", "L5-213": "L4-204", "L5-217": "L4-199", "L5-226": "L4-220", "L5-227": "L4-272", "L5-231": "L4-108", "L5-235": "L4-276", "L5-252": "L4-115", "L5-255": "L4-330", "L5-258": "L3-378", "L5-259": "L3-379", "L5-261": "L2-195", "L5-262": "L3-381", "L5-265": "L2-108", "L5-266": "L3-383", "L5-269": "L3-384", "L5-271": "L3-385", "L5-272": "L3-386", "L5-273": "L3-387", "L5-274": "L3-388", "L5-275": "L3-389", "L5-277": "L2-296", "L5-278": "L3-216", "L5-279": "L3-220", "L5-280": "L4-050", "L5-282": "L3-393", "L5-283": "L3-394", "L5-287": "L3-395", "L5-290": "L2-040", "L5-291": "L2-066", "L5-292": "L3-399", "L5-293": "L3-400", "L5-294": "L4-170", "L5-307": "L4-089", "L5-322": "L4-110", "L5-328": "L4-331", "L5-329": "L5-002", "L5-335": "L4-006", "L5-352": "L4-291", "L5-357": "L4-207", "L5-360": "L4-136", "L5-365": "L4-038", "L5-380": "L4-046", "L5-384": "L4-298"};
