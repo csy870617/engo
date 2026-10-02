@@ -136,6 +136,29 @@ function stopAudio() {
   currentAudioSessionId++; 
 }
 
+// 가로 슬라이드(뉴스·유튜브): PC는 터치로 밀 수 없고 스크롤바도 숨겨져 있어 ‹ › 버튼으로 넘긴다
+function setupHScroll() {
+  document.querySelectorAll('.hscroll').forEach(box => {
+    const area = box.querySelector('.news-scroll-area, .youtube-scroll-area');
+    const prev = box.querySelector('.hscroll-btn.prev');
+    const next = box.querySelector('.hscroll-btn.next');
+    if (!area || !prev || !next) return;
+    const update = () => {
+      const max = area.scrollWidth - area.clientWidth;
+      prev.classList.toggle('is-hidden', area.scrollLeft <= 4);
+      next.classList.toggle('is-hidden', area.scrollLeft >= max - 4);
+    };
+    const page = (dir) => area.scrollBy({ left: dir * Math.max(200, area.clientWidth * 0.8), behavior: 'smooth' });
+    prev.addEventListener('click', () => page(-1));
+    next.addEventListener('click', () => page(1));
+    area.addEventListener('scroll', update, { passive: true });
+    window.addEventListener('resize', update);
+    // 뉴스 카드는 나중에 채워지므로 내용이 바뀔 때마다 다시 계산
+    if (typeof MutationObserver !== 'undefined') new MutationObserver(update).observe(area, { childList: true });
+    update();
+  });
+}
+
 // ==========================================
 // 3. 설정(Settings) 및 모달 UI
 // ==========================================
@@ -202,6 +225,7 @@ document.addEventListener('DOMContentLoaded', () => {
   if(typeof loadVoices === 'function') loadVoices();
   if(typeof initNeuralVoice === 'function') initNeuralVoice();
   if(typeof initNewsUpdater === 'function') initNewsUpdater();
+  setupHScroll();
   
   const initialPage = location.hash.replace('#', '') || 'home'; 
   goTo(initialPage, true);
