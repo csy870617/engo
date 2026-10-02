@@ -42,7 +42,7 @@ const patternData = [
     title: "I'm about to...",
     desc: "막 ~하려던 참일 때 쓰는 표현.",
     examples: [
-      { en: "I'm about to leave.", kr: "이제 막 나가려던 참이었어요." },
+      { en: "I'm about to leave.", kr: "이제 막 나가려던 참이에요." },
       { en: "I'm about to start a meeting.", kr: "지금 회의 시작하려던 참이에요." }
     ]
   },
@@ -196,7 +196,7 @@ const patternData = [
     desc: "현재 계획 중인 일을 말할 때.",
     examples: [
       { en: "I'm planning to move next year.", kr: "내년에 이사할 계획이에요." },
-      { en: "I'm planning to take a break.", kr: "잠깐 쉬려고 계획 중이에요." }
+      { en: "I'm planning to take a break.", kr: "좀 쉴 계획이에요." }
     ]
   },
   {
@@ -393,7 +393,7 @@ const patternData = [
     title: "I didn't mean to...",
     desc: "의도한 것이 아니었다고 사과할 때.",
     examples: [
-      { en: "I didn't mean to hurt you.", kr: "널 다치게 하려던 건 아니었어." },
+      { en: "I didn't mean to hurt you.", kr: "너한테 상처 주려던 건 아니었어." },
       { en: "I didn't mean to be rude.", kr: "무례하게 굴려고 한 건 아니었어요." }
     ]
   },

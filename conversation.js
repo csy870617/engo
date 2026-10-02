@@ -39,17 +39,17 @@ const conversationData = [
       { speaker: "A", en: "Nice. I'm going camping.", kr: "좋네. 난 캠핑 갈 거야." },
       { speaker: "B", en: "Hope the weather is good.", kr: "날씨 좋았으면 좋겠다." },
       { speaker: "A", en: "Thanks. You should come next time.", kr: "고마워. 다음엔 너도 같이 가자." },
-      { speaker: "B", en: "I might take you up on that.", kr: "그럴까 봐." }
+      { speaker: "B", en: "I might take you up on that.", kr: "진짜 따라갈지도 몰라." }
     ]
   },
   {
     id: "conv-004",
     title: "날씨 (Weather)",
     lines: [
-      { speaker: "A", en: "It's freezing out there today.", kr: "오늘 밖이 꽁꽁 얼었어." },
+      { speaker: "A", en: "It's freezing out there today.", kr: "오늘 밖에 진짜 춥다." },
       { speaker: "B", en: "I know. The wind is crazy.", kr: "알아. 바람이 장난 아니야." },
       { speaker: "A", en: "I should've worn a scarf.", kr: "목도리 하고 올 걸 그랬어." },
-      { speaker: "B", en: "You definitely need to bundle up.", kr: "확실히 껴입어야 해." },
+      { speaker: "B", en: "You definitely need to bundle up.", kr: "단단히 껴입어야겠다." },
       { speaker: "A", en: "Let's get something warm to drink.", kr: "따뜻한 것 좀 마시자." },
       { speaker: "B", en: "Good idea. Let's go inside.", kr: "좋은 생각이야. 들어가자." }
     ]
@@ -103,7 +103,7 @@ const conversationData = [
       { speaker: "A", en: "Is it expensive?", kr: "비싸?" },
       { speaker: "B", en: "No, it's actually quite cheap.", kr: "아니, 꽤 저렴한 편이야." },
       { speaker: "A", en: "Perfect. Do we need to book?", kr: "딱이네. 예약해야 해?" },
-      { speaker: "B", en: "It's better to be safe.", kr: "하는 게 안전하지." }
+      { speaker: "B", en: "I would, just to be safe.", kr: "혹시 모르니까 하는 게 좋을 거야." }
     ]
   },
   {
@@ -114,7 +114,7 @@ const conversationData = [
       { speaker: "B", en: "No way. Let's split it.", kr: "안 돼. 나눠 내자." },
       { speaker: "A", en: "I insist. You paid last time.", kr: "낼게. 저번에 네가 냈잖아." },
       { speaker: "B", en: "Okay, if you insist.", kr: "정 그렇다면 알겠어." },
-      { speaker: "A", en: "Next one is on you.", kr: "다음 건 네가 사." },
+      { speaker: "A", en: "The next one's on you.", kr: "다음 건 네가 사." },
       { speaker: "B", en: "Deal. Let's get dessert.", kr: "콜. 디저트 먹으러 가자." }
     ]
   },
@@ -122,7 +122,7 @@ const conversationData = [
     id: "conv-010",
     title: "배달 음식 (Delivery)",
     lines: [
-      { speaker: "A", en: "Too tired to cook. Let's order in.", kr: "요리하기 귀찮아. 시켜 먹자." },
+      { speaker: "A", en: "Too tired to cook. Let's order in.", kr: "너무 피곤해서 요리 못 하겠어. 시켜 먹자." },
       { speaker: "B", en: "I'm down. Pizza or chicken?", kr: "좋아. 피자? 치킨?" },
       { speaker: "A", en: "I'm craving fried chicken.", kr: "프라이드치킨 땡겨." },
       { speaker: "B", en: "Sounds delicious. I'll order it.", kr: "맛있겠다. 내가 주문할게." },
@@ -153,9 +153,9 @@ const conversationData = [
       { speaker: "A", en: "Hi, checking in. Name's Lee.", kr: "안녕하세요, 체크인이요. 이(Lee)입니다." },
       { speaker: "B", en: "Okay. Can I see your ID?", kr: "네. 신분증 좀 볼까요?" },
       { speaker: "A", en: "Here. Is breakfast included?", kr: "여기요. 조식 포함인가요?" },
-      { speaker: "B", en: "Yes. Would you like a high floor?", kr: "네. 높은 층 원하세요?" },
-      { speaker: "A", en: "Ocean view, if possible.", kr: "가능하면 바다 전망으로요." },
-      { speaker: "B", en: "Done. Here is your key.", kr: "해드렸습니다. 키 여기 있어요." }
+      { speaker: "B", en: "Yes, it is. Any room preference?", kr: "네, 포함입니다. 원하시는 객실 있으세요?" },
+      { speaker: "A", en: "An ocean view, if possible.", kr: "가능하면 바다 전망으로요." },
+      { speaker: "B", en: "No problem. Here's your key.", kr: "알겠습니다. 키 여기 있습니다." }
     ]
   },
   {
@@ -164,7 +164,7 @@ const conversationData = [
     lines: [
       { speaker: "A", en: "Could you take a picture of us?", kr: "저희 사진 좀 찍어주실래요?" },
       { speaker: "B", en: "Sure. Just press this?", kr: "그럼요. 이거 누르면 되나요?" },
-      { speaker: "A", en: "Yes. Please get the tower in.", kr: "네. 타워 나오게 해주세요." },
+      { speaker: "A", en: "Yes. Please get the tower in the shot.", kr: "네. 타워 나오게 해주세요." },
       { speaker: "B", en: "Okay, say cheese! One more.", kr: "자, 치즈! 한 장 더요." },
       { speaker: "A", en: "Perfect. Thanks a lot.", kr: "완벽해요. 정말 감사합니다." },
       { speaker: "B", en: "You're welcome. Enjoy!", kr: "천만에요. 즐거운 여행 되세요!" }
@@ -271,7 +271,7 @@ const conversationData = [
       { speaker: "A", en: "Thanks. Large is too big.", kr: "감사해요. 라지는 너무 커서요." },
       { speaker: "B", en: "We have one left.", kr: "하나 남았네요." },
       { speaker: "A", en: "Can I try it on?", kr: "입어봐도 될까요?" },
-      { speaker: "B", en: "Sure. Fitting room is over there.", kr: "네. 탈의실 저쪽입니다." }
+      { speaker: "B", en: "Sure. The fitting room is over there.", kr: "네. 탈의실 저쪽입니다." }
     ]
   },
   {
@@ -283,7 +283,7 @@ const conversationData = [
       { speaker: "A", en: "No, I just changed my mind.", kr: "아뇨, 그냥 마음이 바뀌어서요." },
       { speaker: "B", en: "Do you have the receipt?", kr: "영수증 있으세요?" },
       { speaker: "A", en: "Yes, here it is.", kr: "네, 여기요." },
-      { speaker: "B", en: "Okay. I'll refund your card.", kr: "네. 카드 취소해 드릴게요." }
+      { speaker: "B", en: "Okay. I'll refund it to your card.", kr: "네. 카드 취소해 드릴게요." }
     ]
   },
   {
@@ -346,7 +346,7 @@ const conversationData = [
       { speaker: "B", en: "How long has it been?", kr: "얼마나 됐나요?" },
       { speaker: "A", en: "Since yesterday. It hurts.", kr: "어제부터요. 아파요." },
       { speaker: "B", en: "Take this every 4 hours.", kr: "이걸 4시간마다 드세요." },
-      { speaker: "A", en: "Will it make me sleepy?", kr: "졸린가요?" },
+      { speaker: "A", en: "Will it make me sleepy?", kr: "먹으면 졸린가요?" },
       { speaker: "B", en: "No, it's non-drowsy.", kr: "아뇨, 졸음 성분 없습니다." }
     ]
   },
@@ -354,7 +354,7 @@ const conversationData = [
     id: "conv-028",
     title: "운동 (Gym)",
     lines: [
-      { speaker: "A", en: "Can you spot me?", kr: "좀 봐줄 수 있어?" },
+      { speaker: "A", en: "Can you spot me?", kr: "보조 좀 해줄 수 있어?" },
       { speaker: "B", en: "Sure. How many reps?", kr: "그럼. 몇 개 하게?" },
       { speaker: "A", en: "Aiming for 10.", kr: "10개 목표야." },
       { speaker: "B", en: "I got you.", kr: "내가 잡아줄게." },
@@ -383,7 +383,7 @@ const conversationData = [
       { speaker: "A", en: "Yeah, my jeans are tight.", kr: "응, 청바지가 껴서." },
       { speaker: "B", en: "You look fine to me.", kr: "내가 보기엔 괜찮은데." },
       { speaker: "A", en: "I want to be healthier.", kr: "더 건강해지고 싶어서." },
-      { speaker: "B", en: "Good for you.", kr: "잘생각했네." }
+      { speaker: "B", en: "Good for you.", kr: "잘 생각했네." }
     ]
   },
 
@@ -409,7 +409,7 @@ const conversationData = [
       { speaker: "A", en: "I messed up my presentation.", kr: "프레젠테이션 망쳤어." },
       { speaker: "B", en: "It happens. Don't worry.", kr: "그럴 수 있어. 걱정 마." },
       { speaker: "A", en: "Everyone was staring.", kr: "다들 쳐다봤단 말이야." },
-      { speaker: "B", en: "You're overthinking it.", kr: "네가 너무 생각하는 거야." },
+      { speaker: "B", en: "You're overthinking it.", kr: "너무 깊게 생각하는 거야." },
       { speaker: "A", en: "Thanks. I needed that.", kr: "고마워. 위로가 되네." },
       { speaker: "B", en: "Cheer up! Let's eat.", kr: "기운 내! 밥 먹자." }
     ]
@@ -421,7 +421,7 @@ const conversationData = [
       { speaker: "A", en: "I won the lottery!", kr: "나 복권 당첨됐어!" },
       { speaker: "B", en: "No way! Really?", kr: "말도 안 돼! 진짜?" },
       { speaker: "A", en: "Look at the ticket.", kr: "이 티켓 봐봐." },
-      { speaker: "B", en: "Omg. That's amazing.", kr: "맙소사. 대박이다." },
+      { speaker: "B", en: "Oh my god. That's amazing.", kr: "맙소사. 대박이다." },
       { speaker: "A", en: "I can't believe it.", kr: "믿기지가 않아." },
       { speaker: "B", en: "Dinner's on you!", kr: "저녁은 네가 쏴!" }
     ]
@@ -434,7 +434,7 @@ const conversationData = [
       { speaker: "B", en: "Can't decide?", kr: "결정 못 했어?" },
       { speaker: "A", en: "This one has a better camera.", kr: "이게 카메라는 더 좋아." },
       { speaker: "B", en: "But the other one is cheaper.", kr: "근데 저게 더 싸잖아." },
-      { speaker: "A", en: "True. I'll save money.", kr: "맞아. 돈 아껴야지." },
+      { speaker: "A", en: "True. I'll go with the cheaper one.", kr: "맞아. 싼 걸로 할래." },
       { speaker: "B", en: "Good choice.", kr: "좋은 선택이야." }
     ]
   },
@@ -463,7 +463,7 @@ const conversationData = [
       { speaker: "A", en: "I restarted it.", kr: "재부팅 해봤는데." },
       { speaker: "B", en: "Still nothing?", kr: "아직도 안 돼?" },
       { speaker: "A", en: "Nope. I'll use my data.", kr: "어. 데이터 써야겠다." },
-      { speaker: "B", en: "Can I hotspot?", kr: "핫스팟 좀 써도 돼?" }
+      { speaker: "B", en: "Can I use your hotspot?", kr: "나도 네 핫스팟 좀 써도 돼?" }
     ]
   },
   {
@@ -497,7 +497,7 @@ const conversationData = [
       { speaker: "A", en: "Did you see my post?", kr: "내 게시물 봤어?" },
       { speaker: "B", en: "No, I deleted Instagram.", kr: "아니, 나 인스타 지웠어." },
       { speaker: "A", en: "Really? Why?", kr: "정말? 왜?" },
-      { speaker: "B", en: "Wasted too much time.", kr: "시간 너무 뺏겨서." },
+      { speaker: "B", en: "It was wasting too much of my time.", kr: "시간 너무 뺏겨서." },
       { speaker: "A", en: "I should do that too.", kr: "나도 그래야 하는데." },
       { speaker: "B", en: "Try it. It's refreshing.", kr: "해봐. 기분 좋아." }
     ]
@@ -546,7 +546,7 @@ const conversationData = [
     id: "conv-043",
     title: "소음 (Noise)",
     lines: [
-      { speaker: "A", en: "Upstairs is too loud.", kr: "윗집 너무 시끄러워." },
+      { speaker: "A", en: "The people upstairs are too loud.", kr: "윗집 너무 시끄러워." },
       { speaker: "B", en: "It's midnight.", kr: "자정인데 말이야." },
       { speaker: "A", en: "I'm gonna talk to them.", kr: "가서 말해야겠어." },
       { speaker: "B", en: "Don't fight.", kr: "싸우진 마." },
@@ -558,9 +558,9 @@ const conversationData = [
     id: "conv-044",
     title: "서비스 (Service)",
     lines: [
-      { speaker: "A", en: "Food is taking forever.", kr: "음식 엄청 안 나오네." },
+      { speaker: "A", en: "The food is taking forever.", kr: "음식 엄청 안 나오네." },
       { speaker: "B", en: "I know. 40 minutes.", kr: "그러게. 40분 됐어." },
-      { speaker: "A", en: "Waiter is ignoring us.", kr: "웨이터가 우릴 무시해." },
+      { speaker: "A", en: "The waiter is ignoring us.", kr: "웨이터가 우릴 무시해." },
       { speaker: "B", en: "Let's just leave.", kr: "그냥 가자." },
       { speaker: "A", en: "I lost my appetite.", kr: "입맛 떨어졌어." },
       { speaker: "B", en: "Me too.", kr: "나도." }
@@ -588,9 +588,9 @@ const conversationData = [
     lines: [
       { speaker: "A", en: "Tried Bibimbap?", kr: "비빔밥 먹어봤어?" },
       { speaker: "B", en: "No, is it good?", kr: "아니, 맛있어?" },
-      { speaker: "A", en: "It's delicious. Rice and veggies.", kr: "맛있지. 밥이랑 야채야." },
+      { speaker: "A", en: "It's delicious. It's rice mixed with veggies.", kr: "맛있어. 밥에 야채를 넣고 비벼 먹는 거야." },
       { speaker: "B", en: "Is it spicy?", kr: "매워?" },
-      { speaker: "A", en: "You can adjust it.", kr: "조절할 수 있어." },
+      { speaker: "A", en: "You can adjust how spicy it is.", kr: "매운 정도는 조절할 수 있어." },
       { speaker: "B", en: "I'll try it.", kr: "먹어볼게." }
     ]
   },
@@ -612,8 +612,8 @@ const conversationData = [
     lines: [
       { speaker: "A", en: "How was the movie?", kr: "영화 어땠어?" },
       { speaker: "B", en: "It was boring.", kr: "지루했어." },
-      { speaker: "A", en: "Really? Trailer looked good.", kr: "진짜? 예고편은 좋던데." },
-      { speaker: "B", en: "Plot was bad.", kr: "줄거리가 별로야." },
+      { speaker: "A", en: "Really? The trailer looked good.", kr: "진짜? 예고편은 좋던데." },
+      { speaker: "B", en: "The plot was bad.", kr: "줄거리가 별로야." },
       { speaker: "A", en: "I'll skip it then.", kr: "그럼 안 봐야겠다." },
       { speaker: "B", en: "Save your money.", kr: "돈 아껴." }
     ]
