@@ -523,13 +523,6 @@ main {
 }
 
 
-/* 설정 팝업 - 앱 다운로드 섹션 */
-.settings-install-area {
-  padding-top: 25px;
-  margin-top: 10px;
-  border-top: 1px solid rgba(255, 255, 255, 0.1);
-}
-
 .install-header {
   display: flex;
   justify-content: space-between;
@@ -902,3 +895,40 @@ main {
   box-shadow: 0 8px 20px rgba(0,0,0,0.4);
 }
 @media print { .neural-loading { display: none !important; } }
+
+/* 목록 전체 듣기 */
+.list-play-bar { margin-bottom: 12px; }
+.list-play-bar .btn-small.active { background: var(--primary); }
+.list-play-count { color: var(--text-sub); font-size: 0.8rem; }
+.list-item.playing {
+  border-color: var(--primary); background: rgba(139, 92, 246, 0.12);
+  box-shadow: 0 0 0 1px rgba(139, 92, 246, 0.4);
+}
+/* 재생 중 하단 플레이어 (유리 카드 톤) */
+.list-player {
+  position: fixed; left: 50%; transform: translateX(-50%);
+  bottom: calc(16px + env(safe-area-inset-bottom)); z-index: 1500;
+  width: calc(100% - 32px); max-width: 560px;
+  display: flex; align-items: center; gap: 12px; padding: 10px 10px 10px 14px;
+  background: rgba(30, 41, 59, 0.95); border: 1px solid rgba(139, 92, 246, 0.35); border-radius: 16px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.45);
+  backdrop-filter: var(--glass-blur); -webkit-backdrop-filter: var(--glass-blur);
+}
+.list-player-icon {
+  flex: 0 0 auto; width: 36px; height: 36px; border-radius: 10px; font-size: 1.05rem;
+  display: flex; align-items: center; justify-content: center;
+  background: linear-gradient(135deg, rgba(139, 92, 246, 0.35), rgba(99, 102, 241, 0.25));
+}
+.list-player-info { flex: 1 1 auto; min-width: 0; display: flex; flex-direction: column; gap: 2px; }
+.list-player-pos { color: #a78bfa; font-size: 0.75rem; font-weight: 700; }
+.list-player-title { color: #fff; font-size: 0.9rem; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.list-player-btn {
+  flex: 0 0 auto; width: 40px; height: 40px; border-radius: 12px; border: none; cursor: pointer;
+  background: rgba(255, 255, 255, 0.08); color: #fff; font-size: 1rem; transition: 0.2s;
+}
+.list-player-btn:hover { background: rgba(255, 255, 255, 0.15); }
+.list-player-btn.stop { background: linear-gradient(135deg, #8b5cf6 0%, #6366f1 100%); }
+/* 플레이어가 마지막 항목을 가리지 않도록 + 'AI 음성 준비 중' 안내는 플레이어 위로 */
+body.list-playing main { padding-bottom: 90px; }
+body.list-playing .neural-loading { bottom: calc(86px + env(safe-area-inset-bottom)); }
+@media print { .list-player, .list-play-bar { display: none !important; } }

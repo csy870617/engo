@@ -131,6 +131,7 @@ function goTo(page, isReplace = false) {
 function stopAudio() {
   if ("speechSynthesis" in window) window.speechSynthesis.cancel();
   if (typeof stopNeuralSpeech === 'function') stopNeuralSpeech();
+  if (typeof endListPlayback === 'function') endListPlayback();
   isConversationPlaying = false;
   currentAudioSessionId++; 
 }
