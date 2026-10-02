@@ -250,6 +250,10 @@
         <button id="pattern-studying-btn" class="chip-btn" onclick="togglePatternStudying()">암기 미완료만 보기</button>
         <input id="pattern-search" type="text" placeholder="검색..." class="search-input" oninput="renderPatternList()" />
       </div>
+      <div class="control-bar list-play-bar">
+        <button class="btn-small" data-list-play="pattern" onclick="toggleListPlay('pattern')">🔊 목록 전체 듣기</button>
+        <span id="pattern-list-count" class="list-play-count"></span>
+      </div>
       <div id="pattern-list" class="list-view"></div>
     </section>
 
@@ -292,6 +296,10 @@
         <button id="word-studying-btn" class="chip-btn outline" onclick="toggleWordStudying()">미암기만</button>
       </div>
       <input id="word-search" type="text" placeholder="단어 검색..." class="search-input mt-2" oninput="renderWordList()" />
+      <div class="control-bar list-play-bar">
+        <button class="btn-small" data-list-play="word" onclick="toggleListPlay('word')">🔊 목록 전체 듣기</button>
+        <span id="word-list-count" class="list-play-count"></span>
+      </div>
       <div id="word-list" class="list-view"></div>
     </section>
 
@@ -334,6 +342,10 @@
         <button id="idiom-studying-btn" class="chip-btn outline" onclick="toggleIdiomStudying()">미암기만</button>
       </div>
       <input id="idiom-search" type="text" placeholder="숙어 검색..." class="search-input mt-2" oninput="renderIdiomList()" />
+      <div class="control-bar list-play-bar">
+        <button class="btn-small" data-list-play="idiom" onclick="toggleListPlay('idiom')">🔊 목록 전체 듣기</button>
+        <span id="idiom-list-count" class="list-play-count"></span>
+      </div>
       <div id="idiom-list" class="list-view"></div>
     </section>
 
@@ -363,6 +375,10 @@
     <section id="page-conversations" class="hidden">
       <div class="nav-header"><span class="back-btn" onclick="goTo('home')">❮ 뒤로</span><h2>실전 대화</h2></div>
       <input id="conv-search" type="text" placeholder="상황 검색 (예: 식당, 공항)..." class="search-input mb-4" oninput="renderConversationList()" />
+      <div class="control-bar list-play-bar">
+        <button class="btn-small" data-list-play="conv" onclick="toggleListPlay('conv')">🔊 목록 전체 듣기</button>
+        <span id="conv-list-count" class="list-play-count"></span>
+      </div>
       <div id="conv-list" class="list-view"></div>
     </section>
 
@@ -543,6 +559,17 @@
       </div>
   </div>
   
+  <!-- 목록 전체 듣기 - 재생 중 하단 플레이어 -->
+  <div id="list-player" class="list-player hidden" role="region" aria-label="목록 전체 듣기">
+    <div class="list-player-icon">🔊</div>
+    <div class="list-player-info">
+      <span id="list-player-pos" class="list-player-pos"></span>
+      <span id="list-player-title" class="list-player-title"></span>
+    </div>
+    <button type="button" class="list-player-btn" onclick="skipListItem()" aria-label="다음 항목">⏭</button>
+    <button type="button" class="list-player-btn stop" onclick="stopAudio()" aria-label="정지">■</button>
+  </div>
+
   <div id="neural-loading" class="neural-loading hidden">🎙 자연스러운 음성 준비 중…</div>
 
   <script src="pattern.js"></script>

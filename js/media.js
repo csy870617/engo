@@ -345,6 +345,13 @@ async function speakNeural(text, speaker, styleOverride) {
   }
 }
 
+/** 목록 전체 듣기의 '다음' 버튼: 지금 읽는 문장만 멈춘다 (미리 만든 다음 문장들은 그대로 사용) */
+function skipCurrentSpeech() {
+  if ("speechSynthesis" in window) window.speechSynthesis.cancel();
+  neuralSpeakToken++;          // 아직 만드는 중인 문장이면 다 만들어져도 재생하지 않음
+  if (typeof NeuralTTS !== 'undefined') NeuralTTS.stopAudio();
+}
+
 /** stopAudio()에서 호출: 재생 중인 음성과 대기 중인 생성 요청을 모두 멈춘다 */
 function stopNeuralSpeech() {
   neuralGen++;

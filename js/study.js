@@ -32,6 +32,7 @@ function renderPatternList() {
   filtered.forEach((p) => {
     const div = document.createElement("div");
     div.className = "list-item";
+    div.dataset.id = p.id;
     if (memorizedPatterns.has(p.id)) div.classList.add("memorized");
     div.onclick = () => openPattern(p.id);
     div.innerHTML = `<div><div class="list-item-title">${p.title}</div><div class="list-item-sub">${p.desc}</div></div>`;
@@ -49,6 +50,7 @@ function renderPatternList() {
     container.appendChild(div);
   });
   if (filtered.length === 0) container.innerHTML = '<div class="list-item"><div>검색 결과가 없습니다.</div></div>';
+  afterListRender('pattern');
   updatePatternProgress();
 }
 function updatePatternProgress() {
@@ -142,6 +144,7 @@ function renderWordList() {
   filtered.forEach(w => {
     const div = document.createElement("div");
     div.className = "list-item";
+    div.dataset.id = w.id;
     if (memorizedWords.has(w.id)) div.classList.add("memorized");
     div.onclick = () => openWord(w.id);
     div.innerHTML = `<div><div class="list-item-title">${w.word} - ${w.meaning}</div><div class="list-item-sub">${w.examples?.[0]?.kr || ""}</div></div>`;
@@ -159,6 +162,7 @@ function renderWordList() {
     container.appendChild(div);
   });
   if (filtered.length === 0) container.innerHTML = '<div class="list-item"><div>검색 결과가 없습니다.</div></div>';
+  afterListRender('word');
   updateWordProgress();
 }
 function updateWordProgress() {
@@ -248,6 +252,7 @@ function renderIdiomList() {
   filtered.forEach(i => {
     const div = document.createElement("div");
     div.className = "list-item";
+    div.dataset.id = i.id;
     if (memorizedIdioms.has(i.id)) div.classList.add("memorized");
     div.onclick = () => openIdiom(i.id);
     div.innerHTML = `<div><div class="list-item-title">${i.idiom} - ${i.meaning}</div><div class="list-item-sub">${i.desc}</div></div>`;
@@ -265,6 +270,7 @@ function renderIdiomList() {
     container.appendChild(div);
   });
   if (filtered.length === 0) container.innerHTML = '<div class="list-item"><div>검색 결과가 없습니다.</div></div>';
+  afterListRender('idiom');
   updateIdiomProgress();
 }
 function updateIdiomProgress() {
@@ -343,11 +349,13 @@ function renderConversationList() {
   filtered.forEach(c => {
     const div = document.createElement("div");
     div.className = "list-item";
+    div.dataset.id = c.id;
     div.onclick = () => openConversation(c.id);
     div.innerHTML = `<div><div class="list-item-title">${c.title}</div><div class="list-item-sub">${c.lines[0]?.en || ""}</div></div><div>▶</div>`;
     container.appendChild(div);
   });
   if (filtered.length === 0) container.innerHTML = '<div class="list-item"><div>검색 결과가 없습니다.</div></div>';
+  afterListRender('conv');
 }
 function openConversation(id) { currentConvId = id; localStorage.setItem("currentConvId", id); goTo("conv-detail"); if (autoPlayEnabled) playConversationAll(); }
 function renderConversationDetail() {
@@ -398,6 +406,118 @@ async function playConversationAll() {
   if (currentAudioSessionId === mySessionId) isConversationPlaying = false;
 }
 function moveConv(o) { moveItemInList(currentConvId, currentConvList, o, openConversation); }
+
+// --- 4-1. 목록 전체 듣기 (패턴·단어·숙어·대화) ---
+// 지금 화면의 목록(검색·레벨·미암기 필터가 적용된 그대로)을 처음부터 순서대로 읽는다.
+const LIST_PLAY = {
+  pattern: { label: '패턴', list: () => currentPatternList, container: 'pattern-list',
+             title: x => x.title, utterances: x => [[x.title], ...(x.examples || []).map(e => [e.en])] },
+  word:    { label: '단어', list: () => currentWordList, container: 'word-list',
+             title: x => `${x.word} - ${x.meaning}`, utterances: x => [[x.word], ...(x.examples || []).map(e => [e.en])] },
+  idiom:   { label: '숙어', list: () => currentIdiomList, container: 'idiom-list',
+             title: x => `${x.idiom} - ${x.meaning}`, utterances: x => [[x.idiom], ...(x.examples || []).map(e => [e.en])] },
+  conv:    { label: '대화', list: () => currentConvList, container: 'conv-list',
+             title: x => x.title, utterances: x => (x.lines || []).map(l => [l.en, l.speaker]) }
+};
+let listPlayer = null;   // { type, items, index, session, skip }
+
+function toggleListPlay(type) {
+  if (listPlayer && listPlayer.type === type) stopAudio();
+  else playListAll(type);
+}
+
+async function playListAll(type) {
+  const cfg = LIST_PLAY[type];
+  const items = (cfg.list() || []).slice();
+  if (items.length === 0) { alert("재생할 항목이 없습니다."); return; }
+  stopAudio();
+  currentAudioSessionId++;
+  const mySessionId = currentAudioSessionId;
+  isConversationPlaying = true;
+  const player = { type, items, index: 0, session: mySessionId, skip: false };
+  listPlayer = player;
+  const alive = () => currentAudioSessionId === mySessionId && isConversationPlaying;
+  updateListPlayerUI();
+
+  // 다음에 읽을 문장 n개 (항목이 바뀌는 지점까지 이어서) - 자연스러운 음성 미리 만들기용
+  const upcoming = (i, j, n) => {
+    const out = [];
+    for (let a = i; a < items.length && out.length < n; a++) {
+      const u = cfg.utterances(items[a]);
+      for (let b = (a === i ? j + 1 : 0); b < u.length && out.length < n; b++) out.push(u[b]);
+    }
+    return out;
+  };
+
+  for (let i = 0; i < items.length && alive(); i++) {
+    player.index = i;
+    player.skip = false;
+    updateListPlayerUI(true);
+    const utts = cfg.utterances(items[i]);
+    for (let j = 0; j < utts.length; j++) {
+      if (!alive() || player.skip) break;
+      const done = speakWithPromise(utts[j][0], utts[j][1]);
+      prefetchAhead(upcoming(i, j, 2));
+      await done;
+      if (!alive() || player.skip) break;
+      // 문장 사이 0.8초, 항목 사이 1.2초 쉼
+      await new Promise(resolve => setTimeout(resolve, j < utts.length - 1 ? 800 : 1200));
+    }
+  }
+  if (currentAudioSessionId === mySessionId) isConversationPlaying = false;
+  if (listPlayer === player) { listPlayer = null; updateListPlayerUI(); }
+}
+
+/** 지금 항목을 건너뛰고 다음 항목으로 */
+function skipListItem() {
+  if (!listPlayer) return;
+  listPlayer.skip = true;
+  if (typeof skipCurrentSpeech === 'function') skipCurrentSpeech();
+}
+
+/** stopAudio()에서 호출: 재생이 멈추면 플레이어 표시도 바로 정리 */
+function endListPlayback() {
+  if (!listPlayer) return;
+  listPlayer = null;
+  updateListPlayerUI();
+}
+
+// scroll: 항목이 바뀔 때만 화면을 따라가게 한다 (검색·체크로 목록이 다시 그려질 땐 스크롤하지 않음)
+function updateListPlayerUI(scroll) {
+  const bar = document.getElementById('list-player');
+  const playing = !!listPlayer;
+  document.body.classList.toggle('list-playing', playing);
+  if (bar) bar.classList.toggle('hidden', !playing);
+  // 목록 화면의 버튼: 재생 중인 목록이면 '중지'로
+  document.querySelectorAll('[data-list-play]').forEach(btn => {
+    const on = playing && listPlayer.type === btn.dataset.listPlay;
+    btn.textContent = on ? '■ 전체 듣기 중지' : '🔊 목록 전체 듣기';
+    btn.classList.toggle('active', on);
+  });
+  // 지금 읽는 항목 강조
+  document.querySelectorAll('.list-item.playing').forEach(el => el.classList.remove('playing'));
+  if (!playing) return;
+  const cfg = LIST_PLAY[listPlayer.type];
+  const item = listPlayer.items[listPlayer.index];
+  const pos = document.getElementById('list-player-pos');
+  const title = document.getElementById('list-player-title');
+  if (pos) pos.textContent = `${cfg.label} ${listPlayer.index + 1} / ${listPlayer.items.length}`;
+  if (title) title.textContent = cfg.title(item);
+  const container = document.getElementById(cfg.container);
+  const el = container && [...container.children].find(c => c.dataset && c.dataset.id === item.id);
+  if (el) {
+    el.classList.add('playing');
+    if (scroll && container.offsetParent !== null) el.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+  }
+}
+
+/** 목록을 다시 그린 뒤: 개수 표시 + (재생 중이면) 강조 다시 적용 */
+function afterListRender(type) {
+  const cfg = LIST_PLAY[type];
+  const count = document.getElementById(cfg.container + '-count');
+  if (count) count.textContent = `${(cfg.list() || []).length}개`;
+  if (listPlayer) updateListPlayerUI();
+}
 
 // --- 5. Shadowing ---
 let isBlindMode = false; let isHideKr = false;
