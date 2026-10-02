@@ -66,6 +66,7 @@ function loadVoices() {
         ? null
         : parseInt(d.voiceIndex, 10);
       if (Number.isNaN(userVoiceIndex)) userVoiceIndex = null;
+      userVoiceIndex = null; // 목록이 기본 음성 1개로 바뀌어, 예전에 고른 개별 브라우저 음성은 기본 음성으로 정리
       userRate = d.rate || 1.0;
       if (d.autoPlay !== undefined) autoPlayEnabled = d.autoPlay;
       if (d.fontSize) userFontSize = d.fontSize;
@@ -97,20 +98,13 @@ function populateVoiceSelect(selectValue) {
     });
     sel.appendChild(g);
   }
+  // 브라우저 음성은 영어 기본 음성 1개만 둔다 (더 좋은 음성은 위의 AI 음성 내려받기로 안내)
   const g2 = document.createElement('optgroup');
-  g2.label = '브라우저 음성';
+  g2.label = '기본 음성';
   const def = document.createElement('option');
   def.value = '';
-  def.textContent = defaultVoice ? `기본 목소리 (${defaultVoice.name})` : '기본 목소리';
+  def.textContent = defaultVoice ? `기본 음성 (${defaultVoice.name})` : '기본 음성';
   g2.appendChild(def);
-  ttsVoices.forEach((v, i) => {
-    if (v.lang.includes("en")) {
-      const opt = document.createElement("option");
-      opt.value = i;
-      opt.textContent = `${v.name} (${v.lang})`;
-      g2.appendChild(opt);
-    }
-  });
   sel.appendChild(g2);
   if ([...sel.options].some(o => o.value === String(keep))) sel.value = String(keep);
 }
@@ -360,15 +354,48 @@ async function initNeuralVoice() {
   if (usingNeural()) setTimeout(() => { NeuralTTS.ensureLoaded().catch(e => console.warn(e)); }, 2000);
 }
 
-function setNeuralUI(statusText, btnText, progressPct) {
+// variant: 'primary'(내려받기 - 그라데이션) · 'sub'(취소) · 'text'(삭제 - 작게)
+function setNeuralUI(statusText, btnText, progressPct, variant) {
   const status = document.getElementById('neural-status');
   const btn = document.getElementById('neural-btn');
   const bar = document.getElementById('neural-progress');
   const fill = document.getElementById('neural-progress-fill');
+  const area = document.getElementById('neural-voice-area');
   if (status) status.textContent = statusText;
-  if (btn) btn.textContent = btnText;
+  if (btn) {
+    btn.textContent = btnText;
+    const cls = { primary: 'btn-install-gradient', sub: 'btn-sub', text: 'btn-text' }[variant || 'primary'];
+    btn.className = cls + ' neural-btn' + (variant === 'text' ? ' neural-btn-small' : '');
+  }
+  if (area) area.classList.toggle('is-ready', variant === 'text');
   if (bar) bar.classList.toggle('hidden', progressPct == null);
   if (fill && progressPct != null) fill.style.width = progressPct + '%';
+}
+
+// 홈 화면 추천 카드: 지원 기기 + 아직 안 받음 + 사용자가 닫지 않았을 때만
+function refreshNeuralPromo(progressText) {
+  const promo = document.getElementById('neural-promo');
+  if (!promo) return;
+  let dismissed = false;
+  try { dismissed = localStorage.getItem('neural_promo_dismissed') === '1'; } catch (e) {}
+  const show = typeof NeuralTTS !== 'undefined' && NeuralTTS.isSupported() && !neuralReady && (!dismissed || neuralDownloading);
+  promo.classList.toggle('hidden', !show);
+  const desc = document.getElementById('neural-promo-desc');
+  if (desc) desc.textContent = progressText || '원어민처럼 또렷한 발음 · 한 번 받으면 인터넷 없이 사용';
+}
+
+function dismissNeuralPromo() {
+  try { localStorage.setItem('neural_promo_dismissed', '1'); } catch (e) {}
+  refreshNeuralPromo();
+}
+
+/** 홈 추천 카드 → 설정을 열고 AI 음성 칸을 보여 준다 */
+function openNeuralSettings() {
+  openSettingsModal();
+  const area = document.getElementById('neural-voice-area');
+  if (!area) return;
+  area.scrollIntoView({ block: 'center', behavior: 'smooth' });
+  area.classList.remove('flash'); void area.offsetWidth; area.classList.add('flash');
 }
 
 function refreshNeuralUI() {
@@ -376,9 +403,10 @@ function refreshNeuralUI() {
   if (!area) return;
   if (typeof NeuralTTS === 'undefined' || !NeuralTTS.isSupported()) { area.classList.add('hidden'); return; }
   area.classList.remove('hidden');
+  refreshNeuralPromo();
   if (neuralDownloading) return;
-  if (neuralReady) setNeuralUI('✅ 받아 둠 · 인터넷 없이 사용할 수 있습니다. 위 목록에서 목소리를 고르세요.', '🗑 삭제', null);
-  else setNeuralUI('사람처럼 자연스럽게 읽는 AI 음성입니다. 약 440MB · Wi-Fi에서 받기를 권장합니다.', '⬇ 내려받기', null);
+  if (neuralReady) setNeuralUI('✅ 받아 둠 · 인터넷 없이 사용할 수 있어요. 위 목록에서 여성·남성 목소리 10종 중 고를 수 있습니다.', '받은 음성 삭제', null, 'text');
+  else setNeuralUI('기본 음성보다 훨씬 자연스러운 원어민 발음으로 읽어 줍니다. 한 번만 받으면 인터넷 없이 사용할 수 있어요. (약 440MB · Wi-Fi 권장)', '⬇ AI 음성 내려받기', null, 'primary');
 }
 
 // 받은 직후 바로 쓰도록 자연스러운 음성 선택만 저장 (모달의 미저장 속도·글자 크기는 건드리지 않음)
@@ -408,11 +436,13 @@ async function onNeuralButton() {
   }
 
   neuralDownloading = true;
-  setNeuralUI('받는 중… 0%', '취소', 0);
+  setNeuralUI('받는 중… 0%', '취소', 0, 'sub');
+  refreshNeuralPromo('받는 중… 0%');
   try {
     await NeuralTTS.download((got, total) => {
       const pct = total ? Math.floor(got / total * 100) : 0;
-      setNeuralUI(`받는 중… ${pct}% (${Math.round(got / 1e6)} / ${Math.round(total / 1e6)}MB) · 받는 동안 이 화면을 닫지 마세요`, '취소', pct);
+      setNeuralUI(`받는 중… ${pct}% (${Math.round(got / 1e6)} / ${Math.round(total / 1e6)}MB) · 받는 동안 앱을 닫지 마세요`, '취소', pct, 'sub');
+      refreshNeuralPromo(`받는 중… ${pct}% · 앱을 닫지 마세요`);
     });
     neuralDownloading = false;
     neuralReady = true;
@@ -427,7 +457,7 @@ async function onNeuralButton() {
     neuralDownloading = false;
     refreshNeuralUI();
     if (e && e.name === 'AbortError') {
-      setNeuralUI('받기를 멈췄습니다. 다시 누르면 받은 부분부터 이어서 받습니다.', '⬇ 이어 받기', null);
+      setNeuralUI('받기를 멈췄습니다. 다시 누르면 받은 부분부터 이어서 받습니다.', '⬇ 이어 받기', null, 'primary');
     } else {
       console.error(e);
       alert("음성을 받지 못했습니다.\n" + (e && e.message || e) + "\n다시 누르면 받은 부분부터 이어서 받습니다.");

@@ -204,7 +204,7 @@ async function performSmartSync() {
   // 설정 병합: 서버 값이 있으면 우선 적용 (다른 기기에서 변경한 값 반영)
   const serverSettings = serverData.settings || {};
   // 서버 값의 형식이 어긋나면(손상/타 버전 기록) 목소리·글자 크기가 깨지므로 유효한 값만 반영
-  if (serverSettings.voiceIndex === null || Number.isInteger(serverSettings.voiceIndex)) userVoiceIndex = serverSettings.voiceIndex;
+  // 개별 브라우저 음성 선택은 없어졌으므로(기본 음성 1개 + AI 음성) 서버의 voiceIndex는 반영하지 않는다
   if (typeof serverSettings.rate === 'number' && serverSettings.rate > 0) userRate = serverSettings.rate;
   if (typeof serverSettings.autoPlay === 'boolean') autoPlayEnabled = serverSettings.autoPlay;
   if (['small', 'medium', 'large'].includes(serverSettings.fontSize)) userFontSize = serverSettings.fontSize;

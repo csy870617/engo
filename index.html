@@ -116,6 +116,16 @@
         
       </div>
 
+      <div id="neural-promo" class="neural-promo hidden" onclick="openNeuralSettings()" role="button" tabindex="0">
+        <div class="neural-promo-icon">🎙</div>
+        <div class="neural-promo-text">
+          <span class="neural-promo-title">자연스러운 AI 음성 <span class="install-badge">추천</span></span>
+          <span id="neural-promo-desc" class="neural-promo-desc">원어민처럼 또렷한 발음 · 한 번 받으면 인터넷 없이 사용</span>
+        </div>
+        <span class="neural-promo-go">받기 ❯</span>
+        <button type="button" class="neural-promo-close" aria-label="추천 닫기" onclick="event.stopPropagation(); dismissNeuralPromo()">✕</button>
+      </div>
+
       <div class="home-grid">
         <div class="home-tile tile-pattern" onclick="goTo('patterns')">
           <div class="tile-icon">📘</div>
@@ -503,10 +513,13 @@
       </div>
 
       <div id="neural-voice-area" class="setting-group neural-voice-area hidden">
-        <span class="setting-label">🎙 자연스러운 음성 (AI)</span>
+        <div class="install-header">
+          <span class="setting-label" style="margin:0;">🎙 자연스러운 AI 음성</span>
+          <span class="install-badge">추천</span>
+        </div>
         <p id="neural-status" class="neural-status"></p>
         <div id="neural-progress" class="progress-track hidden"><div id="neural-progress-fill" class="progress-fill"></div></div>
-        <button id="neural-btn" type="button" class="btn-sub neural-btn" onclick="onNeuralButton()">⬇ 내려받기</button>
+        <button id="neural-btn" type="button" class="btn-install-gradient neural-btn" onclick="onNeuralButton()">⬇ AI 음성 내려받기</button>
         <p class="neural-credit">Supertonic 3 · Supertone Inc. · <a href="https://csy870617.github.io/faith-voice/" target="_blank" rel="noopener">Open RAIL-M</a></p>
       </div>
 
