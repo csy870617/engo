@@ -596,7 +596,7 @@ function getTimeAgo(date) {
   return years + (years === 1 ? " year ago" : " years ago");
 }
 
-// 3. Share & Contact
+// 3. Share
 if (typeof Kakao !== 'undefined' && !Kakao.isInitialized()) { 
     try { Kakao.init('7e17cb2ba4738f9e3cd710879d487959'); } catch(e) {}
 }
@@ -620,44 +620,3 @@ function shareApp() {
   }
 }
 
-function openContactModal() {
-  document.getElementById('settings-modal').classList.add('hidden');
-  document.getElementById('contact-modal').classList.remove('hidden');
-}
-
-function closeContactModal() {
-  // 설정에서 열린 경우 설정 모달의 히스토리 항목(#settings)이 남아 있으므로 함께 정리
-  if (history.state && history.state.modal === 'settings') history.back();
-  else document.getElementById('contact-modal').classList.add('hidden');
-}
-
-function sendInquiry() {
-  const msg = document.getElementById('contact-msg').value;
-  if (!msg.trim()) return alert("내용을 입력해주세요.");
-  
-  const sendBtn = document.querySelector('#contact-modal .btn-main');
-  const originalText = sendBtn.innerText;
-  sendBtn.innerText = "전송 중...";
-  sendBtn.disabled = true;
-  
-  if (typeof emailjs !== 'undefined') {
-    emailjs.send('service_c7njd5n', 'template_7tws5sz', { message: msg, to_name: "Admin" })
-      .then(() => {
-        alert("✅ 소중한 의견이 전송되었습니다!");
-        document.getElementById('contact-msg').value = "";
-        closeContactModal();
-      })
-      .catch((err) => {
-        console.error("EmailJS 전송 실패:", err);
-        alert("❌ 전송에 실패했습니다. 잠시 후 다시 시도해주세요.");
-      })
-      .finally(() => {
-        sendBtn.innerText = originalText;
-        sendBtn.disabled = false;
-      });
-  } else {
-    alert("EmailJS 라이브러리 로드 실패");
-    sendBtn.innerText = originalText;
-    sendBtn.disabled = false;
-  }
-}
