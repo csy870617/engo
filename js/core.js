@@ -130,6 +130,7 @@ function goTo(page, isReplace = false) {
 
 function stopAudio() {
   if ("speechSynthesis" in window) window.speechSynthesis.cancel();
+  if (typeof stopNeuralSpeech === 'function') stopNeuralSpeech();
   isConversationPlaying = false;
   currentAudioSessionId++; 
 }
@@ -152,7 +153,8 @@ function openSettingsModal() {
   settingsSnapshot = { rate: userRate, fontSize: userFontSize };
   document.getElementById("settings-modal").classList.remove("hidden");
   const sel = document.getElementById("tts-voice-select"); const chk = document.getElementById("tts-autoplay-toggle");
-  if(sel) sel.value = userVoiceIndex !== null ? userVoiceIndex : ""; if(chk) chk.checked = autoPlayEnabled;
+  if(sel) sel.value = (typeof currentVoiceSelectValue === 'function') ? currentVoiceSelectValue() : (userVoiceIndex !== null ? userVoiceIndex : ""); if(chk) chk.checked = autoPlayEnabled;
+  if (typeof refreshNeuralUI === 'function') refreshNeuralUI();
   updateButtonGroup('speed-btn-group', userRate); updateButtonGroup('font-btn-group', userFontSize);
 }
 function closeSettingsModal() { if (history.state && history.state.modal === 'settings') history.back(); else { restoreUnsavedSettings(); document.getElementById("settings-modal").classList.add("hidden"); } }
@@ -197,6 +199,7 @@ function hideInstallBanner() {
 document.addEventListener('DOMContentLoaded', () => {
   if(typeof loadMemorizedData === 'function') loadMemorizedData();
   if(typeof loadVoices === 'function') loadVoices();
+  if(typeof initNeuralVoice === 'function') initNeuralVoice();
   if(typeof initNewsUpdater === 'function') initNewsUpdater();
   
   const initialPage = location.hash.replace('#', '') || 'home'; 

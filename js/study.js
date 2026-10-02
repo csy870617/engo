@@ -101,12 +101,18 @@ async function playPatternExamples() {
   isConversationPlaying = true;
   const p = patternData.find(x => x.id === currentPatternId);
   if (!p) { isConversationPlaying = false; return; }
-  await speakWithPromise(p.title);
+  // 자연스러운 음성: 지금 문장을 요청한 뒤 다음 문장을 미리 만들어 둔다 (작업자는 요청 순서대로 처리)
+  const firstDone = speakWithPromise(p.title);
+  prefetchSpeech(p.examples[0] && p.examples[0].en);
+  await firstDone;
   if (currentAudioSessionId !== mySessionId || !isConversationPlaying) return;
   await new Promise(resolve => setTimeout(resolve, 800));
-  for (const ex of p.examples) {
+  for (let i = 0; i < p.examples.length; i++) {
+    const ex = p.examples[i];
     if (currentAudioSessionId !== mySessionId || !isConversationPlaying) break;
-    await speakWithPromise(ex.en);
+    const done = speakWithPromise(ex.en);
+    if (p.examples[i + 1]) prefetchSpeech(p.examples[i + 1].en);
+    await done;
     if (currentAudioSessionId !== mySessionId || !isConversationPlaying) break;
     await new Promise(resolve => setTimeout(resolve, 800));
   }
@@ -202,12 +208,18 @@ async function playWordExamples() {
   isConversationPlaying = true;
   const w = wordData.find(x => x.id === currentWordId);
   if (!w) { isConversationPlaying = false; return; }
-  await speakWithPromise(w.word);
+  // 자연스러운 음성: 지금 문장을 요청한 뒤 다음 문장을 미리 만들어 둔다 (작업자는 요청 순서대로 처리)
+  const firstDone = speakWithPromise(w.word);
+  prefetchSpeech(w.examples[0] && w.examples[0].en);
+  await firstDone;
   if (currentAudioSessionId !== mySessionId || !isConversationPlaying) return;
   await new Promise(resolve => setTimeout(resolve, 800));
-  for (const ex of w.examples) {
+  for (let i = 0; i < w.examples.length; i++) {
+    const ex = w.examples[i];
     if (currentAudioSessionId !== mySessionId || !isConversationPlaying) break;
-    await speakWithPromise(ex.en);
+    const done = speakWithPromise(ex.en);
+    if (w.examples[i + 1]) prefetchSpeech(w.examples[i + 1].en);
+    await done;
     if (currentAudioSessionId !== mySessionId || !isConversationPlaying) break;
     await new Promise(resolve => setTimeout(resolve, 800));
   }
@@ -301,12 +313,18 @@ async function playIdiomExamples() {
   isConversationPlaying = true;
   const item = idiomData.find(x => x.id === currentIdiomId);
   if (!item) { isConversationPlaying = false; return; }
-  await speakWithPromise(item.idiom);
+  // 자연스러운 음성: 지금 문장을 요청한 뒤 다음 문장을 미리 만들어 둔다 (작업자는 요청 순서대로 처리)
+  const firstDone = speakWithPromise(item.idiom);
+  prefetchSpeech(item.examples[0] && item.examples[0].en);
+  await firstDone;
   if (currentAudioSessionId !== mySessionId || !isConversationPlaying) return;
   await new Promise(resolve => setTimeout(resolve, 800));
-  for (const ex of item.examples) {
+  for (let i = 0; i < item.examples.length; i++) {
+    const ex = item.examples[i];
     if (currentAudioSessionId !== mySessionId || !isConversationPlaying) break;
-    await speakWithPromise(ex.en);
+    const done = speakWithPromise(ex.en);
+    if (item.examples[i + 1]) prefetchSpeech(item.examples[i + 1].en);
+    await done;
     if (currentAudioSessionId !== mySessionId || !isConversationPlaying) break;
     await new Promise(resolve => setTimeout(resolve, 800));
   }
@@ -367,9 +385,13 @@ async function playConversationAll() {
   isConversationPlaying = true; 
   const conv = conversationData.find(c => c.id === currentConvId);
   if (!conv) { isConversationPlaying = false; return; }
-  for (const line of conv.lines) {
+  for (let i = 0; i < conv.lines.length; i++) {
+    const line = conv.lines[i];
     if (currentAudioSessionId !== mySessionId || !isConversationPlaying) break; 
-    await speakWithPromise(line.en, line.speaker);
+    const done = speakWithPromise(line.en, line.speaker);
+    const next = conv.lines[i + 1];
+    if (next) prefetchSpeech(next.en, next.speaker); // 자연스러운 음성: 다음 대사를 미리 만들기
+    await done;
     if (currentAudioSessionId !== mySessionId || !isConversationPlaying) break;
     await new Promise(resolve => setTimeout(resolve, 800));
   }
@@ -440,6 +462,8 @@ function playShadowingCurrent() {
   const conv = conversationData.find(c => c.id === currentShadowingId);
   if (!conv) return;
   speakText(conv.lines[shadowingLineIndex].en, conv.lines[shadowingLineIndex].speaker);
+  const next = conv.lines[shadowingLineIndex + 1];
+  if (next) prefetchSpeech(next.en, next.speaker); // 자연스러운 음성: 다음 문장을 미리 만들기
 }
 function nextShadowing() {
   const conv = conversationData.find(c => c.id === currentShadowingId);
@@ -460,6 +484,7 @@ function prevShadowing() {
 }
 function nextRandomShadowingTopic() {
   if ("speechSynthesis" in window) window.speechSynthesis.cancel();
+  if (typeof stopNeuralSpeech === 'function') stopNeuralSpeech();
   if (!conversationData || conversationData.length === 0) return;
   let nextConv;
   if (conversationData.length > 1) {

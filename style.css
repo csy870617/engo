@@ -257,6 +257,8 @@ main {
 }
 .modal-box {
   background: #1e293b; width: 90%; max-width: 360px; padding: 24px;
+  /* 내용이 화면보다 길면(작은 휴대폰·설정 모달) 위아래가 잘리지 않고 상자 안에서 스크롤 */
+  max-height: calc(100vh - 32px); max-height: calc(100dvh - 32px); overflow-y: auto;
   border-radius: 20px; border: 1px solid rgba(255,255,255,0.1);
   box-shadow: 0 20px 50px rgba(0,0,0,0.5);
 }
@@ -842,3 +844,61 @@ main {
   }
 }
 
+/* 자연스러운 음성(AI) 내려받기 - 설정 모달 (앱 설치 카드와 같은 톤) */
+.neural-voice-area {
+  margin-top: -6px; padding: 16px;
+  background: linear-gradient(135deg, rgba(139, 92, 246, 0.10) 0%, rgba(56, 189, 248, 0.05) 100%);
+  border: 1px solid rgba(139, 92, 246, 0.28); border-radius: 14px;
+  transition: box-shadow 0.3s, border-color 0.3s;
+}
+.neural-voice-area.is-ready { background: rgba(255, 255, 255, 0.03); border-color: rgba(255, 255, 255, 0.1); }
+.neural-voice-area.is-ready .install-badge { display: none; }
+.neural-voice-area .install-header { margin-bottom: 8px; }
+.neural-status { color: var(--text-sub); font-size: 0.8rem; line-height: 1.5; margin: 0 0 12px; }
+.neural-voice-area .progress-track { margin-bottom: 12px; }
+.neural-voice-area .progress-fill { transition: width 0.2s; }
+.neural-btn { width: 100%; }
+.neural-btn.btn-install-gradient { padding: 12px; font-size: 0.95rem; }
+.neural-btn-small { width: auto; padding: 4px 0; font-size: 0.8rem; text-decoration: underline; }
+.neural-credit { color: #64748b; font-size: 0.7rem; margin-top: 10px; text-align: right; }
+.neural-credit a { color: #64748b; }
+/* 홈 추천 카드에서 열었을 때 잠깐 강조 */
+.neural-voice-area.flash { animation: neuralFlash 1.6s ease-out; }
+@keyframes neuralFlash {
+  0%, 30% { box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.55); border-color: var(--primary); }
+  100% { box-shadow: 0 0 0 0 rgba(139, 92, 246, 0); }
+}
+
+/* 홈 화면 AI 음성 추천 카드 (홈 타일과 같은 유리 카드 톤, 은은한 보라 테두리) */
+.neural-promo {
+  position: relative; display: flex; align-items: center; gap: 14px;
+  margin: -14px 0 18px; padding: 14px 34px 14px 14px; cursor: pointer;
+  background: linear-gradient(135deg, rgba(139, 92, 246, 0.14) 0%, rgba(30, 41, 59, 0.7) 60%);
+  border: 1px solid rgba(139, 92, 246, 0.3); border-radius: 16px;
+  transition: transform 0.2s, border-color 0.2s, background 0.2s;
+}
+.neural-promo:hover { transform: translateY(-2px); border-color: rgba(139, 92, 246, 0.6); }
+.neural-promo-icon {
+  flex: 0 0 auto; width: 40px; height: 40px; border-radius: 12px; font-size: 1.25rem;
+  display: flex; align-items: center; justify-content: center;
+  background: linear-gradient(135deg, rgba(139, 92, 246, 0.35), rgba(99, 102, 241, 0.25));
+}
+.neural-promo-text { flex: 1 1 auto; min-width: 0; display: flex; flex-direction: column; gap: 3px; }
+.neural-promo-title { color: #fff; font-weight: 700; font-size: 0.95rem; display: flex; align-items: center; gap: 8px; white-space: nowrap; }
+.neural-promo-desc { color: var(--text-sub); font-size: 0.78rem; line-height: 1.4; }
+.neural-promo-go { flex: 0 0 auto; color: #a78bfa; font-size: 0.85rem; font-weight: 700; white-space: nowrap; }
+.neural-promo-close {
+  position: absolute; top: 6px; right: 8px; background: none; border: none;
+  color: #64748b; font-size: 0.8rem; cursor: pointer; padding: 4px; line-height: 1;
+}
+.neural-promo-close:hover { color: var(--text-sub); }
+@media print { .neural-promo { display: none !important; } }
+
+/* 자연스러운 음성 첫 준비(모델 열기) 중 안내 */
+.neural-loading {
+  position: fixed; left: 50%; bottom: calc(24px + env(safe-area-inset-bottom)); transform: translateX(-50%);
+  background: rgba(30, 41, 59, 0.95); color: #fff; border: 1px solid rgba(56, 189, 248, 0.4);
+  padding: 8px 16px; border-radius: 20px; font-size: 0.85rem; z-index: 3000; pointer-events: none;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.4);
+}
+@media print { .neural-loading { display: none !important; } }
