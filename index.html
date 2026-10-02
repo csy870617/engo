@@ -498,8 +498,16 @@
       </div>
 
       <div class="setting-group">
-        <label class="setting-label" for="tts-voice-select">목소리 선택 (for Browser TTS)</label>
+        <label class="setting-label" for="tts-voice-select">목소리 선택</label>
         <select id="tts-voice-select" class="dropdown" onchange="previewVoiceSettings()"><option>기본</option></select>
+      </div>
+
+      <div id="neural-voice-area" class="setting-group neural-voice-area hidden">
+        <span class="setting-label">🎙 자연스러운 음성 (AI)</span>
+        <p id="neural-status" class="neural-status"></p>
+        <div id="neural-progress" class="progress-track hidden"><div id="neural-progress-fill" class="progress-fill"></div></div>
+        <button id="neural-btn" type="button" class="btn-sub neural-btn" onclick="onNeuralButton()">⬇ 내려받기</button>
+        <p class="neural-credit">Supertonic 3 · Supertone Inc. · <a href="https://csy870617.github.io/faith-voice/" target="_blank" rel="noopener">Open RAIL-M</a></p>
       </div>
 
       <div class="setting-group">
@@ -553,6 +561,8 @@
       </div>
   </div>
   
+  <div id="neural-loading" class="neural-loading hidden">🎙 자연스러운 음성 준비 중…</div>
+
   <div id="contact-modal" class="modal hidden">
     <div class="modal-box">
       <h3>문의하기</h3>
@@ -573,7 +583,7 @@
   <script src="idiom.js"></script>
   <script src="word.js"></script>
 
-  <script src="js/core.js"></script>    <script src="js/storage.js"></script> <script src="js/media.js"></script>   <script src="js/study.js"></script>   <script src="js/game.js"></script>    </body>
+  <script src="js/core.js"></script>    <script src="js/storage.js"></script> <script src="js/neural-tts.js"></script> <script src="js/media.js"></script>   <script src="js/study.js"></script>   <script src="js/game.js"></script>    </body>
 
 
 </html>

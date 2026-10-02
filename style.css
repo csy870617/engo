@@ -257,6 +257,8 @@ main {
 }
 .modal-box {
   background: #1e293b; width: 90%; max-width: 360px; padding: 24px;
+  /* 내용이 화면보다 길면(작은 휴대폰·설정 모달) 위아래가 잘리지 않고 상자 안에서 스크롤 */
+  max-height: calc(100vh - 32px); max-height: calc(100dvh - 32px); overflow-y: auto;
   border-radius: 20px; border: 1px solid rgba(255,255,255,0.1);
   box-shadow: 0 20px 50px rgba(0,0,0,0.5);
 }
@@ -842,3 +844,20 @@ main {
   }
 }
 
+/* 자연스러운 음성(AI) 내려받기 - 설정 모달 */
+.neural-voice-area { margin-top: 4px; }
+.neural-status { color: var(--text-sub); font-size: 0.8rem; line-height: 1.5; margin: 4px 0 10px; }
+.neural-voice-area .progress-track { margin-bottom: 10px; }
+.neural-voice-area .progress-fill { transition: width 0.2s; }
+.neural-btn { width: 100%; }
+.neural-credit { color: #64748b; font-size: 0.7rem; margin-top: 8px; text-align: right; }
+.neural-credit a { color: #64748b; }
+
+/* 자연스러운 음성 첫 준비(모델 열기) 중 안내 */
+.neural-loading {
+  position: fixed; left: 50%; bottom: calc(24px + env(safe-area-inset-bottom)); transform: translateX(-50%);
+  background: rgba(30, 41, 59, 0.95); color: #fff; border: 1px solid rgba(56, 189, 248, 0.4);
+  padding: 8px 16px; border-radius: 20px; font-size: 0.85rem; z-index: 3000; pointer-events: none;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.4);
+}
+@media print { .neural-loading { display: none !important; } }

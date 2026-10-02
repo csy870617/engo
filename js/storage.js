@@ -218,7 +218,8 @@ async function performSmartSync() {
   // 병합된 설정값을 로컬에도 영속화
   try {
     localStorage.setItem("ttsSettings", JSON.stringify({
-      voiceIndex: userVoiceIndex, rate: userRate, autoPlay: autoPlayEnabled, fontSize: userFontSize
+      voiceIndex: userVoiceIndex, rate: userRate, autoPlay: autoPlayEnabled, fontSize: userFontSize,
+      neuralVoice: (typeof neuralVoice !== 'undefined') ? neuralVoice : null   // 기기별로 받은 음성 선택 유지
     }));
     localStorage.setItem("selectedWordLevel", String(selectedWordLevel));
     localStorage.setItem("selectedIdiomLevel", String(selectedIdiomLevel));
