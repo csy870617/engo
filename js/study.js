@@ -103,7 +103,7 @@ async function playPatternExamples() {
   if (!p) { isConversationPlaying = false; return; }
   // 자연스러운 음성: 지금 문장을 요청한 뒤 다음 문장을 미리 만들어 둔다 (작업자는 요청 순서대로 처리)
   const firstDone = speakWithPromise(p.title);
-  prefetchSpeech(p.examples[0] && p.examples[0].en);
+  prefetchAhead(p.examples.slice(0, 2).map(ex => [ex.en]));
   await firstDone;
   if (currentAudioSessionId !== mySessionId || !isConversationPlaying) return;
   await new Promise(resolve => setTimeout(resolve, 800));
@@ -111,7 +111,7 @@ async function playPatternExamples() {
     const ex = p.examples[i];
     if (currentAudioSessionId !== mySessionId || !isConversationPlaying) break;
     const done = speakWithPromise(ex.en);
-    if (p.examples[i + 1]) prefetchSpeech(p.examples[i + 1].en);
+    prefetchAhead(p.examples.slice(i + 1, i + 3).map(e => [e.en]));
     await done;
     if (currentAudioSessionId !== mySessionId || !isConversationPlaying) break;
     await new Promise(resolve => setTimeout(resolve, 800));
@@ -210,7 +210,7 @@ async function playWordExamples() {
   if (!w) { isConversationPlaying = false; return; }
   // 자연스러운 음성: 지금 문장을 요청한 뒤 다음 문장을 미리 만들어 둔다 (작업자는 요청 순서대로 처리)
   const firstDone = speakWithPromise(w.word);
-  prefetchSpeech(w.examples[0] && w.examples[0].en);
+  prefetchAhead(w.examples.slice(0, 2).map(ex => [ex.en]));
   await firstDone;
   if (currentAudioSessionId !== mySessionId || !isConversationPlaying) return;
   await new Promise(resolve => setTimeout(resolve, 800));
@@ -218,7 +218,7 @@ async function playWordExamples() {
     const ex = w.examples[i];
     if (currentAudioSessionId !== mySessionId || !isConversationPlaying) break;
     const done = speakWithPromise(ex.en);
-    if (w.examples[i + 1]) prefetchSpeech(w.examples[i + 1].en);
+    prefetchAhead(w.examples.slice(i + 1, i + 3).map(e => [e.en]));
     await done;
     if (currentAudioSessionId !== mySessionId || !isConversationPlaying) break;
     await new Promise(resolve => setTimeout(resolve, 800));
@@ -315,7 +315,7 @@ async function playIdiomExamples() {
   if (!item) { isConversationPlaying = false; return; }
   // 자연스러운 음성: 지금 문장을 요청한 뒤 다음 문장을 미리 만들어 둔다 (작업자는 요청 순서대로 처리)
   const firstDone = speakWithPromise(item.idiom);
-  prefetchSpeech(item.examples[0] && item.examples[0].en);
+  prefetchAhead(item.examples.slice(0, 2).map(ex => [ex.en]));
   await firstDone;
   if (currentAudioSessionId !== mySessionId || !isConversationPlaying) return;
   await new Promise(resolve => setTimeout(resolve, 800));
@@ -323,7 +323,7 @@ async function playIdiomExamples() {
     const ex = item.examples[i];
     if (currentAudioSessionId !== mySessionId || !isConversationPlaying) break;
     const done = speakWithPromise(ex.en);
-    if (item.examples[i + 1]) prefetchSpeech(item.examples[i + 1].en);
+    prefetchAhead(item.examples.slice(i + 1, i + 3).map(e => [e.en]));
     await done;
     if (currentAudioSessionId !== mySessionId || !isConversationPlaying) break;
     await new Promise(resolve => setTimeout(resolve, 800));
@@ -389,8 +389,8 @@ async function playConversationAll() {
     const line = conv.lines[i];
     if (currentAudioSessionId !== mySessionId || !isConversationPlaying) break; 
     const done = speakWithPromise(line.en, line.speaker);
-    const next = conv.lines[i + 1];
-    if (next) prefetchSpeech(next.en, next.speaker); // 자연스러운 음성: 다음 대사를 미리 만들기
+    // 자연스러운 음성: 다음 대사 2개를 미리 만들어 둔다 (느린 기기·빠른 속도에서도 끊김 방지)
+    prefetchAhead(conv.lines.slice(i + 1, i + 3).map(l => [l.en, l.speaker]));
     await done;
     if (currentAudioSessionId !== mySessionId || !isConversationPlaying) break;
     await new Promise(resolve => setTimeout(resolve, 800));
@@ -462,8 +462,8 @@ function playShadowingCurrent() {
   const conv = conversationData.find(c => c.id === currentShadowingId);
   if (!conv) return;
   speakText(conv.lines[shadowingLineIndex].en, conv.lines[shadowingLineIndex].speaker);
-  const next = conv.lines[shadowingLineIndex + 1];
-  if (next) prefetchSpeech(next.en, next.speaker); // 자연스러운 음성: 다음 문장을 미리 만들기
+  // 자연스러운 음성: 다음 문장 2개를 미리 만들기
+  prefetchAhead(conv.lines.slice(shadowingLineIndex + 1, shadowingLineIndex + 3).map(l => [l.en, l.speaker]));
 }
 function nextShadowing() {
   const conv = conversationData.find(c => c.id === currentShadowingId);

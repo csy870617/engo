@@ -296,6 +296,15 @@ function prefetchSpeech(text, speaker) {
   requestNeuralClip(text, neuralStyleFor(speaker)).catch(() => {});
 }
 
+/**
+ * 다음 문장 여러 개를 미리 만든다. items: [[text, speaker], ...]
+ * 작업자가 쉬지 않고 앞서 만들어 두므로, 느린 기기나 빠른 말하기 속도(문장이 짧게 끝남)에서도
+ * 문장 사이가 끊기지 않는다. (이미 만든·만드는 중인 문장은 다시 요청하지 않음)
+ */
+function prefetchAhead(items) {
+  (items || []).forEach(([text, speaker]) => prefetchSpeech(text, speaker));
+}
+
 function showNeuralLoading(show) {
   const el = document.getElementById('neural-loading');
   if (el) el.classList.toggle('hidden', !show);
@@ -315,7 +324,15 @@ async function speakNeural(text, speaker, styleOverride) {
     if (token !== neuralSpeakToken) return;
     showNeuralLoading(false);
     if (!clip || myGen !== neuralGen) return;
-    await NeuralTTS.play(clip.wav, clip.sampleRate);
+    // 재생 끝 신호가 오지 않는 경우(아이폰에서 앱을 내렸다 돌아올 때 등) 연속 재생이 멈추지 않도록
+    // 문장 길이 + 3초가 지나면 다음으로 넘어간다
+    const maxMs = (clip.wav.length / clip.sampleRate) * 1000 + 3000;
+    let guard = null;
+    await Promise.race([
+      NeuralTTS.play(clip.wav, clip.sampleRate),
+      new Promise(resolve => { guard = setTimeout(resolve, maxMs); })
+    ]);
+    clearTimeout(guard);
   } catch (e) {
     if (token === neuralSpeakToken) showNeuralLoading(false);
     console.warn("자연스러운 음성 실패 → 브라우저 음성으로 대체", e);
