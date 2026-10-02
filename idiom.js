@@ -71,7 +71,7 @@ const idiomsLevel1 = [{
     meaning: "기분/몸이 나아지다",
     desc: "아픈 사람에게 쓰는 표현.",
     examples: [
-      { en: "I hope you feel better.", kr: "빨리 나아지길 바래." },
+      { en: "I hope you feel better.", kr: "빨리 낫길 바라." },
       { en: "I feel better now.", kr: "이제 좀 나아졌어." }
     ]
   },
@@ -125,7 +125,7 @@ const idiomsLevel1 = [{
     level: 1,
     idiom: "stand up",
     meaning: "일어서다",
-    desc: "자리를 일어날 때.",
+    desc: "앉아 있다가 자리에서 일어설 때.",
     examples: [
       { en: "Stand up, please.", kr: "일어서 주세요." },
       { en: "He stood up quickly.", kr: "그는 급히 일어났어." }
@@ -327,7 +327,7 @@ const idiomsLevel1 = [{
     meaning: "(차에서) 내리다",
     desc: "차/택시에서 내릴 때.",
     examples: [
-      { en: "Get out here.", kr: "여기서 내려." },
+      { en: "Get out of the car.", kr: "차에서 내려." },
       { en: "I got out of the taxi.", kr: "택시에서 내렸어." }
     ]
   },
@@ -337,7 +337,7 @@ const idiomsLevel1 = [{
     level: 1,
     idiom: "get ready",
     meaning: "준비하다",
-    desc: "나갈 때/누군가를 기다릴 때.",
+    desc: "외출하거나 어떤 일을 앞두고 준비할 때.",
     examples: [
       { en: "Get ready!", kr: "준비해!" },
       { en: "I'm getting ready now.", kr: "지금 준비 중이야." }
@@ -453,7 +453,7 @@ const idiomsLevel2 = [
     desc: "규칙·약속·역할상 '원래 해야 하는 일'을 말할 때 쓰는 표현.",
     examples: [
       { en: "I'm supposed to finish this today.", kr: "이거 오늘까지 끝내야 돼." },
-      { en: "You're not supposed to park here.", kr: "여기 주차하면 안 되게 되어 있어." }
+      { en: "You're not supposed to park here.", kr: "여기 주차하면 안 돼요." }
     ]
   },
   {
@@ -519,7 +519,7 @@ const idiomsLevel2 = [
     desc: "오랜만에 만나서 이야기할 때 또는 뒤처진 걸 따라잡을 때.",
     examples: [
       { en: "We should catch up sometime.", kr: "언제 한번 근황 얘기 좀 하자." },
-      { en: "I need to catch up with my work.", kr: "밀린 일을 따라잡아야 해." }
+      { en: "I need to catch up on my work.", kr: "밀린 일을 따라잡아야 해." }
     ]
   },
   {
@@ -729,7 +729,7 @@ const idiomsLevel2 = [
     meaning: "~을 자랑스럽게 여기다",
     desc: "자신·타인을 대견하게 느낄 때.",
     examples: [
-      { en: "I'm proud of you.", kr: "너가 진짜 자랑스러워." },
+      { en: "I'm proud of you.", kr: "네가 정말 자랑스러워." },
       { en: "She's proud of her team.", kr: "그녀는 자기 팀을 자랑스러워해." }
     ]
   },
@@ -782,7 +782,7 @@ const idiomsLevel2 = [
     id: "lv2_31",
     level: 2,
     idiom: "be thirsty",
-    meaning: "목 마르다",
+    meaning: "목마르다",
     desc: "마실 것이 필요할 때.",
     examples: [
       { en: "I'm thirsty. I need some water.", kr: "목 말라. 물 좀 마셔야겠어." },
@@ -841,7 +841,7 @@ const idiomsLevel2 = [
     desc: "몸무게가 늘었을 때 쓰는 표현.",
     examples: [
       { en: "I put on weight over the holidays.", kr: "연휴 동안 살이 쪘어." },
-      { en: "I don't want to put on weight.", kr: "살 찌기 싫어." }
+      { en: "I don't want to put on weight.", kr: "살찌기 싫어." }
     ]
   },
   {
@@ -910,7 +910,7 @@ const idiomsLevel3 = [
     desc: "고민을 끝내고 선택을 확실히 했을 때 쓰는 말.",
     examples: [
       { en: "I can't make up my mind.", kr: "마음을 못 정하겠어." },
-      { en: "Have you made up your mind yet?", kr: "벌써 결정했어?" }
+      { en: "Have you made up your mind yet?", kr: "이제 마음 정했어?" }
     ]
   },
   {
@@ -1042,7 +1042,7 @@ const idiomsLevel3 = [
     meaning: "때때로",
     desc: "규칙적이지 않게 가끔 일어나는 일을 말할 때.",
     examples: [
-      { en: "I travel for work from time to time.", kr: "가끔 일 때문에 여행을 가." },
+      { en: "I travel for work from time to time.", kr: "가끔 출장을 가." },
       { en: "He calls me from time to time.", kr: "그는 가끔 나한테 전화해." }
     ]
   },
@@ -1072,11 +1072,11 @@ const idiomsLevel3 = [
     id: "lv3_17",
     level: 3,
     idiom: "for a while",
-    meaning: "잠시 동안",
-    desc: "짧은 시간 동안 계속된 상태를 말할 때.",
+    meaning: "잠시 동안, 한동안",
+    desc: "얼마간(짧거나 꽤 긴) 일정 기간 동안 계속된 일을 말할 때.",
     examples: [
       { en: "Let's rest for a while.", kr: "잠깐 쉬자." },
-      { en: "I lived there for a while.", kr: "나 거기 잠시 산 적 있어." }
+      { en: "I lived there for a while.", kr: "나 거기서 한동안 살았어." }
     ]
   },
   {
@@ -1273,7 +1273,7 @@ const idiomsLevel3 = [
     level: 3,
     idiom: "as usual",
     meaning: "평소처럼",
-    desc: "매번 그랬듯이, usual한 패턴 그대로일 때.",
+    desc: "늘 그렇듯 평소와 같은 패턴일 때.",
     examples: [
       { en: "He was late as usual.", kr: "그는 평소처럼 또 늦었어." },
       { en: "Everything was the same as usual.", kr: "모든 게 평소와 똑같았어." }
@@ -1537,14 +1537,14 @@ const idiomsLevel4 = [
     ]
   },
   {
-    id: "lv4_19",
+    id: "lv4_19n",
     level: 4,
-    idiom: "calm down",
-    meaning: "진정하다",
-    desc: "흥분·화·불안한 감정을 가라앉힐 때.",
+    idiom: "turn down",
+    meaning: "거절하다, (소리를) 줄이다",
+    desc: "제안이나 초대를 거절하거나 볼륨을 낮출 때.",
     examples: [
-      { en: "Calm down and listen.", kr: "진정하고 들어봐." },
-      { en: "He needs some time to calm down.", kr: "그는 진정할 시간이 필요해." }
+      { en: "She turned down the job offer.", kr: "그녀는 그 일자리 제안을 거절했어." },
+      { en: "Can you turn down the music a little?", kr: "음악 소리 좀 줄여 줄래?" }
     ]
   },
   {
@@ -1567,7 +1567,7 @@ const idiomsLevel4 = [
     desc: "지금은 못하지만 나중에 다시 연락하거나 이어서 할 때.",
     examples: [
       { en: "I'll get back to you later.", kr: "나중에 다시 연락할게." },
-      { en: "I'll get back to this work tomorrow.", kr: "이 일은 내일 다시 할게." }
+      { en: "I'll get back to this tomorrow.", kr: "이건 내일 다시 할게." }
     ]
   },
   {
@@ -1704,14 +1704,14 @@ const idiomsLevel4 = [
     ]
   },
   {
-    id: "lv4_34",
+    id: "lv4_34n",
     level: 4,
-    idiom: "look forward to",
-    meaning: "기다리다, 기대하다",
-    desc: "앞으로 있을 일에 대한 긍정적인 기대.",
+    idiom: "put off",
+    meaning: "미루다, 연기하다",
+    desc: "해야 할 일이나 약속을 나중으로 미룰 때.",
     examples: [
-      { en: "I'm looking forward to the weekend.", kr: "주말이 기다려져." },
-      { en: "We look forward to working with you.", kr: "당신과 함께 일하기를 기대합니다." }
+      { en: "Stop putting off your homework.", kr: "숙제 좀 그만 미뤄." },
+      { en: "We had to put off the meeting until Friday.", kr: "회의를 금요일로 미뤄야 했어." }
     ]
   },
   {
@@ -1748,14 +1748,14 @@ const idiomsLevel4 = [
     ]
   },
   {
-    id: "lv4_38",
+    id: "lv4_38n",
     level: 4,
-    idiom: "run out of",
-    meaning: "~이 떨어지다, 소진되다",
-    desc: "시간·돈·연료·재료 등이 다 써버려진 상태.",
+    idiom: "come across",
+    meaning: "우연히 발견하다, 우연히 접하다",
+    desc: "찾으려던 게 아닌데 우연히 무언가를 발견할 때.",
     examples: [
-      { en: "We ran out of coffee.", kr: "커피가 다 떨어졌어." },
-      { en: "I'm running out of time.", kr: "시간이 거의 없어." }
+      { en: "I came across an old photo of us.", kr: "우리 옛날 사진을 우연히 발견했어." },
+      { en: "If you come across a good book, let me know.", kr: "좋은 책 보게 되면 알려줘." }
     ]
   },
   {
@@ -1879,7 +1879,7 @@ const idiomsLevel5 = [
     desc: "숨겨야 할 정보를 실수로 또는 의도적으로 말해버릴 때.",
     examples: [
       { en: "Who spilled the beans?", kr: "누가 비밀을 말한 거야?" },
-      { en: "Don't spill the beans about the surprise.", kr: "서프라이즈 이야기 새지 마." }
+      { en: "Don't spill the beans about the surprise.", kr: "서프라이즈 얘기 미리 흘리지 마." }
     ]
   },
   {
@@ -1902,7 +1902,7 @@ const idiomsLevel5 = [
     desc: "늦은 시간에 일을 마무리하고 쉬러 갈 때.",
     examples: [
       { en: "I'm tired. Let's call it a night.", kr: "피곤하다. 오늘은 여기까지만 하자." },
-      { en: "It's getting late. We should call it a night.", kr: "늦어가니까 이제 그만하고 쉬자." }
+      { en: "It's getting late. We should call it a night.", kr: "시간이 늦었으니 이제 그만하고 쉬자." }
     ]
   },
   {
@@ -1913,7 +1913,7 @@ const idiomsLevel5 = [
     desc: "상대와 인식이나 의견이 같다는 의미.",
     examples: [
       { en: "We need to be on the same page.", kr: "우리 서로 생각을 맞출 필요가 있어." },
-      { en: "Are we on the same page?", kr: "우리 같은 이해를 하고 있는 거지?" }
+      { en: "Are we on the same page?", kr: "우리 생각 같은 거 맞지?" }
     ]
   },
   {
@@ -1967,7 +1967,7 @@ const idiomsLevel5 = [
     meaning: "더 수고를 아끼지 않다",
     desc: "기본 수준보다 더 열심히/친절하게 해주는 것.",
     examples: [
-      { en: "He's always willing to go the extra mile.", kr: "그는 항상 한 번 더 수고하려고 해." },
+      { en: "He's always willing to go the extra mile.", kr: "그는 항상 기대 이상으로 애써." },
       { en: "We need to go the extra mile for our customers.", kr: "고객을 위해 한 번 더 신경 써야 해." }
     ]
   },
@@ -2117,14 +2117,14 @@ const idiomsLevel5 = [
   },
 
   {
-    id: "lv5_31",
+    id: "lv5_31n",
     level: 5,
-    idiom: "out of the blue",
-    meaning: "갑자기, 불쑥",
-    desc: "전혀 예상하지 못했는데 일이 벌어질 때.",
+    idiom: "a blessing in disguise",
+    meaning: "전화위복",
+    desc: "처음엔 나쁜 일 같았지만 결과적으로 좋은 일이 되었을 때.",
     examples: [
-      { en: "She called me out of the blue.", kr: "그녀가 갑자기 나한테 전화했어." },
-      { en: "The idea came to me out of the blue.", kr: "그 아이디어가 갑자기 떠올랐어." }
+      { en: "Losing that job was a blessing in disguise.", kr: "그 직장을 잃은 게 오히려 전화위복이었어." },
+      { en: "Missing the train was a blessing in disguise. I met my wife that day.", kr: "기차를 놓친 게 전화위복이었어. 그날 아내를 만났거든." }
     ]
   },
   {
@@ -2153,8 +2153,8 @@ const idiomsLevel5 = [
     id: "lv5_34",
     level: 5,
     idiom: "get cold feet",
-    meaning: "겁이 나다, 주눅 들다",
-    desc: "중요한 일을 앞두고 갑자기 자신감이 떨어질 때.",
+    meaning: "(막판에) 겁이 나다, 망설이다",
+    desc: "중요한 일을 앞두고 갑자기 겁이 나서 망설일 때.",
     examples: [
       { en: "He got cold feet before the interview.", kr: "그는 면접 전에 겁이 났어." },
       { en: "I was going to speak up, but I got cold feet.", kr: "말하려다가 겁이 나서 못 했어." }
@@ -2227,3 +2227,6 @@ const idiomsLevel5 = [
     ]
   }
 ];
+
+// 학습 데이터 정리로 합쳐진 중복 숙어: 예전 ID → 남은 같은 숙어 ID (암기 기록 이어받기용, js/storage.js)
+const idiomIdAliases = {"lv4_19": "lv1_18", "lv4_34": "lv2_2", "lv5_31": "lv3_5", "lv4_38": "lv2_3"};
