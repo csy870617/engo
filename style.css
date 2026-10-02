@@ -897,7 +897,7 @@ main {
 @media print { .neural-loading { display: none !important; } }
 
 /* 목록 전체 듣기 */
-.list-play-bar { margin-bottom: 12px; }
+.list-play-bar { margin-top: 16px; margin-bottom: 12px; } /* 위 검색창·필터와 간격 (패턴 목록과 같은 16px) */
 .list-play-bar .btn-small.active { background: var(--primary); }
 .list-play-count { color: var(--text-sub); font-size: 0.8rem; }
 .list-item.playing {
