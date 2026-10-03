@@ -1053,3 +1053,4 @@ body.list-playing .neural-loading { bottom: calc(86px + env(safe-area-inset-bott
 .tutor-slow-btn { display: inline-block; margin-top: 6px; padding: 2px 9px; border-radius: 10px; border: 1px solid rgba(56,189,248,0.4); background: transparent; color: var(--accent); font-size: 0.72rem; cursor: pointer; }
 .tutor-fb-summary { margin-bottom: 6px; color: var(--text-sub); font-size: 0.85rem; }
 .tutor-fb-row { cursor: pointer; }
+.tutor-delete-setup { margin-top: 12px; }
