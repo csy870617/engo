@@ -6,8 +6,9 @@
 
 const WEBLLM_URL = "https://cdn.jsdelivr.net/npm/@mlc-ai/web-llm@0.2.85/+esm";
 // shader-f16을 지원하는 기기는 f16(가볍고 빠름), 아니면 f32 모델
-const TUTOR_MODELS = { f16: "Llama-3.2-1B-Instruct-q4f16_1-MLC", f32: "Llama-3.2-1B-Instruct-q4f32_1-MLC" };
-const TUTOR_SIZE_LABEL = "약 0.9GB";
+// 후보 비교(같은 프롬프트·학습자 문장)에서 역할극 대화와 교정이 가장 좋았던 모델
+const TUTOR_MODELS = { f16: "Qwen2.5-1.5B-Instruct-q4f16_1-MLC", f32: "Qwen2.5-1.5B-Instruct-q4f32_1-MLC" };
+const TUTOR_SIZE_LABEL = "약 1GB";
 // 튜터 그림: 입 모양별 이미지 3장(다문 입·반쯤 벌린 입·크게 벌린 입)을 넣으면 소리에 맞춰 바뀐다.
 // 비워 두면 기본 캐릭터(SVG). 예: { closed: "images/tutor/closed.png", half: "images/tutor/half.png", open: "images/tutor/open.png" }
 const TUTOR_AVATAR_FRAMES = null;
@@ -24,6 +25,7 @@ let tutorModelId = null;
 let tutorSupport = null;      // { ok, f16, reason }
 let tutorMessages = [];       // 모델에 보내는 대화 (system 포함)
 let tutorLearnerLines = [];   // 학습자가 말한 문장 (피드백용)
+let tutorCorrections = [];    // 대화 중 교정한 문장 [{ said, better }] (피드백 정리용)
 let tutorScenarioId = "free";
 let tutorBusy = false;
 let tutorSessionToken = 0;
@@ -232,23 +234,96 @@ const TUTOR_STYLE = [
   "- Say 1 or 2 short sentences, 15 words or fewer in total.",
   "- Use only very common everyday words and simple grammar for a beginner. No idioms, no slang.",
   "- End with one simple question to keep the conversation going.",
+  "- Never repeat something you already said.",
   "- If the learner's English is broken, guess what they mean and answer kindly. Do not correct them.",
   "- Stay in your role. Never say you are an AI. Never use Korean, lists, emojis or notes in brackets."
 ].join("\n");
+// 역할극 장면: 튜터가 맡을 역할 (상황마다 한 줄)
+const TUTOR_SCENES = {
+  "conv-001": "You are a friendly coworker meeting the learner for the first time at the office.",
+  "conv-002": "You are an old friend running into the learner after a long time.",
+  "conv-003": "You are a friend chatting with the learner about weekend plans.",
+  "conv-004": "You are a coworker making small talk with the learner about the weather.",
+  "conv-035": "You are a friend. The learner is leaving your place at the end of the evening.",
+  "conv-045": "You are a friend. The learner wants to ask you for a favor.",
+  "conv-055": "You are a friend. The learner is inviting you to a weekend barbecue.",
+  "conv-061": "You are a friend. The learner is giving you a compliment on your clothes.",
+  "conv-080": "You are a guest at a party meeting the learner for the first time.",
+  "conv-006": "You are a coworker deciding with the learner where to go for lunch.",
+  "conv-007": "You are a barista at a coffee shop. The learner is a customer ordering a drink.",
+  "conv-008": "You are a local friend. The learner is asking you for a good restaurant nearby.",
+  "conv-052": "You are a server at a restaurant. The learner is a customer ordering food.",
+  "conv-060": "You are a restaurant host on the phone. The learner wants to book a table.",
+  "conv-009": "You are a server at a restaurant. The learner wants to pay the bill.",
+  "conv-010": "You are the learner's roommate deciding what food to order for delivery.",
+  "conv-044": "You are a server at a restaurant. The learner's food is taking too long.",
+  "conv-046": "You are a friend who has not tried much Korean food. The learner is telling you about it.",
+  "conv-079": "You are a local friend. The learner is asking you how tipping works in the US.",
+  "conv-021": "You are a clothing store clerk. The learner is looking for a different size.",
+  "conv-022": "You are a store clerk at the returns counter. The learner wants to return an item.",
+  "conv-024": "You are a grocery store worker. The learner is looking for items in the store.",
+  "conv-025": "You are a store clerk. The learner is looking for a gift.",
+  "conv-037": "You are a phone store employee. The learner wants a new phone or plan.",
+  "conv-065": "You are a bank teller. The learner wants to open a bank account.",
+  "conv-066": "You are a hairstylist. The learner is a customer explaining the haircut they want.",
+  "conv-071": "You are a post office clerk. The learner wants to send a package overseas.",
+  "conv-011": "You are a local person on the street. The learner is asking you for directions.",
+  "conv-015": "You are a bus driver or a person at the bus stop. The learner is asking which bus to take.",
+  "conv-056": "You are a taxi driver. The learner is your passenger.",
+  "conv-068": "You are a ticket agent at a train station. The learner wants to buy a ticket.",
+  "conv-070": "You are a car rental agent. The learner is picking up a rental car.",
+  "conv-062": "You are a kind stranger at a station. The learner needs help with a ticket machine.",
+  "conv-051": "You are a local person at a train station. The learner is asking how to get downtown.",
+  "conv-013": "You are a tourist nearby. The learner is asking you to take a photo.",
+  "conv-064": "You are an airline check-in agent at the airport. The learner is checking in for a flight.",
+  "conv-058": "You are an immigration officer at the airport. The learner is a traveler arriving in the US.",
+  "conv-014": "You are an airline baggage service agent. The learner's bag did not arrive.",
+  "conv-069": "You are an airline gate agent. The learner's flight has a problem.",
+  "conv-067": "You are a currency exchange clerk. The learner wants to exchange money.",
+  "conv-012": "You are a hotel front desk clerk. The learner is checking in.",
+  "conv-059": "You are a hotel front desk clerk on the phone. The learner has a problem in their room.",
+  "conv-074": "You are a hotel front desk clerk. The learner is checking out.",
+  "conv-016": "You are the learner's coworker in a work meeting about a project.",
+  "conv-017": "You are a coworker. You and the learner are working late at the office.",
+  "conv-018": "You are the learner's manager. The learner wants to ask for a day off.",
+  "conv-053": "You are a receptionist answering the phone at a company. The learner is calling for someone.",
+  "conv-054": "You are the learner's coworker. The learner arrives late to a meeting.",
+  "conv-063": "You are a job interviewer. The learner is the job candidate.",
+  "conv-073": "You are a coworker. The learner wants to change the time of a meeting.",
+  "conv-078": "You are a coworker on a video call with the learner.",
+  "conv-026": "You are the learner's manager. The learner is not feeling well at work.",
+  "conv-027": "You are a pharmacist. The learner needs medicine.",
+  "conv-057": "You are a receptionist at a doctor's office. The learner wants to make an appointment.",
+  "conv-075": "You are a 911 operator. The learner is calling about an emergency.",
+  "conv-036": "You are a cafe worker. The learner is asking about the Wi-Fi.",
+  "conv-077": "You are a customer support agent on the phone. The learner has a problem with an account.",
+  "conv-041": "You are a cafe worker. The learner lost a wallet here earlier.",
+  "conv-043": "You are the learner's upstairs neighbor. The learner is talking to you about noise.",
+  "conv-072": "You are the building manager. The learner is reporting a problem in the apartment.",
+  "conv-076": "You are a close friend. The learner has good news to share.",
+  "conv-029": "You are a close friend. The learner is stressed and wants to talk.",
+  "conv-031": "You are a close friend. The learner is upset about something.",
+  "conv-032": "You are a close friend. The learner had a bad day and needs comfort.",
+  "conv-034": "You are a close friend. The learner wants your advice on a decision.",
+  "conv-005": "You are a friend chatting with the learner about hobbies.",
+  "conv-048": "You are a friend chatting with the learner about movies.",
+  "conv-050": "You are a dog owner in the park. The learner wants to pet your dog."
+};
 function tutorSystemPrompt(sc) {
   const who = "You are Emma, a warm and patient English conversation partner for a Korean adult beginner.";
-  if (sc.id === "free") return `${who} Chat casually about everyday topics like the learner's day, food, work, hobbies, weekend plans and travel.\n${TUTOR_STYLE}`;
-  const en = (sc.title.match(/\(([^)]+)\)/) || [])[1] || sc.title;
-  const example = sc.lines.map(l => `${l.speaker}: ${l.en}`).join("\n");
-  return `${who} You are doing a role-play: ${en}. The learner plays A and you play B.\n` +
-    `This is how the situation usually goes. Use it as a guide, but always answer what the learner actually says:\n${example}\n${TUTOR_STYLE}`;
+  if (sc.id === "free") return `${who} Chat casually about everyday topics like the learner's day, food, work, hobbies, weekend plans and travel.\n` +
+    `You already started the chat by saying: "${TUTOR_FREE_GREETING}" Do not greet or introduce yourself again.\n${TUTOR_STYLE}`;
+  // 예시 대화를 주면 작은 모델이 그 줄을 그대로 베껴 말한다 → 역할과 장면만 짧게 알려 주고 자유롭게 답하게
+  const scene = TUTOR_SCENES[sc.id] || `You are the other person in this situation: ${(sc.title.match(/\(([^)]+)\)/) || [])[1] || sc.title}.`;
+  return `${who} Role-play: ${scene} The learner speaks first. Stay in your role and answer what the learner actually says.\n${TUTOR_STYLE}`;
 }
-function tutorOpener(sc) {
-  return sc.id === "free"
-    ? "(Start now: greet the learner in one short sentence and ask how their day is going.)"
-    : "(Start the role-play now: say B's first short line to the learner, like a greeting in your role.)";
+// 시작: 자유 대화는 튜터가 정해진 인사로, 역할극은 실제 상황처럼 학습자(A)가 먼저 말을 건다
+const TUTOR_FREE_GREETING = "Hi, I'm Emma! How's your day going?";
+function tutorStartMessages(sc) {
+  // 인사는 시스템 안내에 적어 둔다 (가짜 대화를 넣으면 작은 모델이 인사를 되풀이함)
+  return [{ role: "system", content: tutorSystemPrompt(sc) }];
 }
-const TUTOR_REPLY_OPTS = { temperature: 0.6, top_p: 0.9, max_tokens: 60 };
+const TUTOR_REPLY_OPTS = { temperature: 0.6, top_p: 0.9, max_tokens: 60, presence_penalty: 0.4 };
 
 /** 모델 답 정리: 역할 이름·학습자 대사 이어 쓰기·이모지·한국어·괄호 메모를 걷어 내고 2문장까지만 */
 function cleanTutorSay(raw) {
@@ -265,51 +340,73 @@ function cleanTutorSay(raw) {
     .replace(/\([^)]*\)|\[[^\]]*\]/g, "")
     .replace(/[가-힣ㄱ-ㅎ]+/g, "")
     .replace(/\s+/g, " ").trim()
-    .replace(/^["“']+|["”']+$/g, "").trim();
-  const sentences = s.match(/[^.!?]+[.!?]+["”']?|[^.!?]+$/g) || [];
-  let out = "";
+    .replace(/^["“']+|["”']+$/g, "")
+    .replace(/^[\s,.;:!?-]+/, "").trim();
+  const DOT = "\u2024";   // 숫자 사이 점(6.25)과 Mr./Dr. 같은 약어는 문장 끝이 아니다
+  s = s.replace(/(\d)\.(\d)/g, `$1${DOT}$2`).replace(/\b(Mr|Mrs|Ms|Dr|St)\./g, `$1${DOT}`);
+  const sentences = (s.match(/[^.!?]+[.!?]+["”']?|[^.!?]+$/g) || []).map(x => x.split(DOT).join("."));
+  let out = "", full = 0;
   for (const sen of sentences) {
     const next = (out + " " + sen.trim()).trim();
-    if (out && (next.split(" ").length > 24 || out.match(/[.!?]/g).length >= 2)) break;
+    if (out && (next.split(" ").length > 24 || full >= 2)) break;
     out = next;
+    if (sen.trim().split(" ").length > 2) full++;   // "Hello!", "Sure." 같은 짧은 말은 문장 수에 넣지 않는다
   }
   return out;
 }
 
-// 교정: 학습자 문장 하나만 보고 고친다 (평범한 말은 OK)
-function tutorCorrectionMessages(text, partnerLine) {
-  return [
-    { role: "system", content: "You are a careful English teacher. A Korean beginner said one sentence out loud in a casual conversation. Fix only clear grammar or word mistakes. Ignore punctuation and capital letters. Keep the learner's meaning and keep it simple and casual. If the sentence is already fine, answer only: OK" },
-    { role: "user", content: (partnerLine ? `The partner said: "${partnerLine}"\n` : "") + `The learner said: "${text}"\nWrite only the corrected sentence, or OK.` }
-  ];
+// 교정은 두 단계: ① 맞는 문장인지 Yes/No로만 판정 → ② 틀렸을 때만 고친 문장을 만든다
+// (한 번에 고치라고 하면 맞는 문장까지 바꾸는 일이 잦아서. 평가: 틀린 문장 14개 중 12개 교정, 맞는 문장 14개 중 1개만 손댐)
+const TUTOR_CHECK_EXAMPLES = [
+  ["I goed to school yesterday.", "No"], ["Can I get a coffee, please?", "Yes"], ["I want sandwich.", "No"], ["I'm fine. And you?", "Yes"],
+  ["Where is bus stop?", "No"], ["Can I pay in cash?", "Yes"], ["Please drive more careful.", "No"], ["Do you have any plans this weekend?", "Yes"]
+];
+function tutorGrammarCheckMessages(text) {
+  const msgs = [{ role: "system", content: "Is the English sentence grammatically correct? Missing a/an/the, wrong tense, missing plural -s or wrong word forms make it incorrect. Answer only Yes or No." }];
+  TUTOR_CHECK_EXAMPLES.forEach(([q, a]) => msgs.push({ role: "user", content: q }, { role: "assistant", content: a }));
+  msgs.push({ role: "user", content: text });
+  return msgs;
+}
+const TUTOR_CHECK_OPTS = { temperature: 0, max_tokens: 3 };
+const tutorCheckSaysWrong = out => /^\s*no\b/i.test(out || "");
+
+const TUTOR_CORRECTION_EXAMPLES = [
+  ["I goed to school yesterday.", "I went to school yesterday."],
+  ["Can I get a coffee, please?", "OK"],
+  ["I want sandwich.", "I want a sandwich."],
+  ["Thank you so much!", "OK"],
+  ["Where is bus stop?", "Where is the bus stop?"],
+  ["I need two ticket.", "I need two tickets."],
+  ["I'm here for a business trip.", "OK"],
+  ["Please drive more careful.", "Please drive more carefully."],
+  ["I visit Seoul last year.", "I visited Seoul last year."],
+  ["Do you have any plans this weekend?", "OK"]
+];
+function tutorCorrectionMessages(text) {
+  const msgs = [{ role: "system", content: "You correct sentences spoken by Korean beginners learning English. Fix grammar mistakes, especially: missing a/an/the, wrong verb tense, missing plural -s, and wrong word forms (bored/boring, slow/slowly). Keep the meaning and the other words the same. Ignore punctuation and capital letters. If the sentence is already correct, answer exactly: OK" }];
+  TUTOR_CORRECTION_EXAMPLES.forEach(([q, a]) => msgs.push({ role: "user", content: q }, { role: "assistant", content: a }));
+  msgs.push({ role: "user", content: text });
+  return msgs;
 }
 const TUTOR_CORRECTION_OPTS = { temperature: 0, max_tokens: 40 };
 const tutorNorm = x => (x || "").toLowerCase().replace(/[’]/g, "'").replace(/[^a-z0-9' ]/g, " ").replace(/\s+/g, " ").trim();
 function parseTutorCorrection(original, out) {
-  let c = ((out || "").trim().split("\n")[0] || "")
-    .replace(/^(corrected( sentence)?|correction|answer|better)\s*:\s*/i, "")
+  let c = ((out || "").trim().split("\n")[0] || "").trim();
+  const quoted = c.match(/["“]([^"”]+)["”]/);                            // 'The learner said: "..."' 같은 군말이면 따옴표 안만
+  if (quoted && /said|correct|sentence|answer/i.test(c)) c = quoted[1];
+  c = c.replace(/^(corrected( sentence)?|correction|answer|better|the correct sentence is)\s*:\s*/i, "")
     .replace(/^["“']+|["”']+$/g, "").trim();
   if (!c || /^ok\b/i.test(c) || /[가-힣]/.test(c)) return "";
-  if (tutorNorm(c) === tutorNorm(original)) return "";                 // 대소문자·문장부호만 다르면 고칠 것 없음
-  const lw = tutorNorm(original).split(" ").length, cw = tutorNorm(c).split(" ").length;
-  if (cw > lw * 2 + 4) return "";                                       // 아예 새 문장을 지어낸 경우는 버린다
+  const a = tutorNorm(original), b = tutorNorm(c);
+  if (a === b) return "";                                                // 대소문자·문장부호만 다르면 고칠 것 없음
+  const aw = a.split(" "), bw = b.split(" ");
+  if (bw.length > aw.length * 2 + 4 || bw.length < aw.length / 2) return "";   // 아예 다른 문장은 버린다
+  const common = aw.filter(w => bw.includes(w)).length;
+  if (common < Math.ceil(aw.length * 0.5)) return "";                     // 원래 문장과 겹치는 말이 절반도 안 되면 버린다
   return c;
 }
 /** 짧은 대답(Yes, Thank you 등)은 고칠 게 거의 없으니 건너뛴다 */
 function tutorNeedsCheck(text) { return tutorNorm(text).split(" ").filter(Boolean).length >= 3; }
-
-// 해석: 튜터 말을 자연스러운 한국어로 (버튼을 누를 때만)
-function tutorTranslateMessages(text) {
-  return [
-    { role: "system", content: "Translate the English sentence into natural, casual Korean. Write only the Korean translation." },
-    { role: "user", content: text }
-  ];
-}
-const TUTOR_TRANSLATE_OPTS = { temperature: 0, max_tokens: 80 };
-function cleanTutorTranslation(out) {
-  const line = ((out || "").trim().split("\n").find(l => /[가-힣]/.test(l)) || "").replace(/^(번역|Korean|Translation)\s*:\s*/i, "").replace(/^["“']+|["”']+$/g, "").trim();
-  return /[가-힣]/.test(line) ? line : "";
-}
 
 // 모델 호출은 한 번에 하나씩 (답·교정·해석·피드백이 겹치지 않게 줄 세운다)
 let tutorQueue = Promise.resolve();
@@ -325,13 +422,23 @@ async function startTutorSession() {
   stopTutorActivity();
   const token = ++tutorSessionToken;
   const sc = tutorScenario();
-  tutorMessages = [{ role: "system", content: tutorSystemPrompt(sc) }, { role: "user", content: tutorOpener(sc) }];
+  tutorMessages = tutorStartMessages(sc);
   tutorLearnerLines = [];
-  tutorHintShown = false;
+  tutorCorrections = [];
   tutorEl("tutor-log").innerHTML = "";
   tutorEl("tutor-feedback").classList.add("hidden");
-  renderTutorHint();
-  await tutorReply(token, null);
+  if (sc.id === "free") {
+    // 자유 대화: 튜터가 정해진 인사로 바로 시작 (모델 계산 없이)
+    tutorHintShown = false; renderTutorHint();
+    const b = addTutorBubble("tutor", TUTOR_FREE_GREETING);
+    b.onclick = () => speakTutor(TUTOR_FREE_GREETING, tutorSessionToken);
+    addSlowButton(b, TUTOR_FREE_GREETING);
+    await speakTutor(TUTOR_FREE_GREETING, token);
+  } else {
+    // 역할극: 실제 상황처럼 내가 먼저 말을 건다. 첫 마디는 힌트로 보여 준다
+    tutorHintShown = true; renderTutorHint();
+    setTutorStatus("먼저 말을 걸어 보세요 (힌트 참고)", "");
+  }
 }
 
 /** 학습자 문장 보내기 (음성 인식 결과 / 입력창) */
@@ -342,10 +449,9 @@ async function sendTutorText(text) {
   const token = tutorSessionToken;
   tutorLearnerLines.push(text);
   const myBubble = addTutorBubble("me", text);
-  const partnerLine = [...tutorMessages].reverse().find(m => m.role === "assistant");
   tutorMessages.push({ role: "user", content: text });
   tutorHintShown = false; renderTutorHint();
-  await tutorReply(token, { text, bubble: myBubble, partner: partnerLine ? partnerLine.content : "" });
+  await tutorReply(token, { text, bubble: myBubble });
   return true;
 }
 function sendTutorTyped() {
@@ -381,17 +487,19 @@ async function tutorReply(token, learner) {
   const text = cleanTutorSay(raw) || "Sorry, could you say that again?";
   bubble.querySelector(".tutor-text").textContent = text;
   bubble.onclick = () => speakTutor(text, tutorSessionToken);
-  addTranslateButton(bubble, text);
+  addSlowButton(bubble, text);
   tutorMessages.push({ role: "assistant", content: text });
   const speaking = speakTutor(text, token);
   // 튜터가 말하는 동안 교정 (말풍선은 학습자 문장 아래)
   if (learner && tutorNeedsCheck(learner.text)) {
     try {
       const fix = await tutorEngineCall(async () => {
-        const r = await tutorEngine.chat.completions.create({ messages: tutorCorrectionMessages(learner.text, learner.partner), ...TUTOR_CORRECTION_OPTS });
+        const v = await tutorEngine.chat.completions.create({ messages: tutorGrammarCheckMessages(learner.text), ...TUTOR_CHECK_OPTS });
+        if (!tutorCheckSaysWrong(v.choices[0].message.content)) return "";
+        const r = await tutorEngine.chat.completions.create({ messages: tutorCorrectionMessages(learner.text), ...TUTOR_CORRECTION_OPTS });
         return parseTutorCorrection(learner.text, r.choices[0].message.content);
       });
-      if (fix && token === tutorSessionToken) addTutorTip(learner.bubble, fix);
+      if (fix && token === tutorSessionToken) { addTutorTip(learner.bubble, fix); tutorCorrections.push({ said: learner.text, better: fix }); }
     } catch (e) { console.warn("교정 실패", e); }
   }
   tutorBusy = false;
@@ -404,30 +512,26 @@ function tutorContext() {
   const sys = tutorMessages[0], rest = tutorMessages.slice(1);
   if (rest.length <= 14) return tutorMessages;
   let tail = rest.slice(-10);
-  if (tail[0].role !== "user") tail = tail.slice(1);
-  return [sys, rest[0], rest[1], ...tail];
+  while (tail.length && tail[0].role !== "user") tail = tail.slice(1);
+  return [sys, ...tail];
 }
 
-function addTranslateButton(bubble, text) {
+// 천천히 듣기: 초보자가 못 알아들었을 때 같은 문장을 느리게 한 번 더
+function addSlowButton(bubble, text) {
   const btn = document.createElement("button");
-  btn.className = "tutor-kr-btn";
-  btn.textContent = "해석";
-  btn.onclick = async e => {
-    e.stopPropagation();
-    if (btn.disabled) return;
-    btn.disabled = true; btn.textContent = "…";
-    try {
-      const kr = await tutorEngineCall(async () => {
-        const r = await tutorEngine.chat.completions.create({ messages: tutorTranslateMessages(text), ...TUTOR_TRANSLATE_OPTS });
-        return cleanTutorTranslation(r.choices[0].message.content);
-      });
-      const line = document.createElement("div"); line.className = "tutor-kr";
-      line.textContent = kr || "(해석을 만들지 못했어요)";
-      bubble.appendChild(line);
-      btn.remove();
-    } catch (err) { btn.disabled = false; btn.textContent = "해석"; }
-  };
+  btn.className = "tutor-slow-btn";
+  btn.textContent = "🐢 천천히";
+  btn.onclick = e => { e.stopPropagation(); speakTutorSlow(text); };
   bubble.appendChild(btn);
+}
+function speakTutorSlow(text) {
+  stopTutorSpeech();
+  // 말하기 속도 설정을 이 한 문장에만 낮춘다 (음성 요청은 호출 순간에 속도를 읽으므로 바로 되돌려도 된다)
+  const keep = userRate;
+  userRate = Math.max(0.5, Math.min(keep, 1) * 0.7);
+  const p = speakTutor(text, tutorSessionToken);
+  userRate = keep;
+  return p;
 }
 
 function addTutorBubble(who, text) {
@@ -523,46 +627,33 @@ function renderTutorHint() {
   box.querySelector(".tutor-hint-kr").textContent = h.kr;
 }
 
-async function tutorFeedback() {
+/** 오늘 대화 피드백: 대화 중 문장마다 확인한 교정 결과를 모아 보여 준다
+ *  (작은 모델에게 한 번에 여러 문장을 평가시키면 실수를 놓쳐서, 문장별 2단계 확인 결과를 그대로 쓴다) */
+function tutorFeedback() {
   const box = tutorEl("tutor-feedback");
-  if (!tutorEngine || tutorBusy) return;
   if (tutorLearnerLines.length === 0) { alert("먼저 튜터와 몇 마디 나눠 보세요."); return; }
-  stopTutorSpeech();
-  tutorBusy = true;
-  setTutorStatus("오늘 대화를 살펴보는 중…", "thinking");
   box.classList.remove("hidden");
-  box.innerHTML = `<div class="tutor-feedback-title">📝 오늘 대화 피드백</div><div class="tutor-feedback-body">살펴보는 중…</div>`;
-  const lines = tutorLearnerLines.slice(-8).map((l, i) => `${i + 1}. ${l}`).join("\n");
-  try {
-    const r = await tutorEngineCall(() => tutorEngine.chat.completions.create({
-      messages: [
-        { role: "system", content: "You are a kind English teacher for Korean beginners. Be brief and accurate." },
-        { role: "user", content: `These are sentences a beginner said in an English conversation:\n${lines}\n\nPick up to 3 sentences that have a mistake or sound unnatural. For each, write exactly one line in this format:\n<original> -> <better sentence>\nIf every sentence is fine, write only: Great job!` }
-      ],
-      temperature: 0.2, max_tokens: 160
-    }));
-    const out = (r.choices[0].message.content || "").trim();
-    const items = out.split("\n").map(l => l.trim()).filter(l => /->|→/.test(l)).slice(0, 3);
-    const body = box.querySelector(".tutor-feedback-body");
-    if (items.length === 0) body.textContent = "아주 좋아요! 눈에 띄는 실수가 없어요. 👏";
-    else {
-      body.innerHTML = "";
-      items.forEach(l => {
-        const [a, b] = l.replace(/^\d+[.)]\s*/, "").split(/\s*(?:->|→)\s*/);
-        const row = document.createElement("div"); row.className = "tutor-fb-row";
-        row.innerHTML = `<span class="from"></span><span class="arrow">→</span><span class="to"></span>`;
-        row.querySelector(".from").textContent = (a || "").replace(/^["“]|["”]$/g, "");
-        row.querySelector(".to").textContent = (b || "").replace(/^["“]|["”]$/g, "");
-        body.appendChild(row);
-      });
-    }
-    const note = document.createElement("div"); note.className = "tutor-fb-note"; note.textContent = "작은 AI가 만든 참고용 피드백이에요.";
-    box.appendChild(note);
-  } catch (e) {
-    box.querySelector(".tutor-feedback-body").textContent = "피드백을 만들지 못했어요.";
-  }
-  tutorBusy = false;
-  setTutorStatus("마이크를 누르고 영어로 말해 보세요", "");
+  box.innerHTML = `<div class="tutor-feedback-title">📝 오늘 대화 피드백</div><div class="tutor-feedback-body"></div>`;
+  const body = box.querySelector(".tutor-feedback-body");
+  const n = tutorLearnerLines.length, fixes = tutorCorrections.slice(-5);
+  const summary = document.createElement("div");
+  summary.className = "tutor-fb-summary";
+  summary.textContent = fixes.length === 0
+    ? `영어로 ${n}번 말했어요. 눈에 띄는 실수 없이 잘했어요! 👏`
+    : `영어로 ${n}번 말했어요. 이렇게 고쳐 말하면 더 자연스러워요.`;
+  body.appendChild(summary);
+  fixes.forEach(({ said, better }) => {
+    const row = document.createElement("div"); row.className = "tutor-fb-row";
+    row.innerHTML = `<span class="from"></span><span class="arrow">→</span><span class="to"></span>`;
+    row.querySelector(".from").textContent = said;
+    row.querySelector(".to").textContent = better;
+    row.onclick = () => speakTutor(better, tutorSessionToken);
+    body.appendChild(row);
+  });
+  const note = document.createElement("div"); note.className = "tutor-fb-note";
+  note.textContent = fixes.length ? "고친 문장을 누르면 들을 수 있어요. AI 교정은 참고용이에요." : "AI 교정은 참고용이에요.";
+  box.appendChild(note);
+  box.scrollIntoView({ behavior: "smooth", block: "nearest" });
 }
 
 // ---------- 튜터 얼굴 (입모양) ----------
