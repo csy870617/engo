@@ -602,7 +602,10 @@ function tutorEnv() {
     : /FBAN|FBAV|FB_IAB/i.test(ua) ? "페이스북" : /\bLine\//i.test(ua) ? "라인" : /BAND\//i.test(ua) ? "밴드" : /DaumApps/i.test(ua) ? "다음"
     : /; wv\)/.test(ua) ? "앱" : null;
   const standalone = (window.matchMedia && matchMedia("(display-mode: standalone)").matches) || navigator.standalone === true;
-  return { inApp, standalone, android: /Android/i.test(ua), ios: /iPhone|iPad|iPod/i.test(ua) || (/Macintosh/.test(ua) && navigator.maxTouchPoints > 1) };
+  // 다른 페이지(앱) 안에 끼워 넣어진 화면: 바깥 페이지가 마이크를 허락해야(allow="microphone") 쓸 수 있다
+  let inFrame = false;
+  try { inFrame = window.self !== window.top; } catch (e) { inFrame = true; }
+  return { inApp, standalone, inFrame, android: /Android/i.test(ua), ios: /iPhone|iPad|iPod/i.test(ua) || (/Macintosh/.test(ua) && navigator.maxTouchPoints > 1) };
 }
 /** 바깥 브라우저로 여는 주소 (열 수 없는 곳이면 null → 링크 복사로 안내) */
 function tutorExternalUrl(env) {
@@ -621,11 +624,22 @@ function openTutorInBrowser() {
   if (navigator.clipboard) navigator.clipboard.writeText(target).then(done, () => prompt("이 주소를 복사해 사파리에서 열어 주세요", target));
   else prompt("이 주소를 복사해 사파리에서 열어 주세요", target);
 }
+/** 끼워 넣어진 화면에서 벗어나 새 창(브라우저 탭)으로 연다 */
+function openTutorInNewWindow() {
+  const target = location.origin + location.pathname + "?go=tutor";
+  const w = window.open(target, "_blank", "noopener");
+  if (!w) { try { window.top.location.href = target; } catch (e) { location.href = target; } }
+}
 function renderTutorEnvNotice() {
   const box = tutorEl("tutor-env");
   if (!box) return;
   const env = tutorEnv();
-  box.classList.toggle("hidden", !env.inApp);
+  box.classList.toggle("hidden", !env.inApp && !env.inFrame);
+  if (!env.inApp && env.inFrame) {
+    box.innerHTML = `<div class="tutor-env-text">다른 앱 화면 안에서 열려 있어요. 마이크가 안 되면 새 창으로 열어 주세요.</div>` +
+      `<button class="btn-main tutor-env-btn" onclick="openTutorInNewWindow()">새 창으로 열기</button>`;
+    return;
+  }
   if (!env.inApp) return;
   box.innerHTML = `<div class="tutor-env-text">${env.inApp === "앱" ? "앱 안의 브라우저" : env.inApp + " 안의 브라우저"}에서는 일부 기능이 제한될 수 있어요. 문제가 있으면 바깥 브라우저로 열어 주세요.</div>` +
     `<button class="btn-main tutor-env-btn" onclick="openTutorInBrowser()">${env.ios ? "사파리로 열기" : "크롬으로 열기"}</button>`;
@@ -633,6 +647,10 @@ function renderTutorEnvNotice() {
 /** 마이크 권한이 막혔을 때: 환경마다 푸는 방법이 달라서 맞는 안내를 보여 준다 */
 function showMicPermissionHelp() {
   const env = tutorEnv();
+  if (env.inFrame && !env.inApp) {
+    if (confirm("이 화면은 다른 앱 화면 안에 들어 있어서 마이크가 막혀 있어요.\n(크롬 설정을 바꿔도 풀리지 않아요)\n\n새 창으로 열면 마이크를 쓸 수 있어요. 지금 열까요?")) openTutorInNewWindow();
+    return;
+  }
   if (env.inApp) {
     const app = env.inApp === "앱" ? "이 앱" : env.inApp;
     if (confirm(`마이크 사용이 막혀 있어요.\n${env.android ? `휴대폰 설정 → 애플리케이션 → ${app} → 권한 → 마이크 '허용'` : `설정 앱 → ${app} → 마이크 켜기`} 후 다시 시도해 주세요.\n\n또는 ${env.ios ? "사파리" : "크롬"}로 열어서 쓸 수도 있어요. 지금 열까요?`)) openTutorInBrowser();
@@ -658,6 +676,7 @@ const TUTOR_MIC_MSG = {
 // 마이크 권한 상태를 미리 알아 둔다 (이미 '차단'이면 눌러도 권한 창이 안 뜨므로 바로 푸는 방법을 안내)
 let tutorMicDenied = false;
 function tutorCheckMicPermission() {
+  if (tutorEnv().inFrame) { tutorMicDenied = false; return; }   // 끼워 넣은 화면에서는 '차단'으로 잘못 나오기도 해서 실제로 켜 본다
   try {
     if (!navigator.permissions || !navigator.permissions.query) return;
     navigator.permissions.query({ name: "microphone" }).then(st => {
@@ -717,6 +736,10 @@ function toggleTutorMic() {
     if (e.error === "service-not-allowed" || e.error === "network" || e.error === "language-not-supported") {
       tutorUseWhisper = true;
       setTimeout(() => setTutorStatus("다시 눌러 주세요. 이제 기기 안 음성 인식으로 들을게요", ""), 0);
+    }
+    else if (e.error === "not-allowed" && !tutorUseWhisper && tutorEnv().inFrame) {
+      tutorUseWhisper = true;                      // 마이크를 직접 받는 방식은 허락되는 경우가 있다 (기타 튜너 방식)
+      setTimeout(() => toggleTutorWhisperMic(), 0);
     }
     else if (e.error === "not-allowed") showMicPermissionHelp();
     else if (TUTOR_MIC_MSG[e.error]) alert(TUTOR_MIC_MSG[e.error]);
