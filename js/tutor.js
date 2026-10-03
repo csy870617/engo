@@ -65,9 +65,18 @@ function ensureTutorEngine(progress) {
   tutorEngineLoading = (async () => {
     const lib = await loadTutorLib();
     tutorWorker = new Worker(TUTOR_WORKER_URL, { type: "module" });
-    const engine = await lib.CreateWebWorkerMLCEngine(tutorWorker, tutorModelId, {
-      initProgressCallback: r => tutorProgressCb && tutorProgressCb(r.progress || 0, r.text || "")
+    // 작업자가 뜨지 못하거나(네트워크 등) 진행이 한참 멈추면 무한 대기 대신 오류로 끝낸다
+    let lastProgress = Date.now();
+    const failed = new Promise((_, reject) => {
+      tutorWorker.addEventListener("error", e => reject(new Error("AI 엔진을 불러오지 못했어요 (" + ((e && e.message) || "네트워크") + ")")));
+      const watch = setInterval(() => {
+        if (tutorEngine || !tutorWorker) return clearInterval(watch);
+        if (Date.now() - lastProgress > 90000) { clearInterval(watch); reject(new Error("응답이 없어 중단했어요. 인터넷 연결을 확인해 주세요.")); }
+      }, 5000);
     });
+    const engine = await Promise.race([lib.CreateWebWorkerMLCEngine(tutorWorker, tutorModelId, {
+      initProgressCallback: r => { lastProgress = Date.now(); tutorProgressCb && tutorProgressCb(r.progress || 0, r.text || ""); }
+    }), failed]);
     tutorEngine = engine;
     try { localStorage.setItem("tutorModelReady", "true"); } catch (e) {}
     // 불러오는 사이에 다른 화면으로 갔다면 잠시 뒤 메모리에서 내린다
@@ -216,23 +225,98 @@ function fillTutorScenarios() {
 }
 function changeTutorScenario() { tutorScenarioId = tutorEl("tutor-scenario").value; startTutorSession(); }
 
+// ---------- 프롬프트·후처리 (평가 스크립트도 같은 함수를 쓴다) ----------
+// 답하기와 교정을 나눈다: 작은 모델은 한 번에 한 가지 일을 시킬 때 훨씬 정확하다
+const TUTOR_STYLE = [
+  "How to talk:",
+  "- Say 1 or 2 short sentences, 15 words or fewer in total.",
+  "- Use only very common everyday words and simple grammar for a beginner. No idioms, no slang.",
+  "- End with one simple question to keep the conversation going.",
+  "- If the learner's English is broken, guess what they mean and answer kindly. Do not correct them.",
+  "- Stay in your role. Never say you are an AI. Never use Korean, lists, emojis or notes in brackets."
+].join("\n");
 function tutorSystemPrompt(sc) {
-  const rules = [
-    "Rules:",
-    "- Reply in 1 or 2 short, simple sentences (under 20 words in total).",
-    "- Use easy, everyday spoken English. Never use Korean.",
-    "- Keep the conversation going with one simple question.",
-    "- If the learner's last message has a clear grammar mistake or sounds unnatural, add one final line: Tip: <the natural way to say it>",
-    "- Do not explain grammar. Do not write anything else."
-  ].join("\n");
-  if (sc.id === "free") {
-    return "You are Emma, a friendly English conversation partner for a Korean adult who is a beginner. Chat casually about daily life, food, work, hobbies, travel and plans.\n" + rules;
-  }
+  const who = "You are Emma, a warm and patient English conversation partner for a Korean adult beginner.";
+  if (sc.id === "free") return `${who} Chat casually about everyday topics like the learner's day, food, work, hobbies, weekend plans and travel.\n${TUTOR_STYLE}`;
   const en = (sc.title.match(/\(([^)]+)\)/) || [])[1] || sc.title;
   const example = sc.lines.map(l => `${l.speaker}: ${l.en}`).join("\n");
-  return `You are Emma, a friendly English conversation partner for a Korean adult who is a beginner. You are doing a role-play: ${en}.\n` +
-    `The learner plays A and you play B. Here is how this situation usually goes (use it as a guide, but answer what the learner actually says):\n${example}\n` +
-    "Stay in your role as B.\n" + rules;
+  return `${who} You are doing a role-play: ${en}. The learner plays A and you play B.\n` +
+    `This is how the situation usually goes. Use it as a guide, but always answer what the learner actually says:\n${example}\n${TUTOR_STYLE}`;
+}
+function tutorOpener(sc) {
+  return sc.id === "free"
+    ? "(Start now: greet the learner in one short sentence and ask how their day is going.)"
+    : "(Start the role-play now: say B's first short line to the learner, like a greeting in your role.)";
+}
+const TUTOR_REPLY_OPTS = { temperature: 0.6, top_p: 0.9, max_tokens: 60 };
+
+/** 모델 답 정리: 역할 이름·학습자 대사 이어 쓰기·이모지·한국어·괄호 메모를 걷어 내고 2문장까지만 */
+function cleanTutorSay(raw) {
+  const lines = (raw || "").replace(/\r/g, "").split("\n");
+  const kept = [];
+  for (const line of lines) {
+    if (/^\s*\**\s*(A|Learner|User|Student|You)\s*\**\s*:/i.test(line)) break;   // 학습자 대사까지 지어내면 거기서 끊는다
+    if (/^\s*\**\s*(Tip|Note|Correction)\s*\**\s*:/i.test(line)) break;
+    kept.push(line.replace(/^\s*\**\s*(B|Emma|Tutor|Teacher)\s*\**\s*:\s*/i, ""));
+  }
+  let s = kept.join(" ")
+    .replace(/[*_#`~]/g, "")
+    .replace(/\p{Extended_Pictographic}/gu, "")
+    .replace(/\([^)]*\)|\[[^\]]*\]/g, "")
+    .replace(/[가-힣ㄱ-ㅎ]+/g, "")
+    .replace(/\s+/g, " ").trim()
+    .replace(/^["“']+|["”']+$/g, "").trim();
+  const sentences = s.match(/[^.!?]+[.!?]+["”']?|[^.!?]+$/g) || [];
+  let out = "";
+  for (const sen of sentences) {
+    const next = (out + " " + sen.trim()).trim();
+    if (out && (next.split(" ").length > 24 || out.match(/[.!?]/g).length >= 2)) break;
+    out = next;
+  }
+  return out;
+}
+
+// 교정: 학습자 문장 하나만 보고 고친다 (평범한 말은 OK)
+function tutorCorrectionMessages(text, partnerLine) {
+  return [
+    { role: "system", content: "You are a careful English teacher. A Korean beginner said one sentence out loud in a casual conversation. Fix only clear grammar or word mistakes. Ignore punctuation and capital letters. Keep the learner's meaning and keep it simple and casual. If the sentence is already fine, answer only: OK" },
+    { role: "user", content: (partnerLine ? `The partner said: "${partnerLine}"\n` : "") + `The learner said: "${text}"\nWrite only the corrected sentence, or OK.` }
+  ];
+}
+const TUTOR_CORRECTION_OPTS = { temperature: 0, max_tokens: 40 };
+const tutorNorm = x => (x || "").toLowerCase().replace(/[’]/g, "'").replace(/[^a-z0-9' ]/g, " ").replace(/\s+/g, " ").trim();
+function parseTutorCorrection(original, out) {
+  let c = ((out || "").trim().split("\n")[0] || "")
+    .replace(/^(corrected( sentence)?|correction|answer|better)\s*:\s*/i, "")
+    .replace(/^["“']+|["”']+$/g, "").trim();
+  if (!c || /^ok\b/i.test(c) || /[가-힣]/.test(c)) return "";
+  if (tutorNorm(c) === tutorNorm(original)) return "";                 // 대소문자·문장부호만 다르면 고칠 것 없음
+  const lw = tutorNorm(original).split(" ").length, cw = tutorNorm(c).split(" ").length;
+  if (cw > lw * 2 + 4) return "";                                       // 아예 새 문장을 지어낸 경우는 버린다
+  return c;
+}
+/** 짧은 대답(Yes, Thank you 등)은 고칠 게 거의 없으니 건너뛴다 */
+function tutorNeedsCheck(text) { return tutorNorm(text).split(" ").filter(Boolean).length >= 3; }
+
+// 해석: 튜터 말을 자연스러운 한국어로 (버튼을 누를 때만)
+function tutorTranslateMessages(text) {
+  return [
+    { role: "system", content: "Translate the English sentence into natural, casual Korean. Write only the Korean translation." },
+    { role: "user", content: text }
+  ];
+}
+const TUTOR_TRANSLATE_OPTS = { temperature: 0, max_tokens: 80 };
+function cleanTutorTranslation(out) {
+  const line = ((out || "").trim().split("\n").find(l => /[가-힣]/.test(l)) || "").replace(/^(번역|Korean|Translation)\s*:\s*/i, "").replace(/^["“']+|["”']+$/g, "").trim();
+  return /[가-힣]/.test(line) ? line : "";
+}
+
+// 모델 호출은 한 번에 하나씩 (답·교정·해석·피드백이 겹치지 않게 줄 세운다)
+let tutorQueue = Promise.resolve();
+function tutorEngineCall(fn) {
+  const run = tutorQueue.then(fn, fn);
+  tutorQueue = run.catch(() => {});
+  return run;
 }
 
 // ---------- 대화 ----------
@@ -241,17 +325,13 @@ async function startTutorSession() {
   stopTutorActivity();
   const token = ++tutorSessionToken;
   const sc = tutorScenario();
-  tutorMessages = [{ role: "system", content: tutorSystemPrompt(sc) }];
+  tutorMessages = [{ role: "system", content: tutorSystemPrompt(sc) }, { role: "user", content: tutorOpener(sc) }];
   tutorLearnerLines = [];
   tutorHintShown = false;
   tutorEl("tutor-log").innerHTML = "";
   tutorEl("tutor-feedback").classList.add("hidden");
   renderTutorHint();
-  const opener = sc.id === "free"
-    ? "(Start the conversation now: greet the learner in one short sentence and ask how their day is going.)"
-    : "(Start the role-play now: say B's first short line, like greeting the learner in your role.)";
-  tutorMessages.push({ role: "user", content: opener });
-  await tutorReply(token);
+  await tutorReply(token, null);
 }
 
 /** 학습자 문장 보내기 (음성 인식 결과 / 입력창) */
@@ -261,10 +341,11 @@ async function sendTutorText(text) {
   stopTutorSpeech();
   const token = tutorSessionToken;
   tutorLearnerLines.push(text);
-  addTutorBubble("me", text);
+  const myBubble = addTutorBubble("me", text);
+  const partnerLine = [...tutorMessages].reverse().find(m => m.role === "assistant");
   tutorMessages.push({ role: "user", content: text });
   tutorHintShown = false; renderTutorHint();
-  await tutorReply(token);
+  await tutorReply(token, { text, bubble: myBubble, partner: partnerLine ? partnerLine.content : "" });
   return true;
 }
 function sendTutorTyped() {
@@ -275,21 +356,21 @@ function sendTutorTyped() {
   sendTutorText(t);
 }
 
-/** 모델 답 만들기 → 말풍선 → 소리 내어 읽기 */
-async function tutorReply(token) {
+/** 답 만들기 → 말풍선 → 소리 내어 읽기. 읽는 동안 학습자 문장 교정을 만들어 아래에 붙인다 */
+async function tutorReply(token, learner) {
   tutorBusy = true;
   setTutorStatus("생각 중…", "thinking");
   const bubble = addTutorBubble("tutor", "…");
   let raw = "";
   try {
-    const chunks = await tutorEngine.chat.completions.create({
-      messages: tutorContext(), stream: true, temperature: 0.6, top_p: 0.9, max_tokens: 90
+    await tutorEngineCall(async () => {
+      const chunks = await tutorEngine.chat.completions.create({ messages: tutorContext(), stream: true, ...TUTOR_REPLY_OPTS });
+      for await (const c of chunks) {
+        if (token !== tutorSessionToken) { try { tutorEngine.interruptGenerate(); } catch (e) {} break; }
+        raw += (c.choices[0] && c.choices[0].delta && c.choices[0].delta.content) || "";
+        bubble.querySelector(".tutor-text").textContent = cleanTutorSay(raw) || "…";
+      }
     });
-    for await (const c of chunks) {
-      if (token !== tutorSessionToken) { try { tutorEngine.interruptGenerate(); } catch (e) {} break; }
-      raw += (c.choices[0] && c.choices[0].delta && c.choices[0].delta.content) || "";
-      bubble.querySelector(".tutor-text").textContent = splitTutorReply(raw).say || "…";
-    }
   } catch (e) {
     console.warn("튜터 답 생성 실패", e);
     if (token === tutorSessionToken) { bubble.querySelector(".tutor-text").textContent = "(답을 만들지 못했어요. 다시 말해 주세요.)"; setTutorStatus("다시 시도해 주세요", ""); }
@@ -297,15 +378,25 @@ async function tutorReply(token) {
     return;
   }
   if (token !== tutorSessionToken) { tutorBusy = false; return; }
-  const { say, tip } = splitTutorReply(raw);
-  const text = say || "Sorry, could you say that again?";
+  const text = cleanTutorSay(raw) || "Sorry, could you say that again?";
   bubble.querySelector(".tutor-text").textContent = text;
   bubble.onclick = () => speakTutor(text, tutorSessionToken);
-  if (tip) addTutorTip(bubble, tip);
-  // 모델에게는 교정(Tip) 없이 대화 내용만 남겨 대화 흐름이 흔들리지 않게
+  addTranslateButton(bubble, text);
   tutorMessages.push({ role: "assistant", content: text });
+  const speaking = speakTutor(text, token);
+  // 튜터가 말하는 동안 교정 (말풍선은 학습자 문장 아래)
+  if (learner && tutorNeedsCheck(learner.text)) {
+    try {
+      const fix = await tutorEngineCall(async () => {
+        const r = await tutorEngine.chat.completions.create({ messages: tutorCorrectionMessages(learner.text, learner.partner), ...TUTOR_CORRECTION_OPTS });
+        return parseTutorCorrection(learner.text, r.choices[0].message.content);
+      });
+      if (fix && token === tutorSessionToken) addTutorTip(learner.bubble, fix);
+    } catch (e) { console.warn("교정 실패", e); }
+  }
   tutorBusy = false;
-  await speakTutor(text, token);
+  if (!tutorSpeaking && token === tutorSessionToken) setTutorStatus("마이크를 누르고 영어로 말해 보세요", "");
+  await speaking;
 }
 
 /** 오래된 대화는 덜어서 보낸다 (작은 모델의 기억 범위 안에서) */
@@ -317,16 +408,26 @@ function tutorContext() {
   return [sys, rest[0], rest[1], ...tail];
 }
 
-/** 모델 출력 정리: 말할 문장과 교정 팁을 나눈다 */
-function splitTutorReply(raw) {
-  let s = (raw || "").replace(/\r/g, "");
-  let tip = "";
-  const m = s.match(/(?:^|\n)\s*\**\s*Tip\s*\**\s*:\s*(.+)/i);
-  if (m) { tip = m[1].trim(); s = s.slice(0, m.index); }
-  s = s.split("\n").map(l => l.replace(/^\s*(B|Emma|Tutor)\s*:\s*/i, "").trim()).filter(Boolean).join(" ");
-  s = s.replace(/^["“]|["”]$/g, "").replace(/\s*\([^)]*\)\s*$/, "").trim();
-  tip = tip.replace(/^["“]|["”]$/g, "").trim();
-  return { say: s, tip };
+function addTranslateButton(bubble, text) {
+  const btn = document.createElement("button");
+  btn.className = "tutor-kr-btn";
+  btn.textContent = "해석";
+  btn.onclick = async e => {
+    e.stopPropagation();
+    if (btn.disabled) return;
+    btn.disabled = true; btn.textContent = "…";
+    try {
+      const kr = await tutorEngineCall(async () => {
+        const r = await tutorEngine.chat.completions.create({ messages: tutorTranslateMessages(text), ...TUTOR_TRANSLATE_OPTS });
+        return cleanTutorTranslation(r.choices[0].message.content);
+      });
+      const line = document.createElement("div"); line.className = "tutor-kr";
+      line.textContent = kr || "(해석을 만들지 못했어요)";
+      bubble.appendChild(line);
+      btn.remove();
+    } catch (err) { btn.disabled = false; btn.textContent = "해석"; }
+  };
+  bubble.appendChild(btn);
 }
 
 function addTutorBubble(who, text) {
@@ -433,13 +534,13 @@ async function tutorFeedback() {
   box.innerHTML = `<div class="tutor-feedback-title">📝 오늘 대화 피드백</div><div class="tutor-feedback-body">살펴보는 중…</div>`;
   const lines = tutorLearnerLines.slice(-8).map((l, i) => `${i + 1}. ${l}`).join("\n");
   try {
-    const r = await tutorEngine.chat.completions.create({
+    const r = await tutorEngineCall(() => tutorEngine.chat.completions.create({
       messages: [
         { role: "system", content: "You are a kind English teacher for Korean beginners. Be brief and accurate." },
         { role: "user", content: `These are sentences a beginner said in an English conversation:\n${lines}\n\nPick up to 3 sentences that have a mistake or sound unnatural. For each, write exactly one line in this format:\n<original> -> <better sentence>\nIf every sentence is fine, write only: Great job!` }
       ],
       temperature: 0.2, max_tokens: 160
-    });
+    }));
     const out = (r.choices[0].message.content || "").trim();
     const items = out.split("\n").map(l => l.trim()).filter(l => /->|→/.test(l)).slice(0, 3);
     const body = box.querySelector(".tutor-feedback-body");
