@@ -420,6 +420,11 @@
           <span id="shadowing-counter" style="font-size:0.9rem; color:var(--text-sub);">1 / 10</span>
         </div>
 
+        <div class="btn-group shadowing-mode">
+          <button data-shadow-mode="follow" onclick="setShadowingMode(false)">🔁 따라 말하기</button>
+          <button data-shadow-mode="roleplay" onclick="setShadowingMode(true)">🎭 역할극 (내가 A)</button>
+        </div>
+
         <div class="shadowing-controls-row">
           <button id="btn-blind-mode" class="toggle-btn" onclick="toggleShadowingOption('blind')">🙈 블라인드 모드</button>
           <button id="btn-hide-kr" class="toggle-btn" onclick="toggleShadowingOption('hideKr')">🇰🇷 해석 숨김</button>
@@ -445,7 +450,7 @@
                 <path d="M19.07 4.93C20.9447 6.80527 21.9979 9.34836 21.9979 12C21.9979 14.6516 20.9447 17.1947 19.07 19.07" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
               </svg>
             </button>
-            <p class="subtext" style="margin-top: 10px; font-size:0.9rem;">다시 듣기 (반복)</p>
+            <p id="shadowing-play-label" class="subtext" style="margin-top: 10px; font-size:0.9rem;">다시 듣기 (반복)</p>
         </div>
 
         <div class="game-controls" style="display:flex; gap:10px;">
