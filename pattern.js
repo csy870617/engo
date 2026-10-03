@@ -1,5 +1,5 @@
 // pattern.js
-// 패턴 100개 · 쓰는 상황별 10개 카테고리 (category 필드: 패턴 목록 상황별 보기에 사용)
+// 패턴 90개 · 쓰는 상황별 10개 카테고리 (category 필드: 패턴 목록 상황별 보기에 사용)
 
 const patternData = [
   // ===== 1. 주문·쇼핑 =====
@@ -361,19 +361,6 @@ const patternData = [
     ]
   },
   {
-    id: "im-planning-to",
-    title: "I'm planning to...",
-    category: "계획·할 일",
-    desc: "미리 세워 둔 계획을 말할 때. 'going to'보다 계획했다는 느낌이 강해요. 'I'm planning on -ing'도 같은 뜻이에요.",
-    examples: [
-      { en: "I'm planning to visit Japan this fall.", kr: "이번 가을에 일본 갈 계획이에요." },
-      { en: "I'm planning to throw a party for her birthday.", kr: "걔 생일 파티 열어 줄 생각이야." },
-      { en: "I'm planning to take a few days off in May.", kr: "5월에 며칠 휴가 낼 계획이에요." },
-      { en: "I'm planning to move closer to work next year.", kr: "내년에 회사 근처로 이사할 계획이에요." },
-      { en: "Are you planning to come to the wedding?", kr: "너 결혼식 올 거야?" }
-    ]
-  },
-  {
     id: "im-thinking-about",
     title: "I'm thinking about...",
     category: "계획·할 일",
@@ -426,19 +413,6 @@ const patternData = [
     ]
   },
   {
-    id: "i-want-to",
-    title: "I want to...",
-    category: "계획·할 일",
-    desc: "하고 싶은 걸 솔직하게 말할 때. 점원이나 윗사람에게는 직설적으로 들릴 수 있어서 'I'd like to'가 더 공손해요.",
-    examples: [
-      { en: "I want to try that new Thai place.", kr: "새로 생긴 태국 음식점 가 보고 싶어." },
-      { en: "I want to talk to you about the project.", kr: "프로젝트 얘기 좀 하고 싶어요." },
-      { en: "I want to see the city lights from up there.", kr: "저 위에서 야경 보고 싶어." },
-      { en: "I just want to sleep all weekend.", kr: "주말 내내 잠만 자고 싶어." },
-      { en: "I want to get my mom something nice.", kr: "엄마한테 좋은 거 사 드리고 싶어." }
-    ]
-  },
-  {
     id: "im-trying-to",
     title: "I'm trying to...",
     category: "계획·할 일",
@@ -449,19 +423,6 @@ const patternData = [
       { en: "I'm trying to find a cheaper flight to Tokyo.", kr: "도쿄 가는 더 싼 항공편 찾아보는 중이에요." },
       { en: "I'm trying to reach the manager. Is she in?", kr: "매니저님과 연락하려고 하는데요. 자리에 계세요?" },
       { en: "I'm trying to put the baby to sleep.", kr: "애기 재우려는 중이야." }
-    ]
-  },
-  {
-    id: "im-ready-to",
-    title: "I'm ready to...",
-    category: "계획·할 일",
-    desc: "준비됐다고 알릴 때. 식당에서 'Are you ready to order?'에 아직이면 'I need a minute.'(잠시만요).",
-    examples: [
-      { en: "I think we're ready to order now.", kr: "이제 주문할게요." },
-      { en: "I'm ready to go when you are.", kr: "너 준비되면 난 바로 나갈 수 있어." },
-      { en: "I'm not ready to go back to work yet.", kr: "아직 다시 출근할 마음의 준비가 안 됐어." },
-      { en: "Hi, I'm ready to check out.", kr: "안녕하세요, 체크아웃하려고요." },
-      { en: "Ugh, I'm so ready to go home.", kr: "아, 진짜 집에 가고 싶다." }
     ]
   },
   {
@@ -571,19 +532,6 @@ const patternData = [
     ]
   },
   {
-    id: "im-in-the-mood-for",
-    title: "I'm in the mood for...",
-    category: "취향·의견",
-    desc: "'~가 당겨'라고 지금 끌리는 음식이나 활동을 말할 때. 'I feel like...'와 비슷해요. 내키지 않으면 'I'm not in the mood.'",
-    examples: [
-      { en: "I'm in the mood for pizza tonight.", kr: "오늘 밤엔 피자가 당기네." },
-      { en: "I'm in the mood for something sweet.", kr: "뭔가 달달한 게 당겨." },
-      { en: "I'm in the mood for a comedy. Any ideas?", kr: "코미디 영화 보고 싶은데. 추천할 거 있어?" },
-      { en: "Sorry, I'm not in the mood for going out.", kr: "미안, 나갈 기분이 아니야." },
-      { en: "I'm in the mood for a walk by the river.", kr: "강가 산책하고 싶은 기분이야." }
-    ]
-  },
-  {
     id: "i-feel-like",
     title: "I feel like...",
     category: "취향·의견",
@@ -661,34 +609,8 @@ const patternData = [
       { en: "I'm not sure if this color suits me.", kr: "이 색이 나한테 어울리는지 모르겠어." }
     ]
   },
-  {
-    id: "i-have-no-idea",
-    title: "I have no idea...",
-    category: "취향·의견",
-    desc: "'전혀 모르겠다'는 강한 표현. I don't know보다 단호하고, 짧게 'No idea.'라고만 답해도 자연스러워요.",
-    examples: [
-      { en: "I have no idea where I parked the car.", kr: "차를 어디에 세웠는지 전혀 모르겠어." },
-      { en: "I have no idea how this printer works.", kr: "이 프린터 어떻게 쓰는 건지 전혀 모르겠어요." },
-      { en: "I have no idea what you're talking about.", kr: "무슨 말 하는 건지 전혀 모르겠어요." },
-      { en: "I have no idea why the meeting got canceled.", kr: "회의가 왜 취소됐는지 전혀 모르겠어요." },
-      { en: "I have no idea what to get him for his birthday.", kr: "걔 생일 선물로 뭘 사줘야 할지 전혀 모르겠어요." }
-    ]
-  },
 
   // ===== 6. 추측·설명 =====
-  {
-    id: "it-seems-like",
-    title: "It seems like...",
-    category: "추측·설명",
-    desc: "들은 말이나 분위기로 '~인 것 같다'고 추측할 때. 단정하지 않아서 말이 부드러워져요. 'Seems like ~'로 줄여 말하기도 해요.",
-    examples: [
-      { en: "It seems like a good deal.", kr: "괜찮은 가격인 것 같네요." },
-      { en: "It seems like everyone's already here.", kr: "다들 벌써 와 있는 것 같네요." },
-      { en: "It seems like the traffic is bad today.", kr: "오늘 길이 많이 막히는 것 같아요." },
-      { en: "It seems like the printer isn't working again.", kr: "프린터가 또 안 되는 것 같아요." },
-      { en: "It seems like you've had a really long day.", kr: "오늘 하루 정말 힘들었나 보네." }
-    ]
-  },
   {
     id: "it-looks-like",
     title: "It looks like...",
@@ -765,19 +687,6 @@ const patternData = [
       { en: "It's hard to find time to exercise.", kr: "운동할 시간을 내기가 어려워요." },
       { en: "It's hard to get a taxi around here at night.", kr: "밤에 이 근처에서 택시 잡기 힘들어요." },
       { en: "It's hard to focus when the office is this noisy.", kr: "사무실이 이렇게 시끄러우면 집중하기 힘들어요." }
-    ]
-  },
-  {
-    id: "its-easy-to",
-    title: "It's easy to...",
-    category: "추측·설명",
-    desc: "'~하기 쉽다'고 말할 때. It's easy to get lost처럼 '~하기 십상이다'라는 주의의 뜻으로도 자주 써요.",
-    examples: [
-      { en: "It's easy to use. Just tap here.", kr: "쓰기 쉬워요. 여기만 누르면 돼요." },
-      { en: "It's easy to make. I'll show you.", kr: "만들기 쉬워요. 알려줄게요." },
-      { en: "It's easy to miss the exit, so watch out.", kr: "출구 놓치기 쉬우니까 잘 봐." },
-      { en: "It's easy to get lost in this area.", kr: "이 동네는 길 잃기 쉬워요." },
-      { en: "It's easy to forget your password with so many accounts.", kr: "계정이 너무 많으면 비밀번호 잊어버리기 쉬워요." }
     ]
   },
   {
@@ -923,19 +832,6 @@ const patternData = [
       { en: "I didn't mean to wake you up.", kr: "깨우려던 건 아니었어요." },
       { en: "I didn't mean to interrupt. Go ahead.", kr: "말 끊으려던 건 아니었어요. 계속하세요." },
       { en: "I didn't mean to take your seat. Sorry about that.", kr: "자리 뺏으려던 건 아니었어요. 죄송해요." }
-    ]
-  },
-  {
-    id: "i-didnt-expect-to",
-    title: "I didn't expect to...",
-    category: "감정·인사",
-    desc: "예상 밖의 일에 놀랐을 때 '~할 줄은 몰랐어'. 반가움, 당황, 기쁨 모두에 쓰고, 짧게 I didn't expect that.도 OK.",
-    examples: [
-      { en: "I didn't expect to see you here.", kr: "여기서 널 볼 줄은 몰랐어." },
-      { en: "I didn't expect to get the job.", kr: "제가 합격할 줄은 몰랐어요." },
-      { en: "I didn't expect to wait this long for a table.", kr: "자리 나는 데 이렇게 오래 기다릴 줄은 몰랐어요." },
-      { en: "I didn't expect to like it this much.", kr: "이렇게까지 마음에 들 줄은 몰랐어요." },
-      { en: "I didn't expect to have so much fun at the party.", kr: "파티가 이렇게 재밌을 줄은 몰랐어요." }
     ]
   },
   {
@@ -1123,19 +1019,6 @@ const patternData = [
     ]
   },
   {
-    id: "let-me-see",
-    title: "Let me see...",
-    category: "질문·되묻기",
-    desc: "'어디 보자...' 하며 생각할 시간을 벌 때. 'Let me see if ~'는 '~인지 볼게요', 'Let me see!'는 '보여 줘!'",
-    examples: [
-      { en: "Let me see... I think it's this way.", kr: "어디 보자... 이쪽인 것 같아요." },
-      { en: "Let me see what I can do.", kr: "제가 뭘 해 드릴 수 있는지 볼게요." },
-      { en: "Let me see if there's a table available.", kr: "빈 테이블 있는지 볼게요." },
-      { en: "Ooh, is that your new phone? Let me see!", kr: "오, 그거 새 폰이야? 나도 보여 줘!" },
-      { en: "Let me see if I have any cash on me.", kr: "현금 있는지 좀 볼게." }
-    ]
-  },
-  {
     id: "let-me-check",
     title: "Let me check...",
     category: "질문·되묻기",
@@ -1213,19 +1096,6 @@ const patternData = [
       { en: "Doctor, I have trouble falling asleep at night.", kr: "선생님, 밤에 잠드는 게 힘들어요." },
       { en: "Sorry, I'm having trouble hearing you. Can you speak up?", kr: "죄송해요, 잘 안 들려요. 좀 크게 말씀해 주실래요?" },
       { en: "I have trouble saying no to my coworkers.", kr: "동료들한테 거절을 잘 못 해요." }
-    ]
-  },
-  {
-    id: "im-good-at",
-    title: "I'm good at...",
-    category: "경험·습관",
-    desc: "잘하는 것을 말할 때. at 뒤엔 명사나 ~ing가 와요. 반대는 I'm bad at ~, 겸손하게는 I'm pretty good at ~.",
-    examples: [
-      { en: "I'm good at remembering names.", kr: "저는 이름을 잘 기억해요." },
-      { en: "I'm good at fixing computers.", kr: "컴퓨터 고치는 거 잘해." },
-      { en: "I'm good at cooking Korean food.", kr: "한국 음식 잘 만들어요." },
-      { en: "I'm good at working under pressure.", kr: "압박감 속에서도 일을 잘해요." },
-      { en: "I'm good at finding cheap flights.", kr: "나 싼 항공권 찾는 거 잘해." }
     ]
   },
   {

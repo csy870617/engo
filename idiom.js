@@ -120,30 +120,6 @@ const idiomsLevel1 = [
     ]
   },
   {
-    id: "lv1_11",
-    level: 1,
-    idiom: "sit down",
-    meaning: "앉다",
-    desc: "'Sit down'만 툭 던지면 명령처럼 들릴 수 있어서, 손님에게는 'Please, sit down'이나 'Have a seat'처럼 부드럽게 말해요.",
-    examples: [
-      { en: "Please, sit down. Can I get you some water?", kr: "앉으세요. 물 좀 드릴까요?" },
-      { en: "Do you mind if I sit down here?", kr: "여기 앉아도 될까요?" },
-      { en: "I've been on my feet all day. I need to sit down.", kr: "하루 종일 서 있었어. 좀 앉아야겠어." }
-    ]
-  },
-  {
-    id: "lv1_12",
-    level: 1,
-    idiom: "stand up",
-    meaning: "일어서다, 서다",
-    desc: "오래 앉아 있다가 몸을 일으키거나 사진·행사에서 '다 같이 일어서 주세요'라고 할 때 쓰는 기본 표현이에요.",
-    examples: [
-      { en: "Can everyone stand up for the photo?", kr: "사진 찍게 다들 일어서 줄래요?" },
-      { en: "I stood up too fast and got dizzy.", kr: "너무 빨리 일어났더니 어지러웠어." },
-      { en: "Try to stand up and stretch every hour.", kr: "한 시간마다 일어나서 스트레칭해 봐." }
-    ]
-  },
-  {
     id: "lv1_13",
     level: 1,
     idiom: "hurry up",
@@ -177,18 +153,6 @@ const idiomsLevel1 = [
       { en: "Hold on, let me grab my jacket.", kr: "잠깐만, 재킷 좀 챙길게." },
       { en: "Can you hold on a second? I have another call.", kr: "잠시만 기다려 줄래요? 다른 전화가 와서요." },
       { en: "Wait, hold on. You quit your job?", kr: "잠깐만. 너 회사 그만뒀다고?" }
-    ]
-  },
-  {
-    id: "lv1_16",
-    level: 1,
-    idiom: "come back",
-    meaning: "돌아오다, 다시 오다",
-    desc: "가게나 장소를 다시 찾겠다고 할 때도 'I'll come back later'처럼 써서, 점원에게 정중히 자리를 뜰 때 유용해요.",
-    examples: [
-      { en: "When are you coming back from your trip?", kr: "여행에서 언제 돌아와?" },
-      { en: "I'll come back later when you're less busy.", kr: "덜 바쁠 때 나중에 다시 올게요." },
-      { en: "This place is great. We should definitely come back.", kr: "여기 진짜 좋다. 꼭 다시 오자." }
     ]
   },
   {
@@ -324,18 +288,6 @@ const idiomsLevel1 = [
     ]
   },
   {
-    id: "lv1_28",
-    level: 1,
-    idiom: "put down",
-    meaning: "내려놓다",
-    desc: "손에 든 물건을 내려놓을 때 쓰며, 'Put your phone down'은 '폰 좀 그만 봐'라는 잔소리 뉘앙스로도 자주 써요.",
-    examples: [
-      { en: "Put your phone down and eat your dinner.", kr: "폰 좀 내려놓고 밥 먹어." },
-      { en: "Where did I put my coffee down?", kr: "내가 커피 어디 내려놨더라?" },
-      { en: "You can put your bags down over there.", kr: "가방은 저쪽에 내려놓으시면 돼요." }
-    ]
-  },
-  {
     id: "lv1_29",
     level: 1,
     idiom: "get in",
@@ -408,18 +360,6 @@ const idiomsLevel1 = [
     ]
   },
   {
-    id: "lv1_35",
-    level: 1,
-    idiom: "go back",
-    meaning: "돌아가다, 다시 가다",
-    desc: "원래 있던 곳이나 상태로 돌아간다는 뜻이라, 회사·고향은 물론 'go back to sleep'(다시 잠들다)처럼도 자주 써요.",
-    examples: [
-      { en: "I have to go back to the office.", kr: "나 사무실로 돌아가야 해." },
-      { en: "I woke up at four and couldn't go back to sleep.", kr: "4시에 깼는데 다시 잠들 수가 없었어." },
-      { en: "Would you ever go back to that restaurant?", kr: "그 식당 또 갈 생각 있어?" }
-    ]
-  },
-  {
     id: "lv1_36",
     level: 1,
     idiom: "take out",
@@ -465,18 +405,6 @@ const idiomsLevel1 = [
       { en: "Can you write it down for me?", kr: "그거 좀 적어 줄래?" },
       { en: "Hold on, let me write that down.", kr: "잠깐만, 그거 적어 둘게." },
       { en: "I wrote down the address, but I lost it.", kr: "주소 적어 놨는데 잃어버렸어." }
-    ]
-  },
-  {
-    id: "lv1_40",
-    level: 1,
-    idiom: "stay home",
-    meaning: "집에 있다, 외출하지 않다",
-    desc: "외출 대신 집에서 쉬겠다고 할 때 쓰며, 'stay home sick'은 '아파서 학교·회사에 안 가다'라는 뜻으로 자주 써요.",
-    examples: [
-      { en: "I'm just going to stay home tonight.", kr: "오늘 밤은 그냥 집에 있을래." },
-      { en: "Are you staying home this weekend?", kr: "이번 주말에 집에 있을 거야?" },
-      { en: "I stayed home sick yesterday.", kr: "어제 아파서 집에 있었어." }
     ]
   }
 ];
@@ -591,18 +519,6 @@ const idiomsLevel2 = [
     ]
   },
   {
-    id: "lv2_10",
-    level: 2,
-    idiom: "be busy with",
-    meaning: "~로 바쁘다, ~하느라 정신없다",
-    desc: "요즘 근황을 묻고 답할 때 자주 쓰며, 'busy with + 명사' 외에 'busy + -ing'도 함께 알아 두면 좋아요.",
-    examples: [
-      { en: "What have you been busy with lately?", kr: "요즘 뭐 하느라 바빴어?" },
-      { en: "Just busy with work, you know.", kr: "그냥 일 때문에 바빴지, 뭐." },
-      { en: "Sorry, she's busy with a customer right now.", kr: "죄송해요, 그분 지금 손님 응대 중이세요." }
-    ]
-  },
-  {
     id: "lv2_11",
     level: 2,
     idiom: "grab a bite",
@@ -612,18 +528,6 @@ const idiomsLevel2 = [
       { en: "Want to grab a bite after work?", kr: "퇴근하고 간단히 뭐 좀 먹을래?" },
       { en: "Sure, I could grab a bite.", kr: "좋지, 뭐 좀 먹어도 되겠다." },
       { en: "I just grabbed a bite at the airport.", kr: "공항에서 간단히 먹었어." }
-    ]
-  },
-  {
-    id: "lv2_12",
-    level: 2,
-    idiom: "take a shower",
-    meaning: "샤워하다",
-    desc: "'샤워하다'를 do가 아닌 take로 말하는 매일 쓰는 표현이며, 'take a quick shower'처럼 응용해요.",
-    examples: [
-      { en: "Can I take a quick shower before we go?", kr: "나가기 전에 잠깐 샤워해도 돼?" },
-      { en: "Sure, go take a shower. I'll wait.", kr: "그래, 샤워하고 와. 기다릴게." },
-      { en: "I usually take a shower at night.", kr: "난 보통 밤에 샤워해." }
     ]
   },
   {
@@ -735,18 +639,6 @@ const idiomsLevel2 = [
     ]
   },
   {
-    id: "lv2_22",
-    level: 2,
-    idiom: "be afraid of",
-    meaning: "~을 무서워하다, 두려워하다",
-    desc: "무서워하는 대상을 말할 때 쓰며, 'I'm afraid (that) ~'는 '유감이지만 ~'이라는 뜻으로 안 좋은 소식을 공손하게 전할 때 쓰니 구별하세요.",
-    examples: [
-      { en: "Are you afraid of flying?", kr: "너 비행기 타는 거 무서워?" },
-      { en: "Not really, but I'm afraid of heights.", kr: "별로, 근데 높은 데는 무서워." },
-      { en: "My son's afraid of the dark.", kr: "우리 아들은 어두운 걸 무서워해." }
-    ]
-  },
-  {
     id: "lv2_23",
     level: 2,
     idiom: "be sick of",
@@ -783,18 +675,6 @@ const idiomsLevel2 = [
     ]
   },
   {
-    id: "lv2_26",
-    level: 2,
-    idiom: "be proud of",
-    meaning: "~을 자랑스러워하다, ~이 뿌듯하다",
-    desc: "가족·친구·팀원을 칭찬하고 격려할 때 진심을 담아 쓰는 따뜻한 표현이에요.",
-    examples: [
-      { en: "Aren't you proud of yourself?", kr: "너 스스로 뿌듯하지 않아?" },
-      { en: "Wow, I'm so proud of you!", kr: "와, 네가 정말 자랑스러워!" },
-      { en: "I'm pretty proud of this photo I took.", kr: "내가 찍은 이 사진 꽤 뿌듯해." }
-    ]
-  },
-  {
     id: "lv2_27",
     level: 2,
     idiom: "take care of",
@@ -816,18 +696,6 @@ const idiomsLevel2 = [
       { en: "Have you gotten used to the new job?", kr: "새 일에 좀 적응했어?" },
       { en: "Don't worry, you'll get used to it.", kr: "걱정 마, 금방 익숙해질 거야." },
       { en: "I can't get used to waking up this early.", kr: "이렇게 일찍 일어나는 건 도저히 적응이 안 돼." }
-    ]
-  },
-  {
-    id: "lv2_29",
-    level: 2,
-    idiom: "be full",
-    meaning: "배부르다, (자리·공간이) 꽉 차다",
-    desc: "음식을 더 권할 때 'I'm full, thanks'로 정중하게 사양하고, 식당·주차장이 꽉 찼을 때도 써요.",
-    examples: [
-      { en: "Are you full already?", kr: "벌써 배불러?" },
-      { en: "No thanks, I'm full.", kr: "괜찮아요, 배불러요." },
-      { en: "Sorry, the parking lot's full.", kr: "죄송한데, 주차장이 꽉 찼어요." }
     ]
   },
   {
@@ -876,18 +744,6 @@ const idiomsLevel2 = [
       { en: "Could you give me a hand with these boxes?", kr: "이 상자들 옮기는 것 좀 도와줄래?" },
       { en: "Sure, I'll give you a hand.", kr: "그럼, 내가 도와줄게." },
       { en: "My neighbor gave me a hand moving the couch.", kr: "이웃이 소파 옮기는 걸 도와줬어." }
-    ]
-  },
-  {
-    id: "lv2_34",
-    level: 2,
-    idiom: "be excited about",
-    meaning: "~에 들뜨다, ~이 기대되다",
-    desc: "다가올 일에 들뜬 기분을 말할 때 쓰며, look forward to보다 감정이 더 생생하고 캐주얼해요.",
-    examples: [
-      { en: "Are you excited about the concert?", kr: "콘서트 기대돼?" },
-      { en: "Honestly, I'm not that excited about it.", kr: "솔직히 그렇게 기대되진 않아." },
-      { en: "The kids are so excited about the beach trip.", kr: "애들이 바닷가 여행 간다고 엄청 들떴어." }
     ]
   },
   {
@@ -1050,18 +906,6 @@ const idiomsLevel3 = [
     ]
   },
   {
-    id: "lv3_8",
-    level: 3,
-    idiom: "at the same time",
-    meaning: "동시에, 한편으로는",
-    desc: "두 일이 한꺼번에 일어날 때뿐 아니라 'but at the same time'처럼 반대 생각을 덧붙일 때도 자연스럽게 써요.",
-    examples: [
-      { en: "We both said it at the same time!", kr: "우리 둘이 동시에 말했어!" },
-      { en: "I can't do two things at the same time.", kr: "나 두 가지를 동시에 못 해." },
-      { en: "It's exciting, but at the same time, I'm nervous.", kr: "설레긴 하는데, 한편으로는 긴장돼." }
-    ]
-  },
-  {
     id: "lv3_9",
     level: 3,
     idiom: "at least",
@@ -1146,18 +990,6 @@ const idiomsLevel3 = [
     ]
   },
   {
-    id: "lv3_16",
-    level: 3,
-    idiom: "one day",
-    meaning: "언젠가, 어느 날",
-    desc: "미래의 꿈을 말할 때('언젠가')나 과거 이야기를 시작할 때('어느 날') 쓰며, 막연한 미래에는 'someday'도 비슷해요.",
-    examples: [
-      { en: "One day, I want to live abroad.", kr: "언젠가 해외에서 살아 보고 싶어." },
-      { en: "You'll thank me one day.", kr: "언젠가 나한테 고마워할 거야." },
-      { en: "One day, my boss just called me into his office.", kr: "어느 날 부장님이 갑자기 나를 사무실로 부르셨어." }
-    ]
-  },
-  {
     id: "lv3_17",
     level: 3,
     idiom: "for a while",
@@ -1239,18 +1071,6 @@ const idiomsLevel3 = [
       { en: "Are you coming tonight? - For sure!", kr: "오늘 밤 올 거야? - 당연하지!" },
       { en: "I don't know for sure yet.", kr: "아직 확실히는 모르겠어." },
       { en: "We'll be there for sure.", kr: "우리 꼭 갈게." }
-    ]
-  },
-  {
-    id: "lv3_24",
-    level: 3,
-    idiom: "no problem",
-    meaning: "별거 아냐, 괜찮아, 그럼요",
-    desc: "고맙다는 말에 '별거 아냐'라고 답하거나 부탁을 흔쾌히 들어줄 때 쓰며, 'You're welcome'보다 가볍고 친근해요.",
-    examples: [
-      { en: "Thanks for the ride. - No problem!", kr: "태워 줘서 고마워. - 별거 아냐!" },
-      { en: "Could you send me the file? - Sure, no problem.", kr: "파일 좀 보내 줄 수 있어요? - 네, 그럼요." },
-      { en: "Sorry I'm late. - No problem.", kr: "늦어서 미안. - 괜찮아." }
     ]
   },
   {
@@ -1482,18 +1302,6 @@ const idiomsLevel4 = [
       { en: "Why don't you take it easy this weekend?", kr: "이번 주말엔 좀 쉬엄쉬엄하는 게 어때?" },
       { en: "Hey, take it easy. It was an accident.", kr: "야, 진정해. 일부러 그런 거 아니잖아." },
       { en: "I'm heading out. Take it easy!", kr: "나 먼저 갈게. 잘 지내!" }
-    ]
-  },
-  {
-    id: "lv4_4",
-    level: 4,
-    idiom: "take it seriously",
-    meaning: "진지하게 받아들이다, 심각하게 여기다",
-    desc: "'Don't take it seriously'는 농담이었다고 넘길 때, 'take it seriously'는 중요하니 제대로 신경 써 달라고 할 때 써요.",
-    examples: [
-      { en: "I was just joking. Don't take it so seriously.", kr: "그냥 농담이었어. 너무 진지하게 받아들이지 마." },
-      { en: "Are you taking this job interview seriously?", kr: "너 이번 면접 제대로 준비하고 있는 거 맞아?" },
-      { en: "My boss takes deadlines really seriously.", kr: "우리 상사는 마감을 엄청 철저하게 챙겨." }
     ]
   },
   {
@@ -1944,18 +1752,6 @@ const idiomsLevel5 = [
     ]
   },
   {
-    id: "lv5_2",
-    level: 5,
-    idiom: "hit the books",
-    meaning: "(열심히) 공부하다",
-    desc: "시험이나 자격증 준비처럼 본격적으로 공부해야 할 때 쓰는 캐주얼한 표현이에요.",
-    examples: [
-      { en: "I can't go out tonight. I have to hit the books.", kr: "오늘 밤엔 못 나가. 공부해야 돼." },
-      { en: "Finals are next week, so it's time to hit the books.", kr: "다음 주가 기말고사라 이제 공부 좀 해야 해." },
-      { en: "Are you hitting the books again this weekend?", kr: "이번 주말에도 공부해?" }
-    ]
-  },
-  {
     id: "lv5_3",
     level: 5,
     idiom: "under the weather",
@@ -2100,30 +1896,6 @@ const idiomsLevel5 = [
     ]
   },
   {
-    id: "lv5_15",
-    level: 5,
-    idiom: "out of the ordinary",
-    meaning: "특이한, 평소와 다른",
-    desc: "주로 nothing/anything out of the ordinary 형태로 '별일 없었다', '이상한 거 없었냐'고 말할 때 많이 써요.",
-    examples: [
-      { en: "Nothing out of the ordinary happened today.", kr: "오늘은 별다른 일 없었어." },
-      { en: "Did you notice anything out of the ordinary?", kr: "뭔가 평소랑 다른 거 눈치챘어?" },
-      { en: "Let's do something out of the ordinary for our anniversary.", kr: "우리 기념일엔 좀 색다른 거 하자." }
-    ]
-  },
-  {
-    id: "lv5_16",
-    level: 5,
-    idiom: "bend over backwards",
-    meaning: "(남을 위해) 무척 애쓰다, 비위를 맞추다",
-    desc: "누군가를 돕거나 만족시키려고 무리할 만큼 애쓸 때 쓰며, 고마움을 표현하거나 '그렇게까진 못 한다'고 할 때 다 써요.",
-    examples: [
-      { en: "She bent over backwards to help me move.", kr: "걔가 나 이사하는 거 도와주려고 정말 애썼어." },
-      { en: "The hotel staff bent over backwards for us.", kr: "호텔 직원들이 우리한테 정말 극진하게 해줬어." },
-      { en: "I'm not bending over backwards for someone that rude.", kr: "그렇게 무례한 사람한테까지 비위 맞춰 줄 생각 없어." }
-    ]
-  },
-  {
     id: "lv5_17",
     level: 5,
     idiom: "go the extra mile",
@@ -2133,18 +1905,6 @@ const idiomsLevel5 = [
       { en: "He always goes the extra mile for his customers.", kr: "그 사람은 항상 고객을 위해 한 발 더 뛰어." },
       { en: "Thanks for going the extra mile on this report.", kr: "이 보고서에 이렇게까지 신경 써 줘서 고마워요." },
       { en: "Is it worth going the extra mile for this client?", kr: "이 고객한테 이렇게까지 공들일 가치가 있어?" }
-    ]
-  },
-  {
-    id: "lv5_18",
-    level: 5,
-    idiom: "in hot water",
-    meaning: "곤란한 처지인, 혼나게 된",
-    desc: "잘못을 해서 누군가에게 혼나거나 문제가 된 상황에 쓰며, trouble보다 살짝 재치 있는 느낌이에요.",
-    examples: [
-      { en: "I'm in hot water with my boss for missing the deadline.", kr: "마감을 놓쳐서 상사한테 단단히 혼나게 생겼어." },
-      { en: "Why is Mike in hot water again?", kr: "마이크 왜 또 곤란해졌어?" },
-      { en: "Don't post that, or you'll end up in hot water.", kr: "그거 올리지 마, 안 그러면 곤란해질 거야." }
     ]
   },
   {
@@ -2364,18 +2124,6 @@ const idiomsLevel5 = [
     ]
   },
   {
-    id: "lv5_37",
-    level: 5,
-    idiom: "over the moon",
-    meaning: "너무 기쁜, 날아갈 듯한",
-    desc: "합격, 약혼, 출산처럼 아주 기쁜 소식에 감정을 크게 표현할 때 쓰며, happy보다 훨씬 들뜬 느낌이에요.",
-    examples: [
-      { en: "I'm over the moon about the news.", kr: "그 소식 듣고 너무 기뻐." },
-      { en: "My parents were over the moon when I got engaged.", kr: "내가 약혼했을 때 부모님이 엄청 기뻐하셨어." },
-      { en: "You got the job? You must be over the moon!", kr: "합격했어? 진짜 날아갈 것 같겠다!" }
-    ]
-  },
-  {
     id: "lv5_38c",
     level: 5,
     idiom: "get on one's nerves",
@@ -2385,18 +2133,6 @@ const idiomsLevel5 = [
       { en: "His constant complaining really gets on my nerves.", kr: "걔 계속 불평하는 거 진짜 짜증 나." },
       { en: "Sorry, am I getting on your nerves?", kr: "미안, 내가 좀 거슬리게 하나?" },
       { en: "That noise is starting to get on my nerves.", kr: "저 소리 슬슬 신경 거슬리기 시작하네." }
-    ]
-  },
-  {
-    id: "lv5_39",
-    level: 5,
-    idiom: "burst into tears",
-    meaning: "울음을 터뜨리다",
-    desc: "감정이 북받쳐 갑자기 울기 시작할 때 쓰며, 슬플 때뿐 아니라 감동하거나 안도했을 때도 써요.",
-    examples: [
-      { en: "She burst into tears when she heard the news.", kr: "걔 그 소식 듣고 울음을 터뜨렸어." },
-      { en: "I almost burst into tears during the movie.", kr: "영화 보다가 하마터면 울 뻔했어." },
-      { en: "Why did he suddenly burst into tears?", kr: "걔 왜 갑자기 울음을 터뜨린 거야?" }
     ]
   },
   {
