@@ -1,8 +1,11 @@
 // 캐시 버전 - 정적 자산을 변경했을 때 숫자를 올리세요.
-const CACHE_NAME = 'engo-cache-v120';
+const CACHE_NAME = 'engo-cache-v121';
 // 자연스러운 음성 모델(약 440MB) 캐시 - 앱(js/neural-tts.js)이 직접 관리하므로 정리·가로채기 대상에서 제외
 const VOICE_CACHE_PREFIX = 'faith-voice';
 const VOICE_HOST_PATH = 'https://csy870617.github.io/faith-voice/';
+// AI 튜터 언어 모델(약 0.9GB): WebLLM이 'webllm/…', 'tvmjs…' 캐시에 직접 저장·관리하므로 정리·가로채기 대상에서 제외
+const TUTOR_CACHE_PREFIXES = ['webllm', 'tvmjs'];
+const TUTOR_MODEL_HOSTS = /(^|\.)(huggingface\.co|hf\.co|githubusercontent\.com|xethub\.hf\.co)$/;
 
 // 캐싱할 파일 목록 (같은 출처의 핵심 자산)
 const ASSETS_TO_CACHE = [
@@ -16,6 +19,8 @@ const ASSETS_TO_CACHE = [
   './js/game.js',
   './js/neural-tts.js',
   './js/neural-tts-worker.js',
+  './js/tutor.js',
+  './js/tutor-worker.js',
   './pattern.js',
   './word.js',
   './idiom.js',
@@ -54,7 +59,7 @@ self.addEventListener('activate', (event) => {
     caches.keys().then((keyList) => {
       return Promise.all(keyList.map((key) => {
         // 받아 둔 음성 모델 캐시는 지우지 않는다 (지우면 440MB를 다시 받아야 함)
-        if (key !== CACHE_NAME && !key.startsWith(VOICE_CACHE_PREFIX)) {
+        if (key !== CACHE_NAME && !key.startsWith(VOICE_CACHE_PREFIX) && !TUTOR_CACHE_PREFIXES.some(p => key.startsWith(p))) {
           console.log('[Service Worker] Removing old cache', key);
           return caches.delete(key);
         }
@@ -73,6 +78,8 @@ self.addEventListener('fetch', (event) => {
   if (req.method !== 'GET') return;
   // 음성 모델 내려받기는 가로채지 않는다 (앱 캐시에 440MB가 한 번 더 저장되는 것 방지)
   if (req.url.startsWith(VOICE_HOST_PATH)) return;
+  // AI 튜터 모델 파일·실행 파일도 가로채지 않는다 (앱 캐시에 0.9GB가 한 번 더 저장되는 것 방지)
+  if (TUTOR_MODEL_HOSTS.test(new URL(req.url).hostname)) return;
 
   const isNavigation = req.mode === 'navigate' ||
     (req.headers.get('accept') || '').includes('text/html');

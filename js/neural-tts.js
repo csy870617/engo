@@ -263,6 +263,8 @@ const NeuralTTS = (() => {
 
   let audioCtx = null;
   let currentSource = null;
+  // 입모양(AI 튜터)용 소리 크기 측정기: 재생 소리를 그대로 통과시키며 크기만 잰다
+  let analyser = null, levelBuf = null;
 
   /** 사용자가 누른 순간(사용자 동작 안)에 불러야 아이폰에서 소리가 난다 */
   function unlockAudio() {
@@ -282,7 +284,15 @@ const NeuralTTS = (() => {
     buf.copyToChannel(wav, 0);
     const src = ctx.createBufferSource();
     src.buffer = buf;
-    src.connect(ctx.destination);
+    if (!analyser && ctx.createAnalyser) {
+      try {
+        analyser = ctx.createAnalyser();
+        analyser.fftSize = 512;
+        analyser.connect(ctx.destination);
+        levelBuf = new Float32Array(analyser.fftSize);
+      } catch (e) { analyser = null; }
+    }
+    src.connect(analyser || ctx.destination);
     currentSource = src;
     return new Promise((resolve) => {
       src.onended = () => {
@@ -292,6 +302,15 @@ const NeuralTTS = (() => {
       };
       src.start();
     });
+  }
+
+  /** 지금 재생 중인 소리의 크기(0~1 정도). 재생 중이 아니면 0 */
+  function outputLevel() {
+    if (!analyser || !currentSource || !analyser.getFloatTimeDomainData) return 0;
+    analyser.getFloatTimeDomainData(levelBuf);
+    let sum = 0;
+    for (let i = 0; i < levelBuf.length; i++) sum += levelBuf[i] * levelBuf[i];
+    return Math.sqrt(sum / levelBuf.length);
   }
 
   function stopAudio() {
@@ -305,6 +324,6 @@ const NeuralTTS = (() => {
 
   return {
     VOICES, isSupported, isReady, fetchManifest, downloadSize, download, cancelDownload, remove,
-    isLoaded, ensureLoaded, shutdown, synthesize, cancelBefore, unlockAudio, play, stopAudio
+    isLoaded, ensureLoaded, shutdown, synthesize, cancelBefore, unlockAudio, play, stopAudio, outputLevel
   };
 })();
