@@ -186,6 +186,9 @@ async function deleteTutorModel() {
     for (const id of new Set([tutorModelId, ...Object.values(TUTOR_MODELS)].filter(Boolean))) {
       if (await lib.hasModelInCache(id)) await lib.deleteModelAllInfoInCache(id);
     }
+    TutorSTT.unload();
+    await caches.delete("transformers-cache");
+    try { localStorage.removeItem("tutorSttReady"); } catch (e) {}
     // 라이브러리가 남기는 작은 목록 파일(tensor-cache.json)까지 정리
     for (const name of await caches.keys()) {
       if (!name.startsWith("webllm")) continue;
@@ -624,14 +627,15 @@ function renderTutorEnvNotice() {
   const env = tutorEnv();
   box.classList.toggle("hidden", !env.inApp);
   if (!env.inApp) return;
-  box.innerHTML = `<div class="tutor-env-text">${env.inApp === "앱" ? "앱 안의 브라우저" : env.inApp + " 안의 브라우저"}에서는 마이크와 AI 튜터가 제대로 동작하지 않을 수 있어요.</div>` +
+  box.innerHTML = `<div class="tutor-env-text">${env.inApp === "앱" ? "앱 안의 브라우저" : env.inApp + " 안의 브라우저"}에서는 일부 기능이 제한될 수 있어요. 문제가 있으면 바깥 브라우저로 열어 주세요.</div>` +
     `<button class="btn-main tutor-env-btn" onclick="openTutorInBrowser()">${env.ios ? "사파리로 열기" : "크롬으로 열기"}</button>`;
 }
 /** 마이크 권한이 막혔을 때: 환경마다 푸는 방법이 달라서 맞는 안내를 보여 준다 */
 function showMicPermissionHelp() {
   const env = tutorEnv();
   if (env.inApp) {
-    if (confirm(`${env.inApp === "앱" ? "앱 안의 브라우저" : env.inApp + " 안의 브라우저"}에서는 마이크를 쓸 수 없는 경우가 많아요.\n${env.ios ? "사파리" : "크롬"}로 열어서 사용해 주세요. 지금 열까요?`)) openTutorInBrowser();
+    const app = env.inApp === "앱" ? "이 앱" : env.inApp;
+    if (confirm(`마이크 사용이 막혀 있어요.\n${env.android ? `휴대폰 설정 → 애플리케이션 → ${app} → 권한 → 마이크 '허용'` : `설정 앱 → ${app} → 마이크 켜기`} 후 다시 시도해 주세요.\n\n또는 ${env.ios ? "사파리" : "크롬"}로 열어서 쓸 수도 있어요. 지금 열까요?`)) openTutorInBrowser();
     return;
   }
   let how;
@@ -676,12 +680,8 @@ function tutorJoinResults(results) {
 }
 function toggleTutorMic() {
   const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
-  if (!SR) {
-    const env = tutorEnv();
-    if (env.inApp && confirm(`${env.inApp === "앱" ? "앱 안의 브라우저" : env.inApp + " 안의 브라우저"}는 음성 인식을 지원하지 않아요.\n${env.ios ? "사파리" : "크롬"}로 열까요? (취소하면 입력창에 적어서 대화할 수 있어요)`)) { openTutorInBrowser(); return; }
-    if (!env.inApp) alert("이 브라우저는 음성 인식을 지원하지 않아요. 아래 입력창에 영어로 적어 주세요.");
-    tutorEl("tutor-input").focus(); return;
-  }
+  // 브라우저 음성 인식이 없거나(인앱 등) 실패했던 곳은 기기 안 음성 인식(Whisper)으로
+  if (tutorWhisperRec || !SR || tutorEnv().inApp || tutorUseWhisper) { toggleTutorWhisperMic(); return; }
   if (tutorMic) { tutorMic.stop(); return; }          // 듣는 중에 누르면 바로 끝내고 보낸다
   if (tutorMicDenied) { showMicPermissionHelp(); tutorCheckMicPermission(); return; }
   stopTutorSpeech();
@@ -713,7 +713,12 @@ function toggleTutorMic() {
   rec.onresult = e => { heard = tutorJoinResults(e.results); inp.value = heard; };
   rec.onspeechend = () => { try { rec.stop(); } catch (e) {} };
   rec.onerror = e => {
-    if (e.error === "not-allowed" || e.error === "service-not-allowed") showMicPermissionHelp();
+    // 브라우저 음성 인식 서비스를 못 쓰는 환경이면 다음부터 기기 안 음성 인식으로 (마이크 권한 자체가 막힌 건 아님)
+    if (e.error === "service-not-allowed" || e.error === "network" || e.error === "language-not-supported") {
+      tutorUseWhisper = true;
+      setTimeout(() => setTutorStatus("다시 눌러 주세요. 이제 기기 안 음성 인식으로 들을게요", ""), 0);
+    }
+    else if (e.error === "not-allowed") showMicPermissionHelp();
     else if (TUTOR_MIC_MSG[e.error]) alert(TUTOR_MIC_MSG[e.error]);
     else if (e.error === "no-speech") { done || setTimeout(() => setTutorStatus("소리가 들리지 않았어요. 다시 눌러 말해 보세요", ""), 0); }
     finish();
@@ -732,6 +737,151 @@ function sendTutorWhenFree(text, tries = 0) {
   if (!tutorBusy) { sendTutorText(text); return; }
   if (tries > 100) { tutorEl("tutor-input").value = text; return; }
   setTimeout(() => sendTutorWhenFree(text, tries + 1), 150);
+}
+
+// ---------- 기기 안 음성 인식 (Whisper) ----------
+// 인앱 브라우저 등 브라우저 음성 인식이 없는 곳: 기타 튜너처럼 마이크 소리를 직접 받아(getUserMedia)
+// 기기 안의 Whisper 모델로 글자로 바꾼다. 모델은 처음 한 번만 받는다 (약 70MB, 브라우저 저장소에 보관)
+// tiny.en: 짧은 문장은 base와 같은 결과에 2.5배 빠름(3초 음성 1.9초 vs 4.7초, 한 줄 실행 기준)
+const TUTOR_STT_MODEL = { model: "Xenova/whisper-tiny.en", dtype: "q8", device: "wasm" };
+const TUTOR_STT_SIZE_LABEL = "약 70MB";
+const TUTOR_STT_WORKER_URL = new URL("stt-worker.js", (document.currentScript && document.currentScript.src) || location.href).href;
+let tutorUseWhisper = false;   // 브라우저 음성 인식이 실패하면 이번 실행 동안 Whisper로 바꾼다
+const TutorSTT = (() => {
+  let worker = null, ready = false, loading = null, seq = 0;
+  const waits = new Map();
+  let onProgress = null;
+  function ensureWorker() {
+    if (worker) return worker;
+    worker = new Worker(TUTOR_STT_WORKER_URL, { type: "module" });
+    worker.onmessage = e => {
+      const m = e.data, w = waits.get(m.id);
+      if (m.type === "progress") { if (onProgress && m.status === "progress" && m.total) onProgress(m.loaded / m.total, m.file); return; }
+      if (!w) return;
+      waits.delete(m.id);
+      if (m.type === "error") w.reject(new Error(m.message)); else w.resolve(m);
+    };
+    worker.onerror = e => { waits.forEach(w => w.reject(new Error("음성 인식 엔진을 불러오지 못했어요"))); waits.clear(); worker = null; loading = null; };
+    return worker;
+  }
+  function call(msg, transfer) {
+    const id = ++seq;
+    return new Promise((resolve, reject) => { waits.set(id, { resolve, reject }); ensureWorker().postMessage({ ...msg, id }, transfer || []); });
+  }
+  return {
+    isReady: () => ready,
+    load(progress) {
+      onProgress = progress || null;
+      if (ready) return Promise.resolve();
+      if (!loading) loading = call({ type: "load", ...(window.TUTOR_STT_OVERRIDE || TUTOR_STT_MODEL) }).then(() => { ready = true; try { localStorage.setItem("tutorSttReady", "true"); } catch (e) {} }).catch(e => { loading = null; throw e; });
+      return loading;
+    },
+    async transcribe(audio) { const r = await call({ type: "transcribe", audio }, [audio.buffer]); return r.text || ""; },
+    downloadedBefore() { try { return localStorage.getItem("tutorSttReady") === "true"; } catch (e) { return false; } },
+    unload() { if (worker) { try { worker.terminate(); } catch (e) {} } worker = null; ready = false; loading = null; }
+  };
+})();
+
+/** 마이크로 한 마디 녹음: 말을 멈추면(약 1.2초 조용) 자동으로 끝나고, 16kHz 소리 데이터를 돌려준다 */
+function tutorRecordUtterance() {
+  let stopNow = null;
+  const done = (async () => {
+    const stream = await navigator.mediaDevices.getUserMedia({ audio: { echoCancellation: true, noiseSuppression: true, autoGainControl: true } });
+    const Ctx = window.AudioContext || window.webkitAudioContext;
+    const ctx = new Ctx();
+    if (ctx.state === "suspended") await ctx.resume().catch(() => {});
+    const src = ctx.createMediaStreamSource(stream);
+    const proc = ctx.createScriptProcessor(4096, 1, 1);
+    const chunks = [];
+    const t0 = performance.now();
+    let noise = 0, nNoise = 0, heardVoice = false, lastVoice = 0;
+    return await new Promise(resolve => {
+      const finish = () => {
+        proc.onaudioprocess = null;
+        try { src.disconnect(); proc.disconnect(); } catch (e) {}
+        stream.getTracks().forEach(t => t.stop());
+        const rate = ctx.sampleRate;
+        ctx.close().catch(() => {});
+        resolve({ audio: tutorResample(chunks, rate, 16000), heardVoice });
+      };
+      stopNow = finish;
+      proc.onaudioprocess = e => {
+        const d = e.inputBuffer.getChannelData(0);
+        chunks.push(new Float32Array(d));
+        let sum = 0; for (let i = 0; i < d.length; i++) sum += d[i] * d[i];
+        const rms = Math.sqrt(sum / d.length), now = performance.now();
+        if (now - t0 < 350) { noise += rms; nNoise++; return; }               // 처음 잠깐은 주변 소음 크기를 잰다
+        const thr = Math.max(0.012, (nNoise ? noise / nNoise : 0) * 3);
+        if (rms > thr) { heardVoice = true; lastVoice = now; }
+        if ((heardVoice && now - lastVoice > 1200) || (!heardVoice && now - t0 > 8000) || now - t0 > 15000) finish();
+      };
+      src.connect(proc); proc.connect(ctx.destination);
+    });
+  })();
+  return { done, stop: () => stopNow && stopNow() };
+}
+/** 여러 조각을 이어 붙이고 16kHz로 바꾼다 (Whisper 입력 형식) */
+function tutorResample(chunks, from, to) {
+  const len = chunks.reduce((a, c) => a + c.length, 0);
+  const all = new Float32Array(len);
+  let o = 0; for (const c of chunks) { all.set(c, o); o += c.length; }
+  if (from === to) return all;
+  const ratio = from / to, out = new Float32Array(Math.floor(len / ratio));
+  for (let i = 0; i < out.length; i++) {                                  // 구간 평균으로 줄인다 (간단한 저역 통과 겸)
+    const a = Math.floor(i * ratio), b = Math.min(len, Math.floor((i + 1) * ratio));
+    let sum = 0; for (let j = a; j < b; j++) sum += all[j];
+    out[i] = sum / Math.max(1, b - a);
+  }
+  return out;
+}
+/** Whisper가 조용한 구간에서 지어내는 말([BLANK_AUDIO], (music), Thank you. 등) 걸러 내기 */
+function cleanWhisperText(t) {
+  const s = (t || "").replace(/\[[^\]]*\]|\([^)]*\)|\*[^*]*\*/g, " ").replace(/\s+/g, " ").trim();
+  if (!s || /^(thank you|thanks for watching|you)[.!]?$/i.test(s)) return "";
+  return s;
+}
+
+let tutorWhisperRec = null;
+async function toggleTutorWhisperMic() {
+  if (tutorWhisperRec) { tutorWhisperRec.stop(); return; }            // 듣는 중에 누르면 바로 끝내고 보낸다
+  if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+    alert("이 화면에서는 마이크를 쓸 수 없어요. 아래 입력창에 영어로 적어 주세요."); tutorEl("tutor-input").focus(); return;
+  }
+  if (!TutorSTT.isReady() && !TutorSTT.downloadedBefore() &&
+      !confirm(`이 화면에서는 기기 안의 음성 인식을 써요.\n처음 한 번만 음성 인식 모델(${TUTOR_STT_SIZE_LABEL})을 받을게요.`)) { tutorEl("tutor-input").focus(); return; }
+  stopTutorSpeech();
+  if ("speechSynthesis" in window) window.speechSynthesis.cancel();
+  if (typeof NeuralTTS !== "undefined" && NeuralTTS.suspendAudio) NeuralTTS.suspendAudio();
+  // 모델 준비와 녹음을 함께 시작 (처음엔 받는 동안 말해도 된다)
+  const ready = TutorSTT.load((p) => { if (!tutorWhisperRec) setTutorStatus(`음성 인식 준비 중… ${Math.round(p * 100)}%`, "thinking"); });
+  ready.catch(() => {});
+  const rec = tutorRecordUtterance();
+  tutorWhisperRec = rec;
+  setTutorStatus("듣고 있어요… 말을 마치면 자동으로 보내요", "listening");
+  let result;
+  try { result = await rec.done; }
+  catch (e) {
+    tutorWhisperRec = null;
+    setTutorStatus("마이크를 누르고 영어로 말해 보세요", "");
+    if (e && (e.name === "NotAllowedError" || e.name === "SecurityError")) showMicPermissionHelp();
+    else if (e && e.name === "NotFoundError") alert("마이크를 찾지 못했어요. 입력창에 적어서 대화할 수 있어요.");
+    else alert("마이크를 열지 못했어요. (" + ((e && e.message) || e) + ")");
+    return;
+  }
+  tutorWhisperRec = null;
+  if (!result.heardVoice || result.audio.length < 16000 * 0.4) { setTutorStatus("소리가 들리지 않았어요. 다시 눌러 말해 보세요", ""); return; }
+  setTutorStatus(TutorSTT.isReady() ? "알아듣는 중…" : "음성 인식 준비 중…", "thinking");
+  try {
+    await ready;
+    setTutorStatus("알아듣는 중…", "thinking");
+    const text = cleanWhisperText(await TutorSTT.transcribe(result.audio));
+    setTutorStatus("마이크를 누르고 영어로 말해 보세요", "");
+    if (!text) { setTutorStatus("잘 못 알아들었어요. 다시 눌러 또박또박 말해 보세요", ""); return; }
+    sendTutorWhenFree(text);
+  } catch (e) {
+    setTutorStatus("마이크를 누르고 영어로 말해 보세요", "");
+    alert("음성 인식을 하지 못했어요. 입력창에 적어서 대화할 수 있어요.\n(" + ((e && e.message) || e) + ")");
+  }
 }
 
 // ---------- 힌트 · 피드백 ----------
