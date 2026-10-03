@@ -379,8 +379,9 @@
       <div class="nav-header"><span class="back-btn" onclick="goTo('home')">❮ 뒤로</span><h2>실전 대화</h2></div>
       <div class="list-tools">
         <button class="chip-btn play-chip" data-list-play="conv" onclick="toggleListPlay('conv')">🔊 전체 듣기</button>
-        <input id="conv-search" type="text" placeholder="상황 검색 (예: 식당, 공항)..." class="search-input" oninput="renderConversationList()" />
+        <input id="conv-search" type="text" placeholder="검색 (예: 공항, check)" class="search-input" oninput="renderConversationList()" />
       </div>
+      <div id="conv-cats" class="filter-area cat-chips"></div>
       <div id="conv-list" class="list-view"></div>
     </section>
 

@@ -339,22 +339,54 @@ async function playIdiomExamples() {
 function moveIdiom(o) { moveItemInList(currentIdiomId, currentIdiomList, o, openIdiom); }
 
 // --- 4. Conversations ---
+// 회화 목록·쉐도잉 목록 공용: 실제 상황(category) 칩
+function convCategoryOf(c) { return c.category || "기타"; }
+function convCategories() { return [...new Set(conversationData.map(convCategoryOf))]; }
+function renderConvCategoryChips(boxId, current, onPick) {
+  const box = document.getElementById(boxId);
+  if (!box) return;
+  box.innerHTML = "";
+  ["", ...convCategories()].forEach(cat => {
+    const b = document.createElement("button");
+    b.className = "chip-btn" + (cat === current ? " active" : "");
+    const n = cat ? conversationData.filter(c => convCategoryOf(c) === cat).length : conversationData.length;
+    b.innerHTML = `${cat || "전체"}<span class="cnt">${n}</span>`;
+    b.onclick = () => onPick(cat);
+    box.appendChild(b);
+  });
+}
+function appendConvGroupTitle(container, cat, n) {
+  const head = document.createElement("div");
+  head.className = "list-group-title";
+  head.innerHTML = `${cat}<span class="cnt">${n}개</span>`;
+  container.appendChild(head);
+}
+let convCategory = "";
+function setConvCategory(cat) { convCategory = cat; renderConversationList(); }
 function renderConversationList() {
   const container = document.getElementById("conv-list");
   if (!container || typeof conversationData === "undefined") return;
   const keyword = (document.getElementById("conv-search")?.value || "").toLowerCase();
+  renderConvCategoryChips("conv-cats", convCategory, setConvCategory);
   container.innerHTML = "";
-  const filtered = conversationData.filter(c => (c.title + c.lines.map(l => l.en).join(" ") + c.lines.map(l => l.kr).join(" ")).toLowerCase().includes(keyword));
-  currentConvList = filtered;
-  filtered.forEach(c => {
-    const div = document.createElement("div");
-    div.className = "list-item";
-    div.dataset.id = c.id;
-    div.onclick = () => openConversation(c.id);
-    div.innerHTML = `<div><div class="list-item-title">${c.title}</div><div class="list-item-sub">${c.lines[0]?.en || ""}</div></div><div>▶</div>`;
-    container.appendChild(div);
+  const matched = conversationData.filter(c => (!convCategory || convCategoryOf(c) === convCategory) &&
+    (convCategoryOf(c) + c.title + c.lines.map(l => l.en).join(" ") + c.lines.map(l => l.kr).join(" ")).toLowerCase().includes(keyword));
+  // 화면에 보이는 순서(상황별) 그대로 전체 듣기·이전/다음 대화가 진행되도록
+  currentConvList = convCategories().flatMap(cat => matched.filter(c => convCategoryOf(c) === cat));
+  convCategories().forEach(cat => {
+    const group = currentConvList.filter(c => convCategoryOf(c) === cat);
+    if (group.length === 0) return;
+    appendConvGroupTitle(container, cat, group.length);
+    group.forEach(c => {
+      const div = document.createElement("div");
+      div.className = "list-item";
+      div.dataset.id = c.id;
+      div.onclick = () => openConversation(c.id);
+      div.innerHTML = `<div><div class="list-item-title">${c.title}</div><div class="list-item-sub">${c.lines[0]?.en || ""}</div></div><div>▶</div>`;
+      container.appendChild(div);
+    });
   });
-  if (filtered.length === 0) container.innerHTML = '<div class="list-item"><div>검색 결과가 없습니다.</div></div>';
+  if (currentConvList.length === 0) container.innerHTML = '<div class="list-item"><div>검색 결과가 없습니다.</div></div>';
   afterListRender('conv');
 }
 function openConversation(id) { currentConvId = id; localStorage.setItem("currentConvId", id); goTo("conv-detail"); if (autoPlayEnabled) playConversationAll(); }
@@ -531,29 +563,15 @@ function renderShadowingList() {
   const container = document.getElementById("shadowing-list-container");
   if (!container || typeof conversationData === "undefined") return;
   const keyword = (document.getElementById("shadowing-search")?.value || "").toLowerCase();
-  const cats = [...new Set(conversationData.map(c => c.category || "기타"))];
-  const chipBox = document.getElementById("shadowing-cats");
-  if (chipBox) {
-    chipBox.innerHTML = "";
-    ["", ...cats].forEach(cat => {
-      const b = document.createElement("button");
-      b.className = "chip-btn" + (cat === shadowingCategory ? " active" : "");
-      const n = cat ? conversationData.filter(c => (c.category || "기타") === cat).length : conversationData.length;
-      b.innerHTML = `${cat || "전체"}<span class="cnt">${n}</span>`;
-      b.onclick = () => setShadowingCategory(cat);
-      chipBox.appendChild(b);
-    });
-  }
+  const cats = convCategories();
+  renderConvCategoryChips("shadowing-cats", shadowingCategory, setShadowingCategory);
   container.innerHTML = "";
-  const filtered = conversationData.filter(c => (!shadowingCategory || (c.category || "기타") === shadowingCategory) &&
-    (c.title + c.lines.map(l => l.en).join(" ") + c.lines.map(l => l.kr).join(" ")).toLowerCase().includes(keyword));
+  const filtered = conversationData.filter(c => (!shadowingCategory || convCategoryOf(c) === shadowingCategory) &&
+    (convCategoryOf(c) + c.title + c.lines.map(l => l.en).join(" ") + c.lines.map(l => l.kr).join(" ")).toLowerCase().includes(keyword));
   cats.forEach(cat => {
-    const group = filtered.filter(c => (c.category || "기타") === cat);
+    const group = filtered.filter(c => convCategoryOf(c) === cat);
     if (group.length === 0) return;
-    const head = document.createElement("div");
-    head.className = "list-group-title";
-    head.innerHTML = `${cat}<span class="cnt">${group.length}개</span>`;
-    container.appendChild(head);
+    appendConvGroupTitle(container, cat, group.length);
     group.forEach(c => {
       const div = document.createElement("div");
       div.className = "list-item";
@@ -681,7 +699,7 @@ function nextRandomShadowingTopic() {
   if (typeof stopNeuralSpeech === 'function') stopNeuralSpeech();
   if (!conversationData || conversationData.length === 0) return;
   // 목록에서 상황을 골라 두었으면 같은 상황 안에서 다음 주제를 고른다
-  const inCat = conversationData.filter(c => shadowingCategory && (c.category || "기타") === shadowingCategory);
+  const inCat = conversationData.filter(c => shadowingCategory && convCategoryOf(c) === shadowingCategory);
   const pool = inCat.length > 1 ? inCat : conversationData;
   let nextConv;
   if (pool.length > 1) {
