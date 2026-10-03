@@ -3,7 +3,9 @@
 // ==========================================
 (function() {
   const ua = navigator.userAgent.toLowerCase();
-  const url = location.href;
+  // intent 주소에는 #페이지를 붙일 수 없어서(#Intent와 겹침) ?go=페이지 로 넘긴다
+  const page = location.hash.replace('#', '');
+  const url = location.origin + location.pathname + (page ? '?go=' + encodeURIComponent(page) : location.search);
   if (ua.indexOf('kakaotalk') > -1) {
     if (ua.indexOf('android') > -1) {
       location.href = 'intent://' + url.replace(/https?:\/\//i, '') + '#Intent;scheme=https;end';
@@ -230,6 +232,8 @@ document.addEventListener('DOMContentLoaded', () => {
   if(typeof initNewsUpdater === 'function') initNewsUpdater();
   setupHScroll();
   
-  const initialPage = location.hash.replace('#', '') || 'home'; 
+  // 외부 브라우저로 넘겨 열 때(안드로이드 intent 등)는 #을 쓸 수 없어 ?go=페이지 로 받는다
+  const goParam = new URLSearchParams(location.search).get('go');
+  const initialPage = location.hash.replace('#', '') || goParam || 'home'; 
   goTo(initialPage, true);
 });

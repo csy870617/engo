@@ -39,10 +39,10 @@ let tutorProgressCb = null;   // 불러오는 중에 페이지를 다시 열어�
 async function tutorCheckSupport() {
   if (tutorSupport) return tutorSupport;
   const fail = reason => (tutorSupport = { ok: false, reason });
-  if (!window.isSecureContext || !navigator.gpu) return fail("이 브라우저는 AI 계산(WebGPU)을 지원하지 않아요. PC·안드로이드는 최신 크롬, 아이폰은 최신 iOS의 사파리에서 열어 주세요.");
+  if (!window.isSecureContext || !navigator.gpu) return fail("이 브라우저는 AI 계산(WebGPU)을 지원하지 않아요. PC·안드로이드는 크롬, 아이폰은 사파리에서 열어 주세요.");
   try {
     const adapter = await navigator.gpu.requestAdapter();
-    if (!adapter) return fail("이 기기에서 AI 계산 장치를 찾지 못했어요. 최신 크롬·사파리나 다른 기기에서 이용해 주세요.");
+    if (!adapter) return fail("이 기기에서 AI 계산 장치를 찾지 못했어요. 크롬·사파리나 다른 기기에서 이용해 주세요.");
     const f16 = adapter.features.has("shader-f16");
     tutorModelId = (window.TUTOR_MODEL_OVERRIDE && window.TUTOR_MODEL_OVERRIDE[f16 ? "f16" : "f32"]) || TUTOR_MODELS[f16 ? "f16" : "f32"];
     return (tutorSupport = { ok: true, f16 });
@@ -121,6 +121,8 @@ function setTutorProgress(p, text) {
 /** 튜터 페이지에 들어올 때 (core.js goTo) */
 async function renderTutorPage() {
   clearTimeout(tutorUnloadTimer);
+  renderTutorEnvNotice();
+  tutorCheckMicPermission();
   TutorAvatar.mount();
   fillTutorScenarios();
   if (tutorEngine) { showTutorSection("chat"); if (tutorMessages.length === 0) startTutorSession(); else setTutorStatus("마이크를 누르고 영어로 말해 보세요", ""); return; }
@@ -589,17 +591,77 @@ function stopTutorSpeech() {
   setTutorStatus("마이크를 누르고 영어로 말해 보세요", "");
 }
 
+// ---------- 실행 환경 (앱 안 브라우저 / 홈 화면 앱) ----------
+// 카카오톡·인스타그램 등 앱 안의 브라우저는 음성 인식·마이크 권한·AI 계산(WebGPU)이 막혀 있는 경우가 많다
+function tutorEnv() {
+  const ua = navigator.userAgent || "";
+  const inApp = /KAKAOTALK/i.test(ua) ? "카카오톡" : /NAVER\(inapp|NAVER\//i.test(ua) ? "네이버" : /Instagram/i.test(ua) ? "인스타그램"
+    : /FBAN|FBAV|FB_IAB/i.test(ua) ? "페이스북" : /\bLine\//i.test(ua) ? "라인" : /BAND\//i.test(ua) ? "밴드" : /DaumApps/i.test(ua) ? "다음"
+    : /; wv\)/.test(ua) ? "앱" : null;
+  const standalone = (window.matchMedia && matchMedia("(display-mode: standalone)").matches) || navigator.standalone === true;
+  return { inApp, standalone, android: /Android/i.test(ua), ios: /iPhone|iPad|iPod/i.test(ua) || (/Macintosh/.test(ua) && navigator.maxTouchPoints > 1) };
+}
+/** 바깥 브라우저로 여는 주소 (열 수 없는 곳이면 null → 링크 복사로 안내) */
+function tutorExternalUrl(env) {
+  const target = location.origin + location.pathname + "?go=tutor";
+  if (env.inApp === "카카오톡") return "kakaotalk://web/openExternal?url=" + encodeURIComponent(target);
+  if (env.inApp === "라인") return target + "&openExternalBrowser=1";
+  if (env.android) return "intent://" + target.replace(/^https?:\/\//, "") + "#Intent;scheme=https;package=com.android.chrome;S.browser_fallback_url=" + encodeURIComponent(target) + ";end";
+  return null;
+}
+/** 지금 화면을 크롬(안드로이드)·사파리 등 바깥 브라우저로 연다. 안 되는 곳은 링크 복사 + 안내 */
+function openTutorInBrowser() {
+  const url = tutorExternalUrl(tutorEnv());
+  if (url) { location.href = url; return; }
+  const target = location.origin + location.pathname + "?go=tutor";
+  const done = () => alert("주소를 복사했어요.\n사파리를 열고 주소창에 붙여 넣어 주세요.\n(또는 화면의 ⋯ 메뉴에서 'Safari로 열기'를 눌러도 돼요)");
+  if (navigator.clipboard) navigator.clipboard.writeText(target).then(done, () => prompt("이 주소를 복사해 사파리에서 열어 주세요", target));
+  else prompt("이 주소를 복사해 사파리에서 열어 주세요", target);
+}
+function renderTutorEnvNotice() {
+  const box = tutorEl("tutor-env");
+  if (!box) return;
+  const env = tutorEnv();
+  box.classList.toggle("hidden", !env.inApp);
+  if (!env.inApp) return;
+  box.innerHTML = `<div class="tutor-env-text">${env.inApp === "앱" ? "앱 안의 브라우저" : env.inApp + " 안의 브라우저"}에서는 마이크와 AI 튜터가 제대로 동작하지 않을 수 있어요.</div>` +
+    `<button class="btn-main tutor-env-btn" onclick="openTutorInBrowser()">${env.ios ? "사파리로 열기" : "크롬으로 열기"}</button>`;
+}
+/** 마이크 권한이 막혔을 때: 환경마다 푸는 방법이 달라서 맞는 안내를 보여 준다 */
+function showMicPermissionHelp() {
+  const env = tutorEnv();
+  if (env.inApp) {
+    if (confirm(`${env.inApp === "앱" ? "앱 안의 브라우저" : env.inApp + " 안의 브라우저"}에서는 마이크를 쓸 수 없는 경우가 많아요.\n${env.ios ? "사파리" : "크롬"}로 열어서 사용해 주세요. 지금 열까요?`)) openTutorInBrowser();
+    return;
+  }
+  let how;
+  if (env.android && env.standalone) how = "홈 화면 앱은 크롬의 권한을 따라요.\n① 크롬 앱 → 오른쪽 위 ⋮ → 설정 → 사이트 설정 → 마이크 → engo.life를 '허용'\n② 그래도 안 되면 휴대폰 설정 → 애플리케이션 → Chrome → 권한 → 마이크 '허용'\n바꾼 뒤 앱을 완전히 닫았다 다시 열어 주세요.";
+  else if (env.android) how = "① 주소창 왼쪽 아이콘(⚙ 또는 자물쇠) → 권한 → 마이크 '허용'\n② 그래도 안 되면 휴대폰 설정 → 애플리케이션 → Chrome → 권한 → 마이크 '허용'";
+  else if (env.ios) how = "① 설정 앱 → Safari → 마이크 → '허용' 또는 '확인'\n② 사파리 주소창 왼쪽 '가가' → 웹 사이트 설정 → 마이크 '허용'\n③ 설정 → 개인정보 보호 및 보안 → 음성 인식/마이크에서 Safari가 켜져 있는지 확인";
+  else how = "주소창 왼쪽 자물쇠 아이콘 → 사이트 설정 → 마이크 '허용'";
+  alert("마이크 사용이 막혀 있어요.\n\n" + how + "\n\n마이크 없이도 아래 입력창에 적어서 대화할 수 있어요.");
+}
+
 // ---------- 듣기 (음성 인식) ----------
 // 안드로이드 크롬은 인식기가 끝 신호(onend)를 안 보내고 멈추거나, 같은 말을 겹쳐 보내는 경우가 있어
 // 버튼을 다시 누르면 무조건 끝내고(들은 만큼 보냄), 시간 제한·오류 안내를 둔다
 let tutorMic = null;   // { rec, stop }
 const TUTOR_MIC_MSG = {
-  "not-allowed": "마이크 사용을 허용해 주세요. (주소창 옆 자물쇠 → 권한 → 마이크)",
-  "service-not-allowed": "마이크 사용을 허용해 주세요. (주소창 옆 자물쇠 → 권한 → 마이크)",
   "audio-capture": "마이크를 쓸 수 없어요. 다른 앱이 마이크를 쓰고 있지 않은지 확인해 주세요.",
   "network": "음성 인식에 인터넷 연결이 필요해요. 입력창에 적어서 보내도 돼요.",
   "language-not-supported": "이 기기는 영어 음성 인식을 지원하지 않아요. 입력창에 적어 주세요."
 };
+// 마이크 권한 상태를 미리 알아 둔다 (이미 '차단'이면 눌러도 권한 창이 안 뜨므로 바로 푸는 방법을 안내)
+let tutorMicDenied = false;
+function tutorCheckMicPermission() {
+  try {
+    if (!navigator.permissions || !navigator.permissions.query) return;
+    navigator.permissions.query({ name: "microphone" }).then(st => {
+      tutorMicDenied = st.state === "denied";
+      st.onchange = () => { tutorMicDenied = st.state === "denied"; };
+    }).catch(() => {});
+  } catch (e) {}
+}
 /** 인식 결과 합치기: 안드로이드처럼 누적 문장을 여러 번 보내도 한 번만 */
 function tutorJoinResults(results) {
   let acc = "";
@@ -614,8 +676,14 @@ function tutorJoinResults(results) {
 }
 function toggleTutorMic() {
   const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
-  if (!SR) { alert("이 브라우저는 음성 인식을 지원하지 않아요. 아래 입력창에 영어로 적어 주세요."); tutorEl("tutor-input").focus(); return; }
+  if (!SR) {
+    const env = tutorEnv();
+    if (env.inApp && confirm(`${env.inApp === "앱" ? "앱 안의 브라우저" : env.inApp + " 안의 브라우저"}는 음성 인식을 지원하지 않아요.\n${env.ios ? "사파리" : "크롬"}로 열까요? (취소하면 입력창에 적어서 대화할 수 있어요)`)) { openTutorInBrowser(); return; }
+    if (!env.inApp) alert("이 브라우저는 음성 인식을 지원하지 않아요. 아래 입력창에 영어로 적어 주세요.");
+    tutorEl("tutor-input").focus(); return;
+  }
   if (tutorMic) { tutorMic.stop(); return; }          // 듣는 중에 누르면 바로 끝내고 보낸다
+  if (tutorMicDenied) { showMicPermissionHelp(); tutorCheckMicPermission(); return; }
   stopTutorSpeech();
   if ("speechSynthesis" in window) window.speechSynthesis.cancel();
   if (typeof NeuralTTS !== "undefined" && NeuralTTS.suspendAudio) NeuralTTS.suspendAudio();
@@ -645,7 +713,8 @@ function toggleTutorMic() {
   rec.onresult = e => { heard = tutorJoinResults(e.results); inp.value = heard; };
   rec.onspeechend = () => { try { rec.stop(); } catch (e) {} };
   rec.onerror = e => {
-    if (TUTOR_MIC_MSG[e.error]) alert(TUTOR_MIC_MSG[e.error]);
+    if (e.error === "not-allowed" || e.error === "service-not-allowed") showMicPermissionHelp();
+    else if (TUTOR_MIC_MSG[e.error]) alert(TUTOR_MIC_MSG[e.error]);
     else if (e.error === "no-speech") { done || setTimeout(() => setTutorStatus("소리가 들리지 않았어요. 다시 눌러 말해 보세요", ""), 0); }
     finish();
   };
