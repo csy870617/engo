@@ -524,20 +524,43 @@ let isBlindMode = false; let isHideKr = false;
 // 역할극: 상대(B) 대사는 자동으로 들려주고, 내 차례(A)엔 한국어만 보고 먼저 말해 본 뒤 정답 확인
 let isRolePlay = false; try { isRolePlay = localStorage.getItem("shadowingRolePlay") === "true"; } catch (e) {}
 let rolePlayToken = 0; let rolePlayRevealedKey = "";
+// 쉐도잉 목록: 실제 상황(category)별로 묶어 보여 주고, 위쪽 칩으로 한 상황만 골라 볼 수 있다
+let shadowingCategory = "";
+function setShadowingCategory(cat) { shadowingCategory = cat; renderShadowingList(); }
 function renderShadowingList() {
   const container = document.getElementById("shadowing-list-container");
   if (!container || typeof conversationData === "undefined") return;
   const keyword = (document.getElementById("shadowing-search")?.value || "").toLowerCase();
+  const cats = [...new Set(conversationData.map(c => c.category || "기타"))];
+  const chipBox = document.getElementById("shadowing-cats");
+  if (chipBox) {
+    chipBox.innerHTML = "";
+    ["", ...cats].forEach(cat => {
+      const b = document.createElement("button");
+      b.className = "chip-btn" + (cat === shadowingCategory ? " active" : "");
+      const n = cat ? conversationData.filter(c => (c.category || "기타") === cat).length : conversationData.length;
+      b.innerHTML = `${cat || "전체"}<span class="cnt">${n}</span>`;
+      b.onclick = () => setShadowingCategory(cat);
+      chipBox.appendChild(b);
+    });
+  }
   container.innerHTML = "";
-  const filtered = conversationData.filter(c => (c.title + c.lines.map(l => l.en).join(" ")).toLowerCase().includes(keyword));
-  filtered.forEach(c => {
-    const div = document.createElement("div");
-    div.className = "list-item";
-    div.onclick = () => {
-      startShadowingFromConv(c.id);
-    };
-    div.innerHTML = `<div><div class="list-item-title">🗣️ ${c.title}</div><div class="list-item-sub">총 ${c.lines.length}문장</div></div><div style="color:var(--accent); font-size:0.9rem;">Start ▶</div>`;
-    container.appendChild(div);
+  const filtered = conversationData.filter(c => (!shadowingCategory || (c.category || "기타") === shadowingCategory) &&
+    (c.title + c.lines.map(l => l.en).join(" ") + c.lines.map(l => l.kr).join(" ")).toLowerCase().includes(keyword));
+  cats.forEach(cat => {
+    const group = filtered.filter(c => (c.category || "기타") === cat);
+    if (group.length === 0) return;
+    const head = document.createElement("div");
+    head.className = "list-group-title";
+    head.innerHTML = `${cat}<span class="cnt">${group.length}개</span>`;
+    container.appendChild(head);
+    group.forEach(c => {
+      const div = document.createElement("div");
+      div.className = "list-item";
+      div.onclick = () => startShadowingFromConv(c.id);
+      div.innerHTML = `<div><div class="list-item-title">🗣️ ${c.title}</div><div class="list-item-sub">${c.lines[0]?.en || ""}</div></div><div style="color:var(--accent); font-size:0.9rem; white-space:nowrap; margin-left:10px;">Start ▶</div>`;
+      container.appendChild(div);
+    });
   });
   if (filtered.length === 0) container.innerHTML = '<div class="list-item"><div>검색 결과가 없습니다.</div></div>';
 }
@@ -657,10 +680,13 @@ function nextRandomShadowingTopic() {
   if ("speechSynthesis" in window) window.speechSynthesis.cancel();
   if (typeof stopNeuralSpeech === 'function') stopNeuralSpeech();
   if (!conversationData || conversationData.length === 0) return;
+  // 목록에서 상황을 골라 두었으면 같은 상황 안에서 다음 주제를 고른다
+  const inCat = conversationData.filter(c => shadowingCategory && (c.category || "기타") === shadowingCategory);
+  const pool = inCat.length > 1 ? inCat : conversationData;
   let nextConv;
-  if (conversationData.length > 1) {
-    do { const randomIndex = Math.floor(Math.random() * conversationData.length); nextConv = conversationData[randomIndex]; } while (nextConv.id === currentShadowingId);
-  } else { nextConv = conversationData[0]; }
+  if (pool.length > 1) {
+    do { const randomIndex = Math.floor(Math.random() * pool.length); nextConv = pool[randomIndex]; } while (nextConv.id === currentShadowingId);
+  } else { nextConv = pool[0]; }
   currentShadowingId = nextConv.id; shadowingLineIndex = 0; rolePlayRevealedKey = ""; rolePlayToken++;
   updateShadowingUI();
   setTimeout(() => autoPlayShadowingLine(), 100);
