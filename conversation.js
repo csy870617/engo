@@ -1,5 +1,5 @@
 // conversation.js
-// 총 75개 주제, 각 6~8문장 · 실제 상황별 10개 카테고리 (category 필드: 쉐도잉 목록 상황별 보기에 사용)
+// 총 68개 주제, 각 6~8문장 · 실제 상황별 10개 카테고리 (category 필드: 쉐도잉 목록 상황별 보기에 사용)
 // 학습 포인트: 실제 상황에서 바로 쓰는 짧은 원어민 회화체
 
 const conversationData = [
@@ -327,21 +327,6 @@ const conversationData = [
       { speaker: "B", en: "Thanks. Would you like a refund or an exchange?", kr: "감사합니다. 환불해 드릴까요, 교환해 드릴까요?" },
       { speaker: "A", en: "A refund, please. I paid with my credit card.", kr: "환불로 해 주세요. 신용카드로 결제했어요." },
       { speaker: "B", en: "All set. It'll show up in 3 to 5 business days.", kr: "다 됐습니다. 영업일 기준 3~5일 안에 들어올 거예요." }
-    ]
-  },
-  {
-    id: "conv-023",
-    title: "흥정 (Discount)",
-    category: "쇼핑·생활 서비스",
-    lines: [
-      { speaker: "A", en: "Hi, how much is this lamp?", kr: "안녕하세요, 이 스탠드 얼마예요?" },
-      { speaker: "B", en: "That one's 50 dollars. It's vintage.", kr: "그건 50달러예요. 빈티지 제품이에요." },
-      { speaker: "A", en: "Hmm, that's a little over my budget.", kr: "음, 제 예산을 좀 넘네요." },
-      { speaker: "B", en: "I could do 45.", kr: "45달러까지는 해드릴 수 있어요." },
-      { speaker: "A", en: "Would you take 35 if I pay cash?", kr: "현금으로 내면 35달러에 안 될까요?" },
-      { speaker: "B", en: "How about we meet in the middle at 40?", kr: "중간 맞춰서 40달러 어때요?" },
-      { speaker: "A", en: "Okay, 40 works. Do you have change for a fifty?", kr: "좋아요, 40달러로 할게요. 50달러짜리 거슬러 주실 수 있어요?" },
-      { speaker: "B", en: "Sure, here's ten back. Enjoy it!", kr: "그럼요, 10달러 거스름돈이요. 잘 쓰세요!" }
     ]
   },
   {
@@ -732,21 +717,6 @@ const conversationData = [
     ]
   },
   {
-    id: "conv-019",
-    title: "기기 고장 (Broken)",
-    category: "회사·업무",
-    lines: [
-      { speaker: "A", en: "Ugh, the printer is jammed again.", kr: "아, 프린터 또 종이 걸렸어요." },
-      { speaker: "B", en: "Seriously? Did you check the back tray?", kr: "진짜요? 뒤쪽 트레이 확인해 봤어요?" },
-      { speaker: "A", en: "Yeah, but there's a piece stuck deep inside.", kr: "네, 근데 안쪽 깊이 한 조각 끼어 있어요." },
-      { speaker: "B", en: "Don't pull it. You might break something.", kr: "잡아당기지 마세요. 뭐 망가질 수도 있어요." },
-      { speaker: "A", en: "Okay. Should I call IT, then?", kr: "알겠어요. 그럼 IT팀 불러야 할까요?" },
-      { speaker: "B", en: "Yeah, just put in a ticket online. It's faster.", kr: "네, 온라인으로 요청 넣으세요. 그게 더 빨라요." },
-      { speaker: "A", en: "Got it. Is there another printer I can use?", kr: "알겠어요. 쓸 수 있는 다른 프린터 있어요?" },
-      { speaker: "B", en: "There's one on the third floor, by the kitchen.", kr: "3층 탕비실 옆에 하나 있어요." }
-    ]
-  },
-  {
     id: "conv-053",
     title: "전화 통화 (Phone Call)",
     category: "회사·업무",
@@ -871,36 +841,6 @@ const conversationData = [
     ]
   },
   {
-    id: "conv-028",
-    title: "운동 (Gym)",
-    category: "병원·건강",
-    lines: [
-      { speaker: "A", en: "Hey, sorry to bother you. Could you give me a spot?", kr: "저기, 방해해서 죄송한데 보조 좀 해주실 수 있어요?" },
-      { speaker: "B", en: "Sure, no problem. How many reps?", kr: "그럼요, 문제없어요. 몇 개 하세요?" },
-      { speaker: "A", en: "I'm going for eight. Just help if I get stuck.", kr: "8개 하려고요. 막히면 그때만 도와주세요." },
-      { speaker: "B", en: "Got it. Want help with the lift-off?", kr: "알겠어요. 처음에 바 드는 것도 도와드릴까요?" },
-      { speaker: "A", en: "Yes, please. On three.", kr: "네, 부탁해요. 셋에 할게요." },
-      { speaker: "B", en: "One, two, three. You got this!", kr: "하나, 둘, 셋. 할 수 있어요!" },
-      { speaker: "A", en: "Whew, thanks, man. I owe you one.", kr: "휴, 고마워요. 신세 졌네요." },
-      { speaker: "B", en: "Anytime. Nice set!", kr: "언제든지요. 잘하셨어요!" }
-    ]
-  },
-  {
-    id: "conv-030",
-    title: "다이어트 (Diet)",
-    category: "병원·건강",
-    lines: [
-      { speaker: "A", en: "I'll pass on the fries. I'm cutting carbs.", kr: "감자튀김은 패스할게. 탄수화물 줄이는 중이야." },
-      { speaker: "B", en: "Oh, are you on a diet?", kr: "오, 다이어트해?" },
-      { speaker: "A", en: "Kind of. I want to lose about five pounds.", kr: "그런 셈이야. 5파운드 정도 빼고 싶어." },
-      { speaker: "B", en: "Nice. How's it going so far?", kr: "좋네. 지금까지 어때?" },
-      { speaker: "A", en: "Pretty good. I've lost three since last month.", kr: "꽤 괜찮아. 지난달부터 3파운드 빠졌어." },
-      { speaker: "B", en: "Good for you! Are you working out too?", kr: "잘했다! 운동도 해?" },
-      { speaker: "A", en: "Yeah, I walk for 30 minutes after dinner.", kr: "응, 저녁 먹고 30분씩 걸어." },
-      { speaker: "B", en: "That's smart. Maybe I should join you.", kr: "현명하네. 나도 같이 할까 봐." }
-    ]
-  },
-  {
     id: "conv-075",
     title: "응급 상황 (Emergency)",
     category: "병원·건강",
@@ -965,21 +905,6 @@ const conversationData = [
     ]
   },
   {
-    id: "conv-042",
-    title: "차 고장 (Car)",
-    category: "생활 문제 해결",
-    lines: [
-      { speaker: "A", en: "Mike, my car won't start.", kr: "마이크, 내 차 시동이 안 걸려." },
-      { speaker: "B", en: "What happens when you turn the key?", kr: "키 돌리면 어떻게 되는데?" },
-      { speaker: "A", en: "It just clicks. The lights are really dim too.", kr: "딸깍 소리만 나. 계기판 불도 엄청 흐리고." },
-      { speaker: "B", en: "Sounds like a dead battery. I have jumper cables.", kr: "배터리 나간 것 같네. 나 점프 케이블 있어." },
-      { speaker: "A", en: "You're a lifesaver. What should I do?", kr: "살았다. 나 뭐 하면 돼?" },
-      { speaker: "B", en: "Pop the hood, and I'll pull my car up.", kr: "보닛 열어. 내가 차 옆에 댈게." },
-      { speaker: "A", en: "Okay. It started! Thank you so much.", kr: "오케이. 시동 걸렸다! 진짜 고마워." },
-      { speaker: "B", en: "Drive around for 20 minutes to charge it.", kr: "충전되게 20분 정도 돌아다녀." }
-    ]
-  },
-  {
     id: "conv-043",
     title: "소음 (Noise)",
     category: "생활 문제 해결",
@@ -1013,21 +938,6 @@ const conversationData = [
   // ==================================================
   // 9. 감정·관계 (Feelings)
   // ==================================================
-  {
-    id: "conv-020",
-    title: "승진 (Promotion)",
-    category: "감정·관계",
-    lines: [
-      { speaker: "A", en: "Hey, I heard the news! Congrats on your promotion!", kr: "야, 소식 들었어! 승진 축하해!" },
-      { speaker: "B", en: "Thanks! I still can't believe it.", kr: "고마워! 아직도 안 믿겨." },
-      { speaker: "A", en: "You totally deserve it. You've worked so hard.", kr: "넌 충분히 자격 있어. 진짜 열심히 했잖아." },
-      { speaker: "B", en: "That means a lot. I couldn't have done it without you.", kr: "그렇게 말해 줘서 고마워. 네 덕분이야." },
-      { speaker: "A", en: "So what's your new title?", kr: "그래서 새 직함이 뭐야?" },
-      { speaker: "B", en: "Senior project manager. I start on Monday.", kr: "선임 프로젝트 매니저. 월요일부터 시작해." },
-      { speaker: "A", en: "That's huge! Drinks are on me tonight.", kr: "대박이다! 오늘 술은 내가 살게." },
-      { speaker: "B", en: "You're the best. Let's go right after work!", kr: "역시 최고야. 퇴근하자마자 가자!" }
-    ]
-  },
   {
     id: "conv-076",
     title: "좋은 소식 (Good News)",
@@ -1120,21 +1030,6 @@ const conversationData = [
       { speaker: "B", en: "Not really. You can start with just your phone.", kr: "별로. 그냥 폰으로 시작해도 돼." },
       { speaker: "A", en: "Really? Maybe I'll give it a try.", kr: "진짜? 나도 한번 해 볼까." },
       { speaker: "B", en: "You should! Come shoot with me this Saturday.", kr: "해 봐! 이번 토요일에 같이 찍으러 가자." }
-    ]
-  },
-  {
-    id: "conv-038",
-    title: "넷플릭스 (Netflix)",
-    category: "취미·여가",
-    lines: [
-      { speaker: "A", en: "I need something new to watch. Any ideas?", kr: "새로 볼 거 없나? 추천 좀 해줘." },
-      { speaker: "B", en: "Have you seen 'Wednesday' on Netflix?", kr: "넷플릭스에서 '웬즈데이' 봤어?" },
-      { speaker: "A", en: "No, what's it about?", kr: "아니, 무슨 내용인데?" },
-      { speaker: "B", en: "It's about a girl at a weird boarding school.", kr: "이상한 기숙학교에 다니는 여자애 얘기야." },
-      { speaker: "A", en: "Is it scary? I can't do horror.", kr: "무서워? 나 공포물은 못 봐." },
-      { speaker: "B", en: "Not really. It's more funny than scary.", kr: "별로. 무섭다기보다 웃겨." },
-      { speaker: "A", en: "Okay. How many episodes are there?", kr: "오케이. 몇 편이야?" },
-      { speaker: "B", en: "Eight per season. I binged it in two days.", kr: "시즌당 8편. 난 이틀 만에 몰아서 봤어." }
     ]
   },
   {
