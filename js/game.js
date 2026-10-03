@@ -16,11 +16,12 @@ function setPuzzleLevel(lvl) {
 
 function initPuzzle() {
   if (puzzleList.length === 0) {
-    let pool = [];
-    const addIfValid = (en, kr) => { 
-      if (!en) return; 
-      const cleanEn = en.trim();
-      const len = cleanEn.split(/\s+/).length;
+    // 실전 회화(대화·패턴) 문장과 단어·숙어 예문을 따로 모아, 회화 문장이 두 문제에 한 번은 나오도록 섞는다
+    const convPool = [], examplePool = [], seen = new Set();
+    const addIfValid = (pool, en, kr) => {
+      if (!en) return;
+      const cleanEn = en.trim().replace(/\s+/g, " ");
+      const len = cleanEn.split(" ").length;
       if (len < 5) return; // 5단어 미만은 제외
 
       // 레벨별 필터링
@@ -28,18 +29,26 @@ function initPuzzle() {
       else if (selectedPuzzleLevel === 2) { if (len < 7 || len > 8) return; } // Lv.2: 7~8단어만
       else if (selectedPuzzleLevel === 3) { if (len < 9) return; } // Lv.3: 9단어 이상만
 
+      if (seen.has(cleanEn)) return; // 여러 데이터에 같은 문장이 있으면 한 번만
+      seen.add(cleanEn);
       pool.push({ en: cleanEn, kr: kr });
     };
 
-    if (typeof conversationData !== "undefined") conversationData.forEach(c => c.lines.forEach(l => addIfValid(l.en, l.kr)));
-    if (typeof patternData !== "undefined") patternData.forEach(p => p.examples.forEach(ex => addIfValid(ex.en, ex.kr)));
-    if (typeof wordData !== "undefined") wordData.forEach(w => { const idStr = w.id || ""; if (idStr.startsWith("L1") || idStr.startsWith("L2") || idStr.startsWith("L3")) if (w.examples) w.examples.forEach(ex => addIfValid(ex.en, ex.kr)); });
-    if (typeof idiomData !== "undefined") idiomData.forEach(i => { if (i.level && i.level <= 3) if (i.examples) i.examples.forEach(ex => addIfValid(ex.en, ex.kr)); });
-    
+    if (typeof conversationData !== "undefined") conversationData.forEach(c => c.lines.forEach(l => addIfValid(convPool, l.en, l.kr)));
+    if (typeof patternData !== "undefined") patternData.forEach(p => p.examples.forEach(ex => addIfValid(convPool, ex.en, ex.kr)));
+    if (typeof wordData !== "undefined") wordData.forEach(w => { const idStr = w.id || ""; if (idStr.startsWith("L1") || idStr.startsWith("L2") || idStr.startsWith("L3")) if (w.examples) w.examples.forEach(ex => addIfValid(examplePool, ex.en, ex.kr)); });
+    if (typeof idiomData !== "undefined") idiomData.forEach(i => { if (i.level && i.level <= 3) if (i.examples) i.examples.forEach(ex => addIfValid(examplePool, ex.en, ex.kr)); });
+
+    shuffleArray(convPool); shuffleArray(examplePool);
+    const pool = [];
+    for (let i = 0; i < Math.max(convPool.length, examplePool.length); i++) {
+      if (i < convPool.length) pool.push(convPool[i]);
+      if (i < examplePool.length) pool.push(examplePool[i]);
+    }
     if (pool.length === 0) {
        pool.push({ en: "Welcome to the English puzzle game.", kr: "영어 퍼즐 게임에 오신 것을 환영합니다." });
     }
-    puzzleList = shuffleArray(pool);
+    puzzleList = pool;
     currentPuzzleIndex = 0;
   }
   if (!currentPuzzleAnswer) nextPuzzle(); else renderPuzzle();
@@ -83,11 +92,26 @@ function renderPuzzle() {
     target.appendChild(span);
   });
 }
+// 두 문장 이상인 문제("Nice to meet you. I just started...")는 문장 순서만 바뀌어도 어순은 맞으므로 정답 처리
+function splitSentences(text) {
+  const out = []; let cur = [];
+  text.split(" ").forEach(tok => {
+    cur.push(tok);
+    if (/[.!?]$/.test(tok) && !/^(Mr|Mrs|Ms|Dr|St|vs|a\.m|p\.m)\.$/i.test(tok)) { out.push(cur.join(" ")); cur = []; }
+  });
+  if (cur.length) out.push(cur.join(" "));
+  return out;
+}
+function isPuzzleCorrect(user) {
+  if (user === currentPuzzleAnswer) return true;
+  const a = splitSentences(currentPuzzleAnswer), u = splitSentences(user);
+  return a.length > 1 && a.length === u.length && [...a].sort().join("\n") === [...u].sort().join("\n");
+}
 function checkPuzzle() {
   const user = puzzleTargetTokens.map(t => t.text).join(" ");
   const fb = document.getElementById("puzzle-feedback");
   fb.style.color = "";
-  if (user === currentPuzzleAnswer) { fb.textContent = "정답입니다! 🎉"; fb.className = "feedback-msg ok"; speakText(currentPuzzleAnswer); }
+  if (isPuzzleCorrect(user)) { fb.textContent = "정답입니다! 🎉"; fb.className = "feedback-msg ok"; speakText(currentPuzzleAnswer); }
   else { fb.textContent = "오답입니다."; fb.className = "feedback-msg error"; }
 }
 function resetPuzzle() { puzzleTargetTokens = []; const fb = document.getElementById("puzzle-feedback"); fb.textContent = ""; fb.style.color = ""; renderPuzzle(); }
