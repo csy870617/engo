@@ -294,6 +294,7 @@ main {
 .shadowing-mode { margin-bottom: 14px; }
 /* 쉐도잉 목록: 상황별 칩(줄바꿈) + 상황 머리글 */
 .cat-chips { flex-wrap: wrap; gap: 6px; margin-top: 12px; }
+.list-tools + .cat-chips { margin-top: -4px; }
 .cat-chips .chip-btn { padding: 6px 11px; font-size: 0.8rem; }
 .cat-chips .chip-btn .cnt { opacity: 0.6; margin-left: 3px; font-size: 0.75rem; }
 .list-group-title { display: flex; align-items: baseline; gap: 6px; margin: 10px 4px -2px; color: var(--accent); font-size: 0.95rem; font-weight: 700; }
