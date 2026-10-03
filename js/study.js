@@ -13,6 +13,8 @@ function moveItemInList(currentId, list, offset, openFunc) {
 }
 
 // --- 1. Patterns ---
+let patternCategory = "";
+function setPatternCategory(cat) { patternCategory = cat; renderPatternList(); }
 function renderPatternList() {
   const container = document.getElementById("pattern-list");
   if (!container || typeof patternData === "undefined") return;
@@ -22,14 +24,19 @@ function renderPatternList() {
   const keyword = (document.getElementById("pattern-search")?.value || "").toLowerCase();
   container.innerHTML = "";
   
-  const filtered = patternData.filter((p) => {
-    const matchText = (p.title + p.desc).toLowerCase().includes(keyword);
+  renderCategoryChips("pattern-cats", patternData, patternCategory, setPatternCategory);
+  const matched = patternData.filter((p) => {
+    const matchCat = !patternCategory || categoryOf(p) === patternCategory;
+    const matchText = (categoryOf(p) + p.title + p.desc).toLowerCase().includes(keyword);
     const matchStudy = !patternStudyingOnly || !memorizedPatterns.has(p.id);
-    return matchText && matchStudy;
+    return matchCat && matchText && matchStudy;
   });
+  // 화면에 보이는 순서(상황별) 그대로 전체 듣기·이전/다음 패턴이 진행되도록
+  const filtered = categoriesOf(patternData).flatMap(cat => matched.filter(p => categoryOf(p) === cat));
   currentPatternList = filtered;
 
-  filtered.forEach((p) => {
+  filtered.forEach((p, i) => {
+    if (i === 0 || categoryOf(filtered[i - 1]) !== categoryOf(p)) appendGroupTitle(container, categoryOf(p), filtered.filter(x => categoryOf(x) === categoryOf(p)).length);
     const div = document.createElement("div");
     div.className = "list-item";
     div.dataset.id = p.id;
@@ -339,23 +346,26 @@ async function playIdiomExamples() {
 function moveIdiom(o) { moveItemInList(currentIdiomId, currentIdiomList, o, openIdiom); }
 
 // --- 4. Conversations ---
-// 회화 목록·쉐도잉 목록 공용: 실제 상황(category) 칩
-function convCategoryOf(c) { return c.category || "기타"; }
-function convCategories() { return [...new Set(conversationData.map(convCategoryOf))]; }
-function renderConvCategoryChips(boxId, current, onPick) {
+// 패턴·회화·쉐도잉 목록 공용: 상황(category) 칩과 상황별 머리글
+function categoryOf(x) { return x.category || "기타"; }
+function categoriesOf(items) { return [...new Set(items.map(categoryOf))]; }
+function convCategoryOf(c) { return categoryOf(c); }
+function convCategories() { return categoriesOf(conversationData); }
+function renderCategoryChips(boxId, items, current, onPick) {
   const box = document.getElementById(boxId);
   if (!box) return;
   box.innerHTML = "";
-  ["", ...convCategories()].forEach(cat => {
+  ["", ...categoriesOf(items)].forEach(cat => {
     const b = document.createElement("button");
     b.className = "chip-btn" + (cat === current ? " active" : "");
-    const n = cat ? conversationData.filter(c => convCategoryOf(c) === cat).length : conversationData.length;
+    const n = cat ? items.filter(x => categoryOf(x) === cat).length : items.length;
     b.innerHTML = `${cat || "전체"}<span class="cnt">${n}</span>`;
     b.onclick = () => onPick(cat);
     box.appendChild(b);
   });
 }
-function appendConvGroupTitle(container, cat, n) {
+function renderConvCategoryChips(boxId, current, onPick) { renderCategoryChips(boxId, conversationData, current, onPick); }
+function appendGroupTitle(container, cat, n) {
   const head = document.createElement("div");
   head.className = "list-group-title";
   head.innerHTML = `${cat}<span class="cnt">${n}개</span>`;
@@ -376,7 +386,7 @@ function renderConversationList() {
   convCategories().forEach(cat => {
     const group = currentConvList.filter(c => convCategoryOf(c) === cat);
     if (group.length === 0) return;
-    appendConvGroupTitle(container, cat, group.length);
+    appendGroupTitle(container, cat, group.length);
     group.forEach(c => {
       const div = document.createElement("div");
       div.className = "list-item";
@@ -571,7 +581,7 @@ function renderShadowingList() {
   cats.forEach(cat => {
     const group = filtered.filter(c => convCategoryOf(c) === cat);
     if (group.length === 0) return;
-    appendConvGroupTitle(container, cat, group.length);
+    appendGroupTitle(container, cat, group.length);
     group.forEach(c => {
       const div = document.createElement("div");
       div.className = "list-item";
