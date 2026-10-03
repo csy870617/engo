@@ -29,7 +29,6 @@ let tutorCorrections = [];    // 대화 중 교정한 문장 [{ said, better }] 
 let tutorScenarioId = "free";
 let tutorBusy = false;
 let tutorSessionToken = 0;
-let tutorRec = null;
 let tutorSpeaking = false;
 let tutorUnloadTimer = null;
 let tutorHintShown = false;
@@ -106,7 +105,7 @@ function setTutorStatus(text, mode) {
     mic.classList.toggle("listening", mode === "listening");
     mic.disabled = mode === "thinking" || mode === "loading";
     const label = mic.querySelector("span");
-    if (label) label.textContent = mode === "listening" ? "듣는 중… (누르면 끝)" : "누르고 말하기";
+    if (label) label.textContent = mode === "listening" ? "듣는 중… (누르면 보내기)" : "누르고 말하기";
   }
 }
 function showTutorSection(which) {
@@ -204,7 +203,7 @@ function stopTutorActivity() {
   tutorSessionToken++;
   tutorSpeechToken++;
   tutorSpeaking = false;
-  if (tutorRec) { try { tutorRec.abort(); } catch (e) {} tutorRec = null; }
+  if (tutorMic) { const m = tutorMic; tutorMic = null; try { m.rec.onend = m.rec.onerror = m.rec.onresult = null; m.rec.abort(); } catch (e) {} }
   if (tutorEngine) { try { tutorEngine.interruptGenerate(); } catch (e) {} }
   tutorBusy = false;
 }
@@ -591,36 +590,79 @@ function stopTutorSpeech() {
 }
 
 // ---------- 듣기 (음성 인식) ----------
+// 안드로이드 크롬은 인식기가 끝 신호(onend)를 안 보내고 멈추거나, 같은 말을 겹쳐 보내는 경우가 있어
+// 버튼을 다시 누르면 무조건 끝내고(들은 만큼 보냄), 시간 제한·오류 안내를 둔다
+let tutorMic = null;   // { rec, stop }
+const TUTOR_MIC_MSG = {
+  "not-allowed": "마이크 사용을 허용해 주세요. (주소창 옆 자물쇠 → 권한 → 마이크)",
+  "service-not-allowed": "마이크 사용을 허용해 주세요. (주소창 옆 자물쇠 → 권한 → 마이크)",
+  "audio-capture": "마이크를 쓸 수 없어요. 다른 앱이 마이크를 쓰고 있지 않은지 확인해 주세요.",
+  "network": "음성 인식에 인터넷 연결이 필요해요. 입력창에 적어서 보내도 돼요.",
+  "language-not-supported": "이 기기는 영어 음성 인식을 지원하지 않아요. 입력창에 적어 주세요."
+};
+/** 인식 결과 합치기: 안드로이드처럼 누적 문장을 여러 번 보내도 한 번만 */
+function tutorJoinResults(results) {
+  let acc = "";
+  for (let i = 0; i < results.length; i++) {
+    const t = (results[i][0] && results[i][0].transcript || "").trim();
+    if (!t) continue;
+    const a = acc.toLowerCase(), b = t.toLowerCase();
+    if (b.startsWith(a)) acc = t;
+    else if (!a.startsWith(b) && !a.endsWith(b)) acc = (acc + " " + t).trim();
+  }
+  return acc.replace(/\s+/g, " ").trim();
+}
 function toggleTutorMic() {
   const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
   if (!SR) { alert("이 브라우저는 음성 인식을 지원하지 않아요. 아래 입력창에 영어로 적어 주세요."); tutorEl("tutor-input").focus(); return; }
-  if (tutorRec) { try { tutorRec.stop(); } catch (e) {} return; }
-  if (tutorBusy) return;
+  if (tutorMic) { tutorMic.stop(); return; }          // 듣는 중에 누르면 바로 끝내고 보낸다
   stopTutorSpeech();
+  if ("speechSynthesis" in window) window.speechSynthesis.cancel();
+  if (typeof NeuralTTS !== "undefined" && NeuralTTS.suspendAudio) NeuralTTS.suspendAudio();
   const rec = new SR();
   rec.lang = "en-US"; rec.interimResults = true; rec.maxAlternatives = 1; rec.continuous = false;
-  let finalText = "";
   const inp = tutorEl("tutor-input");
-  rec.onresult = e => {
-    let interim = "";
-    for (let i = e.resultIndex; i < e.results.length; i++) {
-      if (e.results[i].isFinal) finalText += e.results[i][0].transcript; else interim += e.results[i][0].transcript;
-    }
-    inp.value = (finalText + interim).trim();
-  };
-  rec.onerror = e => {
-    if (e.error === "not-allowed" || e.error === "service-not-allowed") alert("마이크 사용을 허용해 주세요. (브라우저 주소창의 권한 설정)");
-    else if (e.error === "network") alert("음성 인식에 인터넷 연결이 필요해요. 입력창에 적어서 보내도 돼요.");
-  };
-  rec.onend = () => {
-    tutorRec = null;
+  let heard = "", done = false, stopping = false;
+  const timers = [];
+  const finish = () => {
+    if (done) return;
+    done = true;
+    timers.forEach(clearTimeout);
+    if (tutorMic && tutorMic.rec === rec) tutorMic = null;
+    try { rec.abort(); } catch (e) {}
+    const said = (heard || inp.value).trim();
+    inp.value = "";
     setTutorStatus("마이크를 누르고 영어로 말해 보세요", "");
-    const said = (finalText || inp.value).trim();
-    if (said) { inp.value = ""; sendTutorText(said); }
+    if (said) sendTutorWhenFree(said);
   };
-  tutorRec = rec;
-  try { rec.start(); setTutorStatus("듣고 있어요… 말을 마치면 자동으로 보내요", "listening"); }
-  catch (e) { tutorRec = null; }
+  const stop = () => {                                // 결과를 마저 받을 시간을 잠깐 주고, 안 오면 그대로 끝낸다
+    if (done || stopping) return;
+    stopping = true;
+    setTutorStatus("보내는 중…", "listening");
+    try { rec.stop(); } catch (e) {}
+    timers.push(setTimeout(finish, 1200));
+  };
+  rec.onresult = e => { heard = tutorJoinResults(e.results); inp.value = heard; };
+  rec.onspeechend = () => { try { rec.stop(); } catch (e) {} };
+  rec.onerror = e => {
+    if (TUTOR_MIC_MSG[e.error]) alert(TUTOR_MIC_MSG[e.error]);
+    else if (e.error === "no-speech") { done || setTimeout(() => setTutorStatus("소리가 들리지 않았어요. 다시 눌러 말해 보세요", ""), 0); }
+    finish();
+  };
+  rec.onend = finish;
+  tutorMic = { rec, stop };
+  timers.push(setTimeout(stop, 15000));               // 아무리 길어도 15초면 끝낸다
+  try {
+    rec.start();
+    setTutorStatus("듣고 있어요… 다 말하면 버튼을 눌러도 돼요", "listening");
+  } catch (e) { finish(); alert("음성 인식을 시작하지 못했어요. 잠시 후 다시 눌러 주세요."); }
+}
+/** 튜터가 교정 등을 마무리하는 중이면 끝나기를 기다렸다가 보낸다 (말한 내용을 버리지 않게) */
+function sendTutorWhenFree(text, tries = 0) {
+  if (!tutorEngine) return;
+  if (!tutorBusy) { sendTutorText(text); return; }
+  if (tries > 100) { tutorEl("tutor-input").value = text; return; }
+  setTimeout(() => sendTutorWhenFree(text, tries + 1), 150);
 }
 
 // ---------- 힌트 · 피드백 ----------
