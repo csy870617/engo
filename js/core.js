@@ -20,7 +20,7 @@
 const pages = [
   "home", "patterns", "pattern-detail", "words", "word-detail",
   "idioms", "idiom-detail", "conversations", "conv-detail",
-  "shadowing-list", "shadowing", "puzzle", "blog-list", "blog-detail"
+  "shadowing-list", "shadowing", "puzzle", "blog-list", "blog-detail", "tutor"
 ];
 
 const idiomData = [
@@ -93,6 +93,8 @@ function goTo(page, isReplace = false) {
   // 존재하지 않는 페이지(#sync, #settings, 오타 해시 등)로 진입 시 빈 화면 방지
   if (!pages.includes(page)) page = "home";
   stopAudio();
+  // AI 튜터를 떠날 때: 듣기·말하기·답 만들기를 멈추고 잠시 뒤 모델을 메모리에서 내린다
+  if (page !== "tutor" && typeof leaveTutorPage === 'function') leaveTutorPage();
 
   if (!isBackAction) {
     if (isReplace) history.replaceState({ page: page }, "", "#" + page);
@@ -120,6 +122,7 @@ function goTo(page, isReplace = false) {
       if (page === "blog-detail") renderBlogDetail();
   }
   
+  if (page === "tutor" && typeof renderTutorPage === 'function') renderTutorPage();
   if (page === "puzzle" && typeof initPuzzle === 'function') {
     document.querySelectorAll("[data-puzzle-level-btn]").forEach(b => {
       b.classList.toggle("active", parseInt(b.dataset.puzzleLevelBtn) === selectedPuzzleLevel);

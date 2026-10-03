@@ -119,6 +119,14 @@
       </div>
 
       <div class="home-grid">
+        <div class="home-tile tile-tutor" onclick="goTo('tutor')" style="grid-column: span 2;">
+          <div class="tile-icon">🤖</div>
+          <div class="tile-content">
+            <span class="label">AI 튜터와 말하기 <span class="tile-badge">NEW</span></span>
+            <span class="desc">기기 안의 AI와 상황별 실시간 회화 연습</span>
+          </div>
+        </div>
+
         <div class="home-tile tile-pattern" onclick="goTo('patterns')">
           <div class="tile-icon">📘</div>
           <div class="tile-content">
@@ -464,6 +472,55 @@
       </div>
     </section>
 
+<section id="page-tutor" class="hidden">
+      <div class="nav-header"><span class="back-btn" onclick="goTo('home')">❮ 뒤로</span><h2>AI 튜터</h2></div>
+      <div class="tutor-card">
+        <div class="tutor-stage">
+          <div id="tutor-avatar" class="tutor-avatar"></div>
+          <div id="tutor-status" class="tutor-status">확인 중…</div>
+        </div>
+
+        <!-- 처음: 모델 받기 -->
+        <div id="tutor-setup" class="tutor-setup hidden">
+          <p class="tutor-setup-title">내 기기 안에서 돌아가는 AI 회화 튜터</p>
+          <ul class="tutor-setup-list">
+            <li>한 번 받으면 비용 없이 언제든 말하기 연습</li>
+            <li>카페·공항·회사 등 실전 상황 역할극과 자유 대화</li>
+            <li>크기 약 0.9GB · 와이파이에서 받으세요</li>
+            <li>최신 크롬(PC·안드로이드)·최신 iOS 사파리, 메모리가 넉넉한 기기 권장</li>
+          </ul>
+          <button id="tutor-download-btn" class="btn-main" onclick="downloadTutor()" disabled>AI 튜터 받기</button>
+          <div id="tutor-progress" class="tutor-progress hidden">
+            <div class="progress-track"><div id="tutor-progress-bar" class="progress-fill"></div></div>
+            <div id="tutor-progress-text" class="tutor-progress-text"></div>
+          </div>
+          <p id="tutor-unsupported" class="tutor-warn hidden"></p>
+        </div>
+
+        <!-- 대화 -->
+        <div id="tutor-chat-area" class="hidden">
+          <div class="tutor-topbar">
+            <select id="tutor-scenario" class="tutor-select" onchange="changeTutorScenario()" aria-label="연습할 상황"></select>
+            <button class="chip-btn" onclick="startTutorSession()">↺ 새로</button>
+          </div>
+          <div id="tutor-log" class="tutor-log"></div>
+          <div id="tutor-hint" class="tutor-hint hidden"></div>
+          <button id="tutor-mic-btn" class="tutor-mic" onclick="toggleTutorMic()">🎤 <span>누르고 말하기</span></button>
+          <div class="tutor-input-row">
+            <button class="tutor-round-btn" onclick="toggleTutorHint()" aria-label="힌트 보기">💡</button>
+            <input id="tutor-input" type="text" class="search-input" placeholder="또는 영어로 입력…" autocomplete="off" onkeydown="if (event.key === 'Enter') sendTutorTyped()" />
+            <button class="tutor-round-btn send" onclick="sendTutorTyped()" aria-label="보내기">➤</button>
+          </div>
+          <div id="tutor-feedback" class="tutor-feedback hidden"></div>
+          <div class="tutor-bottom">
+            <button class="chip-btn" onclick="tutorFeedback()">📝 오늘 대화 피드백</button>
+            <button class="chip-btn" onclick="deleteTutorModel()">튜터 삭제</button>
+          </div>
+        </div>
+        <p class="tutor-credit">AI 모델: Llama 3.2 1B (Built with Llama) · 실행: WebLLM</p>
+      </div>
+    </section>
+
 <section id="page-puzzle" class="hidden">
       <div class="nav-header"><span class="back-btn" onclick="goTo('home')">❮ 나가기</span></div>
       
@@ -587,7 +644,7 @@
   <script src="idiom.js"></script>
   <script src="word.js"></script>
 
-  <script src="js/core.js"></script>    <script src="js/storage.js"></script> <script src="js/neural-tts.js"></script> <script src="js/media.js"></script>   <script src="js/study.js"></script>   <script src="js/game.js"></script>    </body>
+  <script src="js/core.js"></script>    <script src="js/storage.js"></script> <script src="js/neural-tts.js"></script> <script src="js/media.js"></script>   <script src="js/study.js"></script>   <script src="js/game.js"></script>    <script src="js/tutor.js"></script>    </body>
 
 
 </html>
