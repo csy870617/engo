@@ -292,6 +292,13 @@ main {
 .blind-text:hover, .blind-text.revealed { filter: blur(0); }
 .shadowing-controls-row { display: flex; justify-content: center; gap: 15px; margin-bottom: 20px; }
 .shadowing-mode { margin-bottom: 14px; }
+/* 쉐도잉 목록: 상황별 칩(줄바꿈) + 상황 머리글 */
+.cat-chips { flex-wrap: wrap; gap: 6px; margin-top: 12px; }
+.cat-chips .chip-btn { padding: 6px 11px; font-size: 0.8rem; }
+.cat-chips .chip-btn .cnt { opacity: 0.6; margin-left: 3px; font-size: 0.75rem; }
+.list-group-title { display: flex; align-items: baseline; gap: 6px; margin: 10px 4px -2px; color: var(--accent); font-size: 0.95rem; font-weight: 700; }
+.list-group-title:first-child { margin-top: 0; }
+.list-group-title .cnt { color: var(--text-sub); font-size: 0.8rem; font-weight: 500; }
 .shadowing-mode button { padding: 8px 0; font-size: 0.85rem; }
 /* 역할극: 내 차례(A)일 때 영어 문장 자리 */
 .roleplay-prompt { color: var(--accent) !important; font-size: 1.1rem !important; font-weight: 600 !important; }

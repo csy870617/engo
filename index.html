@@ -407,8 +407,9 @@
 
     <section id="page-shadowing-list" class="hidden">
       <div class="nav-header"><span class="back-btn" onclick="goTo('home')">❮ 뒤로</span><h2>쉐도잉 목록</h2></div>
-      <p class="subtext" style="margin-bottom: 15px; color:var(--text-sub);">연습하고 싶은 대화 주제를 선택하세요.</p>
+      <p class="subtext" style="margin-bottom: 15px; color:var(--text-sub);">연습하고 싶은 상황을 골라 보세요.</p>
       <input id="shadowing-search" type="text" placeholder="주제 검색..." class="search-input mb-4" oninput="renderShadowingList()" />
+      <div id="shadowing-cats" class="filter-area cat-chips"></div>
       <div id="shadowing-list-container" class="list-view"></div>
     </section>
 
