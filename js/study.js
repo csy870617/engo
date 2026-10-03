@@ -521,6 +521,9 @@ function afterListRender(type) {
 
 // --- 5. Shadowing ---
 let isBlindMode = false; let isHideKr = false;
+// 역할극: 상대(B) 대사는 자동으로 들려주고, 내 차례(A)엔 한국어만 보고 먼저 말해 본 뒤 정답 확인
+let isRolePlay = false; try { isRolePlay = localStorage.getItem("shadowingRolePlay") === "true"; } catch (e) {}
+let rolePlayToken = 0; let rolePlayRevealedKey = "";
 function renderShadowingList() {
   const container = document.getElementById("shadowing-list-container");
   if (!container || typeof conversationData === "undefined") return;
@@ -531,9 +534,7 @@ function renderShadowingList() {
     const div = document.createElement("div");
     div.className = "list-item";
     div.onclick = () => {
-      currentShadowingId = c.id; shadowingLineIndex = 0; goTo("shadowing");
-      isBlindMode = true; isHideKr = false; updateShadowingOptionsUI();
-      setTimeout(() => { updateShadowingUI(); playShadowingCurrent(); }, 100);
+      startShadowingFromConv(c.id);
     };
     div.innerHTML = `<div><div class="list-item-title">🗣️ ${c.title}</div><div class="list-item-sub">총 ${c.lines.length}문장</div></div><div style="color:var(--accent); font-size:0.9rem;">Start ▶</div>`;
     container.appendChild(div);
@@ -542,10 +543,16 @@ function renderShadowingList() {
 }
 function startShadowingFromConv(id) {
   currentShadowingId = id;
-  shadowingLineIndex = 0;
+  shadowingLineIndex = 0; rolePlayRevealedKey = "";
   goTo("shadowing");
   isBlindMode = true; isHideKr = false; updateShadowingOptionsUI();
-  setTimeout(() => { updateShadowingUI(); playShadowingCurrent(); }, 100);
+  setTimeout(() => { updateShadowingUI(); if (isRolePlay) autoPlayShadowingLine(); else playShadowingCurrent(); }, 100);
+}
+function setShadowingMode(rolePlay) {
+  isRolePlay = rolePlay;
+  try { localStorage.setItem("shadowingRolePlay", String(rolePlay)); } catch (e) {}
+  rolePlayToken++; stopAudio();
+  updateShadowingOptionsUI(); updateShadowingUI();
 }
 function toggleShadowingOption(type) {
   if (type === 'blind') isBlindMode = !isBlindMode;
@@ -557,22 +564,47 @@ function updateShadowingOptionsUI() {
   const btnHideKr = document.getElementById("btn-hide-kr");
   if(btnBlind) btnBlind.classList.toggle("active", isBlindMode);
   if(btnHideKr) btnHideKr.classList.toggle("active", isHideKr);
+  document.querySelectorAll("[data-shadow-mode]").forEach(b => b.classList.toggle("active", (b.dataset.shadowMode === "roleplay") === isRolePlay));
 }
+function isMyTurn(line) { return isRolePlay && line && line.speaker === "A"; }
 function updateShadowingUI() {
   const conv = conversationData.find(c => c.id === currentShadowingId);
   if (!conv) return;
   const line = conv.lines[shadowingLineIndex];
   document.getElementById("shadowing-counter").textContent = `${shadowingLineIndex + 1} / ${conv.lines.length}`;
-  document.getElementById("shadowing-speaker").textContent = `Speaker ${line.speaker}`;
   const enText = document.getElementById("shadowing-text");
+  const krText = document.getElementById("shadowing-kr");
+  const hint = document.getElementById("shadowing-hint");
+  const playLabel = document.getElementById("shadowing-play-label");
+  if (isMyTurn(line)) {
+    // 내 차례: 한국어를 보고 먼저 영어로 말해 본다. 터치하거나 ▶를 누르면 정답 문장과 음성
+    const revealed = rolePlayRevealedKey === `${currentShadowingId}:${shadowingLineIndex}`;
+    document.getElementById("shadowing-speaker").textContent = "🙋 내 차례 (A)";
+    enText.textContent = revealed ? line.en : "🎤 영어로 말해 보세요";
+    enText.classList.remove("blind-text"); enText.classList.toggle("revealed", revealed);
+    enText.classList.toggle("roleplay-prompt", !revealed);
+    krText.textContent = line.kr; krText.style.visibility = "visible";
+    hint.textContent = revealed ? "(다음 문장 ❯ 으로 상대 대답 듣기)" : "(말해 본 뒤 터치하면 정답 확인)";
+    hint.classList.remove("hidden");
+    if (playLabel) playLabel.textContent = revealed ? "다시 듣기 (반복)" : "정답 듣기";
+    return;
+  }
+  if (playLabel) playLabel.textContent = "다시 듣기 (반복)";
+  enText.classList.remove("roleplay-prompt");
+  hint.textContent = "(문장을 터치하면 잠시 보입니다)";
+  document.getElementById("shadowing-speaker").textContent = isRolePlay ? "💬 상대 (B)" : `Speaker ${line.speaker}`;
   enText.textContent = line.en;
   if (isBlindMode) { enText.classList.add("blind-text"); enText.classList.remove("revealed"); document.getElementById("shadowing-hint").classList.remove("hidden"); }
   else { enText.classList.remove("blind-text"); enText.classList.add("revealed"); document.getElementById("shadowing-hint").classList.add("hidden"); }
-  const krText = document.getElementById("shadowing-kr");
   krText.textContent = line.kr;
   krText.style.visibility = isHideKr ? "hidden" : "visible";
 }
+function currentShadowingLine() {
+  const conv = conversationData.find(c => c.id === currentShadowingId);
+  return conv ? conv.lines[shadowingLineIndex] : null;
+}
 function revealTextTemp() {
+  if (isMyTurn(currentShadowingLine())) { playShadowingCurrent(); return; }
   const enText = document.getElementById("shadowing-text");
   if (isBlindMode) { enText.classList.add("revealed"); setTimeout(() => { enText.classList.remove("revealed"); }, 2000); }
 }
@@ -581,25 +613,44 @@ function playShadowingCurrent() {
   if(btn) { btn.style.transform = "scale(0.95)"; setTimeout(() => btn.style.transform = "scale(1)", 100); }
   const conv = conversationData.find(c => c.id === currentShadowingId);
   if (!conv) return;
+  if (isMyTurn(conv.lines[shadowingLineIndex])) { rolePlayRevealedKey = `${currentShadowingId}:${shadowingLineIndex}`; updateShadowingUI(); }
   speakText(conv.lines[shadowingLineIndex].en, conv.lines[shadowingLineIndex].speaker);
   // 자연스러운 음성: 다음 문장 2개를 미리 만들기
   prefetchAhead(conv.lines.slice(shadowingLineIndex + 1, shadowingLineIndex + 3).map(l => [l.en, l.speaker]));
+}
+// 줄을 옮길 때: 역할극이면 상대 대사만 자동으로 들려주고, 끝나면 내 차례로 넘어간다
+function autoPlayShadowingLine() {
+  rolePlayToken++;
+  if (!isRolePlay) { if (autoPlayEnabled) playShadowingCurrent(); return; }
+  const conv = conversationData.find(c => c.id === currentShadowingId);
+  const line = conv && conv.lines[shadowingLineIndex];
+  if (!line || isMyTurn(line)) return;
+  const token = rolePlayToken, idx = shadowingLineIndex;
+  const done = speakWithPromise(line.en, line.speaker);
+  prefetchAhead(conv.lines.slice(idx + 1, idx + 3).map(l => [l.en, l.speaker]));
+  Promise.resolve(done).then(() => setTimeout(() => {
+    if (token !== rolePlayToken || !isRolePlay || currentShadowingId !== conv.id || shadowingLineIndex !== idx) return;
+    if (document.getElementById("page-shadowing").classList.contains("hidden")) return;
+    if (idx < conv.lines.length - 1) { shadowingLineIndex++; updateShadowingUI(); }
+  }, 700));
 }
 function nextShadowing() {
   const conv = conversationData.find(c => c.id === currentShadowingId);
   if (!conv) return;
   if (shadowingLineIndex < conv.lines.length - 1) {
+    rolePlayToken++; stopAudio();
     shadowingLineIndex++; updateShadowingUI();
-    if (autoPlayEnabled) playShadowingCurrent();
+    autoPlayShadowingLine();
   } else {
     if(confirm("대화가 끝났습니다. 목록으로 돌아갈까요?")) goTo("shadowing-list");
-    else { shadowingLineIndex = 0; updateShadowingUI(); }
+    else { shadowingLineIndex = 0; rolePlayRevealedKey = ""; updateShadowingUI(); autoPlayShadowingLine(); }
   }
 }
 function prevShadowing() {
   if (shadowingLineIndex > 0) {
+    rolePlayToken++; stopAudio();
     shadowingLineIndex--; updateShadowingUI();
-    if (autoPlayEnabled) playShadowingCurrent();
+    autoPlayShadowingLine();
   }
 }
 function nextRandomShadowingTopic() {
@@ -610,9 +661,9 @@ function nextRandomShadowingTopic() {
   if (conversationData.length > 1) {
     do { const randomIndex = Math.floor(Math.random() * conversationData.length); nextConv = conversationData[randomIndex]; } while (nextConv.id === currentShadowingId);
   } else { nextConv = conversationData[0]; }
-  currentShadowingId = nextConv.id; shadowingLineIndex = 0;
+  currentShadowingId = nextConv.id; shadowingLineIndex = 0; rolePlayRevealedKey = ""; rolePlayToken++;
   updateShadowingUI();
-  if (autoPlayEnabled) setTimeout(() => playShadowingCurrent(), 100);
+  setTimeout(() => autoPlayShadowingLine(), 100);
 }
 
 // --- 6. Blog (Print View) ---

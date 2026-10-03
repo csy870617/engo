@@ -291,6 +291,10 @@ main {
 .blind-text { filter: blur(8px); user-select: none; transition: filter 0.3s ease; cursor: pointer; }
 .blind-text:hover, .blind-text.revealed { filter: blur(0); }
 .shadowing-controls-row { display: flex; justify-content: center; gap: 15px; margin-bottom: 20px; }
+.shadowing-mode { margin-bottom: 14px; }
+.shadowing-mode button { padding: 8px 0; font-size: 0.85rem; }
+/* 역할극: 내 차례(A)일 때 영어 문장 자리 */
+.roleplay-prompt { color: var(--accent) !important; font-size: 1.1rem !important; font-weight: 600 !important; }
 .toggle-btn {
   background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2);
   color: var(--text-sub); padding: 6px 12px; border-radius: 20px;
