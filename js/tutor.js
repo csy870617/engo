@@ -134,6 +134,8 @@ async function renderTutorPage() {
   if (!sup.ok) { warn.textContent = sup.reason; warn.classList.remove("hidden"); setTutorStatus("이 기기에서는 쓸 수 없어요", ""); return; }
   warn.classList.add("hidden");
   const cached = await tutorModelCached();
+  // 받아 둔 모델이 있으면 바로 연다. 열지 못해도(메모리 부족 등) 지울 수 있게 삭제 버튼을 보여 준다
+  tutorEl("tutor-delete-setup").classList.toggle("hidden", !cached);
   if (cached) { tutorEl("tutor-download-btn").textContent = "AI 튜터 시작"; await startTutorEngine(false); return; }
   tutorEl("tutor-download-btn").disabled = false;
   tutorEl("tutor-download-btn").textContent = `AI 튜터 받기 (${TUTOR_SIZE_LABEL})`;
@@ -174,13 +176,26 @@ function tutorProgressText(text) {
 }
 
 async function deleteTutorModel() {
-  if (!confirm("내려받은 AI 튜터 모델을 기기에서 지울까요?\n다시 쓰려면 새로 받아야 해요.")) return;
+  if (!confirm("내려받은 AI 튜터 모델(약 1GB)을 기기에서 지울까요?\n다시 쓰려면 새로 받아야 해요.")) return;
   stopTutorActivity();
   unloadTutorEngine();
-  try { const lib = await loadTutorLib(); await lib.deleteModelAllInfoInCache(tutorModelId); } catch (e) { console.warn(e); }
+  try {
+    const lib = await loadTutorLib();
+    // 기기에 따라 f16/f32 중 받아 둔 것만 지운다 (안 받은 쪽을 지우려 하면 목록 파일을 새로 받아 버림)
+    for (const id of new Set([tutorModelId, ...Object.values(TUTOR_MODELS)].filter(Boolean))) {
+      if (await lib.hasModelInCache(id)) await lib.deleteModelAllInfoInCache(id);
+    }
+    // 라이브러리가 남기는 작은 목록 파일(tensor-cache.json)까지 정리
+    for (const name of await caches.keys()) {
+      if (!name.startsWith("webllm")) continue;
+      const c = await caches.open(name);
+      for (const req of await c.keys()) if (/-MLC\//.test(req.url)) await c.delete(req);
+    }
+  } catch (e) { console.warn(e); }
   try { localStorage.removeItem("tutorModelReady"); } catch (e) {}
   tutorMessages = []; tutorLearnerLines = [];
   tutorEl("tutor-log").innerHTML = "";
+  alert("AI 튜터 모델을 지웠어요.");
   renderTutorPage();
 }
 
