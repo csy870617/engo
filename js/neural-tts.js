@@ -304,6 +304,12 @@ const NeuralTTS = (() => {
     });
   }
 
+  /** 마이크로 들을 때 잠시 재생 장치를 쉬게 한다 (안드로이드에서 켜져 있으면 음성 인식이 소리를 못 받는 경우가 있음).
+   *  다음에 재생할 때 unlockAudio()가 다시 깨운다 */
+  function suspendAudio() {
+    if (audioCtx && audioCtx.state === 'running') audioCtx.suspend().catch(() => {});
+  }
+
   /** 지금 재생 중인 소리의 크기(0~1 정도). 재생 중이 아니면 0 */
   function outputLevel() {
     if (!analyser || !currentSource || !analyser.getFloatTimeDomainData) return 0;
@@ -324,6 +330,6 @@ const NeuralTTS = (() => {
 
   return {
     VOICES, isSupported, isReady, fetchManifest, downloadSize, download, cancelDownload, remove,
-    isLoaded, ensureLoaded, shutdown, synthesize, cancelBefore, unlockAudio, play, stopAudio, outputLevel
+    isLoaded, ensureLoaded, shutdown, synthesize, cancelBefore, unlockAudio, play, stopAudio, outputLevel, suspendAudio
   };
 })();
