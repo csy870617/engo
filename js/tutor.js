@@ -10,7 +10,7 @@ const GEMINI_API = "https://generativelanguage.googleapis.com/v1beta/models/";
 // 앞 모델의 무료 사용량을 다 쓰거나 잠시 막히면 다음 모델로 넘어간다
 // (무료 사용량이 모델마다 따로라, 일을 나눠 맡기고 번갈아 쓰면 하루에 더 오래 대화할 수 있다)
 const TUTOR_GEMINI_CHAINS = {
-  chat: ["gemini-3.8-flash", "gemini-3.5-flash", "gemini-3.5-flash-lite", "gemini-3.1-flash-lite"],
+  chat: ["gemini-3.8-flash", "gemini-3.6-flash", "gemini-3.5-flash", "gemini-3.5-flash-lite", "gemini-3.1-flash-lite"],
   aux: ["gemini-3.5-flash-lite", "gemini-3.1-flash-lite", "gemini-3.5-flash"]
 };
 const GEMINI_KEY_STORE = "geminiApiKey";
@@ -82,7 +82,9 @@ async function geminiFetch(model, method, body, signal) {
 const geminiKeyProblem = e => e && (e.reason === "API_KEY_INVALID" || e.reason === "NO_KEY" || e.status === 401 ||
   /ACCESS_TOKEN|API_KEY/.test(e.reason || "") || /api key|credential/i.test(e.message || "") && (e.status === 400 || e.status === 403));
 /** 모델을 바꿔 다시 해 볼 만한 오류인지 (사용량 초과·모델 없음/권한 없음·서버 혼잡) */
-const geminiTryNext = e => e && !geminiKeyProblem(e) && (e.status === 429 || e.status === 404 || e.status === 403 || e.status >= 500);
+const geminiTryNext = e => e && !geminiKeyProblem(e) && (e.status === 429 || e.status === 404 || e.status === 403 || e.status >= 500 || e instanceof TypeError);
+// 구글 서버가 잠깐 바쁘거나(5xx) 연결이 순간 끊긴 건 같은 모델로 한 번 더 해 보면 되는 경우가 많다
+const geminiBlip = e => e && (e.status >= 500 || e instanceof TypeError);
 /** 모델을 차례로 시도: 생각 수준 설정을 못 쓰는 모델이면 낮춰서 다시, 사용량 초과·혼잡이면 다음 모델로.
  *  run(model, thinking, started)는 started()를 불러 '이미 글자를 보여 주기 시작했음'을 알린다 (그 뒤에는 다른 모델로 넘기지 않음) */
 async function geminiCall(run, chain = "chat") {
@@ -100,7 +102,9 @@ async function geminiCall(run, chain = "chat") {
         if (e && e.name === "AbortError") throw e;
         last = e;
         if (begun) throw e;
+        console.warn(`Gemini ${model} 실패`, e.status || "", e.message || e);
         if (e.status === 400 && /think/i.test(e.message || "") && tutorThinking[model] !== "LOW") { tutorThinking[model] = "LOW"; continue; }
+        if (attempt === 0 && geminiBlip(e)) { await new Promise(r => setTimeout(r, 600)); continue; }
         break;
       }
     }
@@ -157,7 +161,7 @@ function geminiErrorText(e) {
   if (!e) return "알 수 없는 오류";
   if (geminiKeyProblem(e)) return "Gemini 키가 맞지 않거나 사용할 수 없어요. 키를 다시 확인해 주세요.";
   if (e.status === 429) return "오늘 무료 사용량을 다 썼거나 너무 빨리 보냈어요. 잠시 뒤(또는 내일) 다시 해 주세요.";
-  if (e.status >= 500) return "구글 서버가 잠시 바빠요. 조금 뒤에 다시 해 주세요.";
+  if (e.status >= 500) return `구글 서버가 잠시 바빠요. 조금 뒤에 다시 해 주세요. (오류 ${e.status})`;
   if (e instanceof TypeError) return "인터넷 연결을 확인해 주세요.";
   return e.message || String(e);
 }
@@ -621,10 +625,26 @@ async function tutorReply(token, learner) {
       why.className = "tutor-err";
       why.textContent = geminiErrorText(e);
       bubble.appendChild(why);
-      setTutorStatus("다시 시도해 주세요", "");
+      setTutorStatus("답을 받지 못했어요 · 다시 말하거나 ↻를 눌러 주세요", "");
       if (geminiKeyProblem(e)) { tutorSetKey(""); setTimeout(() => { alert(geminiErrorText(e)); renderTutorPage(); }, 0); }
+      else if (last && last.role === "user") {
+        // 같은 말을 다시 보내기 (말하거나 다시 입력하지 않아도 되게)
+        const again = document.createElement("button");
+        again.className = "tutor-slow-btn";
+        again.textContent = "↻ 다시 보내기";
+        again.onclick = ev => {
+          ev.stopPropagation();
+          if (tutorBusy || token !== tutorSessionToken || tutorEl("tutor-log").lastElementChild !== bubble) { again.remove(); return; }
+          tutorCancelListening();
+          bubble.remove();
+          tutorMessages.push(last);
+          tutorReply(token, learner);
+        };
+        bubble.appendChild(again);
+      }
     }
     tutorBusy = false;
+    if (token === tutorSessionToken && !geminiKeyProblem(e)) tutorAfterSpeak(token);   // 바로 다시 말할 수 있게 듣는다
     return;
   }
   if (tutorAbort === abort) tutorAbort = null;
