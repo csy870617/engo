@@ -78,9 +78,11 @@ function ensureTutorEngine(progress) {
         if (Date.now() - lastProgress > 90000) { clearInterval(watch); reject(new Error("응답이 없어 중단했어요. 인터넷 연결을 확인해 주세요.")); }
       }, 5000);
     });
+    // 휴대폰(안드로이드)은 GPU 메모리를 아끼려고 대화 기억 길이를 줄인다 (보내는 대화는 tutorContext로 600토큰 안팎이라 충분)
+    const chatOpts = /Android/i.test(navigator.userAgent) ? { context_window_size: 2048 } : undefined;
     const engine = await Promise.race([lib.CreateWebWorkerMLCEngine(tutorWorker, tutorModelId, {
       initProgressCallback: r => { lastProgress = Date.now(); tutorProgressCb && tutorProgressCb(r.progress || 0, r.text || ""); }
-    }), failed]);
+    }, chatOpts), failed]);
     tutorEngine = engine;
     try { localStorage.setItem("tutorModelReady", "true"); } catch (e) {}
     // 불러오는 사이에 다른 화면으로 갔다면 잠시 뒤 메모리에서 내린다
