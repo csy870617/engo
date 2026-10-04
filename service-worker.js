@@ -1,5 +1,5 @@
 // 캐시 버전 - 정적 자산을 변경했을 때 숫자를 올리세요. (index.html의 ?v= 숫자도 같이 올린다)
-const CACHE_NAME = 'engo-cache-v150';
+const CACHE_NAME = 'engo-cache-v151';
 // 자연스러운 음성 모델(약 440MB) 캐시 - 앱(js/neural-tts.js)이 직접 관리하므로 정리·가로채기 대상에서 제외
 const VOICE_CACHE_PREFIX = 'faith-voice';
 const VOICE_HOST_PATH = 'https://csy870617.github.io/faith-voice/';
@@ -76,6 +76,8 @@ self.addEventListener('fetch', (event) => {
   if (req.method !== 'GET') return;
   // 음성 모델 내려받기는 가로채지 않는다 (앱 캐시에 440MB가 한 번 더 저장되는 것 방지)
   if (req.url.startsWith(VOICE_HOST_PATH)) return;
+  // 튜터 영상은 브라우저가 나눠 받기(Range)로 틀어서 가로채지 않는다 (아이폰은 가로채면 영상이 안 나오기도 함)
+  if (/\.(mp4|webm)(\?|$)/.test(req.url)) return;
 
   const isNavigation = req.mode === 'navigate' ||
     (req.headers.get('accept') || '').includes('text/html');
