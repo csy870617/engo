@@ -6,12 +6,13 @@
 // ==========================================
 
 const GEMINI_API = "https://generativelanguage.googleapis.com/v1beta/models/";
-// 튜터의 말(대화·피드백)은 가장 똑똑한 Flash, 교정·힌트·번역·받아쓰기 같은 보조 일은 빠른 Flash-Lite.
+// 대화는 속도가 생명: 튜터의 말은 가장 빠른 Flash-Lite(생각 최소)로 바로 답한다.
+// (3.8·3.7 Flash는 생각을 끌 수 없어(최소 low) 답이 늦으므로 맨 마지막 예비로만 쓴다)
+// 교정·힌트·번역·받아쓰기 같은 보조 일은 다른 모델부터 써서 무료 사용량을 나눈다.
 // 앞 모델의 무료 사용량을 다 쓰거나 잠시 막히면 다음 모델로 넘어간다
-// (무료 사용량이 모델마다 따로라, 일을 나눠 맡기고 번갈아 쓰면 하루에 더 오래 대화할 수 있다)
 const TUTOR_GEMINI_CHAINS = {
-  chat: ["gemini-3.8-flash", "gemini-3.6-flash", "gemini-3.5-flash", "gemini-3.5-flash-lite", "gemini-3.1-flash-lite"],
-  aux: ["gemini-3.5-flash-lite", "gemini-3.1-flash-lite", "gemini-3.5-flash"]
+  chat: ["gemini-3.5-flash-lite", "gemini-3.6-flash", "gemini-3.5-flash", "gemini-3.1-flash-lite", "gemini-3.8-flash"],
+  aux: ["gemini-3.1-flash-lite", "gemini-3.5-flash-lite", "gemini-3.6-flash"]
 };
 const GEMINI_KEY_STORE = "geminiApiKey";
 const GEMINI_KEY_PAGE = "https://aistudio.google.com/apikey";
@@ -42,7 +43,9 @@ class GeminiError extends Error {
   constructor(message, status, reason) { super(message); this.status = status || 0; this.reason = reason || ""; }
 }
 const tutorModelIdx = { chat: 0, aux: 0 };   // 일마다 지금 쓰는 모델 (목록 안의 위치)
-const tutorThinking = {};              // 모델별 생각 수준 (MINIMAL을 못 쓰는 모델이면 LOW로)
+const tutorModelSince = { chat: 0, aux: 0 }; // 다음 모델로 넘어간 시각 (5분 지나면 가장 빠른 첫 모델부터 다시 시도)
+// 모델별 생각 수준: 기본은 MINIMAL(가장 빠름). 못 쓰는 모델은 LOW로 (알아낸 것은 기기에 기억해서 헛요청을 줄인다)
+const tutorThinking = (() => { let t = {}; try { t = JSON.parse(localStorage.getItem("tutorThinking") || "{}") || {}; } catch (e) {} return { "gemini-3.8-flash": "LOW", "gemini-3.7-flash": "LOW", ...t }; })();
 const tutorModelName = (chain = "chat") => TUTOR_GEMINI_CHAINS[chain][tutorModelIdx[chain]];
 
 /** 대화 → Gemini 요청 형식 (system은 systemInstruction으로, 같은 역할이 이어지면 합친다) */
@@ -89,6 +92,7 @@ const geminiBlip = e => e && (e.status >= 500 || e instanceof TypeError);
  *  run(model, thinking, started)는 started()를 불러 '이미 글자를 보여 주기 시작했음'을 알린다 (그 뒤에는 다른 모델로 넘기지 않음) */
 async function geminiCall(run, chain = "chat") {
   const list = TUTOR_GEMINI_CHAINS[chain];
+  if (tutorModelIdx[chain] && Date.now() - tutorModelSince[chain] > 5 * 60 * 1000) tutorModelIdx[chain] = 0;
   let last = null;
   for (let k = 0; k < list.length; k++) {
     const idx = (tutorModelIdx[chain] + k) % list.length, model = list[idx];
@@ -96,14 +100,18 @@ async function geminiCall(run, chain = "chat") {
     for (let attempt = 0; attempt < 2; attempt++) {
       try {
         const out = await run(model, tutorThinking[model] || "MINIMAL", () => { begun = true; });
-        if (tutorModelIdx[chain] !== idx) { tutorModelIdx[chain] = idx; renderTutorCredit(); }
+        if (tutorModelIdx[chain] !== idx) { tutorModelIdx[chain] = idx; tutorModelSince[chain] = Date.now(); renderTutorCredit(); }
         return out;
       } catch (e) {
         if (e && e.name === "AbortError") throw e;
         last = e;
         if (begun) throw e;
         console.warn(`Gemini ${model} 실패`, e.status || "", e.message || e);
-        if (e.status === 400 && /think/i.test(e.message || "") && tutorThinking[model] !== "LOW") { tutorThinking[model] = "LOW"; continue; }
+        if (e.status === 400 && /think/i.test(e.message || "") && tutorThinking[model] !== "LOW") {
+          tutorThinking[model] = "LOW";
+          try { localStorage.setItem("tutorThinking", JSON.stringify(tutorThinking)); } catch (e2) {}
+          continue;
+        }
         if (attempt === 0 && geminiBlip(e)) { await new Promise(r => setTimeout(r, 600)); continue; }
         break;
       }
