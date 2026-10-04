@@ -178,17 +178,11 @@ setTimeout(tutorCleanupOldEngine, 4000);
 
 // ---------- 화면 ----------
 const tutorEl = id => document.getElementById(id);
+const TUTOR_IDLE_MSG = "Emma를 누르면 듣기 시작해요";   // 말하기 버튼 없이: 튜터 말이 끝나면 저절로 듣고, Emma를 누르면 듣기 시작·끝내기
 function setTutorStatus(text, mode) {
   const st = tutorEl("tutor-status"); if (st) st.textContent = text;
   const av = tutorEl("tutor-avatar"); if (av) av.dataset.mode = mode || "";
   const room = tutorEl("tutor-chat-area"); if (room) room.dataset.mode = mode || "";
-  const mic = tutorEl("tutor-mic-btn");
-  if (mic) {
-    mic.classList.toggle("listening", mode === "listening");
-    mic.disabled = mode === "thinking" || mode === "loading";
-    const label = mic.querySelector("span");
-    if (label) label.textContent = mode === "listening" ? "보내기" : "말하기";
-  }
 }
 function showTutorSection(which) {
   tutorEl("tutor-setup").classList.toggle("hidden", which !== "setup");
@@ -214,7 +208,7 @@ function renderTutorPage() {
   showTutorSection("chat");
   tutorCallActive = true;
   toggleTutorSheet();
-  if (tutorMessages.length === 0) startTutorSession(); else setTutorStatus("마이크를 누르고 영어로 말해 보세요", "");
+  if (tutorMessages.length === 0) startTutorSession(); else { setTutorStatus(TUTOR_IDLE_MSG, ""); tutorAfterSpeak(tutorSessionToken); }
 }
 
 function showTutorKeyMsg(text, isError) {
@@ -284,36 +278,77 @@ function newTutorConversation() {
 /** 오늘 대화 피드백 열기 */
 function openTutorFeedback() {
   stopTutorActivity();
-  setTutorStatus("마이크를 누르고 영어로 말해 보세요", "");
+  setTutorStatus(TUTOR_IDLE_MSG, "");
   toggleTutorSheet("feedback");
   tutorFeedback();
 }
 /** 아래에서 올라오는 판 (설정·피드백). 이름 없이 부르면 모두 닫는다 */
 function toggleTutorSheet(name) {
+  let opened = false, closed = false;
   ["settings", "feedback"].forEach(n => {
     const el = tutorEl("tutor-sheet-" + n); if (!el) return;
-    const show = n === name && el.classList.contains("hidden");
+    const was = !el.classList.contains("hidden");
+    const show = n === name && !was;
     el.classList.toggle("hidden", !show);
+    if (show) opened = true; else if (was) closed = true;
   });
-  const auto = tutorEl("tutor-auto-listen"); if (auto) auto.checked = tutorAutoListenOn();
+  // 판을 여는 동안은 듣지 않고, 닫으면 다시 듣는다
+  if (opened) tutorCancelListening();
+  else if (closed) tutorAfterSpeak(tutorSessionToken);
 }
-function toggleTutorType() {
-  const row = tutorEl("tutor-type-row");
-  row.classList.toggle("hidden");
-  if (!row.classList.contains("hidden")) tutorEl("tutor-input").focus();
-}
-// 자동 듣기: 선생님 말이 끝나면 바로 마이크를 켠다 (실제 통화처럼). 끄면 직접 🎤를 누른다
-function tutorAutoListenOn() { try { return localStorage.getItem("tutorAutoListen") !== "0"; } catch (e) { return true; } }
-function changeTutorAutoListen() { try { localStorage.setItem("tutorAutoListen", tutorEl("tutor-auto-listen").checked ? "1" : "0"); } catch (e) {} }
+// 듣기: 말하기 버튼 없이 튜터 말이 끝나면 저절로 마이크를 켠다 (실제 대화처럼).
+// 조용하면 두 번까지 다시 듣고, 그래도 말이 없으면 쉰다 (Emma를 누르면 다시 듣기)
+let tutorQuietTries = 0;
+function tutorTypingNow() { const inp = tutorEl("tutor-input"); return !!inp && (document.activeElement === inp || !!inp.value.trim()); }
 function tutorAfterSpeak(token) {
-  if (token !== tutorSessionToken || !tutorCallActive || !tutorAutoListenOn()) return;
+  if (token !== tutorSessionToken || !tutorCallActive || tutorMicDenied) return;
   if (tutorBusy || tutorSpeaking || tutorMic || tutorRecRec) return;
   const page = tutorEl("page-tutor");
   if (!page || page.classList.contains("hidden") || document.hidden) return;
   if (["settings", "feedback"].some(n => !tutorEl("tutor-sheet-" + n).classList.contains("hidden"))) return;
-  if (!tutorEl("tutor-type-row").classList.contains("hidden") && tutorEl("tutor-input").value.trim()) return;
-  setTimeout(() => { if (token === tutorSessionToken && !tutorBusy && !tutorSpeaking && !tutorMic && !tutorRecRec) toggleTutorMic(); }, 250);
+  if (tutorTypingNow()) return;                    // 글로 쓰는 중이면 듣지 않는다
+  setTimeout(() => { if (token === tutorSessionToken && tutorCallActive && !tutorBusy && !tutorSpeaking && !tutorMic && !tutorRecRec && !tutorTypingNow()) toggleTutorMic(); }, 250);
 }
+/** 조용해서 듣기가 끝났을 때: 몇 번은 다시 듣고, 그다음엔 Emma를 누를 때까지 쉰다 */
+function tutorQuietRestart() {
+  if (tutorQuietTries >= 2 || !tutorCallActive) { tutorQuietTries = 0; setTutorStatus("소리가 들리지 않았어요 · Emma를 누르면 다시 들어요", ""); return; }
+  tutorQuietTries++;
+  tutorAfterSpeak(tutorSessionToken);
+}
+/** 듣기를 그만둔다 (들은 말은 보내지 않음) */
+function tutorCancelListening() {
+  let was = false;
+  if (tutorMic) { const m = tutorMic; tutorMic = null; was = true; try { m.rec.onend = m.rec.onerror = m.rec.onresult = null; m.rec.abort(); } catch (e) {} }
+  if (tutorRecRec) { const r = tutorRecRec; tutorRecRec = null; was = true; r.cancelled = true; try { r.stop(); } catch (e) {} }
+  if (was) { tutorEl("tutor-input").value = ""; setTutorStatus(TUTOR_IDLE_MSG, ""); }
+}
+/** Emma(위쪽 그림)를 누르면: 말하는 중이면 끊고 바로 듣기, 듣는 중이면 끝내고 보내기, 쉬는 중이면 듣기 시작 */
+function tutorTapTutor(e) {
+  if (e && e.target.closest && e.target.closest("button")) return;
+  if (!tutorReady() || tutorBusy) return;
+  tutorQuietTries = 0;
+  if (typeof NeuralTTS !== "undefined") NeuralTTS.unlockAudio();
+  if (tutorMic || tutorRecRec) { toggleTutorMic(); return; }
+  const inp = tutorEl("tutor-input");
+  if (document.activeElement === inp) inp.blur();
+  toggleTutorMic();
+}
+/** 입력칸을 누르면 듣기를 멈추고(그림을 줄여 대화가 잘 보이게), 입력을 마치고 나가면 다시 듣는다 */
+function tutorInputFocus(on) {
+  const room = tutorEl("tutor-chat-area");
+  if (room) room.classList.toggle("typing", on);
+  setTimeout(() => { const log = tutorEl("tutor-log"); log.scrollTop = log.scrollHeight; }, 300);   // 그림 크기가 바뀐 뒤 최근 대화가 보이게
+  if (on) { if (tutorMic || tutorRecRec) tutorCancelListening(); return; }
+  setTimeout(() => { if (!tutorTypingNow()) tutorAfterSpeak(tutorSessionToken); }, 300);
+}
+// 휴대폰 키보드가 올라오면 대화 화면을 키보드 위 영역에 맞춘다 (입력칸이 키보드에 가리지 않게)
+function tutorFitViewport() {
+  const call = tutorEl("tutor-call"), vv = window.visualViewport;
+  if (!call || !vv) return;
+  if (window.innerHeight - vv.height > 80) { call.style.top = vv.offsetTop + "px"; call.style.height = vv.height + "px"; call.style.bottom = "auto"; }
+  else call.style.top = call.style.height = call.style.bottom = "";
+}
+if (window.visualViewport) { visualViewport.addEventListener("resize", tutorFitViewport); visualViewport.addEventListener("scroll", tutorFitViewport); }
 // ---------- 수준 ----------
 function renderTutorLevels() {
   const cur = tutorLevelId();
@@ -514,6 +549,7 @@ async function sendTutorText(text) {
   text = (text || "").trim();
   if (!text || !tutorReady() || tutorBusy) return false;
   stopTutorSpeech();
+  tutorQuietTries = 0;
   if (typeof NeuralTTS !== "undefined") NeuralTTS.unlockAudio();   // 듣는 동안 쉬던 재생 장치를 미리 깨워 둔다 (답 소리가 바로 나게)
   const token = tutorSessionToken;
   tutorLearnerLines.push(text);
@@ -530,8 +566,7 @@ function sendTutorTyped() {
   const inp = tutorEl("tutor-input");
   const t = inp.value;
   if (!t.trim() || tutorBusy || !tutorReady()) return;   // 튜터가 답을 만드는 중이면 입력은 그대로 둔다
-  if (tutorMic) { const m = tutorMic; tutorMic = null; try { m.rec.onend = m.rec.onerror = m.rec.onresult = null; m.rec.abort(); } catch (e) {} }
-  if (tutorRecRec) { const r = tutorRecRec; tutorRecRec = null; r.cancelled = true; try { r.stop(); } catch (e) {} }
+  tutorCancelListening();
   inp.value = "";
   sendTutorText(t);
 }
@@ -651,7 +686,7 @@ function tutorSpeechQueue(token) {
       await chain;
       if (!alive()) return;
       tutorSpeaking = false;
-      setTutorStatus("마이크를 누르고 영어로 말해 보세요", "");
+      setTutorStatus(TUTOR_IDLE_MSG, "");
     },
     cancel() { dead = true; }
   };
@@ -982,6 +1017,7 @@ function changeTutorVoice() {
 // ---------- 말하기 (튜터 목소리 + 입모양) ----------
 async function speakTutor(text, token, slow) {
   if (token !== tutorSessionToken) return;
+  tutorCancelListening();                // 듣는 중이면 멈춘다 (튜터 목소리를 내 말로 알아듣지 않게)
   const my = ++tutorSpeechToken;
   tutorSpeaking = true;
   setTutorStatus("말하는 중…", "speaking");
@@ -989,7 +1025,8 @@ async function speakTutor(text, token, slow) {
   // 중간에 끊고 새로 말하거나 대화가 바뀌었으면 상태를 건드리지 않는다
   if (token !== tutorSessionToken || my !== tutorSpeechToken) return;
   tutorSpeaking = false;
-  setTutorStatus("마이크를 누르고 영어로 말해 보세요", "");
+  setTutorStatus(TUTOR_IDLE_MSG, "");
+  tutorAfterSpeak(token);                // 다 말했으면 다시 듣는다
 }
 function stopTutorSpeech() {
   if (!tutorSpeaking) return;
@@ -997,7 +1034,7 @@ function stopTutorSpeech() {
   tutorSpeechToken++;
   if ("speechSynthesis" in window) window.speechSynthesis.cancel();
   if (typeof NeuralTTS !== "undefined") NeuralTTS.stopAudio();
-  setTutorStatus("마이크를 누르고 영어로 말해 보세요", "");
+  setTutorStatus(TUTOR_IDLE_MSG, "");
 }
 
 // ---------- 실행 환경 (앱 안 브라우저 / 홈 화면 앱) ----------
@@ -1069,7 +1106,7 @@ function toggleTutorMic() {
   if (!tutorReady()) return;
   // 브라우저 음성 인식이 없거나(인앱 등) 실패했던 곳은 녹음해서 Gemini로 받아쓰기
   if (tutorRecRec || !SR || tutorEnv().inApp || tutorUseRecorder) { toggleTutorRecordMic(); return; }
-  if (tutorMic) { tutorMic.stop(); return; }          // 듣는 중에 누르면 바로 끝내고 보낸다
+  if (tutorMic) { tutorMic.user = true; tutorMic.stop(); return; }   // 듣는 중에 누르면 바로 끝내고 보낸다
   if (tutorMicDenied) { showMicPermissionHelp(); tutorCheckMicPermission(); return; }
   stopTutorSpeech();
   if ("speechSynthesis" in window) window.speechSynthesis.cancel();
@@ -1077,18 +1114,19 @@ function toggleTutorMic() {
   const rec = new SR();
   rec.lang = "en-US"; rec.interimResults = true; rec.maxAlternatives = 1; rec.continuous = false;
   const inp = tutorEl("tutor-input");
-  let heard = "", done = false, stopping = false;
+  let heard = "", done = false, stopping = false, fatal = false;
   const timers = [];
   const finish = () => {
     if (done) return;
     done = true;
     timers.forEach(clearTimeout);
-    if (tutorMic && tutorMic.rec === rec) tutorMic = null;
+    if (tutorMic === state) tutorMic = null;
     try { rec.abort(); } catch (e) {}
     const said = (heard || inp.value).trim();
     inp.value = "";
-    setTutorStatus("마이크를 누르고 영어로 말해 보세요", "");
+    setTutorStatus(TUTOR_IDLE_MSG, "");
     if (said) sendTutorWhenFree(said);
+    else if (!state.user && !fatal) tutorQuietRestart();   // 조용해서 끝났으면 다시 듣는다
   };
   const stop = () => {                                // 결과를 마저 받을 시간을 잠깐 주고, 안 오면 그대로 끝낸다
     if (done || stopping) return;
@@ -1107,25 +1145,25 @@ function toggleTutorMic() {
   rec.onerror = e => {
     // 브라우저 음성 인식 서비스를 못 쓰는 환경이면 다음부터 녹음 + Gemini 받아쓰기로 (마이크 권한 자체가 막힌 건 아님)
     if (e.error === "service-not-allowed" || e.error === "network" || e.error === "language-not-supported") {
-      tutorUseRecorder = true;
-      setTimeout(() => setTutorStatus("다시 눌러 주세요. 이제 녹음해서 알아들을게요", ""), 0);
+      tutorUseRecorder = true; fatal = true;
+      setTimeout(() => toggleTutorRecordMic(), 0);   // 이제부터 녹음해서 알아듣는다
     }
     else if (e.error === "not-allowed" && !tutorUseRecorder && tutorEnv().inFrame) {
-      tutorUseRecorder = true;                     // 마이크를 직접 받는 방식은 허락되는 경우가 있다 (기타 튜너 방식)
+      tutorUseRecorder = true; fatal = true;       // 마이크를 직접 받는 방식은 허락되는 경우가 있다 (기타 튜너 방식)
       setTimeout(() => toggleTutorRecordMic(), 0);
     }
-    else if (e.error === "not-allowed") showMicPermissionHelp();
-    else if (TUTOR_MIC_MSG[e.error]) alert(TUTOR_MIC_MSG[e.error]);
-    else if (e.error === "no-speech") { done || setTimeout(() => setTutorStatus("소리가 들리지 않았어요. 다시 눌러 말해 보세요", ""), 0); }
+    else if (e.error === "not-allowed") { fatal = true; tutorMicDenied = true; showMicPermissionHelp(); }
+    else if (TUTOR_MIC_MSG[e.error]) { fatal = true; alert(TUTOR_MIC_MSG[e.error]); }
     finish();
   };
   rec.onend = finish;
-  tutorMic = { rec, stop };
+  const state = { rec, stop, user: false };
+  tutorMic = state;
   timers.push(setTimeout(stop, 15000));               // 아무리 길어도 15초면 끝낸다
   try {
     rec.start();
-    setTutorStatus("듣고 있어요… 다 말하면 버튼을 눌러도 돼요", "listening");
-  } catch (e) { finish(); alert("음성 인식을 시작하지 못했어요. 잠시 후 다시 눌러 주세요."); }
+    setTutorStatus("듣고 있어요… 영어로 말해 보세요", "listening");
+  } catch (e) { fatal = true; finish(); setTutorStatus("음성 인식을 시작하지 못했어요 · 잠시 후 Emma를 눌러 주세요", ""); }
 }
 /** 튜터가 교정 등을 마무리하는 중이면 끝나기를 기다렸다가 보낸다 (말한 내용을 버리지 않게) */
 function sendTutorWhenFree(text, tries = 0) {
@@ -1220,7 +1258,7 @@ async function geminiTranscribe(audio16k) {
 
 let tutorRecRec = null;
 async function toggleTutorRecordMic() {
-  if (tutorRecRec) { tutorRecRec.stop(); return; }            // 듣는 중에 누르면 바로 끝내고 보낸다
+  if (tutorRecRec) { tutorRecRec.user = true; tutorRecRec.stop(); return; }   // 듣는 중에 누르면 바로 끝내고 보낸다
   if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
     alert("이 화면에서는 마이크를 쓸 수 없어요. 아래 입력창에 영어로 적어 주세요."); tutorEl("tutor-input").focus(); return;
   }
@@ -1234,23 +1272,23 @@ async function toggleTutorRecordMic() {
   try { result = await rec.done; }
   catch (e) {
     tutorRecRec = null;
-    setTutorStatus("마이크를 누르고 영어로 말해 보세요", "");
-    if (e && (e.name === "NotAllowedError" || e.name === "SecurityError")) showMicPermissionHelp();
+    setTutorStatus(TUTOR_IDLE_MSG, "");
+    if (e && (e.name === "NotAllowedError" || e.name === "SecurityError")) { tutorMicDenied = true; showMicPermissionHelp(); }
     else if (e && e.name === "NotFoundError") alert("마이크를 찾지 못했어요. 입력창에 적어서 대화할 수 있어요.");
     else alert("마이크를 열지 못했어요. (" + ((e && e.message) || e) + ")");
     return;
   }
   tutorRecRec = null;
   if (rec.cancelled) return;                                     // 글로 입력해 보냈으면 녹음은 버린다
-  if (!result.heardVoice || result.audio.length < 16000 * 0.4) { setTutorStatus("소리가 들리지 않았어요. 다시 눌러 말해 보세요", ""); return; }
+  if (!result.heardVoice || result.audio.length < 16000 * 0.4) { setTutorStatus(TUTOR_IDLE_MSG, ""); if (!rec.user) tutorQuietRestart(); return; }
   setTutorStatus("알아듣는 중…", "thinking");
   try {
     const text = await geminiTranscribe(result.audio);
-    setTutorStatus("마이크를 누르고 영어로 말해 보세요", "");
-    if (!text) { setTutorStatus("잘 못 알아들었어요. 다시 눌러 또박또박 말해 보세요", ""); return; }
+    setTutorStatus(TUTOR_IDLE_MSG, "");
+    if (!text) { setTutorStatus("잘 못 알아들었어요 · Emma를 누르고 또박또박 말해 보세요", ""); return; }
     sendTutorWhenFree(text);
   } catch (e) {
-    setTutorStatus("마이크를 누르고 영어로 말해 보세요", "");
+    setTutorStatus(TUTOR_IDLE_MSG, "");
     alert("말을 알아듣지 못했어요. 입력창에 적어서 대화할 수 있어요.\n(" + geminiErrorText(e) + ")");
   }
 }
@@ -1281,6 +1319,7 @@ function renderTutorHint() {
   const box = tutorEl("tutor-hint");
   if (!box) return;
   box.classList.toggle("hidden", !tutorHintShown);
+  const hb = tutorEl("tutor-hint-btn"); if (hb) hb.classList.toggle("on", tutorHintShown);
   if (!tutorHintShown) return;
   if (!tutorReady()) return;
   const key = tutorSessionToken + ":" + tutorSaidLines.length + ":" + tutorLevelId();
@@ -1297,7 +1336,7 @@ function renderTutorHint() {
     row.innerHTML = `<div class="tutor-hint-en"></div><div class="tutor-hint-kr"></div>`;
     row.querySelector(".tutor-hint-en").textContent = h.en;
     row.querySelector(".tutor-hint-kr").textContent = h.kr;
-    row.onclick = () => { tutorEl("tutor-input").value = h.en; speakTutor(h.en, tutorSessionToken); };
+    row.onclick = () => { tutorCancelListening(); tutorEl("tutor-input").value = h.en; speakTutor(h.en, tutorSessionToken); };
     box.appendChild(row);
   });
 }
