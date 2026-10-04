@@ -79,7 +79,8 @@ async function geminiFetch(model, method, body, signal) {
   return res;
 }
 /** 키 문제(잘못된 키·권한 없음)인지 */
-const geminiKeyProblem = e => e && (e.reason === "API_KEY_INVALID" || e.reason === "NO_KEY" || /api key/i.test(e.message || "") && (e.status === 400 || e.status === 403));
+const geminiKeyProblem = e => e && (e.reason === "API_KEY_INVALID" || e.reason === "NO_KEY" || e.status === 401 ||
+  /ACCESS_TOKEN|API_KEY/.test(e.reason || "") || /api key|credential/i.test(e.message || "") && (e.status === 400 || e.status === 403));
 /** 모델을 바꿔 다시 해 볼 만한 오류인지 (사용량 초과·모델 없음/권한 없음·서버 혼잡) */
 const geminiTryNext = e => e && !geminiKeyProblem(e) && (e.status === 429 || e.status === 404 || e.status === 403 || e.status >= 500);
 /** 모델을 차례로 시도: 생각 수준 설정을 못 쓰는 모델이면 낮춰서 다시, 사용량 초과·혼잡이면 다음 모델로.
@@ -230,7 +231,9 @@ async function connectTutorKey() {
   const inp = tutorEl("tutor-key-input"), btn = tutorEl("tutor-key-btn");
   const key = (inp.value || "").replace(/\s+/g, "");
   if (!key) { showTutorKeyMsg("키를 붙여 넣어 주세요.", true); return; }
-  if (!/^[A-Za-z0-9_\-]{20,}$/.test(key)) { showTutorKeyMsg("키 모양이 이상해요. 복사한 키 전체를 그대로 붙여 넣어 주세요.", true); return; }
+  // 키 모양: 예전 키 AIza…, 2026년 5월부터 새로 만드는 키(auth key) AQ.… (점·밑줄·하이픈 포함)
+  if (/…|\.\.\.$/.test(key)) { showTutorKeyMsg("키가 중간에 잘렸어요. AI Studio에서 키 옆의 복사 버튼(□)을 눌러 전체를 복사해 주세요.", true); return; }
+  if (!/^[A-Za-z0-9._\-]{20,}$/.test(key)) { showTutorKeyMsg("키 모양이 이상해요. AI Studio에서 복사 버튼으로 키 전체를 복사해 그대로 붙여 넣어 주세요.", true); return; }
   btn.disabled = true; btn.textContent = "확인 중…"; showTutorKeyMsg("", false);
   const prev = tutorGetKey();
   tutorSetKey(key);
