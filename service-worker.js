@@ -1,5 +1,5 @@
-// 캐시 버전 - 정적 자산을 변경했을 때 숫자를 올리세요.
-const CACHE_NAME = 'engo-cache-v128';
+// 캐시 버전 - 정적 자산을 변경했을 때 숫자를 올리세요. (index.html의 ?v= 숫자도 같이 올린다)
+const CACHE_NAME = 'engo-cache-v129';
 // 자연스러운 음성 모델(약 440MB) 캐시 - 앱(js/neural-tts.js)이 직접 관리하므로 정리·가로채기 대상에서 제외
 const VOICE_CACHE_PREFIX = 'faith-voice';
 const VOICE_HOST_PATH = 'https://csy870617.github.io/faith-voice/';
@@ -44,7 +44,8 @@ self.addEventListener('install', (event) => {
   event.waitUntil(
     caches.open(CACHE_NAME).then((cache) => {
       console.log('[Service Worker] Caching all assets');
-      return cache.addAll(ASSETS_TO_CACHE).then(() =>
+      // 브라우저 HTTP 캐시에 남은 옛 파일 대신 서버의 새 파일을 받는다
+      return cache.addAll(ASSETS_TO_CACHE.map((u) => new Request(u, { cache: 'reload' }))).then(() =>
         Promise.allSettled(EXTERNAL_ASSETS.map((url) => cache.add(url)))
       );
     })
@@ -109,7 +110,7 @@ self.addEventListener('fetch', (event) => {
           caches.open(CACHE_NAME).then((c) => c.put(req, copy)).catch(() => {});
         }
         return res;
-      }).catch(() => cached);
+      }).catch(() => cached || caches.match(req, { ignoreSearch: true }));   // 오프라인: ?v= 없이 저장된 파일로
       return cached || fetchPromise;
     })
   );
