@@ -24,7 +24,7 @@ let tutorLearnerLines = [];   // 학습자가 말한 문장 (힌트·피드백�
 let tutorCorrections = [];    // 교정한 문장 [{ said, better, why }] (피드백 정리용)
 let tutorLearnerItems = [];   // 학습자 말풍선 [{ text, bubble, fix, why, check }] (check: 교정 확인 중인 요청)
 let tutorSaidLines = [];      // 튜터가 보여 주고 읽은 답 (되풀이 거르기용)
-let tutorScenarioId = "free";
+let tutorGreeting = "";       // 이번 대화의 첫 인사
 let tutorBusy = false;
 let tutorSessionToken = 0;
 let tutorSpeaking = false;
@@ -202,8 +202,7 @@ function renderTutorCredit() {
 function renderTutorPage() {
   tutorCheckMicPermission();
   TutorAvatar.mount();
-  fillTutorScenarios();
-  fillTutorLevels();
+  renderTutorLevels();
   fillTutorVoices();
   renderTutorCredit();
   if (!tutorReady()) {
@@ -272,49 +271,25 @@ function stopTutorActivity() {
 }
 function leaveTutorPage() { stopTutorActivity(); }
 
-// ---------- 상황 ----------
-const TUTOR_FREE = { id: "free", title: "자유 대화 (Free Talk)", category: "자유" };
-const TUTOR_FREE_HINTS = [
-  { en: "I had a pretty busy day today.", kr: "오늘 꽤 바빴어요." },
-  { en: "I'm learning English these days.", kr: "요즘 영어를 배우고 있어요." },
-  { en: "What do you like to do on weekends?", kr: "주말에 뭐 하는 거 좋아해요?" },
-  { en: "I'm thinking about traveling next month.", kr: "다음 달에 여행 갈까 생각 중이에요." },
-  { en: "Can you say that again, please?", kr: "다시 한번 말해 줄래요?" }
-];
-function tutorScenario() {
-  if (tutorScenarioId === "free" || typeof conversationData === "undefined") return TUTOR_FREE;
-  return conversationData.find(c => c.id === tutorScenarioId) || TUTOR_FREE;
-}
-function fillTutorScenarios() {
-  const sel = tutorEl("tutor-scenario");
-  if (!sel || sel.options.length) return;
-  const free = document.createElement("option"); free.value = "free"; free.textContent = "💬 " + TUTOR_FREE.title; sel.appendChild(free);
-  if (typeof conversationData !== "undefined") {
-    categoriesOf(conversationData).forEach(cat => {
-      const g = document.createElement("optgroup"); g.label = cat;
-      conversationData.filter(c => categoryOf(c) === cat).forEach(c => { const o = document.createElement("option"); o.value = c.id; o.textContent = c.title; g.appendChild(o); });
-      sel.appendChild(g);
-    });
-  }
-  sel.value = tutorScenarioId;
-}
-function fillTutorLevels() {
-  const sel = tutorEl("tutor-level");
-  if (!sel) return;
-  if (!sel.options.length) Object.entries(TUTOR_LEVELS).forEach(([k, v]) => { const o = document.createElement("option"); o.value = k; o.textContent = v.label; sel.appendChild(o); });
-  sel.value = tutorLevelId();
+// ---------- 수준 ----------
+function renderTutorLevels() {
+  const box = tutorEl("tutor-levels");
+  if (!box) return;
+  const cur = tutorLevelId();
+  box.innerHTML = Object.entries(TUTOR_LEVELS).map(([k, v]) =>
+    `<button class="tutor-level-btn${k === cur ? " active" : ""}" onclick="changeTutorLevel('${k}')">${v.label}</button>`).join("");
 }
 /** 수준 바꾸기: 지금 대화는 그대로 두고, 튜터가 다음 말부터 새 수준으로 말한다 */
-function changeTutorLevel() {
-  try { localStorage.setItem("tutorLevel", tutorEl("tutor-level").value); } catch (e) {}
-  if (tutorMessages.length) tutorMessages[0] = { role: "system", content: tutorSystemPrompt(tutorScenario()) };
+function changeTutorLevel(id) {
+  if (!TUTOR_LEVELS[id] || id === tutorLevelId()) return;
+  try { localStorage.setItem("tutorLevel", id); } catch (e) {}
+  renderTutorLevels();
+  if (tutorMessages.length) tutorMessages[0] = { role: "system", content: tutorSystemPrompt() };
   setTutorStatus(`이제 ${tutorLevel().label} 수준으로 말할게요`, "");
   if (tutorHintShown) renderTutorHint();
 }
-function changeTutorScenario() { tutorScenarioId = tutorEl("tutor-scenario").value; startTutorSession(); }
 
 // ---------- 프롬프트·후처리 (평가 스크립트도 같은 함수를 쓴다) ----------
-// 답하기와 교정을 나눈다: 작은 모델은 한 번에 한 가지 일을 시킬 때 훨씬 정확하다
 // 학습자 수준: 튜터 말의 길이·어휘가 달라진다 (maxWords·maxFull: 화면에 보여 주고 읽는 답의 최대 길이)
 const TUTOR_LEVELS = {
   beginner: { label: "초급", maxWords: 24, maxFull: 2, desc: "beginner (A1-A2)",
@@ -339,89 +314,22 @@ function tutorStyle() {
     "- Speak naturally like a real person talking out loud. No lists, no emojis, no markdown, no notes in brackets, no Korean. Never say you are an AI."
   ].join("\n");
 }
-// 역할극 장면: 튜터가 맡을 역할 (상황마다 한 줄)
-const TUTOR_SCENES = {
-  "conv-001": "You are a friendly coworker meeting the learner for the first time at the office.",
-  "conv-002": "You are an old friend running into the learner after a long time.",
-  "conv-003": "You are a friend chatting with the learner about weekend plans.",
-  "conv-004": "You are a coworker making small talk with the learner about the weather.",
-  "conv-035": "You are a friend. The learner is leaving your place at the end of the evening.",
-  "conv-045": "You are a friend. The learner wants to ask you for a favor.",
-  "conv-055": "You are a friend. The learner is inviting you to a weekend barbecue.",
-  "conv-061": "You are a friend. The learner is giving you a compliment on your clothes.",
-  "conv-080": "You are a guest at a party meeting the learner for the first time.",
-  "conv-006": "You are a coworker deciding with the learner where to go for lunch.",
-  "conv-007": "You are a barista at a coffee shop. The learner is a customer ordering a drink.",
-  "conv-008": "You are a local friend. The learner is asking you for a good restaurant nearby.",
-  "conv-052": "You are a server at a restaurant. The learner is a customer ordering food.",
-  "conv-060": "You are a restaurant host on the phone. The learner wants to book a table.",
-  "conv-009": "You are a server at a restaurant. The learner wants to pay the bill.",
-  "conv-010": "You are the learner's roommate deciding what food to order for delivery.",
-  "conv-044": "You are a server at a restaurant. The learner's food is taking too long.",
-  "conv-046": "You are a friend who has not tried much Korean food. The learner is telling you about it.",
-  "conv-079": "You are a local friend. The learner is asking you how tipping works in the US.",
-  "conv-021": "You are a clothing store clerk. The learner is looking for a different size.",
-  "conv-022": "You are a store clerk at the returns counter. The learner wants to return an item.",
-  "conv-024": "You are a grocery store worker. The learner is looking for items in the store.",
-  "conv-025": "You are a store clerk. The learner is looking for a gift.",
-  "conv-037": "You are a phone store employee. The learner wants a new phone or plan.",
-  "conv-065": "You are a bank teller. The learner wants to open a bank account.",
-  "conv-066": "You are a hairstylist. The learner is a customer explaining the haircut they want.",
-  "conv-071": "You are a post office clerk. The learner wants to send a package overseas.",
-  "conv-011": "You are a local person on the street. The learner is asking you for directions.",
-  "conv-015": "You are a bus driver or a person at the bus stop. The learner is asking which bus to take.",
-  "conv-056": "You are a taxi driver. The learner is your passenger.",
-  "conv-068": "You are a ticket agent at a train station. The learner wants to buy a ticket.",
-  "conv-070": "You are a car rental agent. The learner is picking up a rental car.",
-  "conv-062": "You are a kind stranger at a station. The learner needs help with a ticket machine.",
-  "conv-051": "You are a local person at a train station. The learner is asking how to get downtown.",
-  "conv-013": "You are a tourist nearby. The learner is asking you to take a photo.",
-  "conv-064": "You are an airline check-in agent at the airport. The learner is checking in for a flight.",
-  "conv-058": "You are an immigration officer at the airport. The learner is a traveler arriving in the US.",
-  "conv-014": "You are an airline baggage service agent. The learner's bag did not arrive.",
-  "conv-069": "You are an airline gate agent. The learner's flight has a problem.",
-  "conv-067": "You are a currency exchange clerk. The learner wants to exchange money.",
-  "conv-012": "You are a hotel front desk clerk. The learner is checking in.",
-  "conv-059": "You are a hotel front desk clerk on the phone. The learner has a problem in their room.",
-  "conv-074": "You are a hotel front desk clerk. The learner is checking out.",
-  "conv-016": "You are the learner's coworker in a work meeting about a project.",
-  "conv-017": "You are a coworker. You and the learner are working late at the office.",
-  "conv-018": "You are the learner's manager. The learner wants to ask for a day off.",
-  "conv-053": "You are a receptionist answering the phone at a company. The learner is calling for someone.",
-  "conv-054": "You are the learner's coworker. The learner arrives late to a meeting.",
-  "conv-063": "You are a job interviewer. The learner is the job candidate.",
-  "conv-073": "You are a coworker. The learner wants to change the time of a meeting.",
-  "conv-078": "You are a coworker on a video call with the learner.",
-  "conv-026": "You are the learner's manager. The learner is not feeling well at work.",
-  "conv-027": "You are a pharmacist. The learner needs medicine.",
-  "conv-057": "You are a receptionist at a doctor's office. The learner wants to make an appointment.",
-  "conv-075": "You are a 911 operator. The learner is calling about an emergency.",
-  "conv-036": "You are a cafe worker. The learner is asking about the Wi-Fi.",
-  "conv-077": "You are a customer support agent on the phone. The learner has a problem with an account.",
-  "conv-041": "You are a cafe worker. The learner lost a wallet here earlier.",
-  "conv-043": "You are the learner's upstairs neighbor. The learner is talking to you about noise.",
-  "conv-072": "You are the building manager. The learner is reporting a problem in the apartment.",
-  "conv-076": "You are a close friend. The learner has good news to share.",
-  "conv-029": "You are a close friend. The learner is stressed and wants to talk.",
-  "conv-031": "You are a close friend. The learner is upset about something.",
-  "conv-032": "You are a close friend. The learner had a bad day and needs comfort.",
-  "conv-034": "You are a close friend. The learner wants your advice on a decision.",
-  "conv-005": "You are a friend chatting with the learner about hobbies.",
-  "conv-048": "You are a friend chatting with the learner about movies.",
-  "conv-050": "You are a dog owner in the park. The learner wants to pet your dog."
-};
-function tutorSystemPrompt(sc) {
-  const who = `You are Emma, a warm, encouraging and skilled English conversation teacher. Your student is a Korean adult at the ${tutorLevel().desc} level who wants to get comfortable speaking English.`;
-  if (sc.id === "free") return `${who} Have a friendly, natural conversation about everyday topics like the student's day, food, work, hobbies, weekend plans and travel. Follow the student's interests and go deeper into what they share.\n` +
-    `You already started the chat by saying: "${TUTOR_FREE_GREETING}" Do not greet or introduce yourself again.\n${tutorStyle()}`;
-  const scene = TUTOR_SCENES[sc.id] || `You are the other person in this situation: ${(sc.title.match(/\(([^)]+)\)/) || [])[1] || sc.title}.`;
-  return `${who} Role-play practice: ${scene} The student speaks first. Stay in this role like a real person in this situation, react to what the student actually says, and keep the scene moving so the student practices useful real-life phrases.\n${tutorStyle()}`;
+function tutorSystemPrompt() {
+  return `You are Emma, a warm, encouraging and skilled English conversation teacher. Your student is a Korean adult at the ${tutorLevel().desc} level who wants to get comfortable speaking English. ` +
+    "Have a friendly, natural conversation about everyday life: the student's day, food, work, hobbies, family, weekend plans, travel and feelings. Follow the student's interests, go deeper into what they share, and naturally bring up a new topic when one runs out.\n" +
+    `You already started the chat by saying: "${tutorGreeting}" Do not greet or introduce yourself again.\n${tutorStyle()}`;
 }
-// 시작: 자유 대화는 튜터가 정해진 인사로, 역할극은 실제 상황처럼 학습자(A)가 먼저 말을 건다
-const TUTOR_FREE_GREETING = "Hi, I'm Emma! How's your day going?";
-function tutorStartMessages(sc) {
-  // 인사는 시스템 안내에 적어 둔다 (가짜 대화를 넣으면 작은 모델이 인사를 되풀이함)
-  return [{ role: "system", content: tutorSystemPrompt(sc) }];
+// 첫 인사: 대화마다 하나를 골라 (튜터가 먼저 말을 건다)
+const TUTOR_GREETINGS = [
+  "Hi, I'm Emma! How's your day going?",
+  "Hi there, I'm Emma! What have you been up to today?",
+  "Hello, I'm Emma! How are you feeling today?",
+  "Hi, I'm Emma! Did you do anything fun this week?",
+  "Hey, I'm Emma! What did you have for lunch today?"
+];
+function tutorStartMessages() {
+  // 인사는 시스템 안내에 적어 둔다 (가짜 대화를 넣으면 모델이 인사를 되풀이하기도 함)
+  return [{ role: "system", content: tutorSystemPrompt() }];
 }
 // 답: 짧은 답이라 생각(thinking)은 최소로 해서 빠르게. 두 문장 넘게 쓰면 중간에 끊는다(tutorReplyDone)
 const TUTOR_REPLY_OPTS = { temperature: 0.8, topP: 0.95, maxTokens: 160, chain: "chat" };
@@ -538,27 +446,23 @@ function startTutorSession() {
   if (!tutorReady()) return;
   stopTutorActivity();
   const token = ++tutorSessionToken;
-  const sc = tutorScenario();
-  tutorMessages = tutorStartMessages(sc);
+  // 지난번과 다른 인사로 시작
+  const others = TUTOR_GREETINGS.filter(g => g !== tutorGreeting);
+  tutorGreeting = others[Math.floor(Math.random() * others.length)];
+  tutorMessages = tutorStartMessages();
   tutorLearnerLines = [];
   tutorLearnerItems = [];
   tutorCorrections = [];
-  tutorSaidLines = sc.id === "free" ? [TUTOR_FREE_GREETING] : [];
+  tutorSaidLines = [tutorGreeting];
   tutorEl("tutor-log").innerHTML = "";
   tutorEl("tutor-feedback").classList.add("hidden");
-  if (sc.id === "free") {
-    // 자유 대화: 튜터가 정해진 인사로 바로 시작
-    tutorHintShown = false; renderTutorHint();
-    const b = addTutorBubble("tutor", TUTOR_FREE_GREETING);
-    b.onclick = () => speakTutor(TUTOR_FREE_GREETING, tutorSessionToken);
-    addSlowButton(b, TUTOR_FREE_GREETING);
-    addTranslateButton(b, TUTOR_FREE_GREETING);
-    speakTutor(TUTOR_FREE_GREETING, token);
-  } else {
-    // 역할극: 실제 상황처럼 내가 먼저 말을 건다. 첫 마디는 힌트로 보여 준다
-    tutorHintShown = true; renderTutorHint();
-    setTutorStatus("먼저 말을 걸어 보세요 (힌트 참고)", "");
-  }
+  tutorHintShown = false; renderTutorHint();
+  const greet = tutorGreeting;
+  const b = addTutorBubble("tutor", greet);
+  b.onclick = () => speakTutor(greet, tutorSessionToken);
+  addSlowButton(b, greet);
+  addTranslateButton(b, greet);
+  speakTutor(greet, token);
 }
 
 /** 학습자 문장 보내기 (음성 인식 결과 / 입력창) */
@@ -1179,12 +1083,6 @@ async function toggleTutorRecordMic() {
 }
 
 // ---------- 힌트 · 피드백 ----------
-function tutorHintFor() {
-  const sc = tutorScenario();
-  if (sc.id === "free") return TUTOR_FREE_HINTS[tutorLearnerLines.length % TUTOR_FREE_HINTS.length];
-  const mine = sc.lines.filter(l => l.speaker === "A");
-  return mine[Math.min(tutorLearnerLines.length, mine.length - 1)];
-}
 function toggleTutorHint() { tutorHintShown = !tutorHintShown; renderTutorHint(); }
 // AI 힌트: 지금 대화의 마지막 말에 이어서 내가 할 수 있는 말 3가지 (영어 + 한국어 뜻)
 let tutorHintCache = { key: "", list: null, loading: null };
@@ -1194,13 +1092,12 @@ function tutorTranscript(maxMsgs) {
   return tutorMessages.slice(1).slice(-(maxMsgs || 12)).map(m => (m.role === "user" ? "Student: " : "Teacher: ") + m.content).join("\n");
 }
 async function loadTutorAiHints(key) {
-  const sc = tutorScenario();
   const said = tutorSaidLines[tutorSaidLines.length - 1] || "";
   const j = await geminiJSON([
     { role: "system", content: `You help a Korean adult practice English conversation at the ${tutorLevel().desc} level. ` +
       "Suggest 3 different, natural things the student could say next in reply to the teacher's last message. Make them sound like real spoken English at the student's level " +
       "(beginner: short and simple), and make each one different (for example a short answer, an answer with a detail, and a question back). Give a natural Korean meaning for each." },
-    { role: "user", content: (sc.id !== "free" ? `Situation: ${sc.title}\n` : "") + `Conversation so far:\n${tutorTranscript(10) || "(none)"}\n` +
+    { role: "user", content: `Conversation so far:\n${tutorTranscript(10) || "(none)"}\n` +
       (tutorMessages.length <= 1 && said ? `Teacher: ${said}\n` : "") + "Suggest what the student can say next." }
   ], { temperature: 0.7, maxTokens: 400, schema: TUTOR_HINT_SCHEMA, chain: "aux" });
   const list = ((j && j.suggestions) || []).filter(x => x && x.en).slice(0, 3);
@@ -1212,15 +1109,6 @@ function renderTutorHint() {
   if (!box) return;
   box.classList.toggle("hidden", !tutorHintShown);
   if (!tutorHintShown) return;
-  const sc = tutorScenario();
-  // 역할극을 막 시작했을 때(아직 아무도 말하지 않음)는 상황에 맞게 준비된 첫 마디
-  if (sc.id !== "free" && tutorLearnerLines.length === 0) {
-    const h = tutorHintFor();
-    box.innerHTML = `<div class="tutor-hint-label">이렇게 말해 볼까요?</div><div class="tutor-hint-en"></div><div class="tutor-hint-kr"></div>`;
-    box.querySelector(".tutor-hint-en").textContent = h.en;
-    box.querySelector(".tutor-hint-kr").textContent = h.kr;
-    return;
-  }
   if (!tutorReady()) return;
   const key = tutorSessionToken + ":" + tutorSaidLines.length + ":" + tutorLevelId();
   if (tutorHintCache.key !== key) {
@@ -1289,7 +1177,7 @@ async function tutorFeedback() {
         "overall: 2 warm, specific sentences about how the student did. good: 2 specific things the student did well. " +
         "expressions: 3 useful English expressions the student could use next time in this kind of conversation, at their level, each with a Korean meaning. " +
         "next: one concrete, small goal for the next practice. Write everything in Korean except the English expressions." },
-      { role: "user", content: `Situation: ${tutorScenario().title}\nConversation:\n${tutorTranscript(40)}\n\nCorrections already shown to the student:\n` +
+      { role: "user", content: `Conversation:\n${tutorTranscript(40)}\n\nCorrections already shown to the student:\n` +
         (tutorCorrections.map(c => `- ${c.said} -> ${c.better}`).join("\n") || "(none)") }
     ], { temperature: 0.4, maxTokens: 900, chain: "chat", schema: { type: "OBJECT", properties: {
       overall: { type: "STRING" }, good: { type: "ARRAY", items: { type: "STRING" } },

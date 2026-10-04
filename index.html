@@ -22,7 +22,7 @@
   <meta property="og:image" content="https://engo.life/logo.png">
   <meta property="og:site_name" content="ENGO">
 
-  <link rel="stylesheet" href="style.css?v=139" />
+  <link rel="stylesheet" href="style.css?v=140" />
 
   <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2078760660134095"
      crossorigin="anonymous"></script>
@@ -123,7 +123,7 @@
           <div class="tile-icon">🤖</div>
           <div class="tile-content">
             <span class="label">AI 튜터와 말하기 <span class="tile-badge">NEW</span></span>
-            <span class="desc">구글 Gemini AI와 상황별 실시간 회화 연습</span>
+            <span class="desc">구글 Gemini AI 선생님과 자유롭게 영어로 대화</span>
           </div>
         </div>
 
@@ -484,7 +484,7 @@
         <div id="tutor-setup" class="tutor-setup hidden">
           <p class="tutor-setup-title">구글 Gemini와 대화하는 AI 회화 튜터</p>
           <ul class="tutor-setup-list">
-            <li>빠르고 자연스러운 대화, 카페·공항·회사 등 실전 역할극</li>
+            <li>오늘 하루·음식·취미·여행 등 일상 이야기를 영어로 자유롭게</li>
             <li>구글 계정으로 <b>무료 키</b>를 만들어 한 번만 연결하면 돼요</li>
             <li>키는 이 기기에만 저장되고, 대화는 구글 Gemini로 바로 가요</li>
           </ul>
@@ -505,9 +505,9 @@
         <!-- 대화 -->
         <div id="tutor-chat-area" class="hidden">
           <div class="tutor-topbar">
-            <select id="tutor-scenario" class="tutor-select" onchange="changeTutorScenario()" aria-label="연습할 상황"></select>
-            <select id="tutor-level" class="tutor-select tutor-level" onchange="changeTutorLevel()" aria-label="내 영어 수준"></select>
-            <button class="chip-btn" onclick="startTutorSession()">↺ 새로</button>
+            <div class="tutor-topic">💬 자유 대화</div>
+            <div id="tutor-levels" class="tutor-levels" role="group" aria-label="내 영어 수준"></div>
+            <button class="chip-btn tutor-new-btn" onclick="startTutorSession()" aria-label="새 대화">↺ 새로</button>
           </div>
           <div id="tutor-log" class="tutor-log"></div>
           <div id="tutor-hint" class="tutor-hint hidden"></div>
@@ -646,12 +646,12 @@
 
   <div id="neural-loading" class="neural-loading hidden">🎙 자연스러운 음성 준비 중…</div>
 
-  <script src="pattern.js?v=139"></script>
-  <script src="conversation.js?v=139"></script>
-  <script src="idiom.js?v=139"></script>
-  <script src="word.js?v=139"></script>
+  <script src="pattern.js?v=140"></script>
+  <script src="conversation.js?v=140"></script>
+  <script src="idiom.js?v=140"></script>
+  <script src="word.js?v=140"></script>
 
-  <script src="js/core.js?v=139"></script>    <script src="js/storage.js?v=139"></script> <script src="js/neural-tts.js?v=139"></script> <script src="js/media.js?v=139"></script>   <script src="js/study.js?v=139"></script>   <script src="js/game.js?v=139"></script>    <script src="js/tutor.js?v=139"></script>    </body>
+  <script src="js/core.js?v=140"></script>    <script src="js/storage.js?v=140"></script> <script src="js/neural-tts.js?v=140"></script> <script src="js/media.js?v=140"></script>   <script src="js/study.js?v=140"></script>   <script src="js/game.js?v=140"></script>    <script src="js/tutor.js?v=140"></script>    </body>
 
 
 </html>
