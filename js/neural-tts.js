@@ -304,6 +304,67 @@ const NeuralTTS = (() => {
     });
   }
 
+  /** 조각조각 도착하는 음성을 오는 대로 이어서 재생한다 (받는 중에도 첫 조각부터 바로 소리가 난다).
+   *  push(Float32Array, sampleRate)로 조각을 넣고, 다 넣으면 end(). done은 끝까지 재생하면 true, 중간에 멈추면 false */
+  function playStream() {
+    const ctx = unlockAudio();
+    stopAudio();
+    if (!ctx) return { push() {}, end() {}, done: Promise.resolve(false) };
+    if (!analyser && ctx.createAnalyser) {
+      try {
+        analyser = ctx.createAnalyser();
+        analyser.fftSize = 512;
+        analyser.connect(ctx.destination);
+        levelBuf = new Float32Array(analyser.fftSize);
+      } catch (e) { analyser = null; }
+    }
+    const LEAD = 0.06;                                   // 조각 사이가 끊기지 않게 살짝 앞서 예약
+    const sources = new Set();
+    let nextTime = 0, ended = false, stopped = false, resolveDone, guard = null;
+    const done = new Promise(r => { resolveDone = r; });
+    const handle = {
+      _stopped: false,
+      stop() {
+        stopped = true;
+        clearTimeout(guard);
+        sources.forEach(s => { try { s.stop(); } catch (e) {} });
+        sources.clear();
+        resolveDone(false);
+      }
+    };
+    currentSource = handle;
+    const settle = () => {
+      if (stopped || !ended || sources.size) return;
+      clearTimeout(guard);
+      if (currentSource === handle) currentSource = null;
+      resolveDone(true);
+    };
+    return {
+      push(samples, sampleRate) {
+        if (stopped || !samples || !samples.length) return;
+        if (ctx.state === 'suspended') ctx.resume().catch(() => {});
+        const buf = ctx.createBuffer(1, samples.length, sampleRate);
+        buf.copyToChannel(samples, 0);
+        const src = ctx.createBufferSource();
+        src.buffer = buf;
+        src.connect(analyser || ctx.destination);
+        const at = Math.max(nextTime, ctx.currentTime + LEAD);
+        nextTime = at + buf.duration;
+        sources.add(src);
+        src.onended = () => { sources.delete(src); settle(); };
+        src.start(at);
+      },
+      end() {
+        if (ended) return;
+        ended = true;
+        // 끝 신호가 안 와도 멈추지 않게 (예약한 소리 길이 + 여유)
+        guard = setTimeout(() => { sources.clear(); settle(); }, Math.max(0, nextTime - ctx.currentTime) * 1000 + 3000);
+        settle();
+      },
+      done
+    };
+  }
+
   /** 마이크로 들을 때 잠시 재생 장치를 쉬게 한다 (안드로이드에서 켜져 있으면 음성 인식이 소리를 못 받는 경우가 있음).
    *  다음에 재생할 때 unlockAudio()가 다시 깨운다 */
   function suspendAudio() {
@@ -330,6 +391,6 @@ const NeuralTTS = (() => {
 
   return {
     VOICES, isSupported, isReady, fetchManifest, downloadSize, download, cancelDownload, remove,
-    isLoaded, ensureLoaded, shutdown, synthesize, cancelBefore, unlockAudio, play, stopAudio, outputLevel, suspendAudio
+    isLoaded, ensureLoaded, shutdown, synthesize, cancelBefore, unlockAudio, play, playStream, stopAudio, outputLevel, suspendAudio
   };
 })();
