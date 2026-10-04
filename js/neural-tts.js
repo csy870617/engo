@@ -391,6 +391,7 @@ const NeuralTTS = (() => {
 
   return {
     VOICES, isSupported, isReady, fetchManifest, downloadSize, download, cancelDownload, remove,
-    isLoaded, ensureLoaded, shutdown, synthesize, cancelBefore, unlockAudio, play, playStream, stopAudio, outputLevel, suspendAudio
+    isLoaded, ensureLoaded, shutdown, synthesize, cancelBefore, unlockAudio, play, playStream, stopAudio, outputLevel, suspendAudio,
+    isPlaying: () => !!currentSource   // 지금 실제로 소리를 내는 중인지 (튜터 말하는 영상용)
   };
 })();
