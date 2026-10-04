@@ -375,7 +375,8 @@ function cleanTutorSay(raw) {
   let out = "", full = 0;
   for (const sen of sentences) {
     const next = (out + " " + sen.trim()).trim();
-    if (out && (next.split(" ").length > 24 || full >= 2)) break;
+    // 긴 문장은 두 개까지. 단, 대화를 이어 가는 질문이 뒤에 오면 붙여 준다 (24단어 안에서)
+    if (out && (next.split(" ").length > 24 || (full >= 2 && !/\?["”']?$/.test(sen.trim())))) break;
     out = next;
     if (sen.trim().split(" ").length > 2) full++;   // "Hello!", "Sure." 같은 짧은 말은 문장 수에 넣지 않는다
   }
@@ -495,15 +496,19 @@ function sendTutorTyped() {
 /** 답 만들기 → 말풍선 → 소리 내어 읽기
  *  빠르게 하려고: ① 모델이 기억하는 대화(KV 캐시)를 다음 차례에 그대로 이어 쓰도록, 모델이 실제로 낸 답을 기록에 그대로 넣고
  *  ② 문장 교정은 대화 중이 아니라 '오늘 대화 피드백'에서 한꺼번에 한다 (교정 질문을 끼우면 대화 기억을 처음부터 다시 계산함)
- *  ③ 두 문장이 끝나면(또는 질문을 마치면) 더 쓰지 않게 바로 멈춘다 */
+ *  ③ 두 문장이 끝나면(또는 질문을 마치면) 더 쓰지 않게 바로 멈춘다
+ *  ④ 답이 다 만들어지기를 기다리지 않고, 끝난 문장부터 바로 읽기 시작한다 */
 async function tutorReply(token, learner) {
   tutorBusy = true;
   setTutorStatus("생각 중…", "thinking");
   const bubble = addTutorBubble("tutor", "…");
   const bubbleText = bubble.querySelector(".tutor-text");
   let raw = "", shown = "";   // raw: 모델이 실제로 낸 답(기록용) / shown: 멈추기로 한 순간까지의 답(보여 주고 읽을 문장)
+  let voice = null;           // 끝난 문장부터 읽는 줄
   const generate = () => tutorEngineCall(async () => {
     raw = ""; shown = "";
+    if (voice) voice.cancel();
+    voice = tutorSpeechQueue(token);
     let stopped = false;
     const chunks = await tutorEngine.chat.completions.create({ messages: tutorContext(), stream: true, ...TUTOR_REPLY_OPTS });
     for await (const c of chunks) {
@@ -511,7 +516,9 @@ async function tutorReply(token, learner) {
       raw += (c.choices[0] && c.choices[0].delta && c.choices[0].delta.content) || "";
       if (stopped) continue;                 // 멈추라고 한 뒤 늦게 도착한 글자는 보여 주지 않는다
       shown = raw;
-      bubbleText.textContent = cleanTutorSay(shown) || "…";
+      const clean = cleanTutorSay(shown);
+      bubbleText.textContent = clean || "…";
+      voice.upTo(tutorFinishedSentences(clean, shown));
       if (tutorReplyDone(raw)) { stopped = true; try { tutorEngine.interruptGenerate(); } catch (e) {} }
     }
     // 멈춘 시점에 따라 몇 글자 더 나왔을 수 있어, 모델이 기억하는 답을 그대로 받아 기록에 쓴다
@@ -524,6 +531,7 @@ async function tutorReply(token, learner) {
       // 저장된 모델로 엔진을 다시 열고 대화는 그대로 이어서 한 번 더 시도한다
       if (token !== tutorSessionToken) throw e;
       console.warn("튜터 답 생성 실패 → 엔진을 다시 열어 재시도", e);
+      if (voice) voice.cancel();
       setTutorStatus("튜터 다시 깨우는 중…", "thinking");
       bubbleText.textContent = "…";
       unloadTutorEngine();
@@ -534,6 +542,7 @@ async function tutorReply(token, learner) {
     }
   } catch (e) {
     console.warn("튜터 답 생성 실패", e);
+    if (voice) voice.cancel();
     if (token === tutorSessionToken) {
       // 답을 못 한 문장은 대화 기록에서 빼서 다음 말이 자연스럽게 이어지게 한다
       const last = tutorMessages[tutorMessages.length - 1];
@@ -552,24 +561,67 @@ async function tutorReply(token, learner) {
   }
   if (token !== tutorSessionToken) { tutorBusy = false; return; }
   const text = cleanTutorSay(shown) || "Sorry, could you say that again?";
+  voice.upTo(text);           // 남은 문장까지 마저 읽는다
   bubbleText.textContent = text;
   bubble.onclick = () => speakTutor(text, tutorSessionToken);
   addSlowButton(bubble, text);
   // 기록에는 모델이 실제로 낸 답(raw)을 넣어야 다음 차례에 앞부분 계산을 다시 쓴다. 비었으면 보여 준 문장으로
   tutorMessages.push({ role: "assistant", content: raw.trim() ? raw : text });
   tutorBusy = false;
-  await speakTutor(text, token);
+  await voice.finish();
+}
+
+/** 지금까지 끝난 문장들 (마지막 문장은 문장부호 뒤에 다음 글자가 와야 끝난 것으로 본다. 6.25나 Mr. 같은 점은 문장 끝이 아님) */
+function tutorFinishedSentences(clean, raw) {
+  // 마지막 문장부호 뒤에 띄어쓰기가 이미 왔으면 마지막 문장도 끝난 것 (다음 문장이 화면에서 잘려도)
+  if (raw && /[.!?]["”']?$/.test(clean) && !/\b(Mr|Mrs|Ms|Dr|St)\.$/.test(clean) && /[.!?]["”']?\s+\S*$/.test(raw)) return clean;
+  const DOT = "\u2024";
+  const t = clean.replace(/(\d)\.(\d)/g, `$1${DOT}$2`).replace(/\b(Mr|Mrs|Ms|Dr|St)\./g, `$1${DOT}`);
+  let end = -1;
+  for (const m of t.matchAll(/[.!?]+["”']?(?=\s)/g)) end = m.index + m[0].length;
+  return end < 0 ? "" : t.slice(0, end).split(DOT).join(".");
+}
+
+/** 튜터 목소리 줄: 문장이 끝나는 대로 받아 차례로 읽는다 (중간에 끊거나 새 대화가 시작되면 남은 문장은 읽지 않음) */
+function tutorSpeechQueue(token) {
+  const my = ++tutorSpeechToken;
+  let chain = Promise.resolve(), queued = "", dead = false;
+  const alive = () => !dead && token === tutorSessionToken && my === tutorSpeechToken;
+  return {
+    /** 읽을 문장이 text까지 늘었다: 아직 줄에 안 넣은 부분만 넣는다 */
+    upTo(text) {
+      if (!alive() || !text) return;
+      let part;
+      if (text.startsWith(queued)) part = text.slice(queued.length);
+      else if (!queued) part = text;
+      else return;                                   // 앞부분이 바뀌었으면(드묾) 겹쳐 읽지 않게 건너뛴다
+      queued = text;
+      part = part.trim();
+      if (!part) return;
+      if (typeof prefetchSpeech === "function") prefetchSpeech(part, "B");   // 자연스러운 음성은 미리 만들어 둔다
+      tutorSpeaking = true;
+      setTutorStatus("말하는 중…", "speaking");
+      chain = chain.then(async () => { if (alive()) { try { await speakWithPromise(part, "B"); } catch (e) {} } });
+    },
+    async finish() {
+      await chain;
+      if (!alive()) return;
+      tutorSpeaking = false;
+      setTutorStatus("마이크를 누르고 영어로 말해 보세요", "");
+    },
+    cancel() { dead = true; }
+  };
 }
 
 /** 답을 그만 써도 되는지: 줄을 바꿨거나(학습자 대사·메모를 지어내기 시작), 질문으로 끝났거나,
- *  긴 문장 두 개를 마쳤을 때 (cleanTutorSay도 긴 문장 두 개까지만 보여 준다. "Nice." 같은 짧은 말은 세지 않음) */
+ *  긴 문장 세 개를 마쳤을 때 (cleanTutorSay는 긴 문장 두 개 + 뒤따르는 질문까지 보여 준다. "Nice." 같은 짧은 말은 세지 않음) */
 function tutorReplyDone(raw) {
   const t = raw.replace(/^\s+/, "");
   if (!t) return false;
   if (/\S\s*\n/.test(t) || /\?["”']?\s*$/.test(t)) return true;
   if (!/[.!]["”']?\s*$/.test(t)) return false;
   const done = t.replace(/(\d)\.(\d)/g, "$1$2").replace(/\b(Mr|Mrs|Ms|Dr|St)\./g, "$1").match(/[^.!?]+[.!?]+/g) || [];
-  return done.filter(x => x.trim().split(/\s+/).length > 2).length >= 2;
+  return done.filter(x => x.trim().split(/\s+/).length > 2).length >= 3;
 }
 
 /** 모델에 보내는 대화: 앞부분이 매번 같아야 모델이 계산해 둔 기억을 다시 쓴다.
