@@ -5,24 +5,83 @@
 // ==========================================
 
 const WEBLLM_URL = "https://cdn.jsdelivr.net/npm/@mlc-ai/web-llm@0.2.85/+esm";
-// shader-f16을 지원하는 기기는 f16(가볍고 빠름), 아니면 f32 모델
-// PC: 후보 비교(같은 프롬프트·학습자 문장)에서 역할극 대화와 교정이 가장 좋았던 1.5B
-const TUTOR_MODELS = { f16: "Qwen2.5-1.5B-Instruct-q4f16_1-MLC", f32: "Qwen2.5-1.5B-Instruct-q4f32_1-MLC" };
-const TUTOR_SIZE_LABEL = "약 1GB";
-// 휴대폰: 1.5B는 휴대폰 GPU에서 너무 느려 0.5B (약 3배 빠름, 교정 정확도는 같고 대화는 조금 단순)
-// (Qwen3-0.6B도 비교했지만 같은 답을 되풀이하고 문장 교정을 하나도 못 해 제외)
-const TUTOR_MOBILE_MODELS = { f16: "Qwen2.5-0.5B-Instruct-q4f16_1-MLC", f32: "Qwen2.5-0.5B-Instruct-q4f32_1-MLC" };
-const TUTOR_MOBILE_SIZE_LABEL = "약 300MB";
+// 튜터는 PC 버전과 모바일 버전으로 나뉜다. 기기에 따라 기본값이 정해지고, 튜터 화면에서 바꿀 수 있다.
+// models: shader-f16을 지원하는 기기는 f16(가볍고 빠름), 아니면 f32 모델
+// 모델 비교(같은 튜터 대화 21개 + 교정 문장 28개, llama.cpp):
+//  - Qwen3.5 2B: 대화 자연스럽고 역할 유지, 교정 14/14·잘못 고침 0 → PC (크기는 예전 PC 모델과 비슷해 속도도 비슷)
+//  - Gemma 3 1B: 가장 사람처럼 짧고 자연스러운 대화, 역할극도 잘 맞춤(교정은 8/14로 약함) → 모바일
+//    (예전 1.5B보다 가볍고, f16 전용이라 f16을 못 쓰는 기기는 Qwen2.5 0.5B)
+//  - 제외: Qwen2.5 0.5B(역할극에서 엉뚱한 답), Qwen3.5 0.8B·Qwen3 0.6B(말이 길거나 되풀이, 잘못 고침 많음),
+//    Llama 3.2 3B·Ministral 3B(자연스럽지만 2배 무거워 느림), Phi-4 mini(교정 0), Gemma 2 2B(시스템 안내 불가)
+const TUTOR_MODEL_INFO = {
+  "Qwen3.5-2B-q4f16_1-MLC": { name: "Qwen3.5 2B", size: "약 1.1GB", license: "Apache 2.0" },
+  "Qwen3.5-2B-q4f32_1-MLC": { name: "Qwen3.5 2B", size: "약 1.1GB", license: "Apache 2.0" },
+  "gemma3-1b-it-q4f16_1-MLC": { name: "Gemma 3 1B", size: "약 600MB", license: "Gemma 이용 약관" },
+  "Qwen2.5-0.5B-Instruct-q4f16_1-MLC": { name: "Qwen2.5 0.5B", size: "약 300MB", license: "Apache 2.0" },
+  "Qwen2.5-1.5B-Instruct-q4f16_1-MLC": { name: "Qwen2.5 1.5B", size: "약 1GB", license: "Apache 2.0" },
+  "Qwen2.5-1.5B-Instruct-q4f32_1-MLC": { name: "Qwen2.5 1.5B", size: "약 1GB", license: "Apache 2.0" },
+  "Qwen2.5-0.5B-Instruct-q4f32_1-MLC": { name: "Qwen2.5 0.5B", size: "약 300MB", license: "Apache 2.0" }
+};
+const TUTOR_PROFILES = {
+  pc: { label: "PC 버전", icon: "💻", desc: "가장 자연스러운 대화",
+    models: { f16: "Qwen3.5-2B-q4f16_1-MLC", f32: "Qwen3.5-2B-q4f32_1-MLC" },
+    fallback: { f16: "Qwen2.5-1.5B-Instruct-q4f16_1-MLC", f32: "Qwen2.5-1.5B-Instruct-q4f32_1-MLC" } },
+  mobile: { label: "모바일 버전", icon: "📱", desc: "빠르고 자연스러운 대화",
+    models: { f16: "gemma3-1b-it-q4f16_1-MLC", f32: "Qwen2.5-0.5B-Instruct-q4f32_1-MLC" },
+    // 이 기기에서 위 모델이 열리지 않으면(GPU·메모리 문제) 더 가벼운 모델로 대신한다
+    fallback: { f16: "Qwen2.5-0.5B-Instruct-q4f16_1-MLC", f32: "Qwen2.5-0.5B-Instruct-q4f32_1-MLC" } }
+};
 // 예전에 쓰던 튜터 모델 — 모델을 바꿀 때 이전 모델 값을 이 목록 맨 앞에 옮겨 둔다.
-// 예전 모델을 받아 둔 사람은: 예전 모델로 계속 대화 → '새 튜터 받기'(대화하면서 뒤에서 받기) → '새 튜터로 바꾸기'
-// → 새 모델이 열리면 예전 모델은 기기에서 지운다. 사용 중인 WebLLM 목록에서 빠진 모델이면 이름 대신
-// { model_id, model, model_lib, overrides } 기록을 그대로 적는다.
-const TUTOR_OLD_MODELS = [];
-const TUTOR_MOBILE_OLD_MODELS = [TUTOR_MODELS];   // 휴대폰도 처음엔 1.5B를 썼다
+// 예전(또는 다른 버전) 모델을 받아 둔 사람은: 그 모델로 계속 대화 → '새 튜터 받기'(대화하면서 뒤에서 받기) → '바꾸기'
+// → 새 모델이 열리면 예전 모델은 기기에서 지운다 (기기에는 튜터 모델을 하나만 둔다). 사용 중인 WebLLM 목록에서
+// 빠진 모델이면 이름 대신 { model_id, model, model_lib, overrides } 기록을 그대로 적는다.
+const TUTOR_OLD_MODELS = [
+  { f16: "Qwen2.5-1.5B-Instruct-q4f16_1-MLC", f32: "Qwen2.5-1.5B-Instruct-q4f32_1-MLC" },   // ~v133 PC·휴대폰
+  { f16: "Qwen2.5-0.5B-Instruct-q4f16_1-MLC", f32: "Qwen2.5-0.5B-Instruct-q4f32_1-MLC" }    // v134 휴대폰
+];
 const TUTOR_IS_MOBILE = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent) || (/Macintosh/.test(navigator.userAgent) && navigator.maxTouchPoints > 1);
-const tutorSizeLabel = () => (TUTOR_IS_MOBILE ? TUTOR_MOBILE_SIZE_LABEL : TUTOR_SIZE_LABEL);
 // 예전 모델을 쓰던 사람에게 보여 줄 새 튜터 안내 (모델을 바꿀 때 함께 고친다)
-const TUTOR_UPDATE_MSG = "휴대폰에 맞춘 더 빠른 새 튜터가 나왔어요 (용량도 더 작아요).";
+const TUTOR_UPDATE_MSG = "더 빠르고 자연스러운 새 튜터가 나왔어요.";
+/** 지금 고른 버전 (고른 적 없으면 기기에 맞게) */
+function tutorProfileId() {
+  let v = null;
+  try { v = localStorage.getItem("tutorProfile"); } catch (e) {}
+  return TUTOR_PROFILES[v] ? v : (TUTOR_IS_MOBILE ? "mobile" : "pc");
+}
+const tutorProfile = () => TUTOR_PROFILES[tutorProfileId()];
+/** 이 버전에서 이 기기가 쓸 모델 (f16 지원 여부를 아직 모르면 f16 쪽으로 안내).
+ *  이 기기에서 열리지 않았던 모델이면 그 버전의 가벼운 대신 모델 */
+function tutorProfileModel(p) {
+  p = p || tutorProfile();
+  const v = tutorSupport && tutorSupport.ok && !tutorSupport.f16 ? "f32" : "f16";
+  const id = p.models[v];
+  // f16·f32 어느 쪽이든 이 기기에서 열리지 않았으면 대신 모델
+  return p.fallback && Object.values(p.models).some(tutorModelFailed) ? p.fallback[v] : id;
+}
+function tutorModelFailed(id) { try { return localStorage.getItem("tutorFailed:" + id) === "1"; } catch (e) { return false; } }
+// 모델을 여는 도중 화면이 통째로 꺼지는 기기(GPU 드라이버 문제 등) 대비: 여는 동안 표시를 남겨 두고,
+// 다음에 열 때 표시가 남아 있으면(=지난번에 열다가 꺼짐) 횟수를 센다. 두 번 연속이면 그 모델은 이 기기에서 안 되는 것으로 보고 대신 모델을 쓴다
+// (모델은 내려받으면서 바로 GPU에 올리므로 받는 동안에도 표시한다. 사용자가 앱을 닫거나 다른 앱으로 가면 pagehide·숨김이 오므로
+//  그때는 표시를 지운다 — 화면이 꺼지는 고장은 이 신호 없이 끝나서 구별된다)
+const TUTOR_LOADING_KEY = "tutorLoadingModel";
+let tutorLoadingId = null;
+document.addEventListener("visibilitychange", () => { if (tutorLoadingId) tutorMarkLoading(document.hidden ? null : tutorLoadingId); });
+window.addEventListener("pagehide", () => { if (tutorLoadingId) tutorMarkLoading(null); });
+window.addEventListener("pageshow", () => { if (tutorLoadingId) tutorMarkLoading(tutorLoadingId); });
+function tutorMarkLoading(id) { try { if (id) localStorage.setItem(TUTOR_LOADING_KEY, id); else localStorage.removeItem(TUTOR_LOADING_KEY); } catch (e) {} }
+function tutorCheckCrashedLoad() {
+  try {
+    const id = localStorage.getItem(TUTOR_LOADING_KEY);
+    if (!id) return null;
+    localStorage.removeItem(TUTOR_LOADING_KEY);
+    const n = (parseInt(localStorage.getItem("tutorCrashCount:" + id), 10) || 0) + 1;
+    localStorage.setItem("tutorCrashCount:" + id, String(n));
+    if (n >= 2) { localStorage.setItem("tutorFailed:" + id, "1"); return id; }
+  } catch (e) {}
+  return null;
+}
+const tutorInfo = id => TUTOR_MODEL_INFO[id] || { name: id || "", size: "" };
+const tutorSizeLabel = () => tutorInfo(tutorModelId || tutorProfileModel()).size;
 // 튜터 그림: 입 모양별 이미지 3장(다문 입·반쯤 벌린 입·크게 벌린 입)을 넣으면 소리에 맞춰 바뀐다.
 // 비워 두면 기본 캐릭터(SVG). 예: { closed: "images/tutor/closed.png", half: "images/tutor/half.png", open: "images/tutor/open.png" }
 const TUTOR_AVATAR_FRAMES = null;
@@ -65,12 +124,18 @@ async function tutorCheckSupport() {
     const adapter = await navigator.gpu.requestAdapter();
     if (!adapter) return fail("이 기기에서 AI 계산 장치를 찾지 못했어요. 크롬·사파리나 다른 기기에서 이용해 주세요.");
     const f16 = adapter.features.has("shader-f16");
-    tutorModelId = (window.TUTOR_MODEL_OVERRIDE && window.TUTOR_MODEL_OVERRIDE[f16 ? "f16" : "f32"]) || (TUTOR_IS_MOBILE ? TUTOR_MOBILE_MODELS : TUTOR_MODELS)[f16 ? "f16" : "f32"];
+    tutorPickModel(f16);
     const info = adapter.info || {};   // 문제 생겼을 때 안내에 함께 적어, 어떤 기기에서 막히는지 알 수 있게
     return (tutorSupport = { ok: true, f16, gpu: [info.vendor, info.architecture].filter(Boolean).join(" ") });
   } catch (e) {
     return fail("AI 계산 장치를 여는 중 문제가 생겼어요. (" + (e && e.message || e) + ")");
   }
+}
+/** 고른 버전과 기기(f16 지원 여부)에 맞는 모델 */
+function tutorPickModel(f16) {
+  if (f16 === undefined) f16 = !!(tutorSupport && tutorSupport.f16);
+  tutorModelId = (window.TUTOR_MODEL_OVERRIDE && window.TUTOR_MODEL_OVERRIDE[f16 ? "f16" : "f32"]) || tutorProfileModel();
+  return tutorModelId;
 }
 async function loadTutorLib() {
   if (!tutorLib) tutorLib = await import(WEBLLM_URL);
@@ -84,7 +149,8 @@ function tutorAppConfig(lib) {
 }
 /** 예전 모델 후보 (이 기기에 맞는 f16/f32 쪽을 먼저) */
 function tutorOldModelList() {
-  const olds = window.TUTOR_OLD_MODELS_OVERRIDE || (TUTOR_IS_MOBILE ? TUTOR_MOBILE_OLD_MODELS : TUTOR_OLD_MODELS);
+  // 예전 모델 + 다른 버전(PC/모바일) 모델 + (처음 휴대폰도 쓰던) PC 1.5B
+  const olds = window.TUTOR_OLD_MODELS_OVERRIDE || [...TUTOR_OLD_MODELS, ...Object.values(TUTOR_PROFILES).map(p => p.models)];
   const pref = tutorSupport && tutorSupport.f16 ? "f16" : "f32", other = pref === "f16" ? "f32" : "f16";
   return olds.flatMap(o => [o[pref], o[other]]).filter(Boolean);
 }
@@ -104,7 +170,7 @@ async function tutorRemoveOldModels() {
     const lib = await loadTutorLib(), cfg = tutorAppConfig(lib);
     const rec = id => cfg.model_list.find(m => m.model_id === id);
     const cur = rec(tutorModelId);
-    const ids = new Set([...tutorOldModelList().map(tutorIdOf), ...Object.values(TUTOR_IS_MOBILE ? TUTOR_MOBILE_MODELS : TUTOR_MODELS)]);
+    const ids = new Set(tutorOldModelList().map(tutorIdOf));
     ids.delete(tutorModelId);
     for (const id of ids) {
       const r = rec(id);
@@ -164,18 +230,26 @@ function ensureTutorEngine(progress) {
     });
     // 휴대폰(안드로이드)은 GPU 메모리를 아끼려고 대화 기억 길이를 줄인다 (보내는 대화는 tutorContext로 600토큰 안팎이라 충분)
     const chatOpts = /Android/i.test(navigator.userAgent) ? { context_window_size: 2048 } : undefined;
-    const engine = await Promise.race([lib.CreateWebWorkerMLCEngine(tutorWorker, tutorActiveModelId || tutorModelId, {
+    const loadingId = tutorActiveModelId || tutorModelId;
+    tutorLoadingId = loadingId;
+    tutorMarkLoading(loadingId);
+    const engine = await Promise.race([lib.CreateWebWorkerMLCEngine(tutorWorker, loadingId, {
       appConfig: tutorAppConfig(lib),
-      initProgressCallback: r => { lastProgress = Date.now(); tutorProgressCb && tutorProgressCb(r.progress || 0, r.text || ""); }
+      initProgressCallback: r => {
+        lastProgress = Date.now();
+        tutorProgressCb && tutorProgressCb(r.progress || 0, r.text || "");
+      }
     }, chatOpts), failed]);
     tutorEngine = engine;
-    try { localStorage.setItem("tutorModelReady", "true"); } catch (e) {}
+    tutorLoadingId = null;
+    tutorMarkLoading(null);
+    try { localStorage.setItem("tutorModelReady", "true"); localStorage.removeItem("tutorCrashCount:" + loadingId); } catch (e) {}
     // 불러오는 사이에 다른 화면으로 갔다면 잠시 뒤 메모리에서 내린다
     const page = document.getElementById("page-tutor");
     if (page && page.classList.contains("hidden")) leaveTutorPage();
     return engine;
   })();
-  tutorEngineLoading.catch(() => {}).finally(() => { tutorEngineLoading = null; });
+  tutorEngineLoading.catch(() => { tutorLoadingId = null; tutorMarkLoading(null); }).finally(() => { tutorEngineLoading = null; });
   return tutorEngineLoading.catch(e => { unloadTutorEngine(); throw e; });
 }
 function unloadTutorEngine() {
@@ -208,6 +282,49 @@ function setTutorProgress(p, text) {
   tutorEl("tutor-progress-text").textContent = text ? `${Math.round(p * 100)}% · ${text}` : `${Math.round(p * 100)}%`;
 }
 
+// ---------- PC 버전 / 모바일 버전 ----------
+/** 이 모델이 지금 버전이 아닌 다른 버전(PC/모바일)의 모델인지 */
+function tutorIsProfileModel(id) {
+  return Object.entries(TUTOR_PROFILES).some(([k, p]) => k !== tutorProfileId() && Object.values(p.models).includes(id));
+}
+function renderTutorProfiles() {
+  const box = tutorEl("tutor-profiles");
+  if (!box) return;
+  const cur = tutorProfileId();
+  box.innerHTML = Object.entries(TUTOR_PROFILES).map(([k, p]) =>
+    `<button class="tutor-profile-btn${k === cur ? " active" : ""}" onclick="setTutorProfile('${k}')">` +
+    `<span class="tp-title">${p.icon} ${p.label}</span><span class="tp-desc">${p.desc} · ${tutorInfo(tutorProfileModel(p)).size}</span></button>`).join("");
+  // 아래 표시는 지금 실제로 쓰고 있는 튜터 기준 (버전을 바꾸고 새 튜터를 받기 전에는 예전 튜터)
+  const runId = tutorActiveModelId || tutorModelId || tutorProfileModel();
+  const running = Object.values(TUTOR_PROFILES).find(p => Object.values(p.models).includes(runId)) || tutorProfile();
+  const info = tutorInfo(runId);
+  const ms = tutorEl("tutor-model-name"); if (ms) ms.textContent = `${running.label} · AI 모델: ${info.name}${info.license ? ` (${info.license})` : ""}`;
+  const sz = tutorEl("tutor-size"); if (sz) sz.textContent = tutorSizeLabel();
+}
+/** 버전 바꾸기: 받아 둔 모델이 있으면 바로 바꾸고, 없으면 지금 튜터로 대화하면서 뒤에서 받는다 (다 받으면 '바꾸기') */
+async function setTutorProfile(id) {
+  if (!TUTOR_PROFILES[id] || id === tutorProfileId()) return;
+  if (tutorEngineLoading || (tutorUpdate && tutorUpdate.state === "switching")) { alert("튜터를 여는 중이에요. 잠시 뒤에 바꿔 주세요."); return; }
+  if (tutorBusy) { setTutorStatus("튜터가 말을 마치면 바꿀 수 있어요", ""); return; }
+  if (tutorUpdate && tutorUpdate.state === "downloading") {
+    if (!confirm("다른 튜터를 받는 중이에요. 멈추고 버전을 바꿀까요? (받은 만큼은 저장돼 있어요)")) return;
+    tutorUpdate.abort.abort();
+  }
+  try { localStorage.setItem("tutorProfile", id); } catch (e) {}
+  tutorUpdate = null;
+  renderTutorProfiles();
+  if (!tutorSupport || !tutorSupport.ok) { renderTutorUpdate(); return; }
+  tutorPickModel();
+  if (tutorEngine) {
+    if (tutorActiveModelId === tutorModelId) { renderTutorUpdate(); return; }
+    if (await tutorIsCached(tutorModelId)) { await switchTutorModel(); return; }
+    tutorUpdate = { state: "available", reason: "profile" };
+    renderTutorUpdate();
+    return;
+  }
+  renderTutorPage();
+}
+
 // ---------- 새 튜터(모델) 업데이트 ----------
 function renderTutorUpdate() {
   const box = tutorEl("tutor-update");
@@ -216,10 +333,13 @@ function renderTutorUpdate() {
   box.classList.toggle("hidden", !u);
   if (!u) return;
   const btn = (label, fn) => `<button class="btn-main tutor-update-btn" onclick="${fn}">${label}</button>`;
-  if (u.state === "available") box.innerHTML = `<div class="tutor-update-text">${TUTOR_UPDATE_MSG} 받는 동안에도 지금 튜터와 계속 대화할 수 있어요.</div>` + btn(`새 튜터 받기 (${tutorSizeLabel()})`, "startTutorUpdate()");
+  const pf = tutorProfile();
+  // 다른 버전(PC/모바일) 모델을 쓰고 있으면 버전 바꾸기 안내, 예전 모델이면 새 튜터 안내
+  const msg = u.reason === "profile" ? `${pf.icon} ${pf.label} 튜터로 바꾸려면 새로 받아야 해요.` : TUTOR_UPDATE_MSG;
+  if (u.state === "available") box.innerHTML = `<div class="tutor-update-text">${msg} 받는 동안에도 지금 튜터와 계속 대화할 수 있어요.</div>` + btn(`${u.reason === "profile" ? pf.label + " " : "새 "}튜터 받기 (${tutorSizeLabel()})`, "startTutorUpdate()");
   else if (u.state === "downloading") box.innerHTML = `<div class="tutor-update-text">새 튜터 받는 중… ${Math.round((u.p || 0) * 100)}% <span class="tutor-update-sub">(지금 튜터와 계속 대화해도 돼요)</span></div>` +
     `<div class="tutor-update-bar"><div style="width:${Math.round((u.p || 0) * 100)}%"></div></div>` + `<button class="tutor-update-link" onclick="pauseTutorUpdate()">나중에 마저 받기</button>`;
-  else if (u.state === "ready") box.innerHTML = `<div class="tutor-update-text">새 튜터가 준비됐어요! 바꾸면 예전 튜터 파일은 지워서 저장 공간을 비워요.</div>` + btn("새 튜터로 바꾸기", "switchTutorModel()");
+  else if (u.state === "ready") box.innerHTML = `<div class="tutor-update-text">${u.reason === "profile" ? pf.label : "새"} 튜터가 준비됐어요! 바꾸면 지금 튜터 파일은 지워서 저장 공간을 비워요.</div>` + btn(`${u.reason === "profile" ? pf.label + "으" : "새 튜터"}로 바꾸기`, "switchTutorModel()");
   else if (u.state === "switching") box.innerHTML = `<div class="tutor-update-text">새 튜터로 바꾸는 중… ${Math.round((u.p || 0) * 100)}%</div>`;
   else if (u.state === "failed") box.innerHTML = `<div class="tutor-update-text">새 튜터를 이 기기에서 열지 못해 지금 튜터를 계속 써요.${u.msg ? `<span class="tutor-update-sub"> (${u.msg})</span>` : ""}</div>`;
 }
@@ -228,23 +348,24 @@ async function startTutorUpdate() {
   if (!tutorUpdate || tutorUpdate.state === "downloading") return;
   if (!confirm(`새 AI 튜터(${tutorSizeLabel()})를 받을게요.\n와이파이에서 받는 것을 권장해요. 받는 동안에도 지금 튜터와 대화할 수 있어요.`)) return;
   const abort = new AbortController();
-  tutorUpdate = { state: "downloading", p: 0, abort };
+  const reason = tutorUpdate.reason;
+  tutorUpdate = { state: "downloading", p: 0, abort, reason };
   renderTutorUpdate();
   try {
     await tutorPrefetchModel(tutorModelId, p => { if (tutorUpdate && tutorUpdate.abort === abort) { tutorUpdate.p = p; renderTutorUpdate(); } }, abort.signal);
     if (!tutorUpdate || tutorUpdate.abort !== abort) return;
-    tutorUpdate = { state: "ready" };
+    tutorUpdate = { state: "ready", reason };
   } catch (e) {
     if (!tutorUpdate || tutorUpdate.abort !== abort) return;
     console.warn("새 튜터 받기 멈춤", e);
-    tutorUpdate = { state: "available" };
+    tutorUpdate = { state: "available", reason };
     if (!(e && e.name === "AbortError")) alert("새 튜터를 받다가 멈췄어요. 받은 만큼은 저장돼 있어서 다시 누르면 이어서 받아요.\n(" + ((e && e.message) || e) + ")");
   }
   renderTutorUpdate();
 }
 function pauseTutorUpdate() {
   if (tutorUpdate && tutorUpdate.abort) tutorUpdate.abort.abort();
-  tutorUpdate = { state: "available" };
+  tutorUpdate = { state: "available", reason: tutorUpdate && tutorUpdate.reason };
   renderTutorUpdate();
 }
 /** 새 튜터로 바꾸기: 예전 모델을 내리고 새 모델을 연다. 열리면 예전 모델을 지우고, 안 열리면 예전 모델로 돌아간다 */
@@ -271,6 +392,7 @@ async function switchTutorModel() {
   }
   tutorBusy = false;
   renderTutorUpdate();
+  renderTutorProfiles();
   setTutorStatus(tutorEngine ? "마이크를 누르고 영어로 말해 보세요" : "튜터를 다시 열어 주세요", "");
 }
 
@@ -281,7 +403,7 @@ async function renderTutorPage() {
   TutorAvatar.mount();
   fillTutorScenarios();
   const sz = tutorEl("tutor-size"); if (sz) sz.textContent = tutorSizeLabel();
-  const ms = tutorEl("tutor-model-size"); if (ms) ms.textContent = TUTOR_IS_MOBILE ? "0.5B" : "1.5B";
+  renderTutorProfiles();
   renderTutorUpdate();
   if (tutorEngine) { showTutorSection("chat"); if (tutorMessages.length === 0) startTutorSession(); else setTutorStatus("마이크를 누르고 영어로 말해 보세요", ""); return; }
   showTutorSection("setup");
@@ -292,11 +414,13 @@ async function renderTutorPage() {
   tutorEl("tutor-download-btn").classList.toggle("hidden", !sup.ok);
   if (!sup.ok) { warn.textContent = sup.reason; warn.classList.remove("hidden"); setTutorStatus("이 기기에서는 쓸 수 없어요", ""); return; }
   warn.classList.add("hidden");
+  const crashed = tutorCheckCrashedLoad();
+  if (crashed) { tutorPickModel(); renderTutorProfiles(); alert(`이 기기에서 ${tutorInfo(crashed).name} 튜터를 열다가 화면이 꺼졌어요.\n더 안정적인 ${tutorInfo(tutorModelId).name} 튜터로 바꿀게요.`); }
   // 받아 둔 모델이 있으면 바로 연다: 지금 모델 → 없으면 예전 모델(새 튜터 받기 안내와 함께)
   const cached = await tutorModelCached();
   const old = cached ? null : await tutorFindOldModel();
   tutorActiveModelId = cached ? tutorModelId : (old || tutorModelId);
-  if (old && !tutorUpdate) tutorUpdate = { state: "available" };
+  if (old && !tutorUpdate) tutorUpdate = { state: "available", reason: tutorIsProfileModel(old) ? "profile" : "" };
   renderTutorUpdate();
   // 열지 못해도(메모리 부족 등) 지울 수 있게 삭제 버튼을 보여 준다
   tutorEl("tutor-delete-setup").classList.toggle("hidden", !cached && !old);
@@ -318,6 +442,7 @@ async function startTutorEngine(isDownload) {
     tutorEl("tutor-progress").classList.add("hidden");
     // 지금 버전 모델이 열렸으면 예전 모델은 더 필요 없다
     if (tutorActiveModelId === tutorModelId) { tutorUpdate = null; renderTutorUpdate(); tutorRemoveOldModels(); }
+    renderTutorProfiles();
     if (!document.getElementById("page-tutor").classList.contains("hidden")) {
       showTutorSection("chat");
       // 대화 중에 엔진이 끊겨 다시 연 경우에는 하던 대화를 이어 간다
@@ -329,6 +454,17 @@ async function startTutorEngine(isDownload) {
     if (tutorActiveModelId === tutorModelId) {
       const old = await tutorFindOldModel();
       if (old) { tutorActiveModelId = old; tutorUpdate = { state: "failed" }; renderTutorUpdate(); return startTutorEngine(false); }
+      // 받아 둔 다른 튜터가 없으면: 이 버전의 가벼운 대신 모델을 받을지 묻는다 (다음부터는 바로 대신 모델)
+      const pf = tutorProfile();
+      if (pf.fallback && !Object.values(pf.fallback).includes(tutorModelId) && !window.TUTOR_MODEL_OVERRIDE) {
+        const failed = tutorModelId;
+        try { localStorage.setItem("tutorFailed:" + failed, "1"); } catch (e2) {}
+        const fb = tutorPickModel();
+        tutorActiveModelId = fb;
+        renderTutorProfiles();
+        tutorEl("tutor-progress").classList.add("hidden");
+        if (confirm(`이 기기에서 ${tutorInfo(failed).name} 튜터를 열지 못했어요.\n더 가벼운 튜터(${tutorInfo(fb).name}, ${tutorInfo(fb).size})로 받을까요?`)) return startTutorEngine(!(await tutorIsCached(fb)));
+      }
     }
     tutorEl("tutor-progress").classList.add("hidden");
     btn.disabled = false;
@@ -358,7 +494,7 @@ async function deleteTutorModel() {
     if (tutorUpdate && tutorUpdate.abort) tutorUpdate.abort.abort();
     tutorUpdate = null;
     const cfg = tutorAppConfig(lib);
-    const allModels = [tutorModelId, ...Object.values(TUTOR_MODELS), ...Object.values(TUTOR_MOBILE_MODELS)];
+    const allModels = [tutorModelId, ...Object.values(TUTOR_PROFILES).flatMap(p => Object.values(p.models))];
     for (const id of new Set([...allModels, ...tutorOldModelList().map(tutorIdOf)].filter(Boolean))) {
       if (await tutorIsCached(id)) await lib.deleteModelAllInfoInCache(id, cfg);
     }
@@ -714,7 +850,7 @@ async function tutorReply(token, learner) {
     if (voice) voice.cancel();
     voice = tutorSpeechQueue(token);
     let stopped = false;
-    const chunks = await tutorEngine.chat.completions.create({ messages: tutorContext(), stream: true, ...TUTOR_REPLY_OPTS });
+    const chunks = await tutorEngine.chat.completions.create({ messages: tutorForModel(tutorContext()), stream: true, ...TUTOR_REPLY_OPTS });
     for await (const c of chunks) {
       if (token !== tutorSessionToken) { try { tutorEngine.interruptGenerate(); } catch (e) {} break; }
       raw += (c.choices[0] && c.choices[0].delta && c.choices[0].delta.content) || "";
@@ -827,6 +963,15 @@ function tutorReplyDone(raw) {
   if (!/[.!]["”']?\s*$/.test(t)) return false;
   const done = t.replace(/(\d)\.(\d)/g, "$1$2").replace(/\b(Mr|Mrs|Ms|Dr|St)\./g, "$1").match(/[^.!?]+[.!?]+/g) || [];
   return done.filter(x => x.trim().split(/\s+/).length > 2).length >= 3;
+}
+
+/** Gemma는 시스템 역할이 없어(공식 형식) 시스템 안내를 첫 사용자 말 앞에 붙여 보낸다. 다른 모델은 그대로 */
+function tutorForModel(msgs) {
+  if (!/gemma/i.test(tutorActiveModelId || tutorModelId || "") || !msgs.length || msgs[0].role !== "system") return msgs;
+  const [sys, ...rest] = msgs;
+  const i = rest.findIndex(m => m.role === "user");
+  if (i < 0) return rest;
+  return rest.map((m, k) => (k === i ? { role: "user", content: sys.content + "\n\n" + m.content } : m));
 }
 
 /** 모델에 보내는 대화: 앞부분이 매번 같아야 모델이 계산해 둔 기억을 다시 쓴다.
@@ -1220,9 +1365,9 @@ async function tutorFeedback() {
         prog.textContent = `내가 한 문장을 확인하고 있어요… (${i + 1}/${need.length})`;
         const it = need[i];
         it.fix = await tutorEngineCall(async () => {
-          const v = await tutorEngine.chat.completions.create({ messages: tutorGrammarCheckMessages(it.text), ...TUTOR_CHECK_OPTS });
+          const v = await tutorEngine.chat.completions.create({ messages: tutorForModel(tutorGrammarCheckMessages(it.text)), ...TUTOR_CHECK_OPTS });
           if (!tutorCheckSaysWrong(v.choices[0].message.content)) return "";
-          const r = await tutorEngine.chat.completions.create({ messages: tutorCorrectionMessages(it.text), ...TUTOR_CORRECTION_OPTS });
+          const r = await tutorEngine.chat.completions.create({ messages: tutorForModel(tutorCorrectionMessages(it.text)), ...TUTOR_CORRECTION_OPTS });
           return parseTutorCorrection(it.text, r.choices[0].message.content);
         });
         if (it.fix && it.bubble && it.bubble.isConnected) addTutorTip(it.bubble, it.fix);
