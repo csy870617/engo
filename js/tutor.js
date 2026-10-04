@@ -279,6 +279,7 @@ function manageTutorKey() {
 /** 다른 화면으로 갈 때: 말하기·듣기·답 만들기를 멈춘다 */
 function stopTutorActivity() {
   tutorSessionToken++;
+  tutorPractice = null;
   tutorSpeechToken++;
   tutorSpeaking = false;
   if (tutorMic) { const m = tutorMic; tutorMic = null; m.cancel(); }
@@ -305,7 +306,8 @@ function openTutorFeedback() {
   stopTutorActivity();
   setTutorStatus(tutorIdleMsg(), "");
   toggleTutorSheet("feedback");
-  tutorFeedback();
+  tutorFeedback().finally(renderTutorNotes);
+  renderTutorNotes();
 }
 /** 아래에서 올라오는 판 (설정·피드백). 이름 없이 부르면 모두 닫는다 */
 function toggleTutorSheet(name) {
@@ -346,6 +348,7 @@ function tutorCancelListening() {
   if (tutorMic) { const m = tutorMic; tutorMic = null; was = true; m.cancel(); }
   if (tutorRecRec) { const r = tutorRecRec; tutorRecRec = null; was = true; r.cancelled = true; try { r.stop(); } catch (e) {} }
   if (was) { tutorEl("tutor-input").value = ""; setTutorStatus(tutorIdleMsg(), ""); }
+  if (tutorPractice) tutorPracticeEnd("");
 }
 /** Emma(위쪽 그림)를 누르면: 말하는 중이면 끊고 바로 듣기, 듣는 중이면 끝내고 보내기, 쉬는 중이면 듣기 시작 */
 function tutorTapTutor(e) {
@@ -438,10 +441,17 @@ function tutorStyle() {
     "- Speak naturally like a real person talking out loud. No lists, no emojis, no markdown, no notes in brackets, no Korean. Never say you are an AI."
   ].join("\n");
 }
+/** 노트 표현을 대화 속에서 다시 써 보게 (간격을 두고 다시 쓰는 연습) */
+function tutorNotesPrompt() {
+  const list = tutorNotesForPrompt();
+  if (!list.length) return "";
+  return "\nThe student has been learning these expressions. When it fits naturally, ask questions that give the student a chance to use them. Never quiz the student or mention this list:\n" +
+    list.map(x => "- " + x).join("\n");
+}
 function tutorSystemPrompt() {
   return `You are ${tutorName()}, a warm, encouraging and skilled English conversation teacher. Your student is a Korean adult at the ${tutorLevel().desc} level who wants to get comfortable speaking English. ` +
     "Have a friendly, natural conversation about everyday life: the student's day, food, work, hobbies, family, weekend plans, travel and feelings. Follow the student's interests, go deeper into what they share, and naturally bring up a new topic when one runs out.\n" +
-    `You already started the chat by saying: "${tutorGreeting}" Do not greet or introduce yourself again.\n${tutorStyle()}`;
+    `You already started the chat by saying: "${tutorGreeting}" Do not greet or introduce yourself again.\n${tutorStyle()}` + tutorNotesPrompt();
 }
 // 첫 인사: 매번 다르게. 처음 만나면 자기소개, 다시 오면 반가운 인사 + 시간대·요일·계절·일상 주제 질문 하나.
 // 최근에 했던 질문은 피하고, 중급·고급이면 생각을 끌어내는 질문도 섞는다
@@ -622,6 +632,7 @@ function startTutorSession() {
   if (!tutorReady()) return;
   stopTutorActivity();
   const token = ++tutorSessionToken;
+  tutorSessionStartedAt = Date.now();
   tutorGreeting = tutorPickGreeting();   // 시간대·요일·계절·주제에 맞춰 매번 다른 첫 질문
   tutorMessages = tutorStartMessages();
   tutorLearnerLines = [];
@@ -653,6 +664,7 @@ async function sendTutorText(text) {
   const item = { text, bubble: myBubble, fix: undefined, why: "", check: null };
   tutorLearnerItems.push(item);
   tutorCheckItem(item, tutorSaidLines[tutorSaidLines.length - 1], token);   // 답과 동시에 교정 확인
+  tutorCheckNoteUse(text, myBubble);
   tutorMessages.push({ role: "user", content: text });
   tutorHintShown = false; renderTutorHint();
   await tutorReply(token, { text, bubble: myBubble });
@@ -664,6 +676,7 @@ function sendTutorTyped() {
   if (!t.trim() || tutorBusy || !tutorReady()) return;   // 튜터가 답을 만드는 중이면 입력은 그대로 둔다
   tutorCancelListening();
   inp.value = "";
+  if (/[가-힣]/.test(t)) { inp.blur(); tutorKoreanHelp(t.trim()); return; }   // 한국어로 쓰면 영어 표현을 알려 준다
   sendTutorText(t);
 }
 /** 문장 하나 교정 확인 → 고칠 게 있으면 내 말풍선 아래에 팁 (실패해도 대화는 그대로, 피드백 때 다시 시도) */
@@ -673,7 +686,7 @@ function tutorCheckItem(item, before, token) {
     .then(out => {
       const r = parseTutorFix(item.text, out);
       item.fix = r.better; item.why = r.why;
-      if (r.better && token === tutorSessionToken && item.bubble && item.bubble.isConnected) { addTutorTip(item.bubble, r.better, r.why); }
+      if (r.better && token === tutorSessionToken && item.bubble && item.bubble.isConnected) { addTutorTip(item.bubble, r.better, r.why, item.text); }
     })
     .catch(e => { console.warn("교정 확인 실패", e); item.fix = undefined; })
     .finally(() => { item.check = null; });
@@ -879,16 +892,170 @@ function addTutorBubble(who, text) {
   log.scrollTop = log.scrollHeight;
   return div;
 }
-function addTutorTip(bubble, tip, why) {
+function addTutorTip(bubble, tip, why, said) {
   const t = document.createElement("div");
   t.className = "tutor-tip";
   t.innerHTML = `💡 이렇게 말하면 더 자연스러워요<br><b></b><span class="tutor-tip-why"></span>`;
   t.querySelector("b").textContent = tip;
   if (why) t.querySelector(".tutor-tip-why").textContent = " · " + why;
-  t.onclick = () => speakTutor(tip, tutorSessionToken);
+  addPracticeButtons(t, tip);                       // 고친 문장을 직접 다시 말해 보게
   bubble.after(t);
+  tutorNoteAdd({ en: tip, said, why, src: "fix" });
   const log = tutorEl("tutor-log"); log.scrollTop = log.scrollHeight;
 }
+// ---------- 다시 말해 보기 · 한국어 도움 · 내 표현 노트 ----------
+// 회화가 느는 순서: 말하기 → 고쳐 받기 → 고친 문장을 직접 다시 말하기 → 다음 대화에서 써먹기
+// 말소리 비교용: 소문자·문장부호 정리 + 줄임말 풀기 (I'm = I am)
+const TUTOR_CONTRACT = { "i'm": "i am", "you're": "you are", "it's": "it is", "that's": "that is", "don't": "do not", "doesn't": "does not", "didn't": "did not",
+  "can't": "can not", "cannot": "can not", "won't": "will not", "i've": "i have", "i'll": "i will", "i'd": "i would", "isn't": "is not", "wasn't": "was not", "let's": "let us", "what's": "what is" };
+const tutorWords = x => tutorNorm(x).split(" ").filter(Boolean).flatMap(w => (TUTOR_CONTRACT[w] || w).split(" "));
+/** 두 문장이 얼마나 같은지 0~1 (같은 순서로 맞힌 낱말 수 / 더 긴 쪽 낱말 수) */
+function tutorSimilarity(said, target) {
+  const a = tutorWords(said), b = tutorWords(target);
+  if (!a.length || !b.length) return 0;
+  const dp = Array.from({ length: a.length + 1 }, () => new Array(b.length + 1).fill(0));
+  for (let i = 1; i <= a.length; i++) for (let j = 1; j <= b.length; j++)
+    dp[i][j] = a[i - 1] === b[j - 1] ? dp[i - 1][j - 1] + 1 : Math.max(dp[i - 1][j], dp[i][j - 1]);
+  return dp[a.length][b.length] / Math.max(a.length, b.length);
+}
+
+// 🎤 다시 말해 보기: 다음 한 마디는 튜터에게 보내지 않고 목표 문장과 비교한다
+let tutorPractice = null;   // { target, box }
+function tutorPracticeShow(box, msg, heard, cls) {
+  const r = box.querySelector(".tutor-practice-result");
+  if (!r) return;
+  r.className = "tutor-practice-result" + (cls ? " " + cls : "") + (msg ? "" : " hidden");
+  r.innerHTML = "<span></span><small></small>";
+  r.firstChild.textContent = msg; r.lastChild.textContent = heard ? " " + heard : "";
+}
+function tutorPracticeEnd(msg) {
+  const pr = tutorPractice; tutorPractice = null;
+  if (pr) tutorPracticeShow(pr.box, msg, "", "");
+}
+function tutorStartPractice(target, box) {
+  if (!tutorReady()) return;
+  if (tutorPractice && tutorPractice.box === box && (tutorMic || tutorRecRec)) { toggleTutorMic(); return; }   // 한 번 더 누르면 들은 데까지
+  tutorCancelListening();
+  stopTutorSpeech();
+  if (typeof NeuralTTS !== "undefined") NeuralTTS.unlockAudio();
+  tutorPractice = { target, box };
+  tutorPracticeShow(box, "🎤 듣고 있어요… 따라 말해 보세요", "", "listening");
+  toggleTutorMic();
+  if (!tutorMic && !tutorRecRec) tutorPracticeEnd("");     // 마이크를 못 켰으면 (안내 창은 이미 떴다)
+}
+/** 들은 말 처리: 다시 말해 보기 중이면 비교, 아니면 튜터에게 보낸다 */
+function tutorHandleSaid(text) {
+  const pr = tutorPractice;
+  if (!pr) { sendTutorWhenFree(text); return; }
+  tutorPractice = null;
+  const score = tutorSimilarity(text, pr.target);
+  const good = score >= 0.85;
+  tutorPracticeShow(pr.box, good ? "✅ 완벽해요!" : score >= 0.6 ? "👍 거의 맞았어요! 한 번 더 해 볼까요?" : "🔁 다시 해 볼까요?", good ? "" : `들린 말: ${text}`, good ? "good" : "");
+  if (good) tutorNoteMark(pr.target, "practiced");
+  setTutorStatus(good ? "잘했어요! 이제 대화를 이어 가요" : tutorIdleMsg(), "");
+  setTimeout(() => tutorAfterSpeak(tutorSessionToken), 1500);   // 다시 대화를 듣는다
+}
+/** 고친 문장·배운 표현 아래에 [🔊 듣기] [🎤 다시 말해 보기] */
+function addPracticeButtons(box, target) {
+  const acts = document.createElement("div"); acts.className = "tutor-practice";
+  acts.innerHTML = `<button class="tutor-slow-btn">🔊 듣기</button><button class="tutor-slow-btn tutor-practice-btn">🎤 다시 말해 보기</button><div class="tutor-practice-result hidden"></div>`;
+  const [listen, say] = acts.querySelectorAll("button");
+  listen.onclick = e => { e.stopPropagation(); speakTutor(target, tutorSessionToken); };
+  say.onclick = e => { e.stopPropagation(); tutorStartPractice(target, acts); };
+  box.appendChild(acts);
+}
+
+// 한국어로 쓰면: 하고 싶은 말을 자연스러운 영어로 알려 주고, 튜터 목소리로 들려준 뒤 바로 영어로 말하게 한다 (대화에는 넣지 않음)
+const TUTOR_KO_SCHEMA = { type: "OBJECT", properties: { en: { type: "STRING" } }, required: ["en"] };
+async function tutorKoreanHelp(ko) {
+  const token = tutorSessionToken, log = tutorEl("tutor-log");
+  const card = document.createElement("div"); card.className = "tutor-ko-card";
+  card.innerHTML = `<div class="tutor-ko-q"></div><div class="tutor-ko-a">영어로 바꾸는 중…</div>`;
+  card.querySelector(".tutor-ko-q").textContent = "🇰🇷 " + ko;
+  log.appendChild(card); log.scrollTop = log.scrollHeight;
+  setTutorStatus("영어 표현을 찾는 중…", "thinking");
+  try {
+    const said = tutorSaidLines[tutorSaidLines.length - 1] || "";
+    const j = await geminiJSON([
+      { role: "system", content: `You help a Korean adult at the ${tutorLevel().desc} level say things in English during a casual conversation. ` +
+        "Turn what the student wants to say into the most natural spoken English a friendly native speaker would use, at the student's level (beginner: short and simple). Keep the meaning. Put only the English in 'en'." },
+      { role: "user", content: (said ? `The tutor just said: "${said}"\n` : "") + `What the student wants to say (Korean): ${ko}` }
+    ], { temperature: 0.3, maxTokens: 150, schema: TUTOR_KO_SCHEMA, chain: "hint" });
+    const en = ((j && j.en) || "").trim();
+    if (!en) throw new Error("영어 표현을 받지 못했어요");
+    if (token !== tutorSessionToken) return;
+    const a = card.querySelector(".tutor-ko-a");
+    a.innerHTML = `<div class="tutor-ko-label">✨ 영어로는 이렇게 말해요</div><b></b><div class="tutor-ko-next"></div>`;
+    a.querySelector("b").textContent = en;
+    a.querySelector(".tutor-ko-next").textContent = `🎤 이제 ${tutorName()}에게 영어로 말해 보세요`;
+    addPracticeButtons(a, en);
+    a.querySelector(".tutor-practice-btn").remove();      // 여기서는 바로 튜터에게 말하는 게 연습이다
+    log.scrollTop = log.scrollHeight;
+    tutorNoteAdd({ en, ko, src: "ko" });
+    speakTutor(en, token);                                 // 들려준 뒤 저절로 듣기 시작 → 말하면 튜터에게 간다
+  } catch (e) {
+    if (token !== tutorSessionToken) return;
+    card.querySelector(".tutor-ko-a").textContent = "영어로 바꾸지 못했어요. " + geminiErrorText(e);
+    setTutorStatus(tutorIdleMsg(), "");
+  }
+}
+
+// 📒 내 표현 노트: 고친 문장·한국어로 물어본 표현·피드백 표현을 기기에 모은다 (최근 60개).
+// 다음 대화에서 튜터가 그 표현을 쓸 기회를 자연스럽게 만들고, 실제로 쓰면 알려 준다
+const TUTOR_NOTES_KEY = "tutorNotes";
+let tutorSessionStartedAt = 0;
+function tutorNotes() { try { const l = JSON.parse(localStorage.getItem(TUTOR_NOTES_KEY) || "[]"); return Array.isArray(l) ? l : []; } catch (e) { return []; } }
+function tutorNotesSave(list) { try { localStorage.setItem(TUTOR_NOTES_KEY, JSON.stringify(list.slice(0, 60))); } catch (e) {} }
+function tutorNoteAdd(n) {
+  if (!n || !n.en) return;
+  const list = tutorNotes(), k = tutorNorm(n.en), i = list.findIndex(x => tutorNorm(x.en) === k);
+  const old = i >= 0 ? list.splice(i, 1)[0] : { used: 0, practiced: 0, added: Date.now() };
+  list.unshift({ ...old, ...n, used: old.used || 0, practiced: old.practiced || 0, added: old.added });
+  tutorNotesSave(list);
+}
+function tutorNoteMark(en, field) {
+  const list = tutorNotes(), n = list.find(x => tutorNorm(x.en) === tutorNorm(en));
+  if (!n) return;
+  n[field] = (n[field] || 0) + 1;
+  tutorNotesSave(list);
+}
+function tutorNoteRemove(en) { tutorNotesSave(tutorNotes().filter(x => tutorNorm(x.en) !== tutorNorm(en))); }
+/** 이번 대화에서 튜터가 쓸 기회를 만들어 줄 표현 (아직 몇 번 못 써 본 것 위주로 4개) */
+function tutorNotesForPrompt() {
+  const list = tutorNotes().filter(n => (n.used || 0) < 2).slice(0, 12);
+  for (let i = list.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [list[i], list[j]] = [list[j], list[i]]; }
+  return list.slice(0, 4).map(n => n.en);
+}
+/** 학습자가 노트에 있던 표현을 썼는지 (이번 대화 전에 모은 것만) */
+function tutorCheckNoteUse(text, bubble) {
+  const n = tutorNotes().find(x => x.added < tutorSessionStartedAt && tutorWords(x.en).length >= 3 && tutorSimilarity(text, x.en) >= 0.85);
+  if (!n) return;
+  tutorNoteMark(n.en, "used");
+  const b = document.createElement("div"); b.className = "tutor-used"; b.textContent = "🎉 노트에 모아 둔 표현을 써 봤어요!";
+  bubble.after(b);
+}
+function renderTutorNotes() {
+  const box = tutorEl("tutor-notes");
+  if (!box) return;
+  const list = tutorNotes();
+  box.innerHTML = `<div class="tutor-report-title">📒 내 표현 노트 <small>${list.length}개</small></div>`;
+  if (!list.length) {
+    const d = document.createElement("div"); d.className = "tutor-fb-note";
+    d.textContent = `고친 문장과 배운 표현이 여기에 모여요. 다음 대화에서 ${tutorName()}가 써 볼 기회를 만들어 줘요.`;
+    box.appendChild(d); return;
+  }
+  list.slice(0, 30).forEach(n => {
+    const row = document.createElement("div"); row.className = "tutor-note-row";
+    row.innerHTML = `<div class="tutor-note-main"><b></b><small></small></div><span class="tutor-note-used"></span><button class="tutor-note-del" aria-label="노트에서 지우기">✕</button>`;
+    row.querySelector("b").textContent = n.en;
+    row.querySelector("small").textContent = n.ko || (n.said ? "← " + n.said : "");
+    row.querySelector(".tutor-note-used").textContent = n.used ? `✓${n.used}` : "";
+    row.onclick = () => speakTutor(n.en, tutorSessionToken);
+    row.querySelector("button").onclick = e => { e.stopPropagation(); tutorNoteRemove(n.en); renderTutorNotes(); };
+    box.appendChild(row);
+  });
+}
+
 
 // ---------- 구글 AI 음성 (Gemini TTS) ----------
 // 튜터 목소리를 사람처럼 자연스러운 구글 AI 음성으로. 문장을 보내면 음성 파일(WAV, 24kHz)을 받아 앱 재생기(입모양 연동)로 튼다.
@@ -1318,7 +1485,8 @@ function toggleTutorMic() {
     const said = send ? heard.trim() : "";
     inp.value = "";
     setTutorStatus(tutorIdleMsg(), "");
-    if (said) sendTutorWhenFree(said);
+    if (said) tutorHandleSaid(said);
+    else if (tutorPractice) tutorPracticeEnd(send ? "소리가 들리지 않았어요. 다시 눌러 말해 보세요" : "");
     else if (send && !state.user && !fatal) tutorQuietRestart();   // 조용해서 끝났으면 다시 듣는다
   };
   state.stop = () => finish(true);
@@ -1485,13 +1653,18 @@ async function toggleTutorRecordMic() {
   }
   tutorRecRec = null;
   if (rec.cancelled) return;                                     // 글로 입력해 보냈으면 녹음은 버린다
-  if (!result.heardVoice || result.audio.length < 16000 * 0.4) { setTutorStatus(tutorIdleMsg(), ""); if (!rec.user) tutorQuietRestart(); return; }
+  if (!result.heardVoice || result.audio.length < 16000 * 0.4) {
+    setTutorStatus(tutorIdleMsg(), "");
+    if (tutorPractice) tutorPracticeEnd("소리가 들리지 않았어요. 다시 눌러 말해 보세요");
+    else if (!rec.user) tutorQuietRestart();
+    return;
+  }
   setTutorStatus("알아듣는 중…", "thinking");
   try {
     const text = await geminiTranscribe(result.audio);
     setTutorStatus(tutorIdleMsg(), "");
-    if (!text) { setTutorStatus(`잘 못 알아들었어요 · ${tutorName()}를 누르고 또박또박 말해 보세요`, ""); return; }
-    sendTutorWhenFree(text);
+    if (!text) { tutorPracticeEnd("잘 못 알아들었어요. 다시 눌러 또박또박 말해 보세요"); setTutorStatus(`잘 못 알아들었어요 · ${tutorName()}를 누르고 또박또박 말해 보세요`, ""); return; }
+    tutorHandleSaid(text);
   } catch (e) {
     setTutorStatus(tutorIdleMsg(), "");
     alert("말을 알아듣지 못했어요. 입력창에 적어서 대화할 수 있어요.\n(" + geminiErrorText(e) + ")");
@@ -1608,6 +1781,7 @@ async function tutorFeedback() {
           const d = document.createElement("div"); d.className = "tutor-report-expr";
           d.innerHTML = `<b></b> <span></span>`; d.querySelector("b").textContent = x.en; d.querySelector("span").textContent = x.kr;
           d.onclick = () => speakTutor(x.en, tutorSessionToken); sec.appendChild(d);
+          tutorNoteAdd({ en: x.en, ko: x.kr, src: "expr" });
         });
         sec.classList.remove("hidden");
       }

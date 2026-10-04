@@ -1039,6 +1039,30 @@ body.list-playing .neural-loading { bottom: calc(86px + env(safe-area-inset-bott
 .tutor-msg.me { align-self: flex-end; background: var(--primary); color: #fff; border-bottom-right-radius: 6px; }
 .tutor-tip { align-self: flex-end; max-width: 85%; margin-top: -2px; padding: 8px 12px; border-radius: 12px; font-size: 0.82rem; line-height: 1.5; color: #fde68a; background: rgba(251,191,36,0.1); border: 1px solid rgba(251,191,36,0.3); }
 .tutor-tip b { color: #fff; font-weight: 600; }
+/* 🎤 다시 말해 보기 */
+.tutor-practice { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; margin-top: 6px; }
+.tutor-practice-result { flex-basis: 100%; font-size: 0.82rem; color: #e2e8f0; }
+.tutor-practice-result small { color: var(--text-sub); }
+.tutor-practice-result.good { color: #6ee7b7; font-weight: 600; }
+.tutor-practice-result.listening { color: #6ee7b7; animation: tutorPulse 1.4s ease-in-out infinite; }
+/* 한국어로 물어본 표현 */
+.tutor-ko-card { align-self: flex-end; max-width: 88%; padding: 10px 12px; border-radius: 14px; background: rgba(56,189,248,0.08); border: 1px solid rgba(56,189,248,0.35); font-size: 0.86rem; line-height: 1.5; }
+.tutor-ko-q { color: var(--text-sub); margin-bottom: 6px; }
+.tutor-ko-a { color: var(--text-sub); }
+.tutor-ko-label { color: #7dd3fc; font-size: 0.78rem; font-weight: 600; }
+.tutor-ko-a b { display: block; color: #fff; font-size: 1rem; margin: 2px 0; }
+.tutor-ko-next { color: #6ee7b7; font-size: 0.8rem; margin-top: 4px; }
+.tutor-used { align-self: flex-end; font-size: 0.78rem; color: #6ee7b7; margin-top: -2px; }
+/* 📒 내 표현 노트 */
+.tutor-notes { margin-top: 14px; padding: 12px 14px; border-radius: 14px; background: rgba(255,255,255,0.04); border: var(--glass-border); }
+.tutor-notes .tutor-report-title small { color: var(--text-sub); font-weight: 400; margin-left: 4px; }
+.tutor-note-row { display: flex; align-items: center; gap: 8px; padding: 8px 0; border-top: 1px dashed rgba(255,255,255,0.08); cursor: pointer; }
+.tutor-note-row:first-of-type { border-top: none; }
+.tutor-note-main { flex: 1; min-width: 0; }
+.tutor-note-main b { display: block; color: #fff; font-size: 0.9rem; font-weight: 600; }
+.tutor-note-main small { display: block; color: var(--text-sub); font-size: 0.76rem; }
+.tutor-note-used { color: #6ee7b7; font-size: 0.75rem; flex-shrink: 0; }
+.tutor-note-del { flex-shrink: 0; width: 28px; height: 28px; border-radius: 50%; border: none; background: rgba(255,255,255,0.06); color: var(--text-sub); cursor: pointer; font-size: 0.8rem; }
 
 .tutor-hint { margin: 4px 0 10px; padding: 10px 12px; border-radius: 12px; background: rgba(139,92,246,0.12); border: 1px solid rgba(139,92,246,0.3); }
 .tutor-hint-label { font-size: 0.75rem; color: var(--text-sub); margin-bottom: 4px; }
