@@ -1,263 +1,167 @@
 // ==========================================
-// AI 튜터: 기기 안에서 돌아가는 작은 언어 모델(WebLLM)과 실시간 말하기 연습
-// - 모델은 한 번 내려받으면 브라우저 저장소에 남아, 토큰·서버 비용 없이 동작
-// - 듣기: 브라우저 음성 인식(없으면 키보드 입력) / 말하기: 앱 음성 + 소리에 맞춘 입모양
+// AI 튜터: 구글 Gemini와 실시간 말하기 연습
+// - 사용자가 자기 Gemini API 키(구글 AI Studio에서 무료로 만듦)를 한 번 붙여 넣으면 이 기기에서 구글로 바로 요청한다.
+//   키는 이 기기에만 저장되고 우리 서버를 거치지 않는다. 사용량도 각자의 무료 한도에서 쓴다
+// - 듣기: 브라우저 음성 인식(없으면 녹음해서 Gemini로 받아쓰기) / 말하기: 앱 음성 + 소리에 맞춘 입모양
 // ==========================================
 
-const WEBLLM_URL = "https://cdn.jsdelivr.net/npm/@mlc-ai/web-llm@0.2.85/+esm";
-// 튜터는 PC 버전과 모바일 버전으로 나뉜다. 기기에 따라 기본값이 정해지고, 튜터 화면에서 바꿀 수 있다.
-// models: shader-f16을 지원하는 기기는 f16(가볍고 빠름), 아니면 f32 모델
-// 모델 비교(같은 튜터 대화 21개 + 교정 문장 28개, llama.cpp):
-//  - Qwen3.5 2B: 대화 자연스럽고 역할 유지, 교정 14/14·잘못 고침 0 → PC (크기는 예전 PC 모델과 비슷해 속도도 비슷)
-//  - Gemma 3 1B: 가장 사람처럼 짧고 자연스러운 대화, 역할극도 잘 맞춤(교정은 8/14로 약함) → 모바일
-//    (예전 1.5B보다 가볍고, f16 전용이라 f16을 못 쓰는 기기는 Qwen2.5 0.5B)
-//  - 제외: Qwen2.5 0.5B(역할극에서 엉뚱한 답), Qwen3.5 0.8B·Qwen3 0.6B(말이 길거나 되풀이, 잘못 고침 많음),
-//    Llama 3.2 3B·Ministral 3B(자연스럽지만 2배 무거워 느림), Phi-4 mini(교정 0), Gemma 2 2B(시스템 안내 불가)
-const TUTOR_MODEL_INFO = {
-  "Qwen3.5-2B-q4f16_1-MLC": { name: "Qwen3.5 2B", size: "약 1.1GB", license: "Apache 2.0" },
-  "Qwen3.5-2B-q4f32_1-MLC": { name: "Qwen3.5 2B", size: "약 1.1GB", license: "Apache 2.0" },
-  "gemma3-1b-it-q4f16_1-MLC": { name: "Gemma 3 1B", size: "약 600MB", license: "Gemma 이용 약관" },
-  "Qwen2.5-0.5B-Instruct-q4f16_1-MLC": { name: "Qwen2.5 0.5B", size: "약 300MB", license: "Apache 2.0" },
-  "Qwen2.5-1.5B-Instruct-q4f16_1-MLC": { name: "Qwen2.5 1.5B", size: "약 1GB", license: "Apache 2.0" },
-  "Qwen2.5-1.5B-Instruct-q4f32_1-MLC": { name: "Qwen2.5 1.5B", size: "약 1GB", license: "Apache 2.0" },
-  "Qwen2.5-0.5B-Instruct-q4f32_1-MLC": { name: "Qwen2.5 0.5B", size: "약 300MB", license: "Apache 2.0" }
-};
-const TUTOR_PROFILES = {
-  pc: { label: "PC 버전", icon: "💻", desc: "가장 자연스러운 대화",
-    models: { f16: "Qwen3.5-2B-q4f16_1-MLC", f32: "Qwen3.5-2B-q4f32_1-MLC" },
-    fallback: { f16: "Qwen2.5-1.5B-Instruct-q4f16_1-MLC", f32: "Qwen2.5-1.5B-Instruct-q4f32_1-MLC" } },
-  mobile: { label: "모바일 버전", icon: "📱", desc: "빠르고 자연스러운 대화",
-    models: { f16: "gemma3-1b-it-q4f16_1-MLC", f32: "Qwen2.5-0.5B-Instruct-q4f32_1-MLC" },
-    // 이 기기에서 위 모델이 열리지 않으면(GPU·메모리 문제) 더 가벼운 모델로 대신한다
-    fallback: { f16: "Qwen2.5-0.5B-Instruct-q4f16_1-MLC", f32: "Qwen2.5-0.5B-Instruct-q4f32_1-MLC" } }
-};
-// 예전에 쓰던 튜터 모델 — 모델을 바꿀 때 이전 모델 값을 이 목록 맨 앞에 옮겨 둔다.
-// 예전(또는 다른 버전) 모델을 받아 둔 사람은: 그 모델로 계속 대화 → '새 튜터 받기'(대화하면서 뒤에서 받기) → '바꾸기'
-// → 새 모델이 열리면 예전 모델은 기기에서 지운다 (기기에는 튜터 모델을 하나만 둔다). 사용 중인 WebLLM 목록에서
-// 빠진 모델이면 이름 대신 { model_id, model, model_lib, overrides } 기록을 그대로 적는다.
-const TUTOR_OLD_MODELS = [
-  { f16: "Qwen2.5-1.5B-Instruct-q4f16_1-MLC", f32: "Qwen2.5-1.5B-Instruct-q4f32_1-MLC" },   // ~v133 PC·휴대폰
-  { f16: "Qwen2.5-0.5B-Instruct-q4f16_1-MLC", f32: "Qwen2.5-0.5B-Instruct-q4f32_1-MLC" }    // v134 휴대폰
-];
-const TUTOR_IS_MOBILE = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent) || (/Macintosh/.test(navigator.userAgent) && navigator.maxTouchPoints > 1);
-// 예전 모델을 쓰던 사람에게 보여 줄 새 튜터 안내 (모델을 바꿀 때 함께 고친다)
-const TUTOR_UPDATE_MSG = "더 빠르고 자연스러운 새 튜터가 나왔어요.";
-/** 지금 고른 버전 (고른 적 없으면 기기에 맞게) */
-function tutorProfileId() {
-  let v = null;
-  try { v = localStorage.getItem("tutorProfile"); } catch (e) {}
-  return TUTOR_PROFILES[v] ? v : (TUTOR_IS_MOBILE ? "mobile" : "pc");
-}
-const tutorProfile = () => TUTOR_PROFILES[tutorProfileId()];
-/** 이 버전에서 이 기기가 쓸 모델 (f16 지원 여부를 아직 모르면 f16 쪽으로 안내).
- *  이 기기에서 열리지 않았던 모델이면 그 버전의 가벼운 대신 모델 */
-function tutorProfileModel(p) {
-  p = p || tutorProfile();
-  const v = tutorSupport && tutorSupport.ok && !tutorSupport.f16 ? "f32" : "f16";
-  const id = p.models[v];
-  // f16·f32 어느 쪽이든 이 기기에서 열리지 않았으면 대신 모델
-  return p.fallback && Object.values(p.models).some(tutorModelFailed) ? p.fallback[v] : id;
-}
-function tutorModelFailed(id) { try { return localStorage.getItem("tutorFailed:" + id) === "1"; } catch (e) { return false; } }
-// 모델을 여는 도중 화면이 통째로 꺼지는 기기(GPU 드라이버 문제 등) 대비: 여는 동안 표시를 남겨 두고,
-// 다음에 열 때 표시가 남아 있으면(=지난번에 열다가 꺼짐) 횟수를 센다. 두 번 연속이면 그 모델은 이 기기에서 안 되는 것으로 보고 대신 모델을 쓴다
-// (모델은 내려받으면서 바로 GPU에 올리므로 받는 동안에도 표시한다. 사용자가 앱을 닫거나 다른 앱으로 가면 pagehide·숨김이 오므로
-//  그때는 표시를 지운다 — 화면이 꺼지는 고장은 이 신호 없이 끝나서 구별된다)
-const TUTOR_LOADING_KEY = "tutorLoadingModel";
-let tutorLoadingId = null;
-document.addEventListener("visibilitychange", () => { if (tutorLoadingId) tutorMarkLoading(document.hidden ? null : tutorLoadingId); });
-window.addEventListener("pagehide", () => { if (tutorLoadingId) tutorMarkLoading(null); });
-window.addEventListener("pageshow", () => { if (tutorLoadingId) tutorMarkLoading(tutorLoadingId); });
-function tutorMarkLoading(id) { try { if (id) localStorage.setItem(TUTOR_LOADING_KEY, id); else localStorage.removeItem(TUTOR_LOADING_KEY); } catch (e) {} }
-function tutorCheckCrashedLoad() {
-  try {
-    const id = localStorage.getItem(TUTOR_LOADING_KEY);
-    if (!id) return null;
-    localStorage.removeItem(TUTOR_LOADING_KEY);
-    const n = (parseInt(localStorage.getItem("tutorCrashCount:" + id), 10) || 0) + 1;
-    localStorage.setItem("tutorCrashCount:" + id, String(n));
-    if (n >= 2) { localStorage.setItem("tutorFailed:" + id, "1"); return id; }
-  } catch (e) {}
-  return null;
-}
-const tutorInfo = id => TUTOR_MODEL_INFO[id] || { name: id || "", size: "" };
-const tutorSizeLabel = () => tutorInfo(tutorModelId || tutorProfileModel()).size;
+const GEMINI_API = "https://generativelanguage.googleapis.com/v1beta/models/";
+// 빠른 모델부터. 앞 모델의 무료 사용량을 다 쓰거나 잠시 막히면 다음 모델로 넘어간다
+// (무료 사용량이 모델마다 따로라 번갈아 쓰면 하루에 더 오래 대화할 수 있다)
+const TUTOR_GEMINI_MODELS = ["gemini-3.5-flash-lite", "gemini-3.1-flash-lite", "gemini-3.5-flash"];
+const GEMINI_KEY_STORE = "geminiApiKey";
+const GEMINI_KEY_PAGE = "https://aistudio.google.com/apikey";
 // 튜터 그림: 입 모양별 이미지 3장(다문 입·반쯤 벌린 입·크게 벌린 입)을 넣으면 소리에 맞춰 바뀐다.
 // 비워 두면 기본 캐릭터(SVG). 예: { closed: "images/tutor/closed.png", half: "images/tutor/half.png", open: "images/tutor/open.png" }
 const TUTOR_AVATAR_FRAMES = null;
-// 튜터 페이지를 떠난 뒤 이 시간이 지나면 모델을 메모리에서 내린다 (휴대폰 메모리 보호)
-const TUTOR_UNLOAD_MS = 2 * 60 * 1000;
-// 작업자 파일 위치는 이 스크립트 기준 (스크립트가 처음 실행될 때만 currentScript를 알 수 있다)
-// index.html이 붙인 버전(?v=…)을 작업자 파일에도 붙여, 새 버전 화면이 옛 작업자 파일을 쓰지 않게 한다
-const TUTOR_ASSET_VER = (document.currentScript && document.currentScript.src) ? new URL(document.currentScript.src).search : "";
-const TUTOR_WORKER_URL = new URL("tutor-worker.js" + TUTOR_ASSET_VER, (document.currentScript && document.currentScript.src) || location.href).href;
 
-let tutorLib = null;          // WebLLM 모듈 (튜터 페이지를 열 때만 불러온다)
-let tutorEngine = null;
-let tutorWorker = null;
-let tutorEngineLoading = null;
-let tutorModelId = null;       // 지금 버전의 튜터 모델
-let tutorActiveModelId = null; // 실제로 여는 모델: 보통 tutorModelId, 새 모델을 받기 전이면 예전 모델
-let tutorUpdate = null;        // 새 모델 받기 상태 { state: "available"|"downloading"|"ready"|"switching"|"failed", p, abort }
-let tutorSupport = null;      // { ok, f16, reason }
 let tutorMessages = [];       // 모델에 보내는 대화 (system 포함)
-let tutorLearnerLines = [];   // 학습자가 말한 문장 (피드백용)
-let tutorCorrections = [];    // 교정한 문장 [{ said, better }] (피드백 정리용)
-let tutorLearnerItems = [];   // 학습자 말풍선 [{ text, bubble, fix }] (피드백 때 문장별로 확인, fix: 확인 전 undefined)
+let tutorLearnerLines = [];   // 학습자가 말한 문장 (힌트·피드백용)
+let tutorCorrections = [];    // 교정한 문장 [{ said, better, why }] (피드백 정리용)
+let tutorLearnerItems = [];   // 학습자 말풍선 [{ text, bubble, fix, why, check }] (check: 교정 확인 중인 요청)
 let tutorSaidLines = [];      // 튜터가 보여 주고 읽은 답 (되풀이 거르기용)
-let tutorCtxStart = 0;        // 모델에 보내는 대화의 시작 위치 (가끔 크게만 옮겨, 그 사이에는 앞부분 계산을 다시 쓰게 한다)
 let tutorScenarioId = "free";
 let tutorBusy = false;
 let tutorSessionToken = 0;
 let tutorSpeaking = false;
-let tutorUnloadTimer = null;
 let tutorHintShown = false;
 let tutorSpeechToken = 0;
-let tutorProgressCb = null;   // 불러오는 중에 페이지를 다시 열어도 진행 표시가 이어지도록 마지막 화면에 연결
+let tutorAbort = null;        // 진행 중인 답 요청 (화면을 떠나거나 새로 시작하면 멈춘다)
 
-// ---------- 지원 여부·모델 ----------
-async function tutorCheckSupport() {
-  if (tutorSupport) return tutorSupport;
-  const fail = reason => (tutorSupport = { ok: false, reason });
-  if (!window.isSecureContext || !navigator.gpu) return fail("이 브라우저는 AI 계산(WebGPU)을 지원하지 않아요. PC·안드로이드는 크롬, 아이폰은 사파리에서 열어 주세요.");
-  try {
-    const adapter = await navigator.gpu.requestAdapter();
-    if (!adapter) return fail("이 기기에서 AI 계산 장치를 찾지 못했어요. 크롬·사파리나 다른 기기에서 이용해 주세요.");
-    const f16 = adapter.features.has("shader-f16");
-    tutorPickModel(f16);
-    const info = adapter.info || {};   // 문제 생겼을 때 안내에 함께 적어, 어떤 기기에서 막히는지 알 수 있게
-    return (tutorSupport = { ok: true, f16, gpu: [info.vendor, info.architecture].filter(Boolean).join(" ") });
-  } catch (e) {
-    return fail("AI 계산 장치를 여는 중 문제가 생겼어요. (" + (e && e.message || e) + ")");
+// ---------- Gemini 키 ----------
+function tutorGetKey() { try { return (localStorage.getItem(GEMINI_KEY_STORE) || "").trim(); } catch (e) { return ""; } }
+function tutorSetKey(k) { try { if (k) localStorage.setItem(GEMINI_KEY_STORE, k); else localStorage.removeItem(GEMINI_KEY_STORE); } catch (e) {} }
+const tutorReady = () => !!tutorGetKey();
+
+// ---------- Gemini 요청 ----------
+class GeminiError extends Error {
+  constructor(message, status, reason) { super(message); this.status = status || 0; this.reason = reason || ""; }
+}
+let tutorModelIdx = 0;                 // 지금 쓰는 모델 (TUTOR_GEMINI_MODELS 안의 위치)
+const tutorThinking = {};              // 모델별 생각 수준 (MINIMAL을 못 쓰는 모델이면 LOW로)
+const tutorModelName = () => TUTOR_GEMINI_MODELS[tutorModelIdx];
+
+/** 대화 → Gemini 요청 형식 (system은 systemInstruction으로, 같은 역할이 이어지면 합친다) */
+function geminiBody(messages, opts) {
+  const sys = messages.filter(m => m.role === "system").map(m => m.content).join("\n\n");
+  const contents = [];
+  for (const m of messages) {
+    if (m.role === "system") continue;
+    const role = m.role === "assistant" ? "model" : "user";
+    const parts = m.parts || [{ text: m.content }];
+    const last = contents[contents.length - 1];
+    if (last && last.role === role) last.parts.push(...parts); else contents.push({ role, parts: [...parts] });
   }
+  const gc = { temperature: opts.temperature == null ? 0.7 : opts.temperature, maxOutputTokens: opts.maxTokens || 200,
+    thinkingConfig: { thinkingLevel: opts.thinking || "MINIMAL" } };
+  if (opts.topP) gc.topP = opts.topP;
+  if (opts.schema) { gc.responseMimeType = "application/json"; gc.responseSchema = opts.schema; }
+  const body = { contents, generationConfig: gc };
+  if (sys) body.systemInstruction = { parts: [{ text: sys }] };
+  return body;
 }
-/** 고른 버전과 기기(f16 지원 여부)에 맞는 모델 */
-function tutorPickModel(f16) {
-  if (f16 === undefined) f16 = !!(tutorSupport && tutorSupport.f16);
-  tutorModelId = (window.TUTOR_MODEL_OVERRIDE && window.TUTOR_MODEL_OVERRIDE[f16 ? "f16" : "f32"]) || tutorProfileModel();
-  return tutorModelId;
+async function geminiFetch(model, method, body, signal) {
+  const key = tutorGetKey();
+  if (!key) throw new GeminiError("Gemini 키가 연결되어 있지 않아요", 0, "NO_KEY");
+  const res = await fetch(`${GEMINI_API}${model}:${method}`, {
+    method: "POST", headers: { "content-type": "application/json", "x-goog-api-key": key }, body: JSON.stringify(body), signal
+  });
+  if (!res.ok) {
+    let j = null; try { j = await res.json(); } catch (e) {}
+    const er = (j && j.error) || {};
+    const reason = ((er.details || []).find(d => d && d.reason) || {}).reason || er.status || "";
+    throw new GeminiError(er.message || `HTTP ${res.status}`, res.status, reason);
+  }
+  return res;
 }
-async function loadTutorLib() {
-  if (!tutorLib) tutorLib = await import(WEBLLM_URL);
-  return tutorLib;
-}
-/** WebLLM 모델 목록 + (목록에서 빠진) 예전 모델 기록 */
-function tutorAppConfig(lib) {
-  const extra = tutorOldModelList().filter(m => typeof m === "object");
-  const known = new Set(lib.prebuiltAppConfig.model_list.map(m => m.model_id));
-  return { ...lib.prebuiltAppConfig, model_list: [...lib.prebuiltAppConfig.model_list, ...extra.filter(m => !known.has(m.model_id))] };
-}
-/** 예전 모델 후보 (이 기기에 맞는 f16/f32 쪽을 먼저) */
-function tutorOldModelList() {
-  // 예전 모델 + 다른 버전(PC/모바일) 모델 + (처음 휴대폰도 쓰던) PC 1.5B
-  const olds = window.TUTOR_OLD_MODELS_OVERRIDE || [...TUTOR_OLD_MODELS, ...Object.values(TUTOR_PROFILES).map(p => p.models)];
-  const pref = tutorSupport && tutorSupport.f16 ? "f16" : "f32", other = pref === "f16" ? "f32" : "f16";
-  return olds.flatMap(o => [o[pref], o[other]]).filter(Boolean);
-}
-const tutorIdOf = m => (typeof m === "string" ? m : m.model_id);
-async function tutorIsCached(id) {
-  try { const lib = await loadTutorLib(); return await lib.hasModelInCache(id, tutorAppConfig(lib)); } catch (e) { return false; }
-}
-async function tutorModelCached() { return tutorIsCached(tutorModelId); }
-/** 받아 둔 예전 모델 (없으면 null) */
-async function tutorFindOldModel() {
-  for (const m of tutorOldModelList()) { const id = tutorIdOf(m); if (id !== tutorModelId && await tutorIsCached(id)) return id; }
-  return null;
-}
-/** 지금 모델이 열린 뒤: 예전 모델 파일을 지운다 (지금 모델과 같이 쓰는 실행 파일은 남긴다) */
-async function tutorRemoveOldModels() {
-  try {
-    const lib = await loadTutorLib(), cfg = tutorAppConfig(lib);
-    const rec = id => cfg.model_list.find(m => m.model_id === id);
-    const cur = rec(tutorModelId);
-    const ids = new Set(tutorOldModelList().map(tutorIdOf));
-    ids.delete(tutorModelId);
-    for (const id of ids) {
-      const r = rec(id);
-      if (!r || !(await tutorIsCached(id))) continue;
-      await lib.deleteModelInCache(id, cfg);
-      await lib.deleteChatConfigInCache(id, cfg);
-      if (!cur || r.model_lib !== cur.model_lib) await lib.deleteModelWasmInCache(id, cfg);
-      // 라이브러리가 남기는 작은 목록 파일까지
-      const base = tutorModelBaseUrl(r.model);
-      for (const name of await caches.keys()) {
-        if (!name.startsWith("webllm")) continue;
-        const c = await caches.open(name);
-        for (const req of await c.keys()) if (req.url.startsWith(base)) await c.delete(req);
+/** 키 문제(잘못된 키·권한 없음)인지 */
+const geminiKeyProblem = e => e && (e.reason === "API_KEY_INVALID" || e.reason === "NO_KEY" || /api key/i.test(e.message || "") && (e.status === 400 || e.status === 403));
+/** 모델을 바꿔 다시 해 볼 만한 오류인지 (사용량 초과·모델 없음/권한 없음·서버 혼잡) */
+const geminiTryNext = e => e && !geminiKeyProblem(e) && (e.status === 429 || e.status === 404 || e.status === 403 || e.status >= 500);
+/** 모델을 차례로 시도: 생각 수준 설정을 못 쓰는 모델이면 낮춰서 다시, 사용량 초과·혼잡이면 다음 모델로.
+ *  run(model, thinking, started)는 started()를 불러 '이미 글자를 보여 주기 시작했음'을 알린다 (그 뒤에는 다른 모델로 넘기지 않음) */
+async function geminiCall(run) {
+  let last = null;
+  for (let k = 0; k < TUTOR_GEMINI_MODELS.length; k++) {
+    const idx = (tutorModelIdx + k) % TUTOR_GEMINI_MODELS.length, model = TUTOR_GEMINI_MODELS[idx];
+    let begun = false;
+    for (let attempt = 0; attempt < 2; attempt++) {
+      try {
+        const out = await run(model, tutorThinking[model] || "MINIMAL", () => { begun = true; });
+        if (tutorModelIdx !== idx) { tutorModelIdx = idx; renderTutorCredit(); }
+        return out;
+      } catch (e) {
+        if (e && e.name === "AbortError") throw e;
+        last = e;
+        if (begun) throw e;
+        if (e.status === 400 && /think/i.test(e.message || "") && tutorThinking[model] !== "LOW") { tutorThinking[model] = "LOW"; continue; }
+        break;
       }
     }
-  } catch (e) { console.warn("예전 튜터 모델 정리 실패", e); }
+    if (!geminiTryNext(last)) throw last;
+  }
+  throw last;
 }
-/** WebLLM과 같은 규칙으로 모델 파일 주소의 앞부분을 만든다 (…/resolve/main/) */
-function tutorModelBaseUrl(model) {
-  let u = model.endsWith("/") ? model : model + "/";
-  if (!/.+\/resolve\/.+\//.test(u)) u += "resolve/main/";
-  return new URL(u).href;
+/** 글자가 오는 대로 onText(지금까지 글)를 부른다. 중간에 signal로 멈추면 그때까지의 글을 돌려준다 */
+function geminiStream(messages, opts, onText, signal) {
+  return geminiCall(async (model, thinking, started) => {
+    const res = await geminiFetch(model, "streamGenerateContent?alt=sse", geminiBody(messages, { ...opts, thinking }), signal);
+    const reader = res.body.getReader(), dec = new TextDecoder();
+    let buf = "", text = "";
+    try {
+      for (;;) {
+        const { done, value } = await reader.read();
+        if (done) break;
+        buf += dec.decode(value, { stream: true }).replace(/\r/g, "");
+        let i;
+        while ((i = buf.indexOf("\n\n")) >= 0) {
+          const evt = buf.slice(0, i); buf = buf.slice(i + 2);
+          for (const line of evt.split("\n")) {
+            if (!line.startsWith("data:")) continue;
+            let j; try { j = JSON.parse(line.slice(5)); } catch (e) { continue; }
+            if (j.error) throw new GeminiError(j.error.message, j.error.code, j.error.status);
+            const parts = (((j.candidates || [])[0] || {}).content || {}).parts || [];
+            const t = parts.filter(p => p && p.text && !p.thought).map(p => p.text).join("");
+            if (t) { text += t; started(); onText(text); }
+          }
+        }
+      }
+    } catch (e) { if (e && e.name === "AbortError") return text; throw e; }
+    return text;
+  });
 }
-/** 새 모델 파일만 미리 받아 둔다 (메모리에 올리지 않으므로 예전 모델로 대화하면서 받을 수 있다).
- *  WebLLM과 같은 저장소(webllm/model)·같은 주소로 저장해, 나중에 열 때 다시 받지 않는다. 중간에 멈춰도 받은 조각은 남아 이어 받는다 */
-async function tutorPrefetchModel(id, onProgress, signal) {
-  const lib = await loadTutorLib();
-  const r = tutorAppConfig(lib).model_list.find(m => m.model_id === id);
-  if (!r) throw new Error("모델 정보를 찾지 못했어요");
-  const base = tutorModelBaseUrl(r.model);
-  const cache = await caches.open("webllm/model");
-  const add = async url => { const req = new Request(url, { signal }); if (!(await cache.match(req))) await cache.add(req); };
-  const jsonUrl = new URL("tensor-cache.json", base).href;
-  await add(jsonUrl);
-  const recs = (await (await cache.match(jsonUrl)).json()).records || [];
-  const total = recs.reduce((a, x) => a + (x.nbytes || 1), 0) || 1;
-  let done = 0;
-  for (const x of recs) { await add(new URL(x.dataPath, base).href); done += x.nbytes || 1; onProgress && onProgress(done / total); }
+/** 한 번에 받기 (교정·받아쓰기) */
+function geminiGenerate(messages, opts, signal) {
+  return geminiCall(async (model, thinking) => {
+    const res = await geminiFetch(model, "generateContent", geminiBody(messages, { ...opts, thinking }), signal);
+    const j = await res.json();
+    const parts = (((j.candidates || [])[0] || {}).content || {}).parts || [];
+    return parts.filter(p => p && p.text && !p.thought).map(p => p.text).join("");
+  });
+}
+/** 사용자에게 보여 줄 오류 설명 */
+function geminiErrorText(e) {
+  if (!e) return "알 수 없는 오류";
+  if (geminiKeyProblem(e)) return "Gemini 키가 맞지 않거나 사용할 수 없어요. 키를 다시 확인해 주세요.";
+  if (e.status === 429) return "오늘 무료 사용량을 다 썼거나 너무 빨리 보냈어요. 잠시 뒤(또는 내일) 다시 해 주세요.";
+  if (e.status >= 500) return "구글 서버가 잠시 바빠요. 조금 뒤에 다시 해 주세요.";
+  if (e instanceof TypeError) return "인터넷 연결을 확인해 주세요.";
+  return e.message || String(e);
 }
 
-/** 모델을 내려받거나(처음) 저장소에서 꺼내 메모리에 올린다. 진행 상황은 progress(0~1, 문구)로 */
-function ensureTutorEngine(progress) {
-  tutorProgressCb = progress || null;
-  if (tutorEngine) return Promise.resolve(tutorEngine);
-  if (tutorEngineLoading) return tutorEngineLoading;
-  tutorEngineLoading = (async () => {
-    const lib = await loadTutorLib();
-    tutorWorker = new Worker(TUTOR_WORKER_URL, { type: "module" });
-    // 작업자가 뜨지 못하거나(네트워크 등) 진행이 한참 멈추면 무한 대기 대신 오류로 끝낸다
-    let lastProgress = Date.now();
-    const failed = new Promise((_, reject) => {
-      tutorWorker.addEventListener("error", e => reject(new Error("AI 엔진을 불러오지 못했어요 (" + ((e && e.message) || "네트워크") + ")")));
-      const watch = setInterval(() => {
-        if (tutorEngine || !tutorWorker) return clearInterval(watch);
-        if (Date.now() - lastProgress > 90000) { clearInterval(watch); reject(new Error("응답이 없어 중단했어요. 인터넷 연결을 확인해 주세요.")); }
-      }, 5000);
-    });
-    // 휴대폰(안드로이드)은 GPU 메모리를 아끼려고 대화 기억 길이를 줄인다 (보내는 대화는 tutorContext로 600토큰 안팎이라 충분)
-    const chatOpts = /Android/i.test(navigator.userAgent) ? { context_window_size: 2048 } : undefined;
-    const loadingId = tutorActiveModelId || tutorModelId;
-    tutorLoadingId = loadingId;
-    tutorMarkLoading(loadingId);
-    const engine = await Promise.race([lib.CreateWebWorkerMLCEngine(tutorWorker, loadingId, {
-      appConfig: tutorAppConfig(lib),
-      initProgressCallback: r => {
-        lastProgress = Date.now();
-        tutorProgressCb && tutorProgressCb(r.progress || 0, r.text || "");
-      }
-    }, chatOpts), failed]);
-    tutorEngine = engine;
-    tutorLoadingId = null;
-    tutorMarkLoading(null);
-    try { localStorage.setItem("tutorModelReady", "true"); localStorage.removeItem("tutorCrashCount:" + loadingId); } catch (e) {}
-    // 불러오는 사이에 다른 화면으로 갔다면 잠시 뒤 메모리에서 내린다
-    const page = document.getElementById("page-tutor");
-    if (page && page.classList.contains("hidden")) leaveTutorPage();
-    return engine;
-  })();
-  tutorEngineLoading.catch(() => { tutorLoadingId = null; tutorMarkLoading(null); }).finally(() => { tutorEngineLoading = null; });
-  return tutorEngineLoading.catch(e => { unloadTutorEngine(); throw e; });
+// ---------- 예전 기기 안 튜터 정리 ----------
+// 예전에는 AI 모델(0.3~1.1GB)과 음성 인식 모델을 기기에 받아 썼다. 이제 쓰지 않으니 남은 파일과 설정을 지운다 (한 번만)
+async function tutorCleanupOldEngine() {
+  try {
+    if (localStorage.getItem("tutorOldEngineCleaned") === "1") return;
+    if (typeof caches !== "undefined") {
+      for (const k of await caches.keys()) if (/^(webllm|tvmjs|transformers-cache)/.test(k)) await caches.delete(k);
+    }
+    Object.keys(localStorage).filter(k => /^(tutorModelReady|tutorSttReady|tutorProfile|tutorLoadingModel|tutorFailed:|tutorCrashCount:)/.test(k)).forEach(k => localStorage.removeItem(k));
+    localStorage.setItem("tutorOldEngineCleaned", "1");
+  } catch (e) { console.warn("예전 튜터 파일 정리 실패", e); }
 }
-function unloadTutorEngine() {
-  const eng = tutorEngine, w = tutorWorker;
-  tutorEngine = null; tutorWorker = null;
-  if (eng) { try { eng.unload(); } catch (e) {} }
-  if (w) setTimeout(() => { try { w.terminate(); } catch (e) {} }, 300);
-}
+setTimeout(tutorCleanupOldEngine, 4000);
 
 // ---------- 화면 ----------
 const tutorEl = id => document.getElementById(id);
@@ -276,266 +180,80 @@ function showTutorSection(which) {
   tutorEl("tutor-setup").classList.toggle("hidden", which !== "setup");
   tutorEl("tutor-chat-area").classList.toggle("hidden", which !== "chat");
 }
-function setTutorProgress(p, text) {
-  tutorEl("tutor-progress").classList.remove("hidden");
-  tutorEl("tutor-progress-bar").style.width = Math.round(p * 100) + "%";
-  tutorEl("tutor-progress-text").textContent = text ? `${Math.round(p * 100)}% · ${text}` : `${Math.round(p * 100)}%`;
-}
-
-// ---------- PC 버전 / 모바일 버전 ----------
-/** 이 모델이 지금 버전이 아닌 다른 버전(PC/모바일)의 모델인지 */
-function tutorIsProfileModel(id) {
-  return Object.entries(TUTOR_PROFILES).some(([k, p]) => k !== tutorProfileId() && Object.values(p.models).includes(id));
-}
-function renderTutorProfiles() {
-  const box = tutorEl("tutor-profiles");
-  if (!box) return;
-  const cur = tutorProfileId();
-  box.innerHTML = Object.entries(TUTOR_PROFILES).map(([k, p]) =>
-    `<button class="tutor-profile-btn${k === cur ? " active" : ""}" onclick="setTutorProfile('${k}')">` +
-    `<span class="tp-title">${p.icon} ${p.label}</span><span class="tp-desc">${p.desc} · ${tutorInfo(tutorProfileModel(p)).size}</span></button>`).join("");
-  // 아래 표시는 지금 실제로 쓰고 있는 튜터 기준 (버전을 바꾸고 새 튜터를 받기 전에는 예전 튜터)
-  const runId = tutorActiveModelId || tutorModelId || tutorProfileModel();
-  const running = Object.values(TUTOR_PROFILES).find(p => Object.values(p.models).includes(runId)) || tutorProfile();
-  const info = tutorInfo(runId);
-  const ms = tutorEl("tutor-model-name"); if (ms) ms.textContent = `${running.label} · AI 모델: ${info.name}${info.license ? ` (${info.license})` : ""}`;
-  const sz = tutorEl("tutor-size"); if (sz) sz.textContent = tutorSizeLabel();
-}
-/** 버전 바꾸기: 받아 둔 모델이 있으면 바로 바꾸고, 없으면 지금 튜터로 대화하면서 뒤에서 받는다 (다 받으면 '바꾸기') */
-async function setTutorProfile(id) {
-  if (!TUTOR_PROFILES[id] || id === tutorProfileId()) return;
-  if (tutorEngineLoading || (tutorUpdate && tutorUpdate.state === "switching")) { alert("튜터를 여는 중이에요. 잠시 뒤에 바꿔 주세요."); return; }
-  if (tutorBusy) { setTutorStatus("튜터가 말을 마치면 바꿀 수 있어요", ""); return; }
-  if (tutorUpdate && tutorUpdate.state === "downloading") {
-    if (!confirm("다른 튜터를 받는 중이에요. 멈추고 버전을 바꿀까요? (받은 만큼은 저장돼 있어요)")) return;
-    tutorUpdate.abort.abort();
-  }
-  try { localStorage.setItem("tutorProfile", id); } catch (e) {}
-  tutorUpdate = null;
-  renderTutorProfiles();
-  if (!tutorSupport || !tutorSupport.ok) { renderTutorUpdate(); return; }
-  tutorPickModel();
-  if (tutorEngine) {
-    if (tutorActiveModelId === tutorModelId) { renderTutorUpdate(); return; }
-    if (await tutorIsCached(tutorModelId)) { await switchTutorModel(); return; }
-    tutorUpdate = { state: "available", reason: "profile" };
-    renderTutorUpdate();
-    return;
-  }
-  renderTutorPage();
-}
-
-// ---------- 새 튜터(모델) 업데이트 ----------
-function renderTutorUpdate() {
-  const box = tutorEl("tutor-update");
-  if (!box) return;
-  const u = tutorUpdate;
-  box.classList.toggle("hidden", !u);
-  if (!u) return;
-  const btn = (label, fn) => `<button class="btn-main tutor-update-btn" onclick="${fn}">${label}</button>`;
-  const pf = tutorProfile();
-  // 다른 버전(PC/모바일) 모델을 쓰고 있으면 버전 바꾸기 안내, 예전 모델이면 새 튜터 안내
-  const msg = u.reason === "profile" ? `${pf.icon} ${pf.label} 튜터로 바꾸려면 새로 받아야 해요.` : TUTOR_UPDATE_MSG;
-  if (u.state === "available") box.innerHTML = `<div class="tutor-update-text">${msg} 받는 동안에도 지금 튜터와 계속 대화할 수 있어요.</div>` + btn(`${u.reason === "profile" ? pf.label + " " : "새 "}튜터 받기 (${tutorSizeLabel()})`, "startTutorUpdate()");
-  else if (u.state === "downloading") box.innerHTML = `<div class="tutor-update-text">새 튜터 받는 중… ${Math.round((u.p || 0) * 100)}% <span class="tutor-update-sub">(지금 튜터와 계속 대화해도 돼요)</span></div>` +
-    `<div class="tutor-update-bar"><div style="width:${Math.round((u.p || 0) * 100)}%"></div></div>` + `<button class="tutor-update-link" onclick="pauseTutorUpdate()">나중에 마저 받기</button>`;
-  else if (u.state === "ready") box.innerHTML = `<div class="tutor-update-text">${u.reason === "profile" ? pf.label : "새"} 튜터가 준비됐어요! 바꾸면 지금 튜터 파일은 지워서 저장 공간을 비워요.</div>` + btn(`${u.reason === "profile" ? pf.label + "으" : "새 튜터"}로 바꾸기`, "switchTutorModel()");
-  else if (u.state === "switching") box.innerHTML = `<div class="tutor-update-text">새 튜터로 바꾸는 중… ${Math.round((u.p || 0) * 100)}%</div>`;
-  else if (u.state === "failed") box.innerHTML = `<div class="tutor-update-text">새 튜터를 이 기기에서 열지 못해 지금 튜터를 계속 써요.${u.msg ? `<span class="tutor-update-sub"> (${u.msg})</span>` : ""}</div>`;
-}
-/** 새 튜터 받기: 예전 모델은 그대로 두고, 새 모델 파일만 뒤에서 받는다 */
-async function startTutorUpdate() {
-  if (!tutorUpdate || tutorUpdate.state === "downloading") return;
-  if (!confirm(`새 AI 튜터(${tutorSizeLabel()})를 받을게요.\n와이파이에서 받는 것을 권장해요. 받는 동안에도 지금 튜터와 대화할 수 있어요.`)) return;
-  const abort = new AbortController();
-  const reason = tutorUpdate.reason;
-  tutorUpdate = { state: "downloading", p: 0, abort, reason };
-  renderTutorUpdate();
-  try {
-    await tutorPrefetchModel(tutorModelId, p => { if (tutorUpdate && tutorUpdate.abort === abort) { tutorUpdate.p = p; renderTutorUpdate(); } }, abort.signal);
-    if (!tutorUpdate || tutorUpdate.abort !== abort) return;
-    tutorUpdate = { state: "ready", reason };
-  } catch (e) {
-    if (!tutorUpdate || tutorUpdate.abort !== abort) return;
-    console.warn("새 튜터 받기 멈춤", e);
-    tutorUpdate = { state: "available", reason };
-    if (!(e && e.name === "AbortError")) alert("새 튜터를 받다가 멈췄어요. 받은 만큼은 저장돼 있어서 다시 누르면 이어서 받아요.\n(" + ((e && e.message) || e) + ")");
-  }
-  renderTutorUpdate();
-}
-function pauseTutorUpdate() {
-  if (tutorUpdate && tutorUpdate.abort) tutorUpdate.abort.abort();
-  tutorUpdate = { state: "available", reason: tutorUpdate && tutorUpdate.reason };
-  renderTutorUpdate();
-}
-/** 새 튜터로 바꾸기: 예전 모델을 내리고 새 모델을 연다. 열리면 예전 모델을 지우고, 안 열리면 예전 모델로 돌아간다 */
-async function switchTutorModel() {
-  if (tutorBusy) { setTutorStatus("튜터가 말을 마치면 바꿀 수 있어요", ""); return; }
-  stopTutorActivity();
-  const prev = tutorActiveModelId;
-  tutorUpdate = { state: "switching", p: 0 };
-  renderTutorUpdate();
-  tutorBusy = true;
-  setTutorStatus("새 튜터로 바꾸는 중…", "loading");
-  unloadTutorEngine();
-  tutorActiveModelId = tutorModelId;
-  try {
-    await ensureTutorEngine(p => { if (tutorUpdate) { tutorUpdate.p = p; renderTutorUpdate(); } });
-    tutorUpdate = null;
-    await tutorRemoveOldModels();
-  } catch (e) {
-    console.warn("새 튜터를 열지 못함 → 예전 튜터로", e);
-    unloadTutorEngine();
-    tutorActiveModelId = prev;
-    tutorUpdate = { state: "failed", msg: String((e && e.message) || e).slice(0, 80) };
-    try { await ensureTutorEngine(); } catch (e2) { console.warn(e2); }
-  }
-  tutorBusy = false;
-  renderTutorUpdate();
-  renderTutorProfiles();
-  setTutorStatus(tutorEngine ? "마이크를 누르고 영어로 말해 보세요" : "튜터를 다시 열어 주세요", "");
+function renderTutorCredit() {
+  const el = tutorEl("tutor-model-name");
+  if (el) el.textContent = tutorReady() ? `AI: Google Gemini (${tutorModelName()}) · 내 키로 연결됨` : "AI: Google Gemini";
 }
 
 /** 튜터 페이지에 들어올 때 (core.js goTo) */
-async function renderTutorPage() {
-  clearTimeout(tutorUnloadTimer);
+function renderTutorPage() {
   tutorCheckMicPermission();
   TutorAvatar.mount();
   fillTutorScenarios();
-  const sz = tutorEl("tutor-size"); if (sz) sz.textContent = tutorSizeLabel();
-  renderTutorProfiles();
-  renderTutorUpdate();
-  if (tutorEngine) { showTutorSection("chat"); if (tutorMessages.length === 0) startTutorSession(); else setTutorStatus("마이크를 누르고 영어로 말해 보세요", ""); return; }
-  showTutorSection("setup");
-  tutorEl("tutor-download-btn").disabled = true;
-  setTutorStatus("확인 중…", "loading");
-  const sup = await tutorCheckSupport();
-  const warn = tutorEl("tutor-unsupported");
-  tutorEl("tutor-download-btn").classList.toggle("hidden", !sup.ok);
-  if (!sup.ok) { warn.textContent = sup.reason; warn.classList.remove("hidden"); setTutorStatus("이 기기에서는 쓸 수 없어요", ""); return; }
-  warn.classList.add("hidden");
-  const crashed = tutorCheckCrashedLoad();
-  if (crashed) { tutorPickModel(); renderTutorProfiles(); alert(`이 기기에서 ${tutorInfo(crashed).name} 튜터를 열다가 화면이 꺼졌어요.\n더 안정적인 ${tutorInfo(tutorModelId).name} 튜터로 바꿀게요.`); }
-  // 받아 둔 모델이 있으면 바로 연다: 지금 모델 → 없으면 예전 모델(새 튜터 받기 안내와 함께)
-  const cached = await tutorModelCached();
-  const old = cached ? null : await tutorFindOldModel();
-  tutorActiveModelId = cached ? tutorModelId : (old || tutorModelId);
-  if (old && !tutorUpdate) tutorUpdate = { state: "available", reason: tutorIsProfileModel(old) ? "profile" : "" };
-  renderTutorUpdate();
-  // 열지 못해도(메모리 부족 등) 지울 수 있게 삭제 버튼을 보여 준다
-  tutorEl("tutor-delete-setup").classList.toggle("hidden", !cached && !old);
-  if (cached || old) { tutorEl("tutor-download-btn").textContent = "AI 튜터 시작"; await startTutorEngine(false); return; }
-  tutorEl("tutor-download-btn").disabled = false;
-  tutorEl("tutor-download-btn").textContent = `AI 튜터 받기 (${tutorSizeLabel()})`;
-  setTutorStatus("AI 튜터를 받으면 바로 대화할 수 있어요", "");
-}
-
-/** 다운로드 버튼 / 저장된 모델 열기 */
-async function startTutorEngine(isDownload) {
-  const btn = tutorEl("tutor-download-btn");
-  btn.disabled = true;
-  if (isDownload && !confirm(`AI 튜터 모델(${tutorSizeLabel()})을 내려받습니다.\n와이파이에서 받는 것을 권장해요. 계속할까요?`)) { btn.disabled = false; return; }
-  setTutorStatus(isDownload ? "AI 튜터 받는 중…" : "튜터 깨우는 중…", "loading");
-  setTutorProgress(0, "");
-  try {
-    await ensureTutorEngine((p, text) => setTutorProgress(p, tutorProgressText(text)));
-    tutorEl("tutor-progress").classList.add("hidden");
-    // 지금 버전 모델이 열렸으면 예전 모델은 더 필요 없다
-    if (tutorActiveModelId === tutorModelId) { tutorUpdate = null; renderTutorUpdate(); tutorRemoveOldModels(); }
-    renderTutorProfiles();
-    if (!document.getElementById("page-tutor").classList.contains("hidden")) {
-      showTutorSection("chat");
-      // 대화 중에 엔진이 끊겨 다시 연 경우에는 하던 대화를 이어 간다
-      if (tutorMessages.length === 0) startTutorSession(); else setTutorStatus("마이크를 누르고 영어로 말해 보세요", "");
-    }
-  } catch (e) {
-    console.warn("AI 튜터를 열지 못함", e);
-    // 새 모델이 이 기기에서 열리지 않으면, 남아 있는 예전 모델로 계속 쓴다
-    if (tutorActiveModelId === tutorModelId) {
-      const old = await tutorFindOldModel();
-      if (old) { tutorActiveModelId = old; tutorUpdate = { state: "failed" }; renderTutorUpdate(); return startTutorEngine(false); }
-      // 받아 둔 다른 튜터가 없으면: 이 버전의 가벼운 대신 모델을 받을지 묻는다 (다음부터는 바로 대신 모델)
-      const pf = tutorProfile();
-      if (pf.fallback && !Object.values(pf.fallback).includes(tutorModelId) && !window.TUTOR_MODEL_OVERRIDE) {
-        const failed = tutorModelId;
-        try { localStorage.setItem("tutorFailed:" + failed, "1"); } catch (e2) {}
-        const fb = tutorPickModel();
-        tutorActiveModelId = fb;
-        renderTutorProfiles();
-        tutorEl("tutor-progress").classList.add("hidden");
-        if (confirm(`이 기기에서 ${tutorInfo(failed).name} 튜터를 열지 못했어요.\n더 가벼운 튜터(${tutorInfo(fb).name}, ${tutorInfo(fb).size})로 받을까요?`)) return startTutorEngine(!(await tutorIsCached(fb)));
-      }
-    }
-    tutorEl("tutor-progress").classList.add("hidden");
-    btn.disabled = false;
-    btn.textContent = "다시 시도";
-    setTutorStatus("AI 튜터를 열지 못했어요", "");
-    alert("AI 튜터를 열지 못했어요.\n메모리가 부족하거나 이 기기가 지원하지 않을 수 있어요.\n(" + (e && e.message || e) + ")");
+  renderTutorCredit();
+  if (!tutorReady()) {
+    showTutorSection("setup");
+    setTutorStatus("구글 Gemini 키를 연결하면 바로 대화할 수 있어요", "");
+    return;
   }
-}
-// 이미 받아 둔 모델이면 다시 받는다는 안내 없이 바로 연다
-async function downloadTutor() { startTutorEngine(!(await tutorIsCached(tutorActiveModelId || tutorModelId))); }
-// WebLLM 진행 문구(영어)를 짧은 한국어로: "Fetching param cache[3/22]: 120MB fetched..." / "Loading model from cache..."
-function tutorProgressText(text) {
-  if (/Loading model from cache/i.test(text)) return "저장된 모델 여는 중";
-  const m = text.match(/([\d.]+)\s*MB fetched/i);
-  if (/Fetching/i.test(text)) return m ? `내려받는 중 ${Math.round(parseFloat(m[1]))}MB` : "내려받는 중";
-  if (/Finish/i.test(text)) return "준비 완료";
-  return "AI 준비 중";
+  showTutorSection("chat");
+  if (tutorMessages.length === 0) startTutorSession(); else setTutorStatus("마이크를 누르고 영어로 말해 보세요", "");
 }
 
-async function deleteTutorModel() {
-  if (!confirm(`내려받은 AI 튜터 모델(${tutorSizeLabel()})을 기기에서 지울까요?\n다시 쓰려면 새로 받아야 해요.`)) return;
-  stopTutorActivity();
-  unloadTutorEngine();
+/** 붙여넣기 버튼: 클립보드의 키를 칸에 넣는다 (권한이 없으면 길게 눌러 붙여 넣게 안내) */
+async function pasteTutorKey() {
+  const inp = tutorEl("tutor-key-input");
+  try { const t = await navigator.clipboard.readText(); if (t) { inp.value = t.trim(); return; } } catch (e) {}
+  inp.focus();
+  showTutorKeyMsg("칸을 길게 눌러 '붙여넣기'를 해 주세요.", false);
+}
+function showTutorKeyMsg(text, isError) {
+  const m = tutorEl("tutor-key-msg");
+  m.textContent = text; m.classList.toggle("hidden", !text); m.classList.toggle("ok", !isError);
+}
+/** 연결하기: 짧은 요청으로 키가 되는지 확인한 뒤 저장한다 */
+async function connectTutorKey() {
+  const inp = tutorEl("tutor-key-input"), btn = tutorEl("tutor-key-btn");
+  const key = (inp.value || "").replace(/\s+/g, "");
+  if (!key) { showTutorKeyMsg("키를 붙여 넣어 주세요.", true); return; }
+  if (!/^[A-Za-z0-9_\-]{20,}$/.test(key)) { showTutorKeyMsg("키 모양이 이상해요. 복사한 키 전체를 그대로 붙여 넣어 주세요.", true); return; }
+  btn.disabled = true; btn.textContent = "확인 중…"; showTutorKeyMsg("", false);
+  const prev = tutorGetKey();
+  tutorSetKey(key);
   try {
-    const lib = await loadTutorLib();
-    // 기기에 따라 f16/f32 중 받아 둔 것만 지운다 (안 받은 쪽을 지우려 하면 목록 파일을 새로 받아 버림)
-    if (tutorUpdate && tutorUpdate.abort) tutorUpdate.abort.abort();
-    tutorUpdate = null;
-    const cfg = tutorAppConfig(lib);
-    const allModels = [tutorModelId, ...Object.values(TUTOR_PROFILES).flatMap(p => Object.values(p.models))];
-    for (const id of new Set([...allModels, ...tutorOldModelList().map(tutorIdOf)].filter(Boolean))) {
-      if (await tutorIsCached(id)) await lib.deleteModelAllInfoInCache(id, cfg);
-    }
-    // 새 튜터를 받다 만 조각도 지운다
-    for (const m of allModels) {
-      const r = m && cfg.model_list.find(x => x.model_id === m);
-      if (!r) continue;
-      const base = tutorModelBaseUrl(r.model), c = await caches.open("webllm/model");
-      for (const req of await c.keys()) if (req.url.startsWith(base)) await c.delete(req);
-    }
-    TutorSTT.unload();
-    await caches.delete("transformers-cache");
-    try { localStorage.removeItem("tutorSttReady"); } catch (e) {}
-    // 라이브러리가 남기는 작은 목록 파일(tensor-cache.json)까지 정리
-    for (const name of await caches.keys()) {
-      if (!name.startsWith("webllm")) continue;
-      const c = await caches.open(name);
-      for (const req of await c.keys()) if (/-MLC\//.test(req.url)) await c.delete(req);
-    }
-  } catch (e) { console.warn(e); }
-  try { localStorage.removeItem("tutorModelReady"); } catch (e) {}
+    await geminiGenerate([{ role: "user", content: "Reply with just: OK" }], { temperature: 0, maxTokens: 10 });
+    inp.value = "";
+    showTutorKeyMsg("", false);
+    renderTutorPage();
+  } catch (e) {
+    console.warn("키 확인 실패", e);
+    // 사용량 초과·서버 혼잡은 키 자체는 맞으니 저장해 둔다
+    if (geminiKeyProblem(e) || !(e.status === 429 || e.status >= 500)) tutorSetKey(prev);
+    else renderTutorPage();
+    showTutorKeyMsg(geminiErrorText(e), true);
+  }
+  btn.disabled = false; btn.textContent = "연결하기";
+}
+/** 키 관리: 연결 끊기 (이 기기에서 키를 지운다) */
+function manageTutorKey() {
+  if (!confirm("이 기기에서 Gemini 키 연결을 끊을까요?\n다시 쓰려면 키를 다시 붙여 넣으면 돼요.\n(구글 AI Studio에서 키 자체를 지우거나 새로 만들 수도 있어요)")) return;
+  stopTutorActivity();
+  tutorSetKey("");
   tutorMessages = []; tutorLearnerLines = []; tutorLearnerItems = [];
   tutorEl("tutor-log").innerHTML = "";
-  alert("AI 튜터 모델을 지웠어요.");
   renderTutorPage();
 }
 
-/** 다른 화면으로 갈 때: 말하기·듣기·생성을 멈추고, 잠시 뒤 모델을 메모리에서 내린다 */
+/** 다른 화면으로 갈 때: 말하기·듣기·답 만들기를 멈춘다 */
 function stopTutorActivity() {
   tutorSessionToken++;
   tutorSpeechToken++;
   tutorSpeaking = false;
   if (tutorMic) { const m = tutorMic; tutorMic = null; try { m.rec.onend = m.rec.onerror = m.rec.onresult = null; m.rec.abort(); } catch (e) {} }
-  if (tutorEngine) { try { tutorEngine.interruptGenerate(); } catch (e) {} }
+  if (tutorAbort) { try { tutorAbort.abort(); } catch (e) {} tutorAbort = null; }
   tutorBusy = false;
 }
-function leaveTutorPage() {
-  stopTutorActivity();
-  clearTimeout(tutorUnloadTimer);
-  if (tutorEngine) tutorUnloadTimer = setTimeout(() => { unloadTutorEngine(); tutorMessages = []; }, TUTOR_UNLOAD_MS);
-}
+function leaveTutorPage() { stopTutorActivity(); }
 
 // ---------- 상황 ----------
 const TUTOR_FREE = { id: "free", title: "자유 대화 (Free Talk)", category: "자유" };
@@ -661,7 +379,8 @@ function tutorStartMessages(sc) {
   // 인사는 시스템 안내에 적어 둔다 (가짜 대화를 넣으면 작은 모델이 인사를 되풀이함)
   return [{ role: "system", content: tutorSystemPrompt(sc) }];
 }
-const TUTOR_REPLY_OPTS = { temperature: 0.6, top_p: 0.9, max_tokens: 48, presence_penalty: 0.4 };
+// 답: 짧은 답이라 생각(thinking)은 최소로 해서 빠르게. 두 문장 넘게 쓰면 중간에 끊는다(tutorReplyDone)
+const TUTOR_REPLY_OPTS = { temperature: 0.8, topP: 0.95, maxTokens: 120 };
 
 /** 모델 답 정리: 역할 이름·학습자 대사 이어 쓰기·이모지·한국어·괄호 메모를 걷어 내고 2문장까지만 */
 function cleanTutorSay(raw) {
@@ -722,40 +441,34 @@ function tutorPolish(clean, learner, prevSays, strict) {
   return kept.length ? kept.map(x => x.trim()).join(" ") : (strict ? "" : clean);
 }
 
-// 교정은 두 단계: ① 맞는 문장인지 Yes/No로만 판정 → ② 틀렸을 때만 고친 문장을 만든다
-// (한 번에 고치라고 하면 맞는 문장까지 바꾸는 일이 잦아서. 평가: 틀린 문장 14개 중 12개 교정, 맞는 문장 14개 중 1개만 손댐)
-const TUTOR_CHECK_EXAMPLES = [
-  ["I goed to school yesterday.", "No"], ["Can I get a coffee, please?", "Yes"], ["I want sandwich.", "No"], ["I'm fine. And you?", "Yes"],
-  ["Where is bus stop?", "No"], ["Can I pay in cash?", "Yes"], ["Please drive more careful.", "No"], ["Do you have any plans this weekend?", "Yes"]
-];
-function tutorGrammarCheckMessages(text) {
-  const msgs = [{ role: "system", content: "Is the English sentence grammatically correct? Missing a/an/the, wrong tense, missing plural -s or wrong word forms make it incorrect. Answer only Yes or No." }];
-  TUTOR_CHECK_EXAMPLES.forEach(([q, a]) => msgs.push({ role: "user", content: q }, { role: "assistant", content: a }));
-  msgs.push({ role: "user", content: text });
-  return msgs;
+// ---------- 교정 ----------
+// 학습자가 한 문장마다 Gemini에게 고칠 데가 있는지 묻는다 (답과 동시에 따로 요청해서 대화가 느려지지 않게).
+// 고칠 문장과 한국어 한 줄 이유를 JSON으로 받는다
+const TUTOR_FIX_SCHEMA = {
+  type: "OBJECT",
+  properties: { ok: { type: "BOOLEAN" }, better: { type: "STRING" }, why: { type: "STRING" } },
+  required: ["ok"]
+};
+function tutorFixMessages(text, before) {
+  return [
+    { role: "system", content: "You check sentences spoken by Korean adult beginners practicing everyday English conversation. " +
+      "If the sentence has a grammar mistake (missing a/an/the, wrong tense, missing plural -s, wrong word form like bored/boring, wrong word order) " +
+      "or a clearly wrong word, set ok=false, give the corrected sentence in 'better' (keep the meaning and as many of the learner's words as possible), " +
+      "and in 'why' explain the main fix in very short Korean (under 20 characters, e.g. \"과거형 went\", \"관사 a 필요\"). " +
+      "The text comes from speech recognition, so ignore capital letters, punctuation and missing periods. " +
+      "If the sentence is already correct, set ok=true even if other wordings are possible. Short answers like \"Yes.\" or \"Medium, please.\" are correct." },
+    { role: "user", content: (before ? `The tutor said: "${before}"\n` : "") + `Learner's sentence: "${text}"` }
+  ];
 }
-const TUTOR_CHECK_OPTS = { temperature: 0, max_tokens: 3 };
-const tutorCheckSaysWrong = out => /^\s*no\b/i.test(out || "");
+const TUTOR_FIX_OPTS = { temperature: 0, maxTokens: 200, schema: TUTOR_FIX_SCHEMA };
+/** 교정 결과 정리: 원래 문장과 너무 다른 '고친 문장'은 버린다 (엉뚱한 답 방지) */
+function parseTutorFix(text, out) {
+  let j = null; try { j = JSON.parse(out || "{}"); } catch (e) { return { better: "", why: "" }; }
+  if (!j || j.ok !== false || !j.better) return { better: "", why: "" };
+  const better = parseTutorCorrection(text, j.better);
+  return { better, why: better ? String(j.why || "").replace(/[\r\n]+/g, " ").slice(0, 40) : "" };
+}
 
-const TUTOR_CORRECTION_EXAMPLES = [
-  ["I goed to school yesterday.", "I went to school yesterday."],
-  ["Can I get a coffee, please?", "OK"],
-  ["I want sandwich.", "I want a sandwich."],
-  ["Thank you so much!", "OK"],
-  ["Where is bus stop?", "Where is the bus stop?"],
-  ["I need two ticket.", "I need two tickets."],
-  ["I'm here for a business trip.", "OK"],
-  ["Please drive more careful.", "Please drive more carefully."],
-  ["I visit Seoul last year.", "I visited Seoul last year."],
-  ["Do you have any plans this weekend?", "OK"]
-];
-function tutorCorrectionMessages(text) {
-  const msgs = [{ role: "system", content: "You correct sentences spoken by Korean beginners learning English. Fix grammar mistakes, especially: missing a/an/the, wrong verb tense, missing plural -s, and wrong word forms (bored/boring, slow/slowly). Keep the meaning and the other words the same. Ignore punctuation and capital letters. If the sentence is already correct, answer exactly: OK" }];
-  TUTOR_CORRECTION_EXAMPLES.forEach(([q, a]) => msgs.push({ role: "user", content: q }, { role: "assistant", content: a }));
-  msgs.push({ role: "user", content: text });
-  return msgs;
-}
-const TUTOR_CORRECTION_OPTS = { temperature: 0, max_tokens: 40 };
 const tutorNorm = x => (x || "").toLowerCase().replace(/[’]/g, "'").replace(/[^a-z0-9' ]/g, " ").replace(/\s+/g, " ").trim();
 function parseTutorCorrection(original, out) {
   let c = ((out || "").trim().split("\n")[0] || "").trim();
@@ -775,17 +488,9 @@ function parseTutorCorrection(original, out) {
 /** 짧은 대답(Yes, Thank you 등)은 고칠 게 거의 없으니 건너뛴다 */
 function tutorNeedsCheck(text) { return tutorNorm(text).split(" ").filter(Boolean).length >= 3; }
 
-// 모델 호출은 한 번에 하나씩 (답·교정·해석·피드백이 겹치지 않게 줄 세운다)
-let tutorQueue = Promise.resolve();
-function tutorEngineCall(fn) {
-  const run = tutorQueue.then(fn, fn);
-  tutorQueue = run.catch(() => {});
-  return run;
-}
-
 // ---------- 대화 ----------
-async function startTutorSession() {
-  if (!tutorEngine) return;
+function startTutorSession() {
+  if (!tutorReady()) return;
   stopTutorActivity();
   const token = ++tutorSessionToken;
   const sc = tutorScenario();
@@ -793,17 +498,16 @@ async function startTutorSession() {
   tutorLearnerLines = [];
   tutorLearnerItems = [];
   tutorCorrections = [];
-  tutorCtxStart = 0;
   tutorSaidLines = sc.id === "free" ? [TUTOR_FREE_GREETING] : [];
   tutorEl("tutor-log").innerHTML = "";
   tutorEl("tutor-feedback").classList.add("hidden");
   if (sc.id === "free") {
-    // 자유 대화: 튜터가 정해진 인사로 바로 시작 (모델 계산 없이)
+    // 자유 대화: 튜터가 정해진 인사로 바로 시작
     tutorHintShown = false; renderTutorHint();
     const b = addTutorBubble("tutor", TUTOR_FREE_GREETING);
     b.onclick = () => speakTutor(TUTOR_FREE_GREETING, tutorSessionToken);
     addSlowButton(b, TUTOR_FREE_GREETING);
-    await speakTutor(TUTOR_FREE_GREETING, token);
+    speakTutor(TUTOR_FREE_GREETING, token);
   } else {
     // 역할극: 실제 상황처럼 내가 먼저 말을 건다. 첫 마디는 힌트로 보여 준다
     tutorHintShown = true; renderTutorHint();
@@ -814,12 +518,14 @@ async function startTutorSession() {
 /** 학습자 문장 보내기 (음성 인식 결과 / 입력창) */
 async function sendTutorText(text) {
   text = (text || "").trim();
-  if (!text || !tutorEngine || tutorBusy) return false;
+  if (!text || !tutorReady() || tutorBusy) return false;
   stopTutorSpeech();
   const token = tutorSessionToken;
   tutorLearnerLines.push(text);
   const myBubble = addTutorBubble("me", text);
-  tutorLearnerItems.push({ text, bubble: myBubble, fix: undefined });
+  const item = { text, bubble: myBubble, fix: undefined, why: "", check: null };
+  tutorLearnerItems.push(item);
+  tutorCheckItem(item, tutorSaidLines[tutorSaidLines.length - 1], token);   // 답과 동시에 교정 확인
   tutorMessages.push({ role: "user", content: text });
   tutorHintShown = false; renderTutorHint();
   await tutorReply(token, { text, bubble: myBubble });
@@ -828,88 +534,74 @@ async function sendTutorText(text) {
 function sendTutorTyped() {
   const inp = tutorEl("tutor-input");
   const t = inp.value;
-  if (!t.trim() || tutorBusy || !tutorEngine) return;   // 튜터가 답을 만드는 중이면 입력은 그대로 둔다
+  if (!t.trim() || tutorBusy || !tutorReady()) return;   // 튜터가 답을 만드는 중이면 입력은 그대로 둔다
   inp.value = "";
   sendTutorText(t);
 }
+/** 문장 하나 교정 확인 → 고칠 게 있으면 내 말풍선 아래에 팁 (실패해도 대화는 그대로, 피드백 때 다시 시도) */
+function tutorCheckItem(item, before, token) {
+  if (!tutorNeedsCheck(item.text)) { item.fix = ""; return Promise.resolve(); }
+  item.check = geminiGenerate(tutorFixMessages(item.text, before), TUTOR_FIX_OPTS)
+    .then(out => {
+      const r = parseTutorFix(item.text, out);
+      item.fix = r.better; item.why = r.why;
+      if (r.better && token === tutorSessionToken && item.bubble && item.bubble.isConnected) addTutorTip(item.bubble, r.better, r.why);
+    })
+    .catch(e => { console.warn("교정 확인 실패", e); item.fix = undefined; })
+    .finally(() => { item.check = null; });
+  return item.check;
+}
 
 /** 답 만들기 → 말풍선 → 소리 내어 읽기
- *  빠르게 하려고: ① 모델이 기억하는 대화(KV 캐시)를 다음 차례에 그대로 이어 쓰도록, 모델이 실제로 낸 답을 기록에 그대로 넣고
- *  ② 문장 교정은 대화 중이 아니라 '오늘 대화 피드백'에서 한꺼번에 한다 (교정 질문을 끼우면 대화 기억을 처음부터 다시 계산함)
- *  ③ 두 문장이 끝나면(또는 질문을 마치면) 더 쓰지 않게 바로 멈춘다
- *  ④ 답이 다 만들어지기를 기다리지 않고, 끝난 문장부터 바로 읽기 시작한다 */
+ *  - 글자가 오는 대로 보여 주고, 끝난 문장부터 바로 읽기 시작한다
+ *  - 두 문장을 마치거나 질문을 하면 더 받지 않고 멈춘다 */
 async function tutorReply(token, learner) {
   tutorBusy = true;
   setTutorStatus("생각 중…", "thinking");
   const bubble = addTutorBubble("tutor", "…");
   const bubbleText = bubble.querySelector(".tutor-text");
-  let raw = "", shown = "";   // raw: 모델이 실제로 낸 답(기록용) / shown: 멈추기로 한 순간까지의 답(보여 주고 읽을 문장)
-  let voice = null;           // 끝난 문장부터 읽는 줄
-  const generate = () => tutorEngineCall(async () => {
-    raw = ""; shown = "";
-    if (voice) voice.cancel();
-    voice = tutorSpeechQueue(token);
-    let stopped = false;
-    const chunks = await tutorEngine.chat.completions.create({ messages: tutorForModel(tutorContext()), stream: true, ...TUTOR_REPLY_OPTS });
-    for await (const c of chunks) {
-      if (token !== tutorSessionToken) { try { tutorEngine.interruptGenerate(); } catch (e) {} break; }
-      raw += (c.choices[0] && c.choices[0].delta && c.choices[0].delta.content) || "";
-      if (stopped) continue;                 // 멈추라고 한 뒤 늦게 도착한 글자는 보여 주지 않는다
+  const abort = new AbortController();
+  tutorAbort = abort;
+  let shown = "", stopped = false;
+  const voice = tutorSpeechQueue(token);
+  const prev = () => tutorSaidLines.slice(-2);
+  try {
+    await geminiStream(tutorContext(), TUTOR_REPLY_OPTS, raw => {
+      if (stopped || token !== tutorSessionToken) return;
       shown = raw;
       const clean = cleanTutorSay(shown);
-      const live = tutorPolish(clean, learner && learner.text, tutorSaidLines.slice(-2), true);
-      bubbleText.textContent = live || "…";
-      const fin = tutorFinishedSentences(clean, shown);
-      voice.upTo(tutorPolish(fin, learner && learner.text, tutorSaidLines.slice(-2), true));
-      if (tutorReplyDone(raw)) { stopped = true; try { tutorEngine.interruptGenerate(); } catch (e) {} }
-    }
-    // 멈춘 시점에 따라 몇 글자 더 나왔을 수 있어, 모델이 기억하는 답을 그대로 받아 기록에 쓴다
-    try { const m = await tutorEngine.getMessage(); if (typeof m === "string" && m) raw = m; } catch (e) {}
-  });
-  try {
-    try { await generate(); }
-    catch (e) {
-      // 휴대폰에서 화면을 오래 떠나 있었거나 메모리가 모자라면 AI 계산 장치가 끊겨 엔진이 멈춘다.
-      // 저장된 모델로 엔진을 다시 열고 대화는 그대로 이어서 한 번 더 시도한다
-      if (token !== tutorSessionToken) throw e;
-      console.warn("튜터 답 생성 실패 → 엔진을 다시 열어 재시도", e);
-      if (voice) voice.cancel();
-      setTutorStatus("튜터 다시 깨우는 중…", "thinking");
-      bubbleText.textContent = "…";
-      unloadTutorEngine();
-      await ensureTutorEngine(p => setTutorStatus(`튜터 다시 깨우는 중… ${Math.round(p * 100)}%`, "thinking"));
-      if (token !== tutorSessionToken) throw e;
-      setTutorStatus("생각 중…", "thinking");
-      await generate();
-    }
+      bubbleText.textContent = tutorPolish(clean, learner && learner.text, prev(), true) || "…";
+      voice.upTo(tutorPolish(tutorFinishedSentences(clean, shown), learner && learner.text, prev(), true));
+      if (tutorReplyDone(raw)) { stopped = true; abort.abort(); }
+    }, abort.signal);
   } catch (e) {
+    if (tutorAbort === abort) tutorAbort = null;
     console.warn("튜터 답 생성 실패", e);
-    if (voice) voice.cancel();
+    voice.cancel();
     if (token === tutorSessionToken) {
       // 답을 못 한 문장은 대화 기록에서 빼서 다음 말이 자연스럽게 이어지게 한다
       const last = tutorMessages[tutorMessages.length - 1];
       if (last && last.role === "user") tutorMessages.pop();
-      bubbleText.textContent = "(답을 만들지 못했어요. 다시 말해 주세요.)";
+      bubbleText.textContent = "(답을 받지 못했어요. 다시 말해 주세요.)";
       const why = document.createElement("div");
       why.className = "tutor-err";
-      const dev = tutorSupport ? [tutorSupport.gpu, tutorSupport.f16 ? "f16" : "f32"].filter(Boolean).join(" ") : "";
-      why.textContent = `${String((e && e.message) || e).slice(0, 120)}${dev ? " · " + dev : ""}${TUTOR_ASSET_VER ? " · " + TUTOR_ASSET_VER.slice(1) : ""}`;
+      why.textContent = geminiErrorText(e);
       bubble.appendChild(why);
-      setTutorStatus(tutorEngine ? "다시 시도해 주세요" : "튜터를 다시 열어 주세요", "");
-      if (!tutorEngine) { showTutorSection("setup"); const btn = tutorEl("tutor-download-btn"); btn.classList.remove("hidden"); btn.disabled = false; btn.textContent = "다시 시도"; }
+      setTutorStatus("다시 시도해 주세요", "");
+      if (geminiKeyProblem(e)) { tutorSetKey(""); setTimeout(() => { alert(geminiErrorText(e)); renderTutorPage(); }, 0); }
     }
     tutorBusy = false;
     return;
   }
+  if (tutorAbort === abort) tutorAbort = null;
   if (token !== tutorSessionToken) { tutorBusy = false; return; }
-  const text = tutorPolish(cleanTutorSay(shown), learner && learner.text, tutorSaidLines.slice(-2)) || "Sorry, could you say that again?";
+  const text = tutorPolish(cleanTutorSay(shown), learner && learner.text, prev()) || "Sorry, could you say that again?";
   tutorSaidLines.push(text);
   voice.upTo(text);           // 남은 문장까지 마저 읽는다
   bubbleText.textContent = text;
   bubble.onclick = () => speakTutor(text, tutorSessionToken);
   addSlowButton(bubble, text);
-  // 기록에는 모델이 실제로 낸 답(raw)을 넣어야 다음 차례에 앞부분 계산을 다시 쓴다. 비었으면 보여 준 문장으로
-  tutorMessages.push({ role: "assistant", content: raw.trim() ? raw : text });
+  tutorMessages.push({ role: "assistant", content: text });
   tutorBusy = false;
   await voice.finish();
 }
@@ -965,25 +657,13 @@ function tutorReplyDone(raw) {
   return done.filter(x => x.trim().split(/\s+/).length > 2).length >= 3;
 }
 
-/** Gemma는 시스템 역할이 없어(공식 형식) 시스템 안내를 첫 사용자 말 앞에 붙여 보낸다. 다른 모델은 그대로 */
-function tutorForModel(msgs) {
-  if (!/gemma/i.test(tutorActiveModelId || tutorModelId || "") || !msgs.length || msgs[0].role !== "system") return msgs;
-  const [sys, ...rest] = msgs;
-  const i = rest.findIndex(m => m.role === "user");
-  if (i < 0) return rest;
-  return rest.map((m, k) => (k === i ? { role: "user", content: sys.content + "\n\n" + m.content } : m));
-}
-
-/** 모델에 보내는 대화: 앞부분이 매번 같아야 모델이 계산해 둔 기억을 다시 쓴다.
- *  그래서 오래된 대화는 매 차례 조금씩이 아니라, 길어졌을 때 한 번에 크게 덜어 낸다 */
+/** 모델에 보내는 대화: 너무 길어지면 최근 대화만 (시스템 안내는 늘 맨 앞) */
 function tutorContext() {
   const sys = tutorMessages[0], rest = tutorMessages.slice(1);
-  if (rest.length - tutorCtxStart > 24) {
-    let start = rest.length - 12;
-    while (start < rest.length - 1 && rest[start].role !== "user") start++;
-    tutorCtxStart = start;
-  }
-  return [sys, ...rest.slice(tutorCtxStart)];
+  if (rest.length <= 30) return tutorMessages;
+  let tail = rest.slice(-20);
+  while (tail.length && tail[0].role !== "user") tail = tail.slice(1);
+  return [sys, ...tail];
 }
 
 // 천천히 듣기: 초보자가 못 알아들었을 때 같은 문장을 느리게 한 번 더
@@ -1015,11 +695,13 @@ function addTutorBubble(who, text) {
   log.scrollTop = log.scrollHeight;
   return div;
 }
-function addTutorTip(bubble, tip) {
+function addTutorTip(bubble, tip, why) {
   const t = document.createElement("div");
   t.className = "tutor-tip";
-  t.innerHTML = `💡 이렇게 말하면 더 자연스러워요<br><b></b>`;
+  t.innerHTML = `💡 이렇게 말하면 더 자연스러워요<br><b></b><span class="tutor-tip-why"></span>`;
   t.querySelector("b").textContent = tip;
+  if (why) t.querySelector(".tutor-tip-why").textContent = " · " + why;
+  t.onclick = () => speakTutor(tip, tutorSessionToken);
   bubble.after(t);
   const log = tutorEl("tutor-log"); log.scrollTop = log.scrollHeight;
 }
@@ -1046,7 +728,7 @@ function stopTutorSpeech() {
 }
 
 // ---------- 실행 환경 (앱 안 브라우저 / 홈 화면 앱) ----------
-// 카카오톡·인스타그램 등 앱 안의 브라우저는 음성 인식·마이크 권한·AI 계산(WebGPU)이 막혀 있는 경우가 많다
+// 카카오톡·인스타그램 등 앱 안의 브라우저는 음성 인식·마이크 권한이 막혀 있는 경우가 많다
 function tutorEnv() {
   const ua = navigator.userAgent || "";
   const inApp = /KAKAOTALK/i.test(ua) ? "카카오톡" : /NAVER\(inapp|NAVER\//i.test(ua) ? "네이버" : /Instagram/i.test(ua) ? "인스타그램"
@@ -1111,8 +793,9 @@ function tutorJoinResults(results) {
 }
 function toggleTutorMic() {
   const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
-  // 브라우저 음성 인식이 없거나(인앱 등) 실패했던 곳은 기기 안 음성 인식(Whisper)으로
-  if (tutorWhisperRec || !SR || tutorEnv().inApp || tutorUseWhisper) { toggleTutorWhisperMic(); return; }
+  if (!tutorReady()) return;
+  // 브라우저 음성 인식이 없거나(인앱 등) 실패했던 곳은 녹음해서 Gemini로 받아쓰기
+  if (tutorRecRec || !SR || tutorEnv().inApp || tutorUseRecorder) { toggleTutorRecordMic(); return; }
   if (tutorMic) { tutorMic.stop(); return; }          // 듣는 중에 누르면 바로 끝내고 보낸다
   if (tutorMicDenied) { showMicPermissionHelp(); tutorCheckMicPermission(); return; }
   stopTutorSpeech();
@@ -1144,14 +827,14 @@ function toggleTutorMic() {
   rec.onresult = e => { heard = tutorJoinResults(e.results); inp.value = heard; };
   rec.onspeechend = () => { try { rec.stop(); } catch (e) {} };
   rec.onerror = e => {
-    // 브라우저 음성 인식 서비스를 못 쓰는 환경이면 다음부터 기기 안 음성 인식으로 (마이크 권한 자체가 막힌 건 아님)
+    // 브라우저 음성 인식 서비스를 못 쓰는 환경이면 다음부터 녹음 + Gemini 받아쓰기로 (마이크 권한 자체가 막힌 건 아님)
     if (e.error === "service-not-allowed" || e.error === "network" || e.error === "language-not-supported") {
-      tutorUseWhisper = true;
-      setTimeout(() => setTutorStatus("다시 눌러 주세요. 이제 기기 안 음성 인식으로 들을게요", ""), 0);
+      tutorUseRecorder = true;
+      setTimeout(() => setTutorStatus("다시 눌러 주세요. 이제 녹음해서 알아들을게요", ""), 0);
     }
-    else if (e.error === "not-allowed" && !tutorUseWhisper && tutorEnv().inFrame) {
-      tutorUseWhisper = true;                      // 마이크를 직접 받는 방식은 허락되는 경우가 있다 (기타 튜너 방식)
-      setTimeout(() => toggleTutorWhisperMic(), 0);
+    else if (e.error === "not-allowed" && !tutorUseRecorder && tutorEnv().inFrame) {
+      tutorUseRecorder = true;                     // 마이크를 직접 받는 방식은 허락되는 경우가 있다 (기타 튜너 방식)
+      setTimeout(() => toggleTutorRecordMic(), 0);
     }
     else if (e.error === "not-allowed") showMicPermissionHelp();
     else if (TUTOR_MIC_MSG[e.error]) alert(TUTOR_MIC_MSG[e.error]);
@@ -1168,55 +851,16 @@ function toggleTutorMic() {
 }
 /** 튜터가 교정 등을 마무리하는 중이면 끝나기를 기다렸다가 보낸다 (말한 내용을 버리지 않게) */
 function sendTutorWhenFree(text, tries = 0) {
-  if (!tutorEngine) return;
+  if (!tutorReady()) return;
   if (!tutorBusy) { sendTutorText(text); return; }
   if (tries > 100) { tutorEl("tutor-input").value = text; return; }
   setTimeout(() => sendTutorWhenFree(text, tries + 1), 150);
 }
 
-// ---------- 기기 안 음성 인식 (Whisper) ----------
+// ---------- 녹음 + Gemini 받아쓰기 ----------
 // 인앱 브라우저 등 브라우저 음성 인식이 없는 곳: 기타 튜너처럼 마이크 소리를 직접 받아(getUserMedia)
-// 기기 안의 Whisper 모델로 글자로 바꾼다. 모델은 처음 한 번만 받는다 (약 70MB, 브라우저 저장소에 보관)
-// tiny.en: 짧은 문장은 base와 같은 결과에 2.5배 빠름(3초 음성 1.9초 vs 4.7초, 한 줄 실행 기준)
-const TUTOR_STT_MODEL = { model: "Xenova/whisper-tiny.en", dtype: "q8", device: "wasm" };
-const TUTOR_STT_SIZE_LABEL = "약 70MB";
-const TUTOR_STT_WORKER_URL = new URL("stt-worker.js" + TUTOR_ASSET_VER, (document.currentScript && document.currentScript.src) || location.href).href;
-let tutorUseWhisper = false;   // 브라우저 음성 인식이 실패하면 이번 실행 동안 Whisper로 바꾼다
-const TutorSTT = (() => {
-  let worker = null, ready = false, loading = null, seq = 0;
-  const waits = new Map();
-  let onProgress = null;
-  function ensureWorker() {
-    if (worker) return worker;
-    worker = new Worker(TUTOR_STT_WORKER_URL, { type: "module" });
-    worker.onmessage = e => {
-      const m = e.data, w = waits.get(m.id);
-      if (m.type === "progress") { if (onProgress && m.status === "progress" && m.total) onProgress(m.loaded / m.total, m.file); return; }
-      if (!w) return;
-      waits.delete(m.id);
-      if (m.type === "error") w.reject(new Error(m.message)); else w.resolve(m);
-    };
-    worker.onerror = e => { waits.forEach(w => w.reject(new Error("음성 인식 엔진을 불러오지 못했어요"))); waits.clear(); worker = null; loading = null; };
-    return worker;
-  }
-  function call(msg, transfer) {
-    const id = ++seq;
-    return new Promise((resolve, reject) => { waits.set(id, { resolve, reject }); ensureWorker().postMessage({ ...msg, id }, transfer || []); });
-  }
-  return {
-    isReady: () => ready,
-    load(progress) {
-      onProgress = progress || null;
-      if (ready) return Promise.resolve();
-      if (!loading) loading = call({ type: "load", ...(window.TUTOR_STT_OVERRIDE || TUTOR_STT_MODEL) }).then(() => { ready = true; try { localStorage.setItem("tutorSttReady", "true"); } catch (e) {} }).catch(e => { loading = null; throw e; });
-      return loading;
-    },
-    async transcribe(audio) { const r = await call({ type: "transcribe", audio }, [audio.buffer]); return r.text || ""; },
-    downloadedBefore() { try { return localStorage.getItem("tutorSttReady") === "true"; } catch (e) { return false; } },
-    unload() { if (worker) { try { worker.terminate(); } catch (e) {} } worker = null; ready = false; loading = null; }
-  };
-})();
-
+// 짧은 음성 파일로 만들어 Gemini에게 받아쓰기를 맡긴다 (따로 받을 모델 없음)
+let tutorUseRecorder = false;   // 브라우저 음성 인식이 실패하면 이번 실행 동안 녹음 방식으로
 /** 마이크로 한 마디 녹음: 말을 멈추면(약 1.2초 조용) 자동으로 끝나고, 16kHz 소리 데이터를 돌려준다 */
 function tutorRecordUtterance() {
   let stopNow = null;
@@ -1255,7 +899,7 @@ function tutorRecordUtterance() {
   })();
   return { done, stop: () => stopNow && stopNow() };
 }
-/** 여러 조각을 이어 붙이고 16kHz로 바꾼다 (Whisper 입력 형식) */
+/** 여러 조각을 이어 붙이고 16kHz로 바꾼다 (받아쓰기용 음성 파일 크기를 줄이려고) */
 function tutorResample(chunks, from, to) {
   const len = chunks.reduce((a, c) => a + c.length, 0);
   const all = new Float32Array(len);
@@ -1269,53 +913,66 @@ function tutorResample(chunks, from, to) {
   }
   return out;
 }
-/** Whisper가 조용한 구간에서 지어내는 말([BLANK_AUDIO], (music), Thank you. 등) 걸러 내기 */
-function cleanWhisperText(t) {
-  const s = (t || "").replace(/\[[^\]]*\]|\([^)]*\)|\*[^*]*\*/g, " ").replace(/\s+/g, " ").trim();
-  if (!s || /^(thank you|thanks for watching|you)[.!]?$/i.test(s)) return "";
+/** 16kHz 소리 → WAV(16비트) → base64 */
+function tutorWavBase64(samples, rate) {
+  const n = samples.length, buf = new ArrayBuffer(44 + n * 2), v = new DataView(buf);
+  const w = (o, s) => { for (let i = 0; i < s.length; i++) v.setUint8(o + i, s.charCodeAt(i)); };
+  w(0, "RIFF"); v.setUint32(4, 36 + n * 2, true); w(8, "WAVE"); w(12, "fmt "); v.setUint32(16, 16, true);
+  v.setUint16(20, 1, true); v.setUint16(22, 1, true); v.setUint32(24, rate, true); v.setUint32(28, rate * 2, true);
+  v.setUint16(32, 2, true); v.setUint16(34, 16, true); w(36, "data"); v.setUint32(40, n * 2, true);
+  for (let i = 0; i < n; i++) { const s = Math.max(-1, Math.min(1, samples[i])); v.setInt16(44 + i * 2, s < 0 ? s * 0x8000 : s * 0x7fff, true); }
+  const bytes = new Uint8Array(buf);
+  let bin = ""; for (let i = 0; i < bytes.length; i += 0x8000) bin += String.fromCharCode.apply(null, bytes.subarray(i, i + 0x8000));
+  return btoa(bin);
+}
+/** 받아쓰기 결과 정리: 말이 없을 때 지어내는 표시([silence], (noise) 등) 걷어 내기 */
+function cleanHeardText(t) {
+  const s = (t || "").replace(/\[[^\]]*\]|\([^)]*\)|\*[^*]*\*/g, " ").replace(/^["“]+|["”]+$/g, "").replace(/\s+/g, " ").trim();
+  if (!s || /^(no speech|silence|inaudible|none|empty)\.?$/i.test(s)) return "";
   return s;
 }
+async function geminiTranscribe(audio16k) {
+  const data = tutorWavBase64(audio16k, 16000);
+  const out = await geminiGenerate([{ role: "user", parts: [
+    { inlineData: { mimeType: "audio/wav", data } },
+    { text: "Transcribe what this English learner says. Write exactly the English words spoken, keeping any grammar mistakes. If there is no clear speech, reply with nothing. Output only the transcript." }
+  ] }], { temperature: 0, maxTokens: 200 });
+  return cleanHeardText(out);
+}
 
-let tutorWhisperRec = null;
-async function toggleTutorWhisperMic() {
-  if (tutorWhisperRec) { tutorWhisperRec.stop(); return; }            // 듣는 중에 누르면 바로 끝내고 보낸다
+let tutorRecRec = null;
+async function toggleTutorRecordMic() {
+  if (tutorRecRec) { tutorRecRec.stop(); return; }            // 듣는 중에 누르면 바로 끝내고 보낸다
   if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
     alert("이 화면에서는 마이크를 쓸 수 없어요. 아래 입력창에 영어로 적어 주세요."); tutorEl("tutor-input").focus(); return;
   }
-  if (!TutorSTT.isReady() && !TutorSTT.downloadedBefore() &&
-      !confirm(`이 화면에서는 기기 안의 음성 인식을 써요.\n처음 한 번만 음성 인식 모델(${TUTOR_STT_SIZE_LABEL})을 받을게요.`)) { tutorEl("tutor-input").focus(); return; }
   stopTutorSpeech();
   if ("speechSynthesis" in window) window.speechSynthesis.cancel();
   if (typeof NeuralTTS !== "undefined" && NeuralTTS.suspendAudio) NeuralTTS.suspendAudio();
-  // 모델 준비와 녹음을 함께 시작 (처음엔 받는 동안 말해도 된다)
-  const ready = TutorSTT.load((p) => { if (!tutorWhisperRec) setTutorStatus(`음성 인식 준비 중… ${Math.round(p * 100)}%`, "thinking"); });
-  ready.catch(() => {});
   const rec = tutorRecordUtterance();
-  tutorWhisperRec = rec;
+  tutorRecRec = rec;
   setTutorStatus("듣고 있어요… 말을 마치면 자동으로 보내요", "listening");
   let result;
   try { result = await rec.done; }
   catch (e) {
-    tutorWhisperRec = null;
+    tutorRecRec = null;
     setTutorStatus("마이크를 누르고 영어로 말해 보세요", "");
     if (e && (e.name === "NotAllowedError" || e.name === "SecurityError")) showMicPermissionHelp();
     else if (e && e.name === "NotFoundError") alert("마이크를 찾지 못했어요. 입력창에 적어서 대화할 수 있어요.");
     else alert("마이크를 열지 못했어요. (" + ((e && e.message) || e) + ")");
     return;
   }
-  tutorWhisperRec = null;
+  tutorRecRec = null;
   if (!result.heardVoice || result.audio.length < 16000 * 0.4) { setTutorStatus("소리가 들리지 않았어요. 다시 눌러 말해 보세요", ""); return; }
-  setTutorStatus(TutorSTT.isReady() ? "알아듣는 중…" : "음성 인식 준비 중…", "thinking");
+  setTutorStatus("알아듣는 중…", "thinking");
   try {
-    await ready;
-    setTutorStatus("알아듣는 중…", "thinking");
-    const text = cleanWhisperText(await TutorSTT.transcribe(result.audio));
+    const text = await geminiTranscribe(result.audio);
     setTutorStatus("마이크를 누르고 영어로 말해 보세요", "");
     if (!text) { setTutorStatus("잘 못 알아들었어요. 다시 눌러 또박또박 말해 보세요", ""); return; }
     sendTutorWhenFree(text);
   } catch (e) {
     setTutorStatus("마이크를 누르고 영어로 말해 보세요", "");
-    alert("음성 인식을 하지 못했어요. 입력창에 적어서 대화할 수 있어요.\n(" + ((e && e.message) || e) + ")");
+    alert("말을 알아듣지 못했어요. 입력창에 적어서 대화할 수 있어요.\n(" + geminiErrorText(e) + ")");
   }
 }
 
@@ -1338,69 +995,41 @@ function renderTutorHint() {
   box.querySelector(".tutor-hint-kr").textContent = h.kr;
 }
 
-/** 오늘 대화 피드백: 내가 한 문장을 하나씩 확인(맞는지 → 틀리면 고친 문장)해 말풍선 아래 팁과 요약으로 보여 준다
- *  (작은 모델에게 한 번에 여러 문장을 평가시키면 실수를 놓쳐서, 문장별 2단계 확인을 한다.
- *   대화 중에 하면 매 차례 대화 기억을 다시 계산해 느려지므로 여기서 한꺼번에) */
+/** 오늘 대화 피드백: 대화 중 확인한 교정을 모아 보여 준다 (확인이 끝나지 않았거나 실패한 문장은 지금 확인) */
 async function tutorFeedback() {
   const box = tutorEl("tutor-feedback");
   if (tutorLearnerLines.length === 0) { alert("먼저 튜터와 몇 마디 나눠 보세요."); return; }
-  if (!tutorEngine) return;
-  if (tutorBusy) { setTutorStatus("튜터가 말을 마치면 피드백을 볼 수 있어요", ""); return; }
+  if (!tutorReady()) return;
   const token = tutorSessionToken;
-  const todo = tutorLearnerItems.filter(it => it.fix === undefined);
-  const need = todo.filter(it => tutorNeedsCheck(it.text));
-  todo.filter(it => !tutorNeedsCheck(it.text)).forEach(it => { it.fix = ""; });
   box.classList.remove("hidden");
-  box.innerHTML = `<div class="tutor-feedback-title">📝 오늘 대화 피드백</div><div class="tutor-feedback-body"></div>`;
+  box.innerHTML = `<div class="tutor-feedback-title">📝 오늘 대화 피드백</div><div class="tutor-feedback-body"><div class="tutor-fb-summary">내가 한 문장을 확인하고 있어요…</div></div>`;
+  box.scrollIntoView({ behavior: "smooth", block: "nearest" });
+  const pending = tutorLearnerItems.map((it, i) => it.check || (it.fix === undefined
+    ? tutorCheckItem(it, (tutorMessages.filter(m => m.role === "assistant")[i - 1] || {}).content, token) : null)).filter(Boolean);
+  await Promise.all(pending);
+  if (token !== tutorSessionToken) return;
   const body = box.querySelector(".tutor-feedback-body");
-  if (need.length) {
-    tutorBusy = true;
-    stopTutorSpeech();
-    setTutorStatus("내 문장 확인 중…", "thinking");
-    const prog = document.createElement("div"); prog.className = "tutor-fb-summary"; body.appendChild(prog);
-    box.scrollIntoView({ behavior: "smooth", block: "nearest" });
-    try {
-      for (let i = 0; i < need.length; i++) {
-        if (token !== tutorSessionToken) return;
-        prog.textContent = `내가 한 문장을 확인하고 있어요… (${i + 1}/${need.length})`;
-        const it = need[i];
-        it.fix = await tutorEngineCall(async () => {
-          const v = await tutorEngine.chat.completions.create({ messages: tutorForModel(tutorGrammarCheckMessages(it.text)), ...TUTOR_CHECK_OPTS });
-          if (!tutorCheckSaysWrong(v.choices[0].message.content)) return "";
-          const r = await tutorEngine.chat.completions.create({ messages: tutorForModel(tutorCorrectionMessages(it.text)), ...TUTOR_CORRECTION_OPTS });
-          return parseTutorCorrection(it.text, r.choices[0].message.content);
-        });
-        if (it.fix && it.bubble && it.bubble.isConnected) addTutorTip(it.bubble, it.fix);
-      }
-    } catch (e) {
-      console.warn("교정 실패", e);
-      prog.textContent = "문장 확인을 마치지 못했어요. 잠시 뒤 다시 눌러 주세요.";
-      if (token === tutorSessionToken) { tutorBusy = false; setTutorStatus("마이크를 누르고 영어로 말해 보세요", ""); }
-      return;
-    }
-    if (token !== tutorSessionToken) return;
-    tutorBusy = false;
-    setTutorStatus("마이크를 누르고 영어로 말해 보세요", "");
-    body.innerHTML = "";
-  }
-  tutorCorrections = tutorLearnerItems.filter(it => it.fix).map(it => ({ said: it.text, better: it.fix }));
-  const n = tutorLearnerLines.length, fixes = tutorCorrections.slice(-5);
+  body.innerHTML = "";
+  tutorCorrections = tutorLearnerItems.filter(it => it.fix).map(it => ({ said: it.text, better: it.fix, why: it.why }));
+  const n = tutorLearnerLines.length, fixes = tutorCorrections.slice(-6);
+  const failed = tutorLearnerItems.filter(it => it.fix === undefined).length;
   const summary = document.createElement("div");
   summary.className = "tutor-fb-summary";
   summary.textContent = fixes.length === 0
     ? `영어로 ${n}번 말했어요. 눈에 띄는 실수 없이 잘했어요! 👏`
     : `영어로 ${n}번 말했어요. 이렇게 고쳐 말하면 더 자연스러워요.`;
   body.appendChild(summary);
-  fixes.forEach(({ said, better }) => {
+  fixes.forEach(({ said, better, why }) => {
     const row = document.createElement("div"); row.className = "tutor-fb-row";
-    row.innerHTML = `<span class="from"></span><span class="arrow">→</span><span class="to"></span>`;
+    row.innerHTML = `<span class="from"></span><span class="arrow">→</span><span class="to"></span><span class="why"></span>`;
     row.querySelector(".from").textContent = said;
     row.querySelector(".to").textContent = better;
+    row.querySelector(".why").textContent = why || "";
     row.onclick = () => speakTutor(better, tutorSessionToken);
     body.appendChild(row);
   });
   const note = document.createElement("div"); note.className = "tutor-fb-note";
-  note.textContent = fixes.length ? "고친 문장을 누르면 들을 수 있어요. 대화 중 내 말풍선 아래에도 표시했어요. AI 교정은 참고용이에요." : "AI 교정은 참고용이에요.";
+  note.textContent = (fixes.length ? "고친 문장을 누르면 들을 수 있어요. " : "") + (failed ? `${failed}문장은 확인하지 못했어요(잠시 뒤 다시 눌러 주세요). ` : "") + "AI 교정은 참고용이에요.";
   box.appendChild(note);
   box.scrollIntoView({ behavior: "smooth", block: "nearest" });
 }
