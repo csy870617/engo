@@ -1051,9 +1051,7 @@ body.list-playing .neural-loading { bottom: calc(86px + env(safe-area-inset-bott
 .tutor-bottom { display: flex; justify-content: space-between; gap: 8px; margin-top: 14px; }
 .tutor-credit { margin: 14px 0 0; text-align: center; font-size: 0.7rem; color: var(--secondary); }
 .tutor-slow-btn { display: inline-block; margin-top: 6px; padding: 2px 9px; border-radius: 10px; border: 1px solid rgba(56,189,248,0.4); background: transparent; color: var(--accent); font-size: 0.72rem; cursor: pointer; }
+.tutor-err { margin-top: 4px; font-size: 0.68rem; color: var(--text-sub, #94a3b8); opacity: 0.7; word-break: break-all; }
 .tutor-fb-summary { margin-bottom: 6px; color: var(--text-sub); font-size: 0.85rem; }
 .tutor-fb-row { cursor: pointer; }
 .tutor-delete-setup { margin-top: 12px; }
-.tutor-env { margin-bottom: 14px; padding: 12px 14px; border-radius: 14px; background: rgba(251,191,36,0.1); border: 1px solid rgba(251,191,36,0.35); text-align: center; }
-.tutor-env-text { font-size: 0.85rem; color: #fde68a; line-height: 1.5; margin-bottom: 10px; }
-.tutor-env-btn { width: 100%; padding: 10px; font-size: 0.9rem; }
