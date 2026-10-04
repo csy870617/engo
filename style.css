@@ -1069,6 +1069,8 @@ body.list-playing .neural-loading { bottom: calc(86px + env(safe-area-inset-bott
 .tutor-fb-row .arrow { margin: 0 6px; color: var(--accent); }
 .tutor-fb-row .to { color: #fff; font-weight: 600; }
 .tutor-fb-note { margin-top: 8px; font-size: 0.75rem; color: var(--text-sub); }
+.tutor-voice-row { display: flex; align-items: center; gap: 8px; margin-top: 12px; font-size: 0.85rem; color: var(--text-sub); }
+.tutor-voice-row .tutor-select { flex: 1; min-width: 0; }
 .tutor-bottom { display: flex; justify-content: space-between; gap: 8px; margin-top: 14px; }
 .tutor-credit { margin: 14px 0 0; text-align: center; font-size: 0.7rem; color: var(--secondary); }
 .tutor-slow-btn { display: inline-block; margin-top: 6px; padding: 2px 9px; border-radius: 10px; border: 1px solid rgba(56,189,248,0.4); background: transparent; color: var(--accent); font-size: 0.72rem; cursor: pointer; }

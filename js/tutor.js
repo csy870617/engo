@@ -203,6 +203,7 @@ function renderTutorPage() {
   TutorAvatar.mount();
   fillTutorScenarios();
   fillTutorLevels();
+  fillTutorVoices();
   renderTutorCredit();
   if (!tutorReady()) {
     showTutorSection("setup");
@@ -639,7 +640,7 @@ async function tutorReply(token, learner) {
   if (token !== tutorSessionToken) { tutorBusy = false; return; }
   const text = tutorPolish(cleanTutorSay(shown), learner && learner.text, prev()) || "Sorry, could you say that again?";
   tutorSaidLines.push(text);
-  voice.upTo(text);           // 남은 문장까지 마저 읽는다
+  voice.upTo(text, true);     // 남은 문장까지 마저 읽는다
   bubbleText.textContent = text;
   bubble.onclick = () => speakTutor(text, tutorSessionToken);
   addSlowButton(bubble, text);
@@ -667,16 +668,27 @@ function tutorSpeechQueue(token) {
   const spoken = [];                                 // 이미 줄에 넣은 문장
   const alive = () => !dead && token === tutorSessionToken && my === tutorSpeechToken;
   return {
-    /** 읽을 문장이 text까지 늘었다: 아직 줄에 안 넣은 문장만 차례로 넣는다 (걸러 내기로 앞 문장이 바뀌어도 겹쳐 읽지 않음) */
-    upTo(text) {
+    /** 읽을 문장이 text까지 늘었다: 아직 줄에 안 넣은 문장만 차례로 넣는다 (걸러 내기로 앞 문장이 바뀌어도 겹쳐 읽지 않음).
+     *  구글 AI 음성이면 첫 문장은 바로, 나머지는 답이 다 오면(final) 한 번에 받는다 (요청 수를 줄여 무료 한도를 아낀다) */
+    upTo(text, final) {
       if (!alive() || !text) return;
-      for (const part of tutorSplitSentences(text)) {
-        if (spoken.includes(part)) continue;
-        spoken.push(part);
-        if (typeof prefetchSpeech === "function") prefetchSpeech(part, "B");   // 자연스러운 음성은 미리 만들어 둔다
+      const google = tutorUseGoogleVoice() && typeof NeuralTTS !== "undefined";
+      let parts = tutorSplitSentences(text).filter(x => !spoken.includes(x));
+      if (google && spoken.length) { if (!final) return; parts = parts.length ? [parts.join(" ")] : []; }
+      else if (google && !final) parts = parts.slice(0, 1);
+      else if (google && final && parts.length > 1) parts = [parts[0], parts.slice(1).join(" ")];
+      for (const part of parts) {
+        tutorSplitSentences(part).forEach(x => spoken.push(x));
         tutorSpeaking = true;
         setTutorStatus("말하는 중…", "speaking");
-        chain = chain.then(async () => { if (alive()) { try { await speakWithPromise(part, "B"); } catch (e) {} } });
+        if (google) {
+          const clipP = tutorTtsFetch(part, false);          // 앞 문장을 읽는 동안 미리 받아 둔다
+          clipP.catch(() => {});
+          chain = chain.then(() => alive() && tutorPlayClip(clipP, part, alive));
+        } else {
+          if (typeof prefetchSpeech === "function") prefetchSpeech(part, "B");   // 자연스러운 음성은 미리 만들어 둔다
+          chain = chain.then(async () => { if (alive()) { try { await speakWithPromise(part, "B"); } catch (e) {} } });
+        }
       }
     },
     async finish() {
@@ -746,12 +758,7 @@ function addTranslateButton(bubble, text) {
 }
 function speakTutorSlow(text) {
   stopTutorSpeech();
-  // 말하기 속도 설정을 이 한 문장에만 낮춘다 (음성 요청은 호출 순간에 속도를 읽으므로 바로 되돌려도 된다)
-  const keep = userRate;
-  userRate = Math.max(0.5, Math.min(keep, 1) * 0.7);
-  const p = speakTutor(text, tutorSessionToken);
-  userRate = keep;
-  return p;
+  return speakTutor(text, tutorSessionToken, true);
 }
 
 function addTutorBubble(who, text) {
@@ -776,13 +783,135 @@ function addTutorTip(bubble, tip, why) {
   const log = tutorEl("tutor-log"); log.scrollTop = log.scrollHeight;
 }
 
+// ---------- 구글 AI 음성 (Gemini TTS) ----------
+// 튜터 목소리를 사람처럼 자연스러운 구글 AI 음성으로. 문장을 보내면 음성 파일(WAV, 24kHz)을 받아 앱 재생기(입모양 연동)로 튼다.
+// 무료 사용량이 차거나 실패하면 잠시 앱 기본 음성으로 읽는다
+const TUTOR_TTS_API = "https://generativelanguage.googleapis.com/v1beta/interactions";
+const TUTOR_TTS_MODELS = ["gemini-3.8-flash-lite-tts", "gemini-3.8-flash-tts"];   // 빠른 것부터 (무료 한도도 따로)
+const TUTOR_VOICES = {
+  Sulafat: "구글 AI · 따뜻한 여성", Aoede: "구글 AI · 산뜻한 여성", Achird: "구글 AI · 친근한 남성", Puck: "구글 AI · 활기찬 남성", app: "앱 기본 음성"
+};
+const TUTOR_TTS_STYLE = "warm, friendly and clear, like a patient English teacher talking to a student";
+const TUTOR_TTS_STYLE_SLOW = "slowly and very clearly, with short pauses between phrases, like a patient English teacher helping a beginner";
+function tutorVoiceId() { let v = null; try { v = localStorage.getItem("tutorVoice"); } catch (e) {} return TUTOR_VOICES[v] ? v : "Sulafat"; }
+let tutorTtsModelIdx = 0;
+let tutorTtsDownUntil = 0;              // 실패하면 잠시(이 시각까지) 앱 기본 음성으로
+const tutorTtsCache = new Map();        // 같은 문장 다시 듣기는 다시 받지 않는다
+const tutorUseGoogleVoice = () => tutorVoiceId() !== "app" && tutorReady() && Date.now() > tutorTtsDownUntil;
+
+/** 응답 JSON 안에서 마지막 음성 데이터(base64)를 찾는다 (steps[].content[] 의 type "audio") */
+function tutorFindAudio(j) {
+  let found = null;
+  const walk = o => {
+    if (!o || typeof o !== "object") return;
+    if (Array.isArray(o)) { o.forEach(walk); return; }
+    if (o.type === "audio" && typeof o.data === "string") found = o;
+    Object.values(o).forEach(walk);
+  };
+  walk(j);
+  return found;
+}
+/** base64 음성 → 소리 데이터 (WAV면 브라우저가 풀고, 머리말 없는 PCM16이면 직접 푼다) */
+async function tutorDecodeAudio(b64) {
+  const bin = atob(b64), bytes = new Uint8Array(bin.length);
+  for (let i = 0; i < bin.length; i++) bytes[i] = bin.charCodeAt(i);
+  if (bin.slice(0, 4) === "RIFF") {
+    const ctx = NeuralTTS.unlockAudio();
+    const buf = await ctx.decodeAudioData(bytes.buffer.slice(0));
+    return { wav: buf.getChannelData(0), sampleRate: buf.sampleRate };
+  }
+  const n = bytes.length >> 1, out = new Float32Array(n), v = new DataView(bytes.buffer);
+  for (let i = 0; i < n; i++) out[i] = v.getInt16(i * 2, true) / 32768;
+  return { wav: out, sampleRate: 24000 };
+}
+async function tutorTtsRequest(model, text, slow) {
+  const res = await fetch(TUTOR_TTS_API, {
+    method: "POST", headers: { "content-type": "application/json", "x-goog-api-key": tutorGetKey() },
+    body: JSON.stringify({
+      model, store: false,   // 구글 쪽에 대화 기록을 남기지 않는다
+      input: [{ type: "user_input", content: [{ type: "text", text, annotations: [{ type: "speech_metadata", style: slow ? TUTOR_TTS_STYLE_SLOW : TUTOR_TTS_STYLE }] }] }],
+      response_format: { type: "audio" },
+      generation_config: { speech_config: [{ voice: tutorVoiceId() }] }
+    })
+  });
+  if (!res.ok) {
+    let j = null; try { j = await res.json(); } catch (e) {}
+    const er = (j && j.error) || {};
+    throw new GeminiError(er.message || `HTTP ${res.status}`, res.status, ((er.details || []).find(d => d && d.reason) || {}).reason || er.status || "");
+  }
+  const a = tutorFindAudio(await res.json());
+  if (!a) throw new GeminiError("음성이 오지 않았어요", 0, "NO_AUDIO");
+  return tutorDecodeAudio(a.data);
+}
+/** 문장 → 음성 (모델을 차례로 시도, 같은 문장은 한 번만 받는다) */
+function tutorTtsFetch(text, slow) {
+  const key = tutorVoiceId() + "|" + (slow ? "s|" : "") + text;
+  if (tutorTtsCache.has(key)) return tutorTtsCache.get(key);
+  const p = (async () => {
+    let last = null;
+    for (let k = 0; k < TUTOR_TTS_MODELS.length; k++) {
+      const idx = (tutorTtsModelIdx + k) % TUTOR_TTS_MODELS.length;
+      try { const clip = await tutorTtsRequest(TUTOR_TTS_MODELS[idx], text, slow); tutorTtsModelIdx = idx; return clip; }
+      catch (e) { last = e; if (geminiKeyProblem(e) || !geminiTryNext(e)) break; }
+    }
+    throw last;
+  })();
+  tutorTtsCache.set(key, p);
+  p.catch(() => tutorTtsCache.delete(key));
+  while (tutorTtsCache.size > 40) tutorTtsCache.delete(tutorTtsCache.keys().next().value);
+  return p;
+}
+/** 받아 둔(또는 받는 중인) 음성을 튼다. 실패하면 앱 기본 음성으로 읽고, 한동안 기본 음성을 쓴다 */
+async function tutorPlayClip(clipP, text, alive) {
+  let clip = null;
+  try { clip = await clipP; }
+  catch (e) {
+    console.warn("구글 AI 음성 실패 → 기본 음성", e);
+    if (Date.now() > tutorTtsDownUntil) setTimeout(() => setTutorStatus(e.status === 429 ? "구글 AI 음성 한도가 차서 잠시 기본 음성으로 읽어요" : "구글 AI 음성을 받지 못해 기본 음성으로 읽어요", tutorSpeaking ? "speaking" : ""), 0);
+    tutorTtsDownUntil = Date.now() + (e.status === 429 ? 10 * 60 * 1000 : 60 * 1000);
+    if (alive()) { try { await speakWithPromise(text, "B"); } catch (e2) {} }
+    return;
+  }
+  if (!alive()) return;
+  if ("speechSynthesis" in window) window.speechSynthesis.cancel();
+  const maxMs = (clip.wav.length / clip.sampleRate) * 1000 + 3000;   // 끝 신호가 안 와도 멈추지 않게
+  let guard = null;
+  await Promise.race([NeuralTTS.play(clip.wav, clip.sampleRate), new Promise(r => { guard = setTimeout(r, maxMs); })]);
+  clearTimeout(guard);
+}
+/** 튜터 목소리로 한 번 읽기 (구글 AI 음성 또는 앱 기본 음성) */
+function tutorSay(text, slow, alive) {
+  alive = alive || (() => true);
+  if (typeof NeuralTTS !== "undefined") NeuralTTS.unlockAudio();     // 누른 순간에 소리 장치를 깨워 둔다 (아이폰)
+  if (tutorUseGoogleVoice() && typeof NeuralTTS !== "undefined") return tutorPlayClip(tutorTtsFetch(text, slow), text, alive);
+  if (!slow) return speakWithPromise(text, "B");
+  const keep = userRate;                 // 앱 기본 음성: 이 한 문장만 속도를 낮춘다
+  userRate = Math.max(0.5, Math.min(keep, 1) * 0.7);
+  const p = speakWithPromise(text, "B");
+  userRate = keep;
+  return p;
+}
+function fillTutorVoices() {
+  const sel = tutorEl("tutor-voice");
+  if (!sel) return;
+  if (!sel.options.length) Object.entries(TUTOR_VOICES).forEach(([k, v]) => { const o = document.createElement("option"); o.value = k; o.textContent = v; sel.appendChild(o); });
+  sel.value = tutorVoiceId();
+}
+/** 목소리 바꾸기: 바로 한 마디 들려준다 */
+function changeTutorVoice() {
+  try { localStorage.setItem("tutorVoice", tutorEl("tutor-voice").value); } catch (e) {}
+  tutorTtsDownUntil = 0;
+  stopTutorSpeech();
+  speakTutor("Hi, I'm Emma. Let's practice English together!", tutorSessionToken);
+}
+
 // ---------- 말하기 (튜터 목소리 + 입모양) ----------
-async function speakTutor(text, token) {
+async function speakTutor(text, token, slow) {
   if (token !== tutorSessionToken) return;
   const my = ++tutorSpeechToken;
   tutorSpeaking = true;
   setTutorStatus("말하는 중…", "speaking");
-  try { await speakWithPromise(text, "B"); } catch (e) {}
+  try { await tutorSay(text, slow, () => token === tutorSessionToken && my === tutorSpeechToken); } catch (e) {}
   // 중간에 끊고 새로 말하거나 대화가 바뀌었으면 상태를 건드리지 않는다
   if (token !== tutorSessionToken || my !== tutorSpeechToken) return;
   tutorSpeaking = false;
