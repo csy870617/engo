@@ -1018,6 +1018,17 @@ body.list-playing .neural-loading { bottom: calc(86px + env(safe-area-inset-bott
 .tutor-key-row { display: flex; gap: 8px; align-items: center; }
 .tutor-key-row .search-input { flex: 1; min-width: 0; margin: 0; }
 .tutor-note { margin: 4px 0 0; font-size: 0.75rem; color: var(--text-sub); line-height: 1.6; text-align: left; }
+.tutor-select.tutor-level { flex: 0 0 auto; width: auto; padding-right: 6px; }
+.tutor-trans-btn { margin-left: 6px; }
+.tutor-trans { margin-top: 6px; padding-top: 6px; border-top: 1px dashed rgba(255,255,255,0.12); font-size: 0.85rem; color: var(--text-sub); }
+.tutor-hint-item { padding: 7px 2px; border-top: 1px dashed rgba(255,255,255,0.1); cursor: pointer; }
+.tutor-hint-item:first-of-type { border-top: none; }
+.tutor-report { margin: 6px 0 10px; display: flex; flex-direction: column; gap: 10px; color: var(--text-main); }
+.tutor-report-err { color: var(--text-sub); font-size: 0.82rem; }
+.tutor-report-title { font-weight: 700; color: #fff; margin-bottom: 2px; font-size: 0.88rem; }
+.tutor-report-expr { padding: 3px 0; cursor: pointer; }
+.tutor-report-expr b { color: #fff; }
+.tutor-report-expr span { color: var(--text-sub); font-size: 0.82rem; }
 .tutor-tip-why { color: var(--text-sub); font-size: 0.78rem; }
 .tutor-tip { cursor: pointer; }
 .tutor-fb-row .why { display: block; font-size: 0.75rem; color: var(--text-sub); }

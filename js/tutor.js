@@ -6,9 +6,13 @@
 // ==========================================
 
 const GEMINI_API = "https://generativelanguage.googleapis.com/v1beta/models/";
-// 빠른 모델부터. 앞 모델의 무료 사용량을 다 쓰거나 잠시 막히면 다음 모델로 넘어간다
-// (무료 사용량이 모델마다 따로라 번갈아 쓰면 하루에 더 오래 대화할 수 있다)
-const TUTOR_GEMINI_MODELS = ["gemini-3.5-flash-lite", "gemini-3.1-flash-lite", "gemini-3.5-flash"];
+// 튜터의 말(대화·피드백)은 가장 똑똑한 Flash, 교정·힌트·번역·받아쓰기 같은 보조 일은 빠른 Flash-Lite.
+// 앞 모델의 무료 사용량을 다 쓰거나 잠시 막히면 다음 모델로 넘어간다
+// (무료 사용량이 모델마다 따로라, 일을 나눠 맡기고 번갈아 쓰면 하루에 더 오래 대화할 수 있다)
+const TUTOR_GEMINI_CHAINS = {
+  chat: ["gemini-3.8-flash", "gemini-3.5-flash", "gemini-3.5-flash-lite", "gemini-3.1-flash-lite"],
+  aux: ["gemini-3.5-flash-lite", "gemini-3.1-flash-lite", "gemini-3.5-flash"]
+};
 const GEMINI_KEY_STORE = "geminiApiKey";
 const GEMINI_KEY_PAGE = "https://aistudio.google.com/apikey";
 // 튜터 그림: 입 모양별 이미지 3장(다문 입·반쯤 벌린 입·크게 벌린 입)을 넣으면 소리에 맞춰 바뀐다.
@@ -37,9 +41,9 @@ const tutorReady = () => !!tutorGetKey();
 class GeminiError extends Error {
   constructor(message, status, reason) { super(message); this.status = status || 0; this.reason = reason || ""; }
 }
-let tutorModelIdx = 0;                 // 지금 쓰는 모델 (TUTOR_GEMINI_MODELS 안의 위치)
+const tutorModelIdx = { chat: 0, aux: 0 };   // 일마다 지금 쓰는 모델 (목록 안의 위치)
 const tutorThinking = {};              // 모델별 생각 수준 (MINIMAL을 못 쓰는 모델이면 LOW로)
-const tutorModelName = () => TUTOR_GEMINI_MODELS[tutorModelIdx];
+const tutorModelName = (chain = "chat") => TUTOR_GEMINI_CHAINS[chain][tutorModelIdx[chain]];
 
 /** 대화 → Gemini 요청 형식 (system은 systemInstruction으로, 같은 역할이 이어지면 합친다) */
 function geminiBody(messages, opts) {
@@ -80,15 +84,16 @@ const geminiKeyProblem = e => e && (e.reason === "API_KEY_INVALID" || e.reason =
 const geminiTryNext = e => e && !geminiKeyProblem(e) && (e.status === 429 || e.status === 404 || e.status === 403 || e.status >= 500);
 /** 모델을 차례로 시도: 생각 수준 설정을 못 쓰는 모델이면 낮춰서 다시, 사용량 초과·혼잡이면 다음 모델로.
  *  run(model, thinking, started)는 started()를 불러 '이미 글자를 보여 주기 시작했음'을 알린다 (그 뒤에는 다른 모델로 넘기지 않음) */
-async function geminiCall(run) {
+async function geminiCall(run, chain = "chat") {
+  const list = TUTOR_GEMINI_CHAINS[chain];
   let last = null;
-  for (let k = 0; k < TUTOR_GEMINI_MODELS.length; k++) {
-    const idx = (tutorModelIdx + k) % TUTOR_GEMINI_MODELS.length, model = TUTOR_GEMINI_MODELS[idx];
+  for (let k = 0; k < list.length; k++) {
+    const idx = (tutorModelIdx[chain] + k) % list.length, model = list[idx];
     let begun = false;
     for (let attempt = 0; attempt < 2; attempt++) {
       try {
         const out = await run(model, tutorThinking[model] || "MINIMAL", () => { begun = true; });
-        if (tutorModelIdx !== idx) { tutorModelIdx = idx; renderTutorCredit(); }
+        if (tutorModelIdx[chain] !== idx) { tutorModelIdx[chain] = idx; renderTutorCredit(); }
         return out;
       } catch (e) {
         if (e && e.name === "AbortError") throw e;
@@ -128,16 +133,23 @@ function geminiStream(messages, opts, onText, signal) {
       }
     } catch (e) { if (e && e.name === "AbortError") return text; throw e; }
     return text;
-  });
+  }, opts.chain || "chat");
 }
-/** 한 번에 받기 (교정·받아쓰기) */
+/** 한 번에 받기 (교정·힌트·번역·받아쓰기·피드백) */
 function geminiGenerate(messages, opts, signal) {
   return geminiCall(async (model, thinking) => {
     const res = await geminiFetch(model, "generateContent", geminiBody(messages, { ...opts, thinking }), signal);
     const j = await res.json();
     const parts = (((j.candidates || [])[0] || {}).content || {}).parts || [];
     return parts.filter(p => p && p.text && !p.thought).map(p => p.text).join("");
-  });
+  }, opts.chain || "aux");
+}
+/** JSON으로 받기 (형식이 깨졌으면 null) */
+async function geminiJSON(messages, opts, signal) {
+  const out = await geminiGenerate(messages, opts, signal);
+  try { return JSON.parse(out); } catch (e) {
+    const m = (out || "").match(/\{[\s\S]*\}/); try { return m ? JSON.parse(m[0]) : null; } catch (e2) { return null; }
+  }
 }
 /** 사용자에게 보여 줄 오류 설명 */
 function geminiErrorText(e) {
@@ -182,7 +194,7 @@ function showTutorSection(which) {
 }
 function renderTutorCredit() {
   const el = tutorEl("tutor-model-name");
-  if (el) el.textContent = tutorReady() ? `AI: Google Gemini (${tutorModelName()}) · 내 키로 연결됨` : "AI: Google Gemini";
+  if (el) el.textContent = tutorReady() ? `AI: Google Gemini (${tutorModelName("chat")}) · 내 키로 연결됨` : "AI: Google Gemini";
 }
 
 /** 튜터 페이지에 들어올 때 (core.js goTo) */
@@ -190,6 +202,7 @@ function renderTutorPage() {
   tutorCheckMicPermission();
   TutorAvatar.mount();
   fillTutorScenarios();
+  fillTutorLevels();
   renderTutorCredit();
   if (!tutorReady()) {
     showTutorSection("setup");
@@ -221,7 +234,7 @@ async function connectTutorKey() {
   const prev = tutorGetKey();
   tutorSetKey(key);
   try {
-    await geminiGenerate([{ role: "user", content: "Reply with just: OK" }], { temperature: 0, maxTokens: 10 });
+    await geminiGenerate([{ role: "user", content: "Reply with just: OK" }], { temperature: 0, maxTokens: 10, chain: "aux" });
     inp.value = "";
     showTutorKeyMsg("", false);
     renderTutorPage();
@@ -281,19 +294,47 @@ function fillTutorScenarios() {
   }
   sel.value = tutorScenarioId;
 }
+function fillTutorLevels() {
+  const sel = tutorEl("tutor-level");
+  if (!sel) return;
+  if (!sel.options.length) Object.entries(TUTOR_LEVELS).forEach(([k, v]) => { const o = document.createElement("option"); o.value = k; o.textContent = v.label; sel.appendChild(o); });
+  sel.value = tutorLevelId();
+}
+/** 수준 바꾸기: 지금 대화는 그대로 두고, 튜터가 다음 말부터 새 수준으로 말한다 */
+function changeTutorLevel() {
+  try { localStorage.setItem("tutorLevel", tutorEl("tutor-level").value); } catch (e) {}
+  if (tutorMessages.length) tutorMessages[0] = { role: "system", content: tutorSystemPrompt(tutorScenario()) };
+  setTutorStatus(`이제 ${tutorLevel().label} 수준으로 말할게요`, "");
+  if (tutorHintShown) renderTutorHint();
+}
 function changeTutorScenario() { tutorScenarioId = tutorEl("tutor-scenario").value; startTutorSession(); }
 
 // ---------- 프롬프트·후처리 (평가 스크립트도 같은 함수를 쓴다) ----------
 // 답하기와 교정을 나눈다: 작은 모델은 한 번에 한 가지 일을 시킬 때 훨씬 정확하다
-const TUTOR_STYLE = [
-  "How to talk:",
-  "- Say 1 or 2 short sentences, 15 words or fewer in total.",
-  "- Use only very common everyday words and simple grammar for a beginner. No idioms, no slang.",
-  "- End with one simple question to keep the conversation going.",
-  "- Never repeat something you already said.",
-  "- If the learner's English is broken, guess what they mean and answer kindly. Do not correct them.",
-  "- Stay in your role. Never say you are an AI. Never use Korean, lists, emojis or notes in brackets."
-].join("\n");
+// 학습자 수준: 튜터 말의 길이·어휘가 달라진다 (maxWords·maxFull: 화면에 보여 주고 읽는 답의 최대 길이)
+const TUTOR_LEVELS = {
+  beginner: { label: "초급", maxWords: 24, maxFull: 2, desc: "beginner (A1-A2)",
+    style: ["Say 1 or 2 short sentences, about 15 words in total.", "Use only very common everyday words and simple present/past grammar. No idioms or slang."] },
+  intermediate: { label: "중급", maxWords: 34, maxFull: 3, desc: "intermediate (B1)",
+    style: ["Say 2 or 3 sentences, about 25 words in total.", "Use natural everyday expressions and common phrasal verbs, but avoid rare words."] },
+  advanced: { label: "고급", maxWords: 45, maxFull: 3, desc: "upper-intermediate to advanced (B2-C1)",
+    style: ["Say 2 or 3 sentences, about 35 words in total.", "Talk like a friendly native speaker, with natural idioms and varied vocabulary."] }
+};
+function tutorLevelId() { let v = null; try { v = localStorage.getItem("tutorLevel"); } catch (e) {} return TUTOR_LEVELS[v] ? v : "beginner"; }
+const tutorLevel = () => TUTOR_LEVELS[tutorLevelId()];
+/** 좋은 회화 선생님처럼 말하는 규칙 (모든 수준 공통 + 수준별 길이·어휘) */
+function tutorStyle() {
+  return [
+    "How to teach:",
+    "- Your main goal is to get the student speaking as much as possible. Keep your turns short and end with one question that invites a real answer (open questions are better than yes/no).",
+    "- React to what the student actually said with genuine interest, then build on it. Never repeat something you already said.",
+    "- If the student makes a mistake, do not point it out. Naturally use the correct form in your reply instead (for example, if they say \"I go to park yesterday\", you might say \"Oh, you went to the park yesterday? What did you do there?\"). Corrections are shown to the student separately.",
+    "- If the student writes in Korean or says they don't know how to say something, give a simple English way to say it, starting with \"You can say:\", and encourage them to try it.",
+    "- If the student asks what a word means, explain it simply in English with a short example.",
+    ...tutorLevel().style.map(x => "- " + x),
+    "- Speak naturally like a real person talking out loud. No lists, no emojis, no markdown, no notes in brackets, no Korean. Never say you are an AI."
+  ].join("\n");
+}
 // 역할극 장면: 튜터가 맡을 역할 (상황마다 한 줄)
 const TUTOR_SCENES = {
   "conv-001": "You are a friendly coworker meeting the learner for the first time at the office.",
@@ -366,12 +407,11 @@ const TUTOR_SCENES = {
   "conv-050": "You are a dog owner in the park. The learner wants to pet your dog."
 };
 function tutorSystemPrompt(sc) {
-  const who = "You are Emma, a warm and patient English conversation partner for a Korean adult beginner.";
-  if (sc.id === "free") return `${who} Chat casually about everyday topics like the learner's day, food, work, hobbies, weekend plans and travel.\n` +
-    `You already started the chat by saying: "${TUTOR_FREE_GREETING}" Do not greet or introduce yourself again.\n${TUTOR_STYLE}`;
-  // 예시 대화를 주면 작은 모델이 그 줄을 그대로 베껴 말한다 → 역할과 장면만 짧게 알려 주고 자유롭게 답하게
+  const who = `You are Emma, a warm, encouraging and skilled English conversation teacher. Your student is a Korean adult at the ${tutorLevel().desc} level who wants to get comfortable speaking English.`;
+  if (sc.id === "free") return `${who} Have a friendly, natural conversation about everyday topics like the student's day, food, work, hobbies, weekend plans and travel. Follow the student's interests and go deeper into what they share.\n` +
+    `You already started the chat by saying: "${TUTOR_FREE_GREETING}" Do not greet or introduce yourself again.\n${tutorStyle()}`;
   const scene = TUTOR_SCENES[sc.id] || `You are the other person in this situation: ${(sc.title.match(/\(([^)]+)\)/) || [])[1] || sc.title}.`;
-  return `${who} Role-play: ${scene} The learner speaks first. Stay in your role and answer what the learner actually says.\n${TUTOR_STYLE}`;
+  return `${who} Role-play practice: ${scene} The student speaks first. Stay in this role like a real person in this situation, react to what the student actually says, and keep the scene moving so the student practices useful real-life phrases.\n${tutorStyle()}`;
 }
 // 시작: 자유 대화는 튜터가 정해진 인사로, 역할극은 실제 상황처럼 학습자(A)가 먼저 말을 건다
 const TUTOR_FREE_GREETING = "Hi, I'm Emma! How's your day going?";
@@ -380,7 +420,7 @@ function tutorStartMessages(sc) {
   return [{ role: "system", content: tutorSystemPrompt(sc) }];
 }
 // 답: 짧은 답이라 생각(thinking)은 최소로 해서 빠르게. 두 문장 넘게 쓰면 중간에 끊는다(tutorReplyDone)
-const TUTOR_REPLY_OPTS = { temperature: 0.8, topP: 0.95, maxTokens: 120 };
+const TUTOR_REPLY_OPTS = { temperature: 0.8, topP: 0.95, maxTokens: 160, chain: "chat" };
 
 /** 모델 답 정리: 역할 이름·학습자 대사 이어 쓰기·이모지·한국어·괄호 메모를 걷어 내고 2문장까지만 */
 function cleanTutorSay(raw) {
@@ -403,10 +443,11 @@ function cleanTutorSay(raw) {
   s = s.replace(/(\d)\.(\d)/g, `$1${DOT}$2`).replace(/\b(Mr|Mrs|Ms|Dr|St)\./g, `$1${DOT}`);
   const sentences = (s.match(/[^.!?]+[.!?]+["”']?|[^.!?]+$/g) || []).map(x => x.split(DOT).join("."));
   let out = "", full = 0;
+  const lv = tutorLevel();
   for (const sen of sentences) {
     const next = (out + " " + sen.trim()).trim();
-    // 긴 문장은 두 개까지. 단, 대화를 이어 가는 질문이 뒤에 오면 붙여 준다 (24단어 안에서)
-    if (out && (next.split(" ").length > 24 || (full >= 2 && !/\?["”']?$/.test(sen.trim())))) break;
+    // 긴 문장은 수준별 개수까지. 단, 대화를 이어 가는 질문이 뒤에 오면 붙여 준다 (수준별 단어 수 안에서)
+    if (out && (next.split(" ").length > lv.maxWords || (full >= lv.maxFull && !/\?["”']?$/.test(sen.trim())))) break;
     out = next;
     if (sen.trim().split(" ").length > 2) full++;   // "Hello!", "Sure." 같은 짧은 말은 문장 수에 넣지 않는다
   }
@@ -460,7 +501,7 @@ function tutorFixMessages(text, before) {
     { role: "user", content: (before ? `The tutor said: "${before}"\n` : "") + `Learner's sentence: "${text}"` }
   ];
 }
-const TUTOR_FIX_OPTS = { temperature: 0, maxTokens: 200, schema: TUTOR_FIX_SCHEMA };
+const TUTOR_FIX_OPTS = { temperature: 0, maxTokens: 200, schema: TUTOR_FIX_SCHEMA, chain: "aux" };
 /** 교정 결과 정리: 원래 문장과 너무 다른 '고친 문장'은 버린다 (엉뚱한 답 방지) */
 function parseTutorFix(text, out) {
   let j = null; try { j = JSON.parse(out || "{}"); } catch (e) { return { better: "", why: "" }; }
@@ -507,6 +548,7 @@ function startTutorSession() {
     const b = addTutorBubble("tutor", TUTOR_FREE_GREETING);
     b.onclick = () => speakTutor(TUTOR_FREE_GREETING, tutorSessionToken);
     addSlowButton(b, TUTOR_FREE_GREETING);
+    addTranslateButton(b, TUTOR_FREE_GREETING);
     speakTutor(TUTOR_FREE_GREETING, token);
   } else {
     // 역할극: 실제 상황처럼 내가 먼저 말을 건다. 첫 마디는 힌트로 보여 준다
@@ -601,6 +643,7 @@ async function tutorReply(token, learner) {
   bubbleText.textContent = text;
   bubble.onclick = () => speakTutor(text, tutorSessionToken);
   addSlowButton(bubble, text);
+  addTranslateButton(bubble, text);
   tutorMessages.push({ role: "assistant", content: text });
   tutorBusy = false;
   await voice.finish();
@@ -647,14 +690,14 @@ function tutorSpeechQueue(token) {
 }
 
 /** 답을 그만 써도 되는지: 줄을 바꿨거나(학습자 대사·메모를 지어내기 시작), 질문으로 끝났거나,
- *  긴 문장 세 개를 마쳤을 때 (cleanTutorSay는 긴 문장 두 개 + 뒤따르는 질문까지 보여 준다. "Nice." 같은 짧은 말은 세지 않음) */
+ *  수준별 문장 수보다 하나 더 마쳤을 때 (cleanTutorSay는 그 수 + 뒤따르는 질문까지 보여 준다. "Nice." 같은 짧은 말은 세지 않음) */
 function tutorReplyDone(raw) {
   const t = raw.replace(/^\s+/, "");
   if (!t) return false;
   if (/\S\s*\n/.test(t) || /\?["”']?\s*$/.test(t)) return true;
   if (!/[.!]["”']?\s*$/.test(t)) return false;
   const done = t.replace(/(\d)\.(\d)/g, "$1$2").replace(/\b(Mr|Mrs|Ms|Dr|St)\./g, "$1").match(/[^.!?]+[.!?]+/g) || [];
-  return done.filter(x => x.trim().split(/\s+/).length > 2).length >= 3;
+  return done.filter(x => x.trim().split(/\s+/).length > 2).length >= tutorLevel().maxFull + 1;
 }
 
 /** 모델에 보내는 대화: 너무 길어지면 최근 대화만 (시스템 안내는 늘 맨 앞) */
@@ -672,6 +715,33 @@ function addSlowButton(bubble, text) {
   btn.className = "tutor-slow-btn";
   btn.textContent = "🐢 천천히";
   btn.onclick = e => { e.stopPropagation(); speakTutorSlow(text); };
+  bubble.appendChild(btn);
+}
+// 해석: 못 알아들은 문장을 자연스러운 한국어로 (한 번 받은 해석은 다시 누르면 접고 펴기만)
+const tutorTransCache = new Map();
+function addTranslateButton(bubble, text) {
+  const btn = document.createElement("button");
+  btn.className = "tutor-slow-btn tutor-trans-btn";
+  btn.textContent = "🇰🇷 해석";
+  btn.onclick = async e => {
+    e.stopPropagation();
+    let box = bubble.querySelector(".tutor-trans");
+    if (box) { box.classList.toggle("hidden"); return; }
+    box = document.createElement("div");
+    box.className = "tutor-trans";
+    box.textContent = "해석하는 중…";
+    bubble.appendChild(box);
+    try {
+      if (!tutorTransCache.has(text)) {
+        const ko = await geminiGenerate([
+          { role: "system", content: "Translate the English sentence into natural, friendly Korean (존댓말) as spoken in everyday conversation. Output only the Korean translation." },
+          { role: "user", content: text }], { temperature: 0, maxTokens: 200, chain: "aux" });
+        tutorTransCache.set(text, (ko || "").replace(/^["“]+|["”]+$/g, "").trim());
+      }
+      box.textContent = tutorTransCache.get(text) || "해석하지 못했어요.";
+    } catch (err) { box.remove(); alert("해석하지 못했어요. " + geminiErrorText(err)); }
+    const log = tutorEl("tutor-log"); if (bubble === log.lastElementChild) log.scrollTop = log.scrollHeight;
+  };
   bubble.appendChild(btn);
 }
 function speakTutorSlow(text) {
@@ -936,7 +1006,7 @@ async function geminiTranscribe(audio16k) {
   const out = await geminiGenerate([{ role: "user", parts: [
     { inlineData: { mimeType: "audio/wav", data } },
     { text: "Transcribe what this English learner says. Write exactly the English words spoken, keeping any grammar mistakes. If there is no clear speech, reply with nothing. Output only the transcript." }
-  ] }], { temperature: 0, maxTokens: 200 });
+  ] }], { temperature: 0, maxTokens: 200, chain: "aux" });
   return cleanHeardText(out);
 }
 
@@ -984,15 +1054,59 @@ function tutorHintFor() {
   return mine[Math.min(tutorLearnerLines.length, mine.length - 1)];
 }
 function toggleTutorHint() { tutorHintShown = !tutorHintShown; renderTutorHint(); }
+// AI 힌트: 지금 대화의 마지막 말에 이어서 내가 할 수 있는 말 3가지 (영어 + 한국어 뜻)
+let tutorHintCache = { key: "", list: null, loading: null };
+const TUTOR_HINT_SCHEMA = { type: "OBJECT", properties: { suggestions: { type: "ARRAY", items: { type: "OBJECT",
+  properties: { en: { type: "STRING" }, kr: { type: "STRING" } }, required: ["en", "kr"] } } }, required: ["suggestions"] };
+function tutorTranscript(maxMsgs) {
+  return tutorMessages.slice(1).slice(-(maxMsgs || 12)).map(m => (m.role === "user" ? "Student: " : "Teacher: ") + m.content).join("\n");
+}
+async function loadTutorAiHints(key) {
+  const sc = tutorScenario();
+  const said = tutorSaidLines[tutorSaidLines.length - 1] || "";
+  const j = await geminiJSON([
+    { role: "system", content: `You help a Korean adult practice English conversation at the ${tutorLevel().desc} level. ` +
+      "Suggest 3 different, natural things the student could say next in reply to the teacher's last message. Make them sound like real spoken English at the student's level " +
+      "(beginner: short and simple), and make each one different (for example a short answer, an answer with a detail, and a question back). Give a natural Korean meaning for each." },
+    { role: "user", content: (sc.id !== "free" ? `Situation: ${sc.title}\n` : "") + `Conversation so far:\n${tutorTranscript(10) || "(none)"}\n` +
+      (tutorMessages.length <= 1 && said ? `Teacher: ${said}\n` : "") + "Suggest what the student can say next." }
+  ], { temperature: 0.7, maxTokens: 400, schema: TUTOR_HINT_SCHEMA, chain: "aux" });
+  const list = ((j && j.suggestions) || []).filter(x => x && x.en).slice(0, 3);
+  if (tutorHintCache.key === key) tutorHintCache.list = list;
+  return list;
+}
 function renderTutorHint() {
   const box = tutorEl("tutor-hint");
   if (!box) return;
-  const h = tutorHintShown && tutorHintFor();
-  box.classList.toggle("hidden", !h);
-  if (!h) return;
-  box.innerHTML = `<div class="tutor-hint-label">이렇게 말해 볼까요?</div><div class="tutor-hint-en"></div><div class="tutor-hint-kr"></div>`;
-  box.querySelector(".tutor-hint-en").textContent = h.en;
-  box.querySelector(".tutor-hint-kr").textContent = h.kr;
+  box.classList.toggle("hidden", !tutorHintShown);
+  if (!tutorHintShown) return;
+  const sc = tutorScenario();
+  // 역할극을 막 시작했을 때(아직 아무도 말하지 않음)는 상황에 맞게 준비된 첫 마디
+  if (sc.id !== "free" && tutorLearnerLines.length === 0) {
+    const h = tutorHintFor();
+    box.innerHTML = `<div class="tutor-hint-label">이렇게 말해 볼까요?</div><div class="tutor-hint-en"></div><div class="tutor-hint-kr"></div>`;
+    box.querySelector(".tutor-hint-en").textContent = h.en;
+    box.querySelector(".tutor-hint-kr").textContent = h.kr;
+    return;
+  }
+  if (!tutorReady()) return;
+  const key = tutorSessionToken + ":" + tutorSaidLines.length + ":" + tutorLevelId();
+  if (tutorHintCache.key !== key) {
+    tutorHintCache = { key, list: null, loading: loadTutorAiHints(key).catch(e => { if (tutorHintCache.key === key) tutorHintCache.error = e; }).finally(() => { if (tutorHintCache.key === key) { tutorHintCache.loading = null; renderTutorHint(); } }) };
+  }
+  if (!tutorHintCache.list) {
+    box.innerHTML = tutorHintCache.error ? `<div class="tutor-hint-label">힌트를 만들지 못했어요. ${geminiErrorText(tutorHintCache.error)}</div>` : `<div class="tutor-hint-label">힌트 만드는 중…</div>`;
+    return;
+  }
+  box.innerHTML = `<div class="tutor-hint-label">이렇게 말해 볼까요? (누르면 듣고, 입력창에 들어가요)</div>`;
+  tutorHintCache.list.forEach(h => {
+    const row = document.createElement("div"); row.className = "tutor-hint-item";
+    row.innerHTML = `<div class="tutor-hint-en"></div><div class="tutor-hint-kr"></div>`;
+    row.querySelector(".tutor-hint-en").textContent = h.en;
+    row.querySelector(".tutor-hint-kr").textContent = h.kr;
+    row.onclick = () => { tutorEl("tutor-input").value = h.en; speakTutor(h.en, tutorSessionToken); };
+    box.appendChild(row);
+  });
 }
 
 /** 오늘 대화 피드백: 대화 중 확인한 교정을 모아 보여 준다 (확인이 끝나지 않았거나 실패한 문장은 지금 확인) */
@@ -1019,6 +1133,10 @@ async function tutorFeedback() {
     ? `영어로 ${n}번 말했어요. 눈에 띄는 실수 없이 잘했어요! 👏`
     : `영어로 ${n}번 말했어요. 이렇게 고쳐 말하면 더 자연스러워요.`;
   body.appendChild(summary);
+  const report = document.createElement("div");
+  report.className = "tutor-report";
+  report.textContent = "선생님이 오늘 대화를 살펴보고 있어요…";
+  body.appendChild(report);
   fixes.forEach(({ said, better, why }) => {
     const row = document.createElement("div"); row.className = "tutor-fb-row";
     row.innerHTML = `<span class="from"></span><span class="arrow">→</span><span class="to"></span><span class="why"></span>`;
@@ -1029,9 +1147,42 @@ async function tutorFeedback() {
     body.appendChild(row);
   });
   const note = document.createElement("div"); note.className = "tutor-fb-note";
-  note.textContent = (fixes.length ? "고친 문장을 누르면 들을 수 있어요. " : "") + (failed ? `${failed}문장은 확인하지 못했어요(잠시 뒤 다시 눌러 주세요). ` : "") + "AI 교정은 참고용이에요.";
+  note.textContent = (fixes.length ? "고친 문장·표현을 누르면 들을 수 있어요. " : "표현을 누르면 들을 수 있어요. ") + (failed ? `${failed}문장은 확인하지 못했어요(잠시 뒤 다시 눌러 주세요). ` : "") + "AI 평가는 참고용이에요.";
   box.appendChild(note);
   box.scrollIntoView({ behavior: "smooth", block: "nearest" });
+  // 선생님 평가: 총평 · 잘한 점 · 다음에 써 볼 표현 · 다음 목표 (한국어)
+  try {
+    const r = await geminiJSON([
+      { role: "system", content: `You are an encouraging, skilled English conversation teacher. Write a short feedback report in Korean (존댓말) for a Korean adult student at the ${tutorLevel().desc} level, based on today's conversation. ` +
+        "overall: 2 warm, specific sentences about how the student did. good: 2 specific things the student did well. " +
+        "expressions: 3 useful English expressions the student could use next time in this kind of conversation, at their level, each with a Korean meaning. " +
+        "next: one concrete, small goal for the next practice. Write everything in Korean except the English expressions." },
+      { role: "user", content: `Situation: ${tutorScenario().title}\nConversation:\n${tutorTranscript(40)}\n\nCorrections already shown to the student:\n` +
+        (tutorCorrections.map(c => `- ${c.said} -> ${c.better}`).join("\n") || "(none)") }
+    ], { temperature: 0.4, maxTokens: 900, chain: "chat", schema: { type: "OBJECT", properties: {
+      overall: { type: "STRING" }, good: { type: "ARRAY", items: { type: "STRING" } },
+      expressions: { type: "ARRAY", items: { type: "OBJECT", properties: { en: { type: "STRING" }, kr: { type: "STRING" } }, required: ["en", "kr"] } },
+      next: { type: "STRING" } }, required: ["overall"] } });
+    if (token !== tutorSessionToken) return;
+    if (!r || !r.overall) throw new Error("평가 형식 오류");
+    report.innerHTML = "";
+    const sec = (title, cls) => { const d = document.createElement("div"); d.className = "tutor-report-sec " + (cls || ""); d.innerHTML = `<div class="tutor-report-title"></div>`; d.firstChild.textContent = title; report.appendChild(d); return d; };
+    const p = sec("👩‍🏫 선생님 한마디"); const t = document.createElement("div"); t.textContent = r.overall; p.appendChild(t);
+    if ((r.good || []).length) { const g = sec("👍 잘한 점"); r.good.slice(0, 3).forEach(x => { const d = document.createElement("div"); d.textContent = "· " + x; g.appendChild(d); }); }
+    if ((r.expressions || []).length) {
+      const ex = sec("✨ 다음에 써 볼 표현");
+      r.expressions.slice(0, 4).forEach(x => {
+        const d = document.createElement("div"); d.className = "tutor-report-expr";
+        d.innerHTML = `<b></b> <span></span>`; d.querySelector("b").textContent = x.en; d.querySelector("span").textContent = x.kr;
+        d.onclick = () => speakTutor(x.en, tutorSessionToken); ex.appendChild(d);
+      });
+    }
+    if (r.next) { const n2 = sec("🎯 다음 목표"); const d = document.createElement("div"); d.textContent = r.next; n2.appendChild(d); }
+  } catch (e) {
+    console.warn("평가 실패", e);
+    report.textContent = "선생님 평가를 받지 못했어요. " + geminiErrorText(e);
+    report.classList.add("tutor-report-err");
+  }
 }
 
 // ---------- 튜터 얼굴 (입모양) ----------
