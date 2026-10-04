@@ -217,13 +217,6 @@ function renderTutorPage() {
   if (tutorMessages.length === 0) startTutorSession(); else setTutorStatus("마이크를 누르고 영어로 말해 보세요", "");
 }
 
-/** 붙여넣기 버튼: 클립보드의 키를 칸에 넣는다 (권한이 없으면 길게 눌러 붙여 넣게 안내) */
-async function pasteTutorKey() {
-  const inp = tutorEl("tutor-key-input");
-  try { const t = await navigator.clipboard.readText(); if (t) { inp.value = t.trim(); return; } } catch (e) {}
-  inp.focus();
-  showTutorKeyMsg("칸을 길게 눌러 '붙여넣기'를 해 주세요.", false);
-}
 function showTutorKeyMsg(text, isError) {
   const m = tutorEl("tutor-key-msg");
   m.textContent = text; m.classList.toggle("hidden", !text); m.classList.toggle("ok", !isError);
