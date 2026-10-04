@@ -1018,7 +1018,6 @@ body.list-playing .neural-loading { bottom: calc(86px + env(safe-area-inset-bott
 .tutor-key-row { display: flex; gap: 8px; align-items: center; }
 .tutor-key-row .search-input { flex: 1; min-width: 0; margin: 0; }
 .tutor-note { margin: 4px 0 0; font-size: 0.75rem; color: var(--text-sub); line-height: 1.6; text-align: left; }
-.tutor-select.tutor-level { flex: 0 0 auto; width: auto; padding-right: 6px; }
 .tutor-trans-btn { margin-left: 6px; }
 .tutor-trans { margin-top: 6px; padding-top: 6px; border-top: 1px dashed rgba(255,255,255,0.12); font-size: 0.85rem; color: var(--text-sub); }
 .tutor-hint-item { padding: 7px 2px; border-top: 1px dashed rgba(255,255,255,0.1); cursor: pointer; }
@@ -1033,7 +1032,12 @@ body.list-playing .neural-loading { bottom: calc(86px + env(safe-area-inset-bott
 .tutor-tip { cursor: pointer; }
 .tutor-fb-row .why { display: block; font-size: 0.75rem; color: var(--text-sub); }
 
-.tutor-topbar { display: flex; gap: 8px; margin-bottom: 10px; }
+.tutor-topbar { display: flex; gap: 8px; align-items: center; margin-bottom: 10px; }
+.tutor-topic { font-weight: 700; color: #fff; font-size: 0.95rem; white-space: nowrap; }
+.tutor-levels { flex: 1; display: flex; justify-content: center; gap: 2px; padding: 3px; border-radius: 999px; background: rgba(0,0,0,0.3); border: var(--glass-border); min-width: 0; }
+.tutor-level-btn { flex: 1; min-width: 0; padding: 5px 0; border: none; border-radius: 999px; background: transparent; color: var(--text-sub); font-size: 0.8rem; font-weight: 600; cursor: pointer; font-family: inherit; }
+.tutor-level-btn.active { background: var(--primary); color: #fff; }
+.tutor-new-btn { flex-shrink: 0; }
 .tutor-select { flex: 1; min-width: 0; background: rgba(0,0,0,0.3); color: var(--text-main); border: var(--glass-border); border-radius: 12px; padding: 9px 10px; font-size: 0.88rem; font-family: inherit; }
 .tutor-select optgroup, .tutor-select option { background: #1e293b; color: var(--text-main); }
 
