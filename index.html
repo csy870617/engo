@@ -22,7 +22,7 @@
   <meta property="og:image" content="https://engo.life/logo.png">
   <meta property="og:site_name" content="ENGO">
 
-  <link rel="stylesheet" href="style.css?v=140" />
+  <link rel="stylesheet" href="style.css?v=141" />
 
   <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2078760660134095"
      crossorigin="anonymous"></script>
@@ -473,15 +473,10 @@
     </section>
 
 <section id="page-tutor" class="hidden">
-      <div class="nav-header"><span class="back-btn" onclick="goTo('home')">❮ 뒤로</span><h2>AI 튜터</h2></div>
-      <div class="tutor-card">
-        <div class="tutor-stage">
-          <div id="tutor-avatar" class="tutor-avatar"></div>
-          <div id="tutor-status" class="tutor-status">확인 중…</div>
-        </div>
-
+      <div class="call" id="tutor-call">
         <!-- 처음: 내 Gemini 키 연결 -->
-        <div id="tutor-setup" class="tutor-setup hidden">
+        <div id="tutor-setup" class="tutor-setup call-setup-card hidden">
+          <div class="call-setup-top"><button class="call-icon" onclick="goTo('home')" aria-label="나가기">✕</button><span>AI 튜터</span></div>
           <p class="tutor-setup-title">구글 Gemini와 대화하는 AI 회화 튜터</p>
           <ul class="tutor-setup-list">
             <li>오늘 하루·음식·취미·여행 등 일상 이야기를 영어로 자유롭게</li>
@@ -502,29 +497,72 @@
           <p class="tutor-note">무료 키는 하루 사용량에 한도가 있어요. 다 쓰면 잠시 뒤나 다음 날 다시 쓸 수 있어요.<br>무료로 쓰는 동안 대화 내용이 구글 서비스 개선에 쓰일 수 있으니 이름·연락처 같은 개인 정보는 말하지 마세요.<br>키는 다른 사람에게 알려 주지 마세요.</p>
         </div>
 
-        <!-- 대화 -->
-        <div id="tutor-chat-area" class="hidden">
-          <div class="tutor-topbar">
-            <div class="tutor-topic">💬 자유 대화</div>
-            <div id="tutor-levels" class="tutor-levels" role="group" aria-label="내 영어 수준"></div>
-            <button class="chip-btn tutor-new-btn" onclick="startTutorSession()" aria-label="새 대화">↺ 새로</button>
+        <!-- 화상 통화 -->
+        <div id="tutor-chat-area" class="call-room hidden">
+          <div class="call-video">
+            <div id="tutor-avatar" class="call-avatar"></div>
+            <div class="call-top">
+              <button class="call-icon" onclick="goTo('home')" aria-label="나가기">✕</button>
+              <div class="call-who"><b>Emma</b><span id="tutor-timer">영어 선생님</span></div>
+              <button class="call-icon" onclick="toggleTutorSheet('settings')" aria-label="튜터 설정">⚙️</button>
+            </div>
+            <div id="tutor-status" class="call-status">확인 중…</div>
+            <div id="tutor-self" class="call-self" aria-hidden="true">
+              <video id="tutor-cam" playsinline muted autoplay></video>
+              <div class="call-self-me">나</div>
+            </div>
+            <div class="call-captions">
+              <div id="tutor-toast" class="call-toast hidden"></div>
+              <div id="tutor-caption-me" class="cap cap-me hidden"></div>
+              <div id="tutor-caption" class="cap cap-tutor hidden"></div>
+            </div>
+            <!-- 통화 걸기 전 -->
+            <div id="tutor-dial" class="call-dial">
+              <div class="call-dial-ring"><div class="call-dial-face">👩‍🏫</div></div>
+              <div class="call-dial-name">Emma</div>
+              <div class="call-dial-sub" id="tutor-dial-sub">영어 회화 선생님 · 자유 대화</div>
+              <div id="tutor-levels" class="tutor-levels call-dial-levels" role="group" aria-label="내 영어 수준"></div>
+              <button class="call-start" onclick="startTutorCall()">📞 통화 시작</button>
+              <div class="call-dial-tip">편하게 영어로 말해 보세요. 틀려도 괜찮아요!</div>
+            </div>
           </div>
-          <div id="tutor-log" class="tutor-log"></div>
-          <div id="tutor-hint" class="tutor-hint hidden"></div>
-          <button id="tutor-mic-btn" class="tutor-mic" onclick="toggleTutorMic()">🎤 <span>누르고 말하기</span></button>
-          <div class="tutor-input-row">
-            <button class="tutor-round-btn" onclick="toggleTutorHint()" aria-label="힌트 보기">💡</button>
-            <input id="tutor-input" type="text" class="search-input" placeholder="또는 영어로 입력…" autocomplete="off" onkeydown="if (event.key === 'Enter') sendTutorTyped()" />
+
+          <div id="tutor-hint" class="tutor-hint call-hint hidden"></div>
+          <div id="tutor-type-row" class="call-type hidden">
+            <input id="tutor-input" type="text" class="search-input" placeholder="영어로 입력…" autocomplete="off" onkeydown="if (event.key === 'Enter') sendTutorTyped()" />
             <button class="tutor-round-btn send" onclick="sendTutorTyped()" aria-label="보내기">➤</button>
           </div>
-          <div id="tutor-feedback" class="tutor-feedback hidden"></div>
-          <div class="tutor-voice-row"><span>🔊 튜터 목소리</span><select id="tutor-voice" class="tutor-select" onchange="changeTutorVoice()" aria-label="튜터 목소리"></select></div>
-          <div class="tutor-bottom">
-            <button class="chip-btn" onclick="tutorFeedback()">📝 오늘 대화 피드백</button>
-            <button class="chip-btn" onclick="manageTutorKey()">🔑 키 연결 끊기</button>
+          <div class="call-controls">
+            <button class="call-ctl" onclick="toggleTutorHint()" aria-label="힌트"><i>💡</i><span>힌트</span></button>
+            <button class="call-ctl" onclick="toggleTutorType()" aria-label="글로 입력"><i>⌨️</i><span>입력</span></button>
+            <button id="tutor-mic-btn" class="call-mic" onclick="toggleTutorMic()" aria-label="말하기"><i>🎤</i><span>말하기</span></button>
+            <button class="call-ctl" onclick="toggleTutorSheet('log')" aria-label="대화 기록"><i>💬</i><span>기록</span></button>
+            <button class="call-ctl call-end" onclick="endTutorCall()" aria-label="통화 종료"><i>📞</i><span>종료</span></button>
+          </div>
+
+          <!-- 아래에서 올라오는 판 -->
+          <div id="tutor-sheet-log" class="call-sheet hidden">
+            <div class="call-sheet-head"><b>대화 기록</b><button class="call-icon" onclick="toggleTutorSheet()" aria-label="닫기">✕</button></div>
+            <div id="tutor-log" class="tutor-log call-log"></div>
+          </div>
+          <div id="tutor-sheet-settings" class="call-sheet hidden">
+            <div class="call-sheet-head"><b>설정</b><button class="call-icon" onclick="toggleTutorSheet()" aria-label="닫기">✕</button></div>
+            <div class="call-set-row"><span>내 영어 수준</span><div id="tutor-levels-set" class="tutor-levels" role="group" aria-label="내 영어 수준"></div></div>
+            <div class="call-set-row"><span>🔊 선생님 목소리</span><select id="tutor-voice" class="tutor-select" onchange="changeTutorVoice()" aria-label="선생님 목소리"></select></div>
+            <label class="call-set-row call-set-check"><span>🎤 선생님 말이 끝나면 자동으로 듣기</span><input type="checkbox" id="tutor-auto-listen" onchange="changeTutorAutoListen()"></label>
+            <label class="call-set-row call-set-check"><span>📷 내 얼굴 보기 <small>(이 기기 화면에만 보여요)</small></span><input type="checkbox" id="tutor-cam-on" onchange="changeTutorCamera()"></label>
+            <button class="chip-btn call-set-key" onclick="manageTutorKey()">🔑 Gemini 키 연결 끊기</button>
+            <p class="tutor-credit"><span id="tutor-model-name">AI: Google Gemini</span></p>
+          </div>
+          <div id="tutor-sheet-feedback" class="call-sheet call-sheet-tall hidden">
+            <div class="call-sheet-head"><b>📝 통화 요약</b><button class="call-icon" onclick="toggleTutorSheet()" aria-label="닫기">✕</button></div>
+            <div id="tutor-feedback" class="tutor-feedback"></div>
+            <div class="call-sheet-actions">
+              <button class="call-start small" onclick="startTutorCall()">📞 다시 걸기</button>
+              <button class="chip-btn" onclick="goTo('home')">나가기</button>
+            </div>
           </div>
         </div>
-        <p class="tutor-credit"><span id="tutor-model-name">AI: Google Gemini</span></p>
       </div>
     </section>
 
@@ -646,12 +684,12 @@
 
   <div id="neural-loading" class="neural-loading hidden">🎙 자연스러운 음성 준비 중…</div>
 
-  <script src="pattern.js?v=140"></script>
-  <script src="conversation.js?v=140"></script>
-  <script src="idiom.js?v=140"></script>
-  <script src="word.js?v=140"></script>
+  <script src="pattern.js?v=141"></script>
+  <script src="conversation.js?v=141"></script>
+  <script src="idiom.js?v=141"></script>
+  <script src="word.js?v=141"></script>
 
-  <script src="js/core.js?v=140"></script>    <script src="js/storage.js?v=140"></script> <script src="js/neural-tts.js?v=140"></script> <script src="js/media.js?v=140"></script>   <script src="js/study.js?v=140"></script>   <script src="js/game.js?v=140"></script>    <script src="js/tutor.js?v=140"></script>    </body>
+  <script src="js/core.js?v=141"></script>    <script src="js/storage.js?v=141"></script> <script src="js/neural-tts.js?v=141"></script> <script src="js/media.js?v=141"></script>   <script src="js/study.js?v=141"></script>   <script src="js/game.js?v=141"></script>    <script src="js/tutor.js?v=141"></script>    </body>
 
 
 </html>
