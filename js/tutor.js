@@ -27,7 +27,9 @@ let tutorModelId = null;
 let tutorSupport = null;      // { ok, f16, reason }
 let tutorMessages = [];       // 모델에 보내는 대화 (system 포함)
 let tutorLearnerLines = [];   // 학습자가 말한 문장 (피드백용)
-let tutorCorrections = [];    // 대화 중 교정한 문장 [{ said, better }] (피드백 정리용)
+let tutorCorrections = [];    // 교정한 문장 [{ said, better }] (피드백 정리용)
+let tutorLearnerItems = [];   // 학습자 말풍선 [{ text, bubble, fix }] (피드백 때 문장별로 확인, fix: 확인 전 undefined)
+let tutorCtxStart = 0;        // 모델에 보내는 대화의 시작 위치 (가끔 크게만 옮겨, 그 사이에는 앞부분 계산을 다시 쓰게 한다)
 let tutorScenarioId = "free";
 let tutorBusy = false;
 let tutorSessionToken = 0;
@@ -203,7 +205,7 @@ async function deleteTutorModel() {
     }
   } catch (e) { console.warn(e); }
   try { localStorage.removeItem("tutorModelReady"); } catch (e) {}
-  tutorMessages = []; tutorLearnerLines = [];
+  tutorMessages = []; tutorLearnerLines = []; tutorLearnerItems = [];
   tutorEl("tutor-log").innerHTML = "";
   alert("AI 튜터 모델을 지웠어요.");
   renderTutorPage();
@@ -348,7 +350,7 @@ function tutorStartMessages(sc) {
   // 인사는 시스템 안내에 적어 둔다 (가짜 대화를 넣으면 작은 모델이 인사를 되풀이함)
   return [{ role: "system", content: tutorSystemPrompt(sc) }];
 }
-const TUTOR_REPLY_OPTS = { temperature: 0.6, top_p: 0.9, max_tokens: 60, presence_penalty: 0.4 };
+const TUTOR_REPLY_OPTS = { temperature: 0.6, top_p: 0.9, max_tokens: 48, presence_penalty: 0.4 };
 
 /** 모델 답 정리: 역할 이름·학습자 대사 이어 쓰기·이모지·한국어·괄호 메모를 걷어 내고 2문장까지만 */
 function cleanTutorSay(raw) {
@@ -449,7 +451,9 @@ async function startTutorSession() {
   const sc = tutorScenario();
   tutorMessages = tutorStartMessages(sc);
   tutorLearnerLines = [];
+  tutorLearnerItems = [];
   tutorCorrections = [];
+  tutorCtxStart = 0;
   tutorEl("tutor-log").innerHTML = "";
   tutorEl("tutor-feedback").classList.add("hidden");
   if (sc.id === "free") {
@@ -474,6 +478,7 @@ async function sendTutorText(text) {
   const token = tutorSessionToken;
   tutorLearnerLines.push(text);
   const myBubble = addTutorBubble("me", text);
+  tutorLearnerItems.push({ text, bubble: myBubble, fix: undefined });
   tutorMessages.push({ role: "user", content: text });
   tutorHintShown = false; renderTutorHint();
   await tutorReply(token, { text, bubble: myBubble });
@@ -487,21 +492,30 @@ function sendTutorTyped() {
   sendTutorText(t);
 }
 
-/** 답 만들기 → 말풍선 → 소리 내어 읽기. 읽는 동안 학습자 문장 교정을 만들어 아래에 붙인다 */
+/** 답 만들기 → 말풍선 → 소리 내어 읽기
+ *  빠르게 하려고: ① 모델이 기억하는 대화(KV 캐시)를 다음 차례에 그대로 이어 쓰도록, 모델이 실제로 낸 답을 기록에 그대로 넣고
+ *  ② 문장 교정은 대화 중이 아니라 '오늘 대화 피드백'에서 한꺼번에 한다 (교정 질문을 끼우면 대화 기억을 처음부터 다시 계산함)
+ *  ③ 두 문장이 끝나면(또는 질문을 마치면) 더 쓰지 않게 바로 멈춘다 */
 async function tutorReply(token, learner) {
   tutorBusy = true;
   setTutorStatus("생각 중…", "thinking");
   const bubble = addTutorBubble("tutor", "…");
   const bubbleText = bubble.querySelector(".tutor-text");
-  let raw = "";
+  let raw = "", shown = "";   // raw: 모델이 실제로 낸 답(기록용) / shown: 멈추기로 한 순간까지의 답(보여 주고 읽을 문장)
   const generate = () => tutorEngineCall(async () => {
-    raw = "";
+    raw = ""; shown = "";
+    let stopped = false;
     const chunks = await tutorEngine.chat.completions.create({ messages: tutorContext(), stream: true, ...TUTOR_REPLY_OPTS });
     for await (const c of chunks) {
       if (token !== tutorSessionToken) { try { tutorEngine.interruptGenerate(); } catch (e) {} break; }
       raw += (c.choices[0] && c.choices[0].delta && c.choices[0].delta.content) || "";
-      bubbleText.textContent = cleanTutorSay(raw) || "…";
+      if (stopped) continue;                 // 멈추라고 한 뒤 늦게 도착한 글자는 보여 주지 않는다
+      shown = raw;
+      bubbleText.textContent = cleanTutorSay(shown) || "…";
+      if (tutorReplyDone(raw)) { stopped = true; try { tutorEngine.interruptGenerate(); } catch (e) {} }
     }
+    // 멈춘 시점에 따라 몇 글자 더 나왔을 수 있어, 모델이 기억하는 답을 그대로 받아 기록에 쓴다
+    try { const m = await tutorEngine.getMessage(); if (typeof m === "string" && m) raw = m; } catch (e) {}
   });
   try {
     try { await generate(); }
@@ -537,36 +551,37 @@ async function tutorReply(token, learner) {
     return;
   }
   if (token !== tutorSessionToken) { tutorBusy = false; return; }
-  const text = cleanTutorSay(raw) || "Sorry, could you say that again?";
+  const text = cleanTutorSay(shown) || "Sorry, could you say that again?";
   bubbleText.textContent = text;
   bubble.onclick = () => speakTutor(text, tutorSessionToken);
   addSlowButton(bubble, text);
-  tutorMessages.push({ role: "assistant", content: text });
-  const speaking = speakTutor(text, token);
-  // 튜터가 말하는 동안 교정 (말풍선은 학습자 문장 아래)
-  if (learner && tutorNeedsCheck(learner.text)) {
-    try {
-      const fix = await tutorEngineCall(async () => {
-        const v = await tutorEngine.chat.completions.create({ messages: tutorGrammarCheckMessages(learner.text), ...TUTOR_CHECK_OPTS });
-        if (!tutorCheckSaysWrong(v.choices[0].message.content)) return "";
-        const r = await tutorEngine.chat.completions.create({ messages: tutorCorrectionMessages(learner.text), ...TUTOR_CORRECTION_OPTS });
-        return parseTutorCorrection(learner.text, r.choices[0].message.content);
-      });
-      if (fix && token === tutorSessionToken) { addTutorTip(learner.bubble, fix); tutorCorrections.push({ said: learner.text, better: fix }); }
-    } catch (e) { console.warn("교정 실패", e); }
-  }
+  // 기록에는 모델이 실제로 낸 답(raw)을 넣어야 다음 차례에 앞부분 계산을 다시 쓴다. 비었으면 보여 준 문장으로
+  tutorMessages.push({ role: "assistant", content: raw.trim() ? raw : text });
   tutorBusy = false;
-  if (!tutorSpeaking && token === tutorSessionToken) setTutorStatus("마이크를 누르고 영어로 말해 보세요", "");
-  await speaking;
+  await speakTutor(text, token);
 }
 
-/** 오래된 대화는 덜어서 보낸다 (작은 모델의 기억 범위 안에서) */
+/** 답을 그만 써도 되는지: 줄을 바꿨거나(학습자 대사·메모를 지어내기 시작), 질문으로 끝났거나,
+ *  긴 문장 두 개를 마쳤을 때 (cleanTutorSay도 긴 문장 두 개까지만 보여 준다. "Nice." 같은 짧은 말은 세지 않음) */
+function tutorReplyDone(raw) {
+  const t = raw.replace(/^\s+/, "");
+  if (!t) return false;
+  if (/\S\s*\n/.test(t) || /\?["”']?\s*$/.test(t)) return true;
+  if (!/[.!]["”']?\s*$/.test(t)) return false;
+  const done = t.replace(/(\d)\.(\d)/g, "$1$2").replace(/\b(Mr|Mrs|Ms|Dr|St)\./g, "$1").match(/[^.!?]+[.!?]+/g) || [];
+  return done.filter(x => x.trim().split(/\s+/).length > 2).length >= 2;
+}
+
+/** 모델에 보내는 대화: 앞부분이 매번 같아야 모델이 계산해 둔 기억을 다시 쓴다.
+ *  그래서 오래된 대화는 매 차례 조금씩이 아니라, 길어졌을 때 한 번에 크게 덜어 낸다 */
 function tutorContext() {
   const sys = tutorMessages[0], rest = tutorMessages.slice(1);
-  if (rest.length <= 14) return tutorMessages;
-  let tail = rest.slice(-10);
-  while (tail.length && tail[0].role !== "user") tail = tail.slice(1);
-  return [sys, ...tail];
+  if (rest.length - tutorCtxStart > 24) {
+    let start = rest.length - 12;
+    while (start < rest.length - 1 && rest[start].role !== "user") start++;
+    tutorCtxStart = start;
+  }
+  return [sys, ...rest.slice(tutorCtxStart)];
 }
 
 // 천천히 듣기: 초보자가 못 알아들었을 때 같은 문장을 느리게 한 번 더
@@ -921,14 +936,52 @@ function renderTutorHint() {
   box.querySelector(".tutor-hint-kr").textContent = h.kr;
 }
 
-/** 오늘 대화 피드백: 대화 중 문장마다 확인한 교정 결과를 모아 보여 준다
- *  (작은 모델에게 한 번에 여러 문장을 평가시키면 실수를 놓쳐서, 문장별 2단계 확인 결과를 그대로 쓴다) */
-function tutorFeedback() {
+/** 오늘 대화 피드백: 내가 한 문장을 하나씩 확인(맞는지 → 틀리면 고친 문장)해 말풍선 아래 팁과 요약으로 보여 준다
+ *  (작은 모델에게 한 번에 여러 문장을 평가시키면 실수를 놓쳐서, 문장별 2단계 확인을 한다.
+ *   대화 중에 하면 매 차례 대화 기억을 다시 계산해 느려지므로 여기서 한꺼번에) */
+async function tutorFeedback() {
   const box = tutorEl("tutor-feedback");
   if (tutorLearnerLines.length === 0) { alert("먼저 튜터와 몇 마디 나눠 보세요."); return; }
+  if (!tutorEngine) return;
+  if (tutorBusy) { setTutorStatus("튜터가 말을 마치면 피드백을 볼 수 있어요", ""); return; }
+  const token = tutorSessionToken;
+  const todo = tutorLearnerItems.filter(it => it.fix === undefined);
+  const need = todo.filter(it => tutorNeedsCheck(it.text));
+  todo.filter(it => !tutorNeedsCheck(it.text)).forEach(it => { it.fix = ""; });
   box.classList.remove("hidden");
   box.innerHTML = `<div class="tutor-feedback-title">📝 오늘 대화 피드백</div><div class="tutor-feedback-body"></div>`;
   const body = box.querySelector(".tutor-feedback-body");
+  if (need.length) {
+    tutorBusy = true;
+    stopTutorSpeech();
+    setTutorStatus("내 문장 확인 중…", "thinking");
+    const prog = document.createElement("div"); prog.className = "tutor-fb-summary"; body.appendChild(prog);
+    box.scrollIntoView({ behavior: "smooth", block: "nearest" });
+    try {
+      for (let i = 0; i < need.length; i++) {
+        if (token !== tutorSessionToken) return;
+        prog.textContent = `내가 한 문장을 확인하고 있어요… (${i + 1}/${need.length})`;
+        const it = need[i];
+        it.fix = await tutorEngineCall(async () => {
+          const v = await tutorEngine.chat.completions.create({ messages: tutorGrammarCheckMessages(it.text), ...TUTOR_CHECK_OPTS });
+          if (!tutorCheckSaysWrong(v.choices[0].message.content)) return "";
+          const r = await tutorEngine.chat.completions.create({ messages: tutorCorrectionMessages(it.text), ...TUTOR_CORRECTION_OPTS });
+          return parseTutorCorrection(it.text, r.choices[0].message.content);
+        });
+        if (it.fix && it.bubble && it.bubble.isConnected) addTutorTip(it.bubble, it.fix);
+      }
+    } catch (e) {
+      console.warn("교정 실패", e);
+      prog.textContent = "문장 확인을 마치지 못했어요. 잠시 뒤 다시 눌러 주세요.";
+      if (token === tutorSessionToken) { tutorBusy = false; setTutorStatus("마이크를 누르고 영어로 말해 보세요", ""); }
+      return;
+    }
+    if (token !== tutorSessionToken) return;
+    tutorBusy = false;
+    setTutorStatus("마이크를 누르고 영어로 말해 보세요", "");
+    body.innerHTML = "";
+  }
+  tutorCorrections = tutorLearnerItems.filter(it => it.fix).map(it => ({ said: it.text, better: it.fix }));
   const n = tutorLearnerLines.length, fixes = tutorCorrections.slice(-5);
   const summary = document.createElement("div");
   summary.className = "tutor-fb-summary";
@@ -945,7 +998,7 @@ function tutorFeedback() {
     body.appendChild(row);
   });
   const note = document.createElement("div"); note.className = "tutor-fb-note";
-  note.textContent = fixes.length ? "고친 문장을 누르면 들을 수 있어요. AI 교정은 참고용이에요." : "AI 교정은 참고용이에요.";
+  note.textContent = fixes.length ? "고친 문장을 누르면 들을 수 있어요. 대화 중 내 말풍선 아래에도 표시했어요. AI 교정은 참고용이에요." : "AI 교정은 참고용이에요.";
   box.appendChild(note);
   box.scrollIntoView({ behavior: "smooth", block: "nearest" });
 }
