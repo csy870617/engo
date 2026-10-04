@@ -1061,61 +1061,18 @@ body.list-playing .neural-loading { bottom: calc(86px + env(safe-area-inset-bott
 .tutor-fb-summary { margin-bottom: 6px; color: var(--text-sub); font-size: 0.85rem; }
 .tutor-fb-row { cursor: pointer; }
 
-/* ===== AI 튜터: 화상 통화 화면 ===== */
+/* ===== AI 튜터 (전체 화면) ===== */
 .call { position: fixed; inset: 0; z-index: 1100; display: flex; flex-direction: column; overflow: hidden; color: var(--text-main);
   background: radial-gradient(120% 70% at 50% 0%, #1e1b4b 0%, #0b1020 55%, #070a14 100%); }
 .call-setup-card { position: absolute; inset: 0; overflow-y: auto; padding: calc(12px + env(safe-area-inset-top)) 16px calc(24px + env(safe-area-inset-bottom)); max-width: 520px; margin: 0 auto; text-align: center; }
 .call-setup-top { display: flex; align-items: center; gap: 10px; margin-bottom: 18px; font-weight: 700; color: #fff; }
-.call-room { position: relative; display: flex; flex-direction: column; width: 100%; max-width: 560px; height: 100%; margin: 0 auto; }
-.call-video { position: relative; flex: 1; min-height: 0; overflow: hidden; border-radius: 0 0 26px 26px;
-  background: radial-gradient(90% 60% at 50% 38%, #334155 0%, #1e293b 45%, #0f172a 100%); box-shadow: 0 10px 30px rgba(0,0,0,0.35); }
-.call-avatar { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; padding-bottom: 16%; }
-.call-avatar .tutor-svg { width: min(74%, 46vh); height: auto; transition: filter 0.3s; }
-.call-avatar[data-mode="speaking"] .tutor-svg { filter: drop-shadow(0 0 24px rgba(56,189,248,0.55)); }
-.call-avatar .tutor-frame { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; opacity: 0; }
-.call-avatar .tutor-frame.on { opacity: 1; }
-.call-top { position: absolute; top: calc(10px + env(safe-area-inset-top)); left: 12px; right: 12px; display: flex; align-items: center; justify-content: space-between; z-index: 3; }
 .call-icon { width: 40px; height: 40px; flex-shrink: 0; border-radius: 50%; border: none; background: rgba(0,0,0,0.35); -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px); color: #fff; font-size: 1.05rem; cursor: pointer; display: flex; align-items: center; justify-content: center; font-family: inherit; }
-.call-who { display: flex; flex-direction: column; align-items: center; line-height: 1.2; text-shadow: 0 1px 6px rgba(0,0,0,0.5); }
-.call-who b { color: #fff; font-size: 1.05rem; }
-.call-who span { font-size: 0.75rem; color: #cbd5e1; font-variant-numeric: tabular-nums; }
-.call-status { position: absolute; top: calc(60px + env(safe-area-inset-top)); left: 50%; transform: translateX(-50%); z-index: 3; max-width: 90%; padding: 5px 12px; border-radius: 999px; background: rgba(0,0,0,0.35); -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px); font-size: 0.78rem; color: #e2e8f0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.call-room[data-mode="thinking"] .call-status { animation: tutorPulse 1.4s ease-in-out infinite; }
-.call-self { position: absolute; right: 12px; top: calc(104px + env(safe-area-inset-top)); width: 84px; height: 112px; z-index: 3; border-radius: 16px; overflow: hidden; background: linear-gradient(160deg, #4338ca, #1e293b); border: 2px solid rgba(255,255,255,0.18); display: flex; align-items: center; justify-content: center; transition: border-color 0.2s, box-shadow 0.2s; }
-.call-self video { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; transform: scaleX(-1); display: none; }
-.call-self.cam video { display: block; }
-.call-self.cam .call-self-me { display: none; }
-.call-self-me { width: 46px; height: 46px; border-radius: 50%; background: rgba(255,255,255,0.15); color: #fff; font-weight: 700; display: flex; align-items: center; justify-content: center; }
-.call-room[data-mode="listening"] .call-self { border-color: var(--success); box-shadow: 0 0 0 4px rgba(16,185,129,0.35); }
-.call-captions { position: absolute; left: 12px; right: 12px; bottom: 14px; z-index: 3; display: flex; flex-direction: column; align-items: center; gap: 6px; }
-.cap { max-width: 100%; padding: 10px 14px; border-radius: 16px; background: rgba(0,0,0,0.55); -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px); color: #fff; font-size: 1.05rem; line-height: 1.45; text-align: center; word-break: break-word; }
-.cap-me { align-self: flex-end; max-width: 85%; font-size: 0.88rem; background: rgba(99,102,241,0.55); text-align: right; }
-.cap-actions { display: flex; justify-content: center; gap: 6px; margin-top: 6px; }
-.cap-trans { margin-top: 4px; font-size: 0.85rem; color: #cbd5e1; }
-.call-toast { max-width: 100%; padding: 8px 12px; border-radius: 12px; background: rgba(120,80,0,0.45); border: 1px solid rgba(251,191,36,0.5); color: #fde68a; font-size: 0.85rem; line-height: 1.4; cursor: pointer; -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px); }
-.call-toast b { color: #fff; }
-.call-dial { position: absolute; inset: 0; z-index: 4; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 10px; padding: 24px; text-align: center; background: rgba(7,10,20,0.82); -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px); }
-.call-dial-ring { width: 140px; height: 140px; border-radius: 50%; padding: 8px; border: 3px solid rgba(139,92,246,0.6); animation: callRing 2.4s ease-out infinite; }
-.call-dial.ringing .call-dial-ring { animation-duration: 0.9s; }
-.call-dial-face { width: 100%; height: 100%; border-radius: 50%; overflow: hidden; display: flex; align-items: center; justify-content: center; font-size: 4rem; background: linear-gradient(135deg, #8b5cf6, #38bdf8); }
-.call-dial-face img { width: 100%; height: 100%; object-fit: cover; }
-.call-dial-name { font-size: 1.5rem; font-weight: 800; color: #fff; margin-top: 6px; }
-.call-dial-sub { font-size: 0.85rem; color: var(--text-sub); }
-.call-dial-levels { flex: 0 0 auto; width: min(240px, 80%); margin: 8px 0 4px; }
-.call-room.idle .call-controls, .call-room.idle .call-hint, .call-room.idle .call-type { visibility: hidden; }
-.call-room.idle .call-video { border-radius: 0; }
-.call-dial-tip { font-size: 0.78rem; color: var(--text-sub); }
-.call-start { border: none; border-radius: 999px; padding: 14px 30px; background: linear-gradient(135deg, #10b981, #059669); color: #fff; font-size: 1.05rem; font-weight: 700; cursor: pointer; box-shadow: 0 8px 24px rgba(16,185,129,0.35); font-family: inherit; }
-.call-start.small { padding: 10px 20px; font-size: 0.95rem; }
-.call-hint { margin: 10px 12px 0; max-height: 28vh; overflow-y: auto; }
 .call-type { display: flex; gap: 8px; align-items: center; margin: 10px 12px 0; }
 .call-type .search-input { flex: 1; min-width: 0; margin: 0; }
-.call-controls { display: flex; justify-content: space-around; align-items: center; padding: 12px 6px calc(14px + env(safe-area-inset-bottom)); }
 .call-ctl, .call-mic { display: flex; flex-direction: column; align-items: center; gap: 4px; border: none; background: none; color: var(--text-sub); font-size: 0.72rem; cursor: pointer; font-family: inherit; padding: 0; }
 .call-ctl i, .call-mic i { font-style: normal; display: flex; align-items: center; justify-content: center; border-radius: 50%; }
 .call-ctl i { width: 48px; height: 48px; font-size: 1.2rem; background: rgba(255,255,255,0.08); }
 .call-ctl.on i { background: rgba(139,92,246,0.35); }
-.call-end i { background: #ef4444; }
 .call-mic i { width: 68px; height: 68px; font-size: 1.7rem; background: linear-gradient(135deg, #8b5cf6, #6366f1); box-shadow: 0 8px 22px rgba(99,102,241,0.45); }
 .call-mic span { color: #fff; font-weight: 600; }
 .call-mic.listening i { background: linear-gradient(135deg, #10b981, #059669); animation: tutorMic 1.2s ease-in-out infinite; }
@@ -1123,7 +1080,6 @@ body.list-playing .neural-loading { bottom: calc(86px + env(safe-area-inset-bott
 .call-sheet { position: absolute; left: 0; right: 0; bottom: 0; z-index: 6; max-height: 72%; overflow-y: auto; padding: 14px 16px calc(18px + env(safe-area-inset-bottom)); border-radius: 22px 22px 0 0; background: #111827; border-top: 1px solid rgba(255,255,255,0.08); box-shadow: 0 -10px 30px rgba(0,0,0,0.5); animation: callSheet 0.22s ease-out; }
 .call-sheet-tall { max-height: 90%; }
 .call-sheet-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; color: #fff; font-size: 1rem; }
-.call-log { max-height: none; min-height: 60px; }
 .call-set-row { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 12px 0; border-bottom: 1px dashed rgba(255,255,255,0.08); font-size: 0.88rem; color: var(--text-main); }
 .call-set-row > span { flex-shrink: 0; }
 .call-set-row small { color: var(--text-sub); }
@@ -1134,8 +1090,28 @@ body.list-playing .neural-loading { bottom: calc(86px + env(safe-area-inset-bott
 .call-set-check input { width: 20px; height: 20px; flex-shrink: 0; accent-color: var(--primary); }
 .call-set-key { margin-top: 14px; }
 .call-sheet-actions { display: flex; gap: 10px; justify-content: center; align-items: center; margin-top: 14px; }
-.call .tutor-feedback { margin-top: 0; }
 .tutor-select { background: rgba(0,0,0,0.3); color: var(--text-main); border: var(--glass-border); border-radius: 12px; padding: 8px 10px; font-size: 0.85rem; font-family: inherit; }
 .tutor-select option { background: #1e293b; color: var(--text-main); }
-@keyframes callRing { 0% { box-shadow: 0 0 0 0 rgba(139,92,246,0.55); } 100% { box-shadow: 0 0 0 26px rgba(139,92,246,0); } }
 @keyframes callSheet { from { transform: translateY(30px); opacity: 0; } to { transform: none; opacity: 1; } }
+
+/* 대화 화면: 위에 Emma가 크게, 아래로 대화가 이어진다 */
+.talk-room { position: relative; display: flex; flex-direction: column; width: 100%; max-width: 560px; height: 100%; margin: 0 auto; }
+.talk-hero { position: relative; flex: 0 0 auto; height: 46vh; min-height: 250px; max-height: 520px; overflow: hidden;
+  background: radial-gradient(80% 70% at 50% 40%, #3b4a6b 0%, #1e293b 50%, #0b1020 100%); }
+.talk-hero::after { content: ""; position: absolute; left: 0; right: 0; bottom: 0; height: 38%; pointer-events: none; background: linear-gradient(to bottom, rgba(11,16,32,0), #0b1020 92%); z-index: 2; }
+.talk-avatar { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; padding: calc(40px + env(safe-area-inset-top)) 0 44px; }
+.talk-avatar .tutor-svg { width: auto; height: 100%; max-width: 86%; transition: filter 0.3s; }
+.talk-avatar[data-mode="speaking"] .tutor-svg { filter: drop-shadow(0 0 26px rgba(56,189,248,0.5)); }
+.talk-avatar .tutor-frame { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: center top; opacity: 0; }
+.talk-avatar .tutor-frame.on { opacity: 1; }
+.talk-top { position: absolute; top: calc(10px + env(safe-area-inset-top)); left: 12px; right: 12px; z-index: 3; display: flex; align-items: center; justify-content: space-between; }
+.talk-top-right { display: flex; gap: 8px; }
+.talk-name { position: absolute; left: 16px; right: 16px; bottom: 12px; z-index: 3; display: flex; align-items: center; gap: 10px; }
+.talk-name b { font-size: 1.35rem; color: #fff; text-shadow: 0 2px 10px rgba(0,0,0,0.5); }
+.talk-status { min-width: 0; padding: 4px 11px; border-radius: 999px; background: rgba(0,0,0,0.38); -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px); font-size: 0.78rem; color: #e2e8f0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.talk-room[data-mode="speaking"] .talk-status::before { content: "● "; color: #38bdf8; }
+.talk-room[data-mode="listening"] .talk-status::before { content: "● "; color: #10b981; }
+.talk-room[data-mode="thinking"] .talk-status { animation: tutorPulse 1.4s ease-in-out infinite; }
+.talk-log { flex: 1; min-height: 0; max-height: none; overflow-y: auto; padding: 6px 14px 8px; }
+.talk-hint { margin: 6px 12px 0; max-height: 26vh; overflow-y: auto; }
+.talk-controls { display: flex; justify-content: center; align-items: center; gap: 36px; padding: 10px 0 calc(14px + env(safe-area-inset-bottom)); }

@@ -212,9 +212,9 @@ function renderTutorPage() {
     return;
   }
   showTutorSection("chat");
-  renderTutorCallState();
-  if (!tutorCallActive) setTutorStatus("통화 시작을 누르면 Emma와 대화가 시작돼요", "");
-  else setTutorStatus("마이크를 누르고 영어로 말해 보세요", "");
+  tutorCallActive = true;
+  toggleTutorSheet();
+  if (tutorMessages.length === 0) startTutorSession(); else setTutorStatus("마이크를 누르고 영어로 말해 보세요", "");
 }
 
 /** 붙여넣기 버튼: 클립보드의 키를 칸에 넣는다 (권한이 없으면 길게 눌러 붙여 넣게 안내) */
@@ -257,7 +257,7 @@ async function connectTutorKey() {
 function manageTutorKey() {
   if (!confirm("이 기기에서 Gemini 키 연결을 끊을까요?\n다시 쓰려면 키를 다시 붙여 넣으면 돼요.\n(구글 AI Studio에서 키 자체를 지우거나 새로 만들 수도 있어요)")) return;
   stopTutorActivity();
-  tutorCallActive = false; clearInterval(tutorCallTimer); tutorStopCamera(); toggleTutorSheet();
+  tutorCallActive = false; toggleTutorSheet();
   tutorSetKey("");
   tutorMessages = []; tutorLearnerLines = []; tutorLearnerItems = [];
   tutorEl("tutor-log").innerHTML = "";
@@ -276,110 +276,38 @@ function stopTutorActivity() {
 function leaveTutorPage() {
   stopTutorActivity();
   tutorCallActive = false;
-  clearInterval(tutorCallTimer);
-  tutorStopCamera();
   toggleTutorSheet();
 }
 
-// ---------- 화상 통화 ----------
-let tutorCallActive = false;
-let tutorCallStart = 0;
-let tutorCallTimer = null;
-let tutorCamStream = null;
-function renderTutorCallState() {
-  const dial = tutorEl("tutor-dial");
-  if (dial) { dial.classList.toggle("hidden", tutorCallActive); dial.classList.remove("ringing"); }
-  const room = tutorEl("tutor-chat-area"); if (room) room.classList.toggle("idle", !tutorCallActive);
-  const sub = tutorEl("tutor-dial-sub"); if (sub) sub.textContent = "영어 회화 선생님 · 자유 대화";
-  const face = document.querySelector(".call-dial-face");
-  if (face && TUTOR_AVATAR_FRAMES && !face.querySelector("img")) face.innerHTML = `<img src="${TUTOR_AVATAR_FRAMES.closed}" alt="Emma">`;
-  const auto = tutorEl("tutor-auto-listen"); if (auto) auto.checked = tutorAutoListenOn();
-  const cam = tutorEl("tutor-cam-on"); if (cam) cam.checked = tutorCamWanted();
-}
-/** 통화 시작: 잠깐 연결음 → Emma가 인사하며 대화 시작 */
-function startTutorCall() {
-  if (!tutorReady()) return;
-  if (typeof NeuralTTS !== "undefined") NeuralTTS.unlockAudio();   // 누른 순간에 소리 장치를 깨워 둔다 (아이폰)
+// ---------- 대화 화면 ----------
+let tutorCallActive = false;   // 대화 화면이 열려 있는 동안 (자동 듣기에 쓴다)
+/** 새 대화: 지금 대화를 지우고 Emma가 새 인사로 시작 */
+function newTutorConversation() {
+  if (tutorLearnerLines.length && !confirm("지금 대화를 지우고 새 대화를 시작할까요?")) return;
   toggleTutorSheet();
-  const dial = tutorEl("tutor-dial");
-  dial.classList.remove("hidden"); dial.classList.add("ringing");
-  tutorEl("tutor-dial-sub").textContent = "연결 중…";
-  const token = ++tutorSessionToken;
-  setTimeout(() => {
-    if (token !== tutorSessionToken) return;
-    tutorCallActive = true;
-    tutorCallStart = Date.now();
-    clearInterval(tutorCallTimer);
-    const tick = () => { const s2 = Math.floor((Date.now() - tutorCallStart) / 1000); const el = tutorEl("tutor-timer"); if (el) el.textContent = `${String(Math.floor(s2 / 60)).padStart(2, "0")}:${String(s2 % 60).padStart(2, "0")}`; };
-    tick(); tutorCallTimer = setInterval(tick, 1000);
-    renderTutorCallState();
-    if (tutorCamWanted()) tutorStartCamera();
-    startTutorSession();
-  }, 1100);
+  if (typeof NeuralTTS !== "undefined") NeuralTTS.unlockAudio();
+  startTutorSession();
 }
-/** 통화 종료: 멈추고 통화 요약(피드백)을 보여 준다 */
-function endTutorCall() {
-  if (!tutorCallActive) { goTo("home"); return; }
+/** 오늘 대화 피드백 열기 */
+function openTutorFeedback() {
   stopTutorActivity();
-  tutorCallActive = false;
-  clearInterval(tutorCallTimer);
-  tutorStopCamera();
-  const el = tutorEl("tutor-timer"); if (el) el.textContent = "영어 선생님";
-  tutorShowCaption(null);
-  renderTutorCallState();
-  setTutorStatus("통화가 끝났어요", "");
+  setTutorStatus("마이크를 누르고 영어로 말해 보세요", "");
   toggleTutorSheet("feedback");
   tutorFeedback();
 }
-/** 아래에서 올라오는 판 (기록·설정·통화 요약). 이름 없이 부르면 모두 닫는다 */
+/** 아래에서 올라오는 판 (설정·피드백). 이름 없이 부르면 모두 닫는다 */
 function toggleTutorSheet(name) {
-  ["log", "settings", "feedback"].forEach(n => {
+  ["settings", "feedback"].forEach(n => {
     const el = tutorEl("tutor-sheet-" + n); if (!el) return;
     const show = n === name && el.classList.contains("hidden");
     el.classList.toggle("hidden", !show);
-    if (show && n === "log") { const log = tutorEl("tutor-log"); log.scrollTop = log.scrollHeight; }
   });
+  const auto = tutorEl("tutor-auto-listen"); if (auto) auto.checked = tutorAutoListenOn();
 }
 function toggleTutorType() {
   const row = tutorEl("tutor-type-row");
   row.classList.toggle("hidden");
   if (!row.classList.contains("hidden")) tutorEl("tutor-input").focus();
-}
-// 자막: 지금 선생님이 하는 말 (🐢 천천히·🇰🇷 해석 버튼과 함께) / 내가 한 말 / 교정 팁
-function tutorShowCaption(text, done) {
-  const cap = tutorEl("tutor-caption");
-  if (!cap) return;
-  if (!text) { cap.classList.add("hidden"); cap.innerHTML = ""; return; }
-  cap.classList.remove("hidden");
-  if (!done) { cap.textContent = text; return; }
-  cap.innerHTML = `<div class="cap-text"></div><div class="cap-actions"></div>`;
-  cap.querySelector(".cap-text").textContent = text;
-  const acts = cap.querySelector(".cap-actions");
-  const slow = document.createElement("button"); slow.className = "tutor-slow-btn"; slow.textContent = "🐢 천천히";
-  slow.onclick = () => speakTutorSlow(text);
-  const tr = document.createElement("button"); tr.className = "tutor-slow-btn"; tr.textContent = "🇰🇷 해석";
-  tr.onclick = async () => {
-    let box = cap.querySelector(".cap-trans");
-    if (box) { box.classList.toggle("hidden"); return; }
-    box = document.createElement("div"); box.className = "cap-trans"; box.textContent = "해석하는 중…"; cap.appendChild(box);
-    try { box.textContent = await tutorTranslate(text); } catch (e) { box.textContent = "해석하지 못했어요. " + geminiErrorText(e); }
-  };
-  acts.append(slow, tr);
-}
-let tutorMyCapTimer = null, tutorToastTimer = null;
-function tutorShowMyCaption(text) {
-  const cap = tutorEl("tutor-caption-me"); if (!cap) return;
-  cap.textContent = text; cap.classList.remove("hidden");
-  clearTimeout(tutorMyCapTimer); tutorMyCapTimer = setTimeout(() => cap.classList.add("hidden"), 7000);
-}
-function tutorShowToast(better, why) {
-  const el = tutorEl("tutor-toast"); if (!el) return;
-  el.innerHTML = `💡 <b></b><span></span>`;
-  el.querySelector("b").textContent = better;
-  el.querySelector("span").textContent = why ? " · " + why : "";
-  el.onclick = () => speakTutor(better, tutorSessionToken);
-  el.classList.remove("hidden");
-  clearTimeout(tutorToastTimer); tutorToastTimer = setTimeout(() => el.classList.add("hidden"), 9000);
 }
 // 자동 듣기: 선생님 말이 끝나면 바로 마이크를 켠다 (실제 통화처럼). 끄면 직접 🎤를 누른다
 function tutorAutoListenOn() { try { return localStorage.getItem("tutorAutoListen") !== "0"; } catch (e) { return true; } }
@@ -389,38 +317,10 @@ function tutorAfterSpeak(token) {
   if (tutorBusy || tutorSpeaking || tutorMic || tutorRecRec) return;
   const page = tutorEl("page-tutor");
   if (!page || page.classList.contains("hidden") || document.hidden) return;
-  if (["log", "settings", "feedback"].some(n => !tutorEl("tutor-sheet-" + n).classList.contains("hidden"))) return;
+  if (["settings", "feedback"].some(n => !tutorEl("tutor-sheet-" + n).classList.contains("hidden"))) return;
   if (!tutorEl("tutor-type-row").classList.contains("hidden") && tutorEl("tutor-input").value.trim()) return;
   setTimeout(() => { if (token === tutorSessionToken && !tutorBusy && !tutorSpeaking && !tutorMic && !tutorRecRec) toggleTutorMic(); }, 250);
 }
-// 내 얼굴(앞 카메라): 이 기기 화면에만 보여 준다. 어디에도 보내지 않는다
-function tutorCamWanted() { try { return localStorage.getItem("tutorCam") === "1"; } catch (e) { return false; } }
-async function tutorStartCamera() {
-  const box = tutorEl("tutor-self"), video = tutorEl("tutor-cam");
-  if (!box || tutorCamStream || !navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) return;
-  try {
-    tutorCamStream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: "user", width: { ideal: 480 } }, audio: false });
-    if (!tutorCallActive) { tutorStopCamera(); return; }
-    video.srcObject = tutorCamStream; box.classList.add("cam");
-    try { await video.play(); } catch (e) {}
-  } catch (e) {
-    console.warn("카메라를 켜지 못함", e);
-    try { localStorage.setItem("tutorCam", "0"); } catch (e2) {}
-    renderTutorCallState();
-    alert("카메라를 켜지 못했어요. 카메라 권한을 확인해 주세요.");
-  }
-}
-function tutorStopCamera() {
-  if (tutorCamStream) { tutorCamStream.getTracks().forEach(t => t.stop()); tutorCamStream = null; }
-  const box = tutorEl("tutor-self"); if (box) box.classList.remove("cam");
-  const video = tutorEl("tutor-cam"); if (video) video.srcObject = null;
-}
-function changeTutorCamera() {
-  const on = tutorEl("tutor-cam-on").checked;
-  try { localStorage.setItem("tutorCam", on ? "1" : "0"); } catch (e) {}
-  if (on && tutorCallActive) tutorStartCamera(); else if (!on) tutorStopCamera();
-}
-
 // ---------- 수준 ----------
 function renderTutorLevels() {
   const cur = tutorLevelId();
@@ -436,7 +336,7 @@ function changeTutorLevel(id) {
   try { localStorage.setItem("tutorLevel", id); } catch (e) {}
   renderTutorLevels();
   if (tutorMessages.length) tutorMessages[0] = { role: "system", content: tutorSystemPrompt() };
-  if (tutorCallActive) setTutorStatus(`이제 ${tutorLevel().label} 수준으로 말할게요`, "");
+  setTutorStatus(`이제 ${tutorLevel().label} 수준으로 말할게요`, "");
   if (tutorHintShown) renderTutorHint();
 }
 
@@ -613,9 +513,6 @@ function startTutorSession() {
   b.onclick = () => speakTutor(greet, tutorSessionToken);
   addSlowButton(b, greet);
   addTranslateButton(b, greet);
-  tutorShowCaption(greet, true);
-  tutorEl("tutor-caption-me").classList.add("hidden");
-  tutorEl("tutor-toast").classList.add("hidden");
   speakTutor(greet, token).then(() => tutorAfterSpeak(token));
 }
 
@@ -627,7 +524,6 @@ async function sendTutorText(text) {
   const token = tutorSessionToken;
   tutorLearnerLines.push(text);
   const myBubble = addTutorBubble("me", text);
-  tutorShowMyCaption(text);
   const item = { text, bubble: myBubble, fix: undefined, why: "", check: null };
   tutorLearnerItems.push(item);
   tutorCheckItem(item, tutorSaidLines[tutorSaidLines.length - 1], token);   // 답과 동시에 교정 확인
@@ -652,7 +548,7 @@ function tutorCheckItem(item, before, token) {
     .then(out => {
       const r = parseTutorFix(item.text, out);
       item.fix = r.better; item.why = r.why;
-      if (r.better && token === tutorSessionToken && item.bubble && item.bubble.isConnected) { addTutorTip(item.bubble, r.better, r.why); tutorShowToast(r.better, r.why); }
+      if (r.better && token === tutorSessionToken && item.bubble && item.bubble.isConnected) { addTutorTip(item.bubble, r.better, r.why); }
     })
     .catch(e => { console.warn("교정 확인 실패", e); item.fix = undefined; })
     .finally(() => { item.check = null; });
@@ -665,7 +561,6 @@ function tutorCheckItem(item, before, token) {
 async function tutorReply(token, learner) {
   tutorBusy = true;
   setTutorStatus("생각 중…", "thinking");
-  tutorShowCaption("…");
   const bubble = addTutorBubble("tutor", "…");
   const bubbleText = bubble.querySelector(".tutor-text");
   const abort = new AbortController();
@@ -680,7 +575,7 @@ async function tutorReply(token, learner) {
       const clean = cleanTutorSay(shown);
       const live = tutorPolish(clean, learner && learner.text, prev(), true);
       bubbleText.textContent = live || "…";
-      if (live) tutorShowCaption(live);
+      const log = tutorEl("tutor-log"); log.scrollTop = log.scrollHeight;
       voice.upTo(tutorPolish(tutorFinishedSentences(clean, shown), learner && learner.text, prev(), true));
       if (tutorReplyDone(raw)) { stopped = true; abort.abort(); }
     }, abort.signal);
@@ -693,7 +588,6 @@ async function tutorReply(token, learner) {
       const last = tutorMessages[tutorMessages.length - 1];
       if (last && last.role === "user") tutorMessages.pop();
       bubbleText.textContent = "(답을 받지 못했어요. 다시 말해 주세요.)";
-      tutorShowCaption("(답을 받지 못했어요) " + geminiErrorText(e));
       const why = document.createElement("div");
       why.className = "tutor-err";
       why.textContent = geminiErrorText(e);
@@ -710,7 +604,6 @@ async function tutorReply(token, learner) {
   tutorSaidLines.push(text);
   voice.upTo(text, true);     // 남은 문장까지 마저 읽는다
   bubbleText.textContent = text;
-  tutorShowCaption(text, true);
   bubble.onclick = () => speakTutor(text, tutorSessionToken);
   addSlowButton(bubble, text);
   addTranslateButton(bubble, text);
