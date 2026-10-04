@@ -411,14 +411,66 @@ function tutorSystemPrompt() {
     "Have a friendly, natural conversation about everyday life: the student's day, food, work, hobbies, family, weekend plans, travel and feelings. Follow the student's interests, go deeper into what they share, and naturally bring up a new topic when one runs out.\n" +
     `You already started the chat by saying: "${tutorGreeting}" Do not greet or introduce yourself again.\n${tutorStyle()}`;
 }
-// 첫 인사: 대화마다 하나를 골라 (튜터가 먼저 말을 건다)
-const TUTOR_GREETINGS = [
-  "Hi, I'm Emma! How's your day going?",
-  "Hi there, I'm Emma! What have you been up to today?",
-  "Hello, I'm Emma! How are you feeling today?",
-  "Hi, I'm Emma! Did you do anything fun this week?",
-  "Hey, I'm Emma! What did you have for lunch today?"
-];
+// 첫 인사: 매번 다르게. 처음 만나면 자기소개, 다시 오면 반가운 인사 + 시간대·요일·계절·일상 주제 질문 하나.
+// 최근에 했던 질문은 피하고, 중급·고급이면 생각을 끌어내는 질문도 섞는다
+const TUTOR_OPENERS = {
+  first: ["Hi, I'm Emma! Nice to meet you.", "Hello! I'm Emma, your English buddy.", "Hey there, I'm Emma! So nice to meet you."],
+  back: ["Hi again!", "Welcome back!", "Hey, good to see you again!", "Oh, hi! Nice to see you.", "Hello again!", "Hey there!", "Hi! I'm so glad you're here."],
+  morning: ["Good morning!", "Morning!"], afternoon: ["Good afternoon!"], evening: ["Good evening!"]
+};
+const TUTOR_QUESTIONS = {
+  morning: ["Did you sleep well last night?", "What's your plan for today?", "Have you had breakfast yet?", "Are you a morning person?",
+    "How are you feeling this morning?", "What did you have for breakfast?", "Is it a busy day for you today?"],
+  afternoon: ["How's your day going so far?", "What did you have for lunch today?", "Are you busy today?", "What have you been up to today?",
+    "Are you taking a break right now?", "What's the best thing that happened today so far?"],
+  evening: ["How was your day?", "What did you do today?", "Did anything fun happen today?", "What did you have for dinner?",
+    "Are you tired after your day?", "What are you going to do tonight?", "What was the best part of your day?"],
+  night: ["You're up late! What are you doing tonight?", "Can't sleep? How was your day?", "Are you a night owl?", "What was the best part of your day?"],
+  monday: ["How was your weekend?", "Did you do anything fun over the weekend?", "Are you ready for a new week?"],
+  friday: ["Any plans for the weekend?", "It's almost the weekend! What are you going to do?", "How was your week?"],
+  weekend: ["What are you doing this weekend?", "Are you relaxing today?", "Did you sleep in today?", "How's your weekend going?"],
+  spring: ["Have you seen any cherry blossoms this year?", "Do you like spring?", "Have you been outside to enjoy the spring weather?"],
+  summer: ["It's so hot these days! How do you stay cool?", "Do you have any summer vacation plans?", "What's your favorite summer food?"],
+  autumn: ["Do you like the fall weather?", "Have you seen the autumn leaves yet?", "What's your favorite thing about fall?"],
+  winter: ["It's cold these days! Do you like winter?", "What do you like to do on cold days?", "What's your favorite winter food?"],
+  yearEnd: ["Do you have any plans for the holidays?", "How was your year?", "What was the best moment of your year?"],
+  newYear: ["Happy New Year! Do you have any New Year's resolutions?", "What do you want to do this year?"],
+  any: ["What's your favorite food?", "Do you have any hobbies?", "What kind of music do you like?", "Have you watched any good movies lately?",
+    "Do you have any pets?", "What do you like to do in your free time?", "Where would you like to travel next?", "What's the weather like where you are?",
+    "Do you like coffee or tea?", "What's something that made you happy this week?", "Have you tried any new restaurants recently?",
+    "What's your favorite K-pop song right now?", "Do you like cooking?", "Do you like to exercise?", "What are you watching these days?",
+    "Do you have a favorite place in your city?", "What's your dream vacation?", "Why are you learning English?", "Do you like reading books?",
+    "What's your favorite season?", "Do you like shopping?", "What did you do last weekend?", "Are you a cat person or a dog person?",
+    "What's your favorite snack?", "Do you play any games?", "Have you learned anything new recently?", "What do you usually do after work or school?",
+    "What's your favorite drink?", "Do you like spicy food?", "What's one thing you want to do this year?", "Have you been anywhere fun lately?",
+    "What's your favorite way to relax?", "Do you like going to cafes?", "What's a food you could eat every day?"],
+  deep: ["If you could live in any country, where would you choose?", "What's a skill you'd love to learn someday?", "What's the best trip you've ever taken?",
+    "What does a perfect day look like for you?", "What's something you're looking forward to these days?", "If you could have dinner with anyone, who would it be?",
+    "What's a small habit that makes your life better?", "What's the most interesting thing you've learned this year?"]
+};
+const tutorPick = list => list[Math.floor(Math.random() * list.length)];
+function tutorPickGreeting() {
+  const now = new Date(), h = now.getHours(), day = now.getDay(), m = now.getMonth() + 1, d = now.getDate();
+  const time = h >= 5 && h < 11 ? "morning" : h >= 11 && h < 17 ? "afternoon" : h >= 17 && h < 23 ? "evening" : "night";
+  const Q = TUTOR_QUESTIONS;
+  let context = [...Q[time], ...(day === 1 ? Q.monday : day === 5 ? Q.friday : day === 0 || day === 6 ? Q.weekend : []),
+    ...(m >= 3 && m <= 5 ? Q.spring : m >= 6 && m <= 8 ? Q.summer : m >= 9 && m <= 11 ? Q.autumn : Q.winter),
+    ...(m === 12 && d >= 15 ? Q.yearEnd : m === 1 && d <= 10 ? Q.newYear : [])];
+  const general = [...Q.any, ...(tutorLevelId() === "beginner" ? [] : Q.deep)];
+  let recent = [], visits = 0;
+  try { recent = JSON.parse(localStorage.getItem("tutorRecentQs") || "[]"); visits = +localStorage.getItem("tutorVisits") || 0; } catch (e) {}
+  const fresh = list => list.filter(q => !recent.includes(q));
+  // 반쯤은 지금 때에 맞는 질문, 반쯤은 일상 주제 (최근 질문은 빼고, 다 썼으면 아무거나)
+  const pool = Math.random() < 0.5 ? fresh(context) : fresh(general);
+  const q = tutorPick(pool.length ? pool : fresh([...context, ...general]).length ? fresh([...context, ...general]) : general);
+  const timeOpen = time === "night" ? [] : TUTOR_OPENERS[time];
+  const opener = visits === 0 ? tutorPick(TUTOR_OPENERS.first) : tutorPick([...TUTOR_OPENERS.back, ...timeOpen]);
+  try {
+    localStorage.setItem("tutorRecentQs", JSON.stringify([q, ...recent.filter(x => x !== q)].slice(0, 25)));
+    localStorage.setItem("tutorVisits", String(visits + 1));
+  } catch (e) {}
+  return opener + " " + q;
+}
 function tutorStartMessages() {
   // 인사는 시스템 안내에 적어 둔다 (가짜 대화를 넣으면 모델이 인사를 되풀이하기도 함)
   return [{ role: "system", content: tutorSystemPrompt() }];
@@ -538,9 +590,7 @@ function startTutorSession() {
   if (!tutorReady()) return;
   stopTutorActivity();
   const token = ++tutorSessionToken;
-  // 지난번과 다른 인사로 시작
-  const others = TUTOR_GREETINGS.filter(g => g !== tutorGreeting);
-  tutorGreeting = others[Math.floor(Math.random() * others.length)];
+  tutorGreeting = tutorPickGreeting();   // 시간대·요일·계절·주제에 맞춰 매번 다른 첫 질문
   tutorMessages = tutorStartMessages();
   tutorLearnerLines = [];
   tutorLearnerItems = [];
@@ -940,12 +990,12 @@ async function tutorTtsRequest(model, text, slow, onPcm, stream = true) {
   } finally { clearTimeout(stall); }
 }
 
-// 첫 인사는 늘 같은 문장이라 한 번 받은 음성을 기기에 저장해 두고 바로 튼다 (기다림 없음 + 무료 한도 절약)
+// 첫 인사 음성은 기기에 저장해 두고, 같은 인사가 다시 나오면 바로 튼다 (기다림 없음 + 무료 한도 절약). 최근 40개까지만
 const TUTOR_GREET_CACHE = "faith-voice-tutor-greet";   // faith-voice로 시작해서 앱 업데이트 때 지워지지 않는다
 const tutorGreetUrl = (text) => location.origin + "/__tutor-greet/" + tutorVoiceId() + "/" + encodeURIComponent(text);
 async function tutorGreetLoad(text) {
   try {
-    if (!TUTOR_GREETINGS.includes(text) || !("caches" in window)) return null;
+    if (text !== tutorGreeting || !("caches" in window)) return null;
     const r = await (await caches.open(TUTOR_GREET_CACHE)).match(tutorGreetUrl(text));
     if (!r) return null;
     return { wav: new Float32Array(await r.arrayBuffer()), sampleRate: +r.headers.get("x-rate") || 24000 };
@@ -953,10 +1003,13 @@ async function tutorGreetLoad(text) {
 }
 async function tutorGreetSave(text, clip) {
   try {
-    if (!TUTOR_GREETINGS.includes(text) || !("caches" in window)) return;
+    if (text !== tutorGreeting || !("caches" in window)) return;
     const all = new Float32Array(clip.chunks.reduce((n, c) => n + c.length, 0));
     let o = 0; clip.chunks.forEach(c => { all.set(c, o); o += c.length; });
-    await (await caches.open(TUTOR_GREET_CACHE)).put(tutorGreetUrl(text), new Response(all.buffer, { headers: { "x-rate": String(clip.sampleRate) } }));
+    const cache = await caches.open(TUTOR_GREET_CACHE);
+    await cache.put(tutorGreetUrl(text), new Response(all.buffer, { headers: { "x-rate": String(clip.sampleRate) } }));
+    const keys = await cache.keys();                              // 오래된 것부터 지워 40개까지만
+    for (const k of keys.slice(0, Math.max(0, keys.length - 40))) await cache.delete(k);
   } catch (e) {}
 }
 
