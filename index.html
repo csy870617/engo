@@ -23,7 +23,7 @@
   <meta property="og:image" content="https://engo.life/logo.png">
   <meta property="og:site_name" content="ENGO">
 
-  <link rel="stylesheet" href="style.css?v=154" />
+  <link rel="stylesheet" href="style.css?v=155" />
 
   <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2078760660134095"
      crossorigin="anonymous"></script>
@@ -524,7 +524,7 @@
           <div id="tutor-hint" class="tutor-hint talk-hint hidden"></div>
           <!-- 말은 자동으로 듣는다 (Emma를 누르면 듣기 시작·끝내기). 글로 쓰고 싶을 때는 아래 칸에 -->
           <div id="tutor-type-row" class="call-type talk-input">
-            <input id="tutor-input" type="text" class="search-input" placeholder="말하거나 입력 · 한국어도 OK" autocomplete="off" onkeydown="if (event.key === 'Enter') sendTutorTyped()" onfocus="tutorInputFocus(true)" onblur="tutorInputFocus(false)" />
+            <input id="tutor-input" type="text" class="search-input" placeholder="말하거나 입력 · 한국어도 OK" autocomplete="off" onkeydown="if (event.key === 'Enter' && !event.isComposing && event.keyCode !== 229) { event.preventDefault(); sendTutorTyped(); }" onfocus="tutorInputFocus(true)" onblur="tutorInputFocus(false)" />
             <button id="tutor-hint-btn" class="tutor-round-btn" onmousedown="event.preventDefault()" onclick="toggleTutorHint()" aria-label="힌트">💡</button>
             <button class="tutor-round-btn send" onmousedown="event.preventDefault()" onclick="sendTutorTyped()" aria-label="보내기">➤</button>
           </div>
@@ -673,12 +673,12 @@
 
   <div id="neural-loading" class="neural-loading hidden">🎙 자연스러운 음성 준비 중…</div>
 
-  <script src="pattern.js?v=154"></script>
-  <script src="conversation.js?v=154"></script>
-  <script src="idiom.js?v=154"></script>
-  <script src="word.js?v=154"></script>
+  <script src="pattern.js?v=155"></script>
+  <script src="conversation.js?v=155"></script>
+  <script src="idiom.js?v=155"></script>
+  <script src="word.js?v=155"></script>
 
-  <script src="js/core.js?v=154"></script>    <script src="js/storage.js?v=154"></script> <script src="js/neural-tts.js?v=154"></script> <script src="js/media.js?v=154"></script>   <script src="js/study.js?v=154"></script>   <script src="js/game.js?v=154"></script>    <script src="js/tutor.js?v=154"></script>    </body>
+  <script src="js/core.js?v=155"></script>    <script src="js/storage.js?v=155"></script> <script src="js/neural-tts.js?v=155"></script> <script src="js/media.js?v=155"></script>   <script src="js/study.js?v=155"></script>   <script src="js/game.js?v=155"></script>    <script src="js/tutor.js?v=155"></script>    </body>
 
 
 </html>
