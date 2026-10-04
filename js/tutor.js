@@ -121,7 +121,6 @@ function setTutorProgress(p, text) {
 /** 튜터 페이지에 들어올 때 (core.js goTo) */
 async function renderTutorPage() {
   clearTimeout(tutorUnloadTimer);
-  renderTutorEnvNotice();
   tutorCheckMicPermission();
   TutorAvatar.mount();
   fillTutorScenarios();
@@ -155,7 +154,8 @@ async function startTutorEngine(isDownload) {
     tutorEl("tutor-progress").classList.add("hidden");
     if (!document.getElementById("page-tutor").classList.contains("hidden")) {
       showTutorSection("chat");
-      startTutorSession();
+      // 대화 중에 엔진이 끊겨 다시 연 경우에는 하던 대화를 이어 간다
+      if (tutorMessages.length === 0) startTutorSession(); else setTutorStatus("마이크를 누르고 영어로 말해 보세요", "");
     }
   } catch (e) {
     console.warn("AI 튜터를 열지 못함", e);
@@ -166,7 +166,8 @@ async function startTutorEngine(isDownload) {
     alert("AI 튜터를 열지 못했어요.\n메모리가 부족하거나 이 기기가 지원하지 않을 수 있어요.\n(" + (e && e.message || e) + ")");
   }
 }
-function downloadTutor() { startTutorEngine(true); }
+// 이미 받아 둔 모델이면 다시 받는다는 안내 없이 바로 연다
+async function downloadTutor() { startTutorEngine(!(await tutorModelCached())); }
 // WebLLM 진행 문구(영어)를 짧은 한국어로: "Fetching param cache[3/22]: 120MB fetched..." / "Loading model from cache..."
 function tutorProgressText(text) {
   if (/Loading model from cache/i.test(text)) return "저장된 모델 여는 중";
@@ -486,25 +487,52 @@ async function tutorReply(token, learner) {
   tutorBusy = true;
   setTutorStatus("생각 중…", "thinking");
   const bubble = addTutorBubble("tutor", "…");
+  const bubbleText = bubble.querySelector(".tutor-text");
   let raw = "";
+  const generate = () => tutorEngineCall(async () => {
+    raw = "";
+    const chunks = await tutorEngine.chat.completions.create({ messages: tutorContext(), stream: true, ...TUTOR_REPLY_OPTS });
+    for await (const c of chunks) {
+      if (token !== tutorSessionToken) { try { tutorEngine.interruptGenerate(); } catch (e) {} break; }
+      raw += (c.choices[0] && c.choices[0].delta && c.choices[0].delta.content) || "";
+      bubbleText.textContent = cleanTutorSay(raw) || "…";
+    }
+  });
   try {
-    await tutorEngineCall(async () => {
-      const chunks = await tutorEngine.chat.completions.create({ messages: tutorContext(), stream: true, ...TUTOR_REPLY_OPTS });
-      for await (const c of chunks) {
-        if (token !== tutorSessionToken) { try { tutorEngine.interruptGenerate(); } catch (e) {} break; }
-        raw += (c.choices[0] && c.choices[0].delta && c.choices[0].delta.content) || "";
-        bubble.querySelector(".tutor-text").textContent = cleanTutorSay(raw) || "…";
-      }
-    });
+    try { await generate(); }
+    catch (e) {
+      // 휴대폰에서 화면을 오래 떠나 있었거나 메모리가 모자라면 AI 계산 장치가 끊겨 엔진이 멈춘다.
+      // 저장된 모델로 엔진을 다시 열고 대화는 그대로 이어서 한 번 더 시도한다
+      if (token !== tutorSessionToken) throw e;
+      console.warn("튜터 답 생성 실패 → 엔진을 다시 열어 재시도", e);
+      setTutorStatus("튜터 다시 깨우는 중…", "thinking");
+      bubbleText.textContent = "…";
+      unloadTutorEngine();
+      await ensureTutorEngine();
+      if (token !== tutorSessionToken) throw e;
+      setTutorStatus("생각 중…", "thinking");
+      await generate();
+    }
   } catch (e) {
     console.warn("튜터 답 생성 실패", e);
-    if (token === tutorSessionToken) { bubble.querySelector(".tutor-text").textContent = "(답을 만들지 못했어요. 다시 말해 주세요.)"; setTutorStatus("다시 시도해 주세요", ""); }
+    if (token === tutorSessionToken) {
+      // 답을 못 한 문장은 대화 기록에서 빼서 다음 말이 자연스럽게 이어지게 한다
+      const last = tutorMessages[tutorMessages.length - 1];
+      if (last && last.role === "user") tutorMessages.pop();
+      bubbleText.textContent = "(답을 만들지 못했어요. 다시 말해 주세요.)";
+      const why = document.createElement("div");
+      why.className = "tutor-err";
+      why.textContent = String((e && e.message) || e).slice(0, 120);
+      bubble.appendChild(why);
+      setTutorStatus(tutorEngine ? "다시 시도해 주세요" : "튜터를 다시 열어 주세요", "");
+      if (!tutorEngine) { showTutorSection("setup"); const btn = tutorEl("tutor-download-btn"); btn.classList.remove("hidden"); btn.disabled = false; btn.textContent = "다시 시도"; }
+    }
     tutorBusy = false;
     return;
   }
   if (token !== tutorSessionToken) { tutorBusy = false; return; }
   const text = cleanTutorSay(raw) || "Sorry, could you say that again?";
-  bubble.querySelector(".tutor-text").textContent = text;
+  bubbleText.textContent = text;
   bubble.onclick = () => speakTutor(text, tutorSessionToken);
   addSlowButton(bubble, text);
   tutorMessages.push({ role: "assistant", content: text });
@@ -607,53 +635,14 @@ function tutorEnv() {
   try { inFrame = window.self !== window.top; } catch (e) { inFrame = true; }
   return { inApp, standalone, inFrame, android: /Android/i.test(ua), ios: /iPhone|iPad|iPod/i.test(ua) || (/Macintosh/.test(ua) && navigator.maxTouchPoints > 1) };
 }
-/** 바깥 브라우저로 여는 주소 (열 수 없는 곳이면 null → 링크 복사로 안내) */
-function tutorExternalUrl(env) {
-  const target = location.origin + location.pathname + "?go=tutor";
-  if (env.inApp === "카카오톡") return "kakaotalk://web/openExternal?url=" + encodeURIComponent(target);
-  if (env.inApp === "라인") return target + "&openExternalBrowser=1";
-  if (env.android) return "intent://" + target.replace(/^https?:\/\//, "") + "#Intent;scheme=https;package=com.android.chrome;S.browser_fallback_url=" + encodeURIComponent(target) + ";end";
-  return null;
-}
-/** 지금 화면을 크롬(안드로이드)·사파리 등 바깥 브라우저로 연다. 안 되는 곳은 링크 복사 + 안내 */
-function openTutorInBrowser() {
-  const url = tutorExternalUrl(tutorEnv());
-  if (url) { location.href = url; return; }
-  const target = location.origin + location.pathname + "?go=tutor";
-  const done = () => alert("주소를 복사했어요.\n사파리를 열고 주소창에 붙여 넣어 주세요.\n(또는 화면의 ⋯ 메뉴에서 'Safari로 열기'를 눌러도 돼요)");
-  if (navigator.clipboard) navigator.clipboard.writeText(target).then(done, () => prompt("이 주소를 복사해 사파리에서 열어 주세요", target));
-  else prompt("이 주소를 복사해 사파리에서 열어 주세요", target);
-}
-/** 끼워 넣어진 화면에서 벗어나 새 창(브라우저 탭)으로 연다 */
-function openTutorInNewWindow() {
-  const target = location.origin + location.pathname + "?go=tutor";
-  const w = window.open(target, "_blank", "noopener");
-  if (!w) { try { window.top.location.href = target; } catch (e) { location.href = target; } }
-}
-function renderTutorEnvNotice() {
-  const box = tutorEl("tutor-env");
-  if (!box) return;
-  const env = tutorEnv();
-  box.classList.toggle("hidden", !env.inApp && !env.inFrame);
-  if (!env.inApp && env.inFrame) {
-    box.innerHTML = `<div class="tutor-env-text">다른 앱 화면 안에서 열려 있어요. 마이크가 안 되면 새 창으로 열어 주세요.</div>` +
-      `<button class="btn-main tutor-env-btn" onclick="openTutorInNewWindow()">새 창으로 열기</button>`;
-    return;
-  }
-  if (!env.inApp) return;
-  box.innerHTML = `<div class="tutor-env-text">${env.inApp === "앱" ? "앱 안의 브라우저" : env.inApp + " 안의 브라우저"}에서는 일부 기능이 제한될 수 있어요. 문제가 있으면 바깥 브라우저로 열어 주세요.</div>` +
-    `<button class="btn-main tutor-env-btn" onclick="openTutorInBrowser()">${env.ios ? "사파리로 열기" : "크롬으로 열기"}</button>`;
-}
 /** 마이크 권한이 막혔을 때: 환경마다 푸는 방법이 달라서 맞는 안내를 보여 준다 */
 function showMicPermissionHelp() {
   const env = tutorEnv();
-  if (env.inFrame && !env.inApp) {
-    if (confirm("이 화면은 다른 앱 화면 안에 들어 있어서 마이크가 막혀 있어요.\n(크롬 설정을 바꿔도 풀리지 않아요)\n\n새 창으로 열면 마이크를 쓸 수 있어요. 지금 열까요?")) openTutorInNewWindow();
-    return;
-  }
+  const typeIt = "\n\n마이크 없이도 아래 입력창에 적어서 대화할 수 있어요.";
+  if (env.inFrame && !env.inApp) { alert("마이크 사용이 막혀 있어요.\n이 화면을 담고 있는 바깥 페이지(앱)에서 마이크를 허락해야 해요." + typeIt); return; }
   if (env.inApp) {
     const app = env.inApp === "앱" ? "이 앱" : env.inApp;
-    if (confirm(`마이크 사용이 막혀 있어요.\n${env.android ? `휴대폰 설정 → 애플리케이션 → ${app} → 권한 → 마이크 '허용'` : `설정 앱 → ${app} → 마이크 켜기`} 후 다시 시도해 주세요.\n\n또는 ${env.ios ? "사파리" : "크롬"}로 열어서 쓸 수도 있어요. 지금 열까요?`)) openTutorInBrowser();
+    alert(`마이크 사용이 막혀 있어요.\n${env.android ? `휴대폰 설정 → 애플리케이션 → ${app} → 권한 → 마이크 '허용'` : `설정 앱 → ${app} → 마이크 켜기`} 후 다시 시도해 주세요.` + typeIt);
     return;
   }
   let how;
@@ -661,7 +650,7 @@ function showMicPermissionHelp() {
   else if (env.android) how = "① 주소창 왼쪽 아이콘(⚙ 또는 자물쇠) → 권한 → 마이크 '허용'\n② 그래도 안 되면 휴대폰 설정 → 애플리케이션 → Chrome → 권한 → 마이크 '허용'";
   else if (env.ios) how = "① 설정 앱 → Safari → 마이크 → '허용' 또는 '확인'\n② 사파리 주소창 왼쪽 '가가' → 웹 사이트 설정 → 마이크 '허용'\n③ 설정 → 개인정보 보호 및 보안 → 음성 인식/마이크에서 Safari가 켜져 있는지 확인";
   else how = "주소창 왼쪽 자물쇠 아이콘 → 사이트 설정 → 마이크 '허용'";
-  alert("마이크 사용이 막혀 있어요.\n\n" + how + "\n\n마이크 없이도 아래 입력창에 적어서 대화할 수 있어요.");
+  alert("마이크 사용이 막혀 있어요.\n\n" + how + typeIt);
 }
 
 // ---------- 듣기 (음성 인식) ----------
