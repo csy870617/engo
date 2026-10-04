@@ -12,7 +12,8 @@ const GEMINI_API = "https://generativelanguage.googleapis.com/v1beta/models/";
 // 앞 모델의 무료 사용량을 다 쓰거나 잠시 막히면 다음 모델로 넘어간다
 const TUTOR_GEMINI_CHAINS = {
   chat: ["gemini-3.5-flash-lite", "gemini-3.6-flash", "gemini-3.5-flash", "gemini-3.1-flash-lite", "gemini-3.8-flash"],
-  aux: ["gemini-3.1-flash-lite", "gemini-3.5-flash-lite", "gemini-3.6-flash"]
+  aux: ["gemini-3.1-flash-lite", "gemini-3.5-flash-lite", "gemini-3.6-flash"],
+  hint: ["gemini-3.5-flash-lite", "gemini-3.6-flash", "gemini-3.1-flash-lite"]   // 힌트는 기다리는 일이라 생각 최소가 확실한 빠른 모델부터
 };
 const GEMINI_KEY_STORE = "geminiApiKey";
 const GEMINI_KEY_PAGE = "https://aistudio.google.com/apikey";
@@ -42,8 +43,8 @@ const tutorReady = () => !!tutorGetKey();
 class GeminiError extends Error {
   constructor(message, status, reason) { super(message); this.status = status || 0; this.reason = reason || ""; }
 }
-const tutorModelIdx = { chat: 0, aux: 0 };   // 일마다 지금 쓰는 모델 (목록 안의 위치)
-const tutorModelSince = { chat: 0, aux: 0 }; // 다음 모델로 넘어간 시각 (5분 지나면 가장 빠른 첫 모델부터 다시 시도)
+const tutorModelIdx = { chat: 0, aux: 0, hint: 0 };   // 일마다 지금 쓰는 모델 (목록 안의 위치)
+const tutorModelSince = { chat: 0, aux: 0, hint: 0 }; // 다음 모델로 넘어간 시각 (5분 지나면 가장 빠른 첫 모델부터 다시 시도)
 // 모델별 생각 수준: 기본은 MINIMAL(가장 빠름). 못 쓰는 모델은 LOW로 (알아낸 것은 기기에 기억해서 헛요청을 줄인다)
 const tutorThinking = (() => { let t = {}; try { t = JSON.parse(localStorage.getItem("tutorThinking") || "{}") || {}; } catch (e) {} return { "gemini-3.8-flash": "LOW", "gemini-3.7-flash": "LOW", ...t }; })();
 const tutorModelName = (chain = "chat") => TUTOR_GEMINI_CHAINS[chain][tutorModelIdx[chain]];
@@ -553,6 +554,7 @@ function startTutorSession() {
   b.onclick = () => speakTutor(greet, tutorSessionToken);
   addSlowButton(b, greet);
   addTranslateButton(b, greet);
+  tutorPrepareHints();
   speakTutor(greet, token).then(() => tutorAfterSpeak(token));
 }
 
@@ -652,6 +654,7 @@ async function tutorReply(token, learner) {
       }
     }
     tutorBusy = false;
+    if (tutorHintShown) renderTutorHint();
     if (token === tutorSessionToken && !geminiKeyProblem(e)) tutorAfterSpeak(token);   // 바로 다시 말할 수 있게 듣는다
     return;
   }
@@ -666,6 +669,7 @@ async function tutorReply(token, learner) {
   addTranslateButton(bubble, text);
   tutorMessages.push({ role: "assistant", content: text });
   tutorBusy = false;
+  tutorPrepareHints();        // 듣는 동안 다음에 할 말 힌트를 미리 만들어 둔다
   await voice.finish();
   tutorAfterSpeak(token);
 }
@@ -1338,10 +1342,22 @@ async function loadTutorAiHints(key) {
       "(beginner: short and simple), and make each one different (for example a short answer, an answer with a detail, and a question back). Give a natural Korean meaning for each." },
     { role: "user", content: `Conversation so far:\n${tutorTranscript(10) || "(none)"}\n` +
       (tutorMessages.length <= 1 && said ? `Teacher: ${said}\n` : "") + "Suggest what the student can say next." }
-  ], { temperature: 0.7, maxTokens: 400, schema: TUTOR_HINT_SCHEMA, chain: "aux" });
+  ], { temperature: 0.7, maxTokens: 300, schema: TUTOR_HINT_SCHEMA, chain: "hint" });
   const list = ((j && j.suggestions) || []).filter(x => x && x.en).slice(0, 3);
   if (tutorHintCache.key === key) tutorHintCache.list = list;
   return list;
+}
+/** 힌트를 미리 만들어 둔다: 튜터 말이 정해지면 바로 (💡를 누를 때는 이미 준비돼 있게). 실패했던 건 다시 시도 */
+function tutorPrepareHints() {
+  if (!tutorReady() || !tutorCallActive) return;
+  const key = tutorSessionToken + ":" + tutorSaidLines.length + ":" + tutorLevelId();
+  if (tutorHintCache.key === key && !tutorHintCache.error) return;
+  const entry = { key, list: null, error: null, loading: null };
+  entry.loading = loadTutorAiHints(key)
+    .then(list => { if (!list.length) entry.error = new Error("힌트를 받지 못했어요"); })
+    .catch(e => { entry.error = e; })
+    .finally(() => { entry.loading = null; if (tutorHintCache === entry && tutorHintShown) renderTutorHint(); });
+  tutorHintCache = entry;
 }
 function renderTutorHint() {
   const box = tutorEl("tutor-hint");
@@ -1350,11 +1366,9 @@ function renderTutorHint() {
   const hb = tutorEl("tutor-hint-btn"); if (hb) hb.classList.toggle("on", tutorHintShown);
   if (!tutorHintShown) return;
   if (!tutorReady()) return;
-  const key = tutorSessionToken + ":" + tutorSaidLines.length + ":" + tutorLevelId();
-  if (tutorHintCache.key !== key) {
-    tutorHintCache = { key, list: null, loading: loadTutorAiHints(key).catch(e => { if (tutorHintCache.key === key) tutorHintCache.error = e; }).finally(() => { if (tutorHintCache.key === key) { tutorHintCache.loading = null; renderTutorHint(); } }) };
-  }
-  if (!tutorHintCache.list) {
+  if (tutorBusy) { box.innerHTML = `<div class="tutor-hint-label">힌트 만드는 중…</div>`; return; }   // Emma 답이 정해지면 그 답에 맞춰 만든다
+  tutorPrepareHints();
+  if (!tutorHintCache.list || !tutorHintCache.list.length) {
     box.innerHTML = tutorHintCache.error ? `<div class="tutor-hint-label">힌트를 만들지 못했어요. ${geminiErrorText(tutorHintCache.error)}</div>` : `<div class="tutor-hint-label">힌트 만드는 중…</div>`;
     return;
   }
