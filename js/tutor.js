@@ -22,8 +22,10 @@ const GEMINI_KEY_PAGE = "https://aistudio.google.com/apikey";
 const TUTOR_AVATAR_FRAMES = null;
 // 튜터: 이름 · 기본 목소리 · 영상 폴더 (같은 사진에서 만든 반복 영상: idle 듣기 / talk 말하기 / poster 첫 화면)
 const TUTORS = {
-  emma: { name: "Emma", label: "Emma", gender: "f", voice: "Sulafat", media: "images/tutor/emma/web/" },
-  jay: { name: "Jay", label: "Jay", gender: "m", voice: "Achird", media: "images/tutor/jay/web/" }
+  emma: { name: "Emma", label: "Emma", gender: "f", voice: "Leda", media: "images/tutor/emma/web/",
+    style: "a bright, warm, youthful young woman with a natural American accent, chatting happily with a friend" },
+  jay: { name: "Jay", label: "Jay", gender: "m", voice: "Puck", media: "images/tutor/jay/web/",
+    style: "a warm, upbeat, youthful young man with a natural American accent, chatting happily with a friend" }
 };
 function tutorCharId() { let v = null; try { v = localStorage.getItem("tutorChar"); } catch (e) {} return TUTORS[v] ? v : "emma"; }
 const tutorChar = () => TUTORS[tutorCharId()];
@@ -894,13 +896,26 @@ function addTutorTip(bubble, tip, why) {
 const TUTOR_TTS_API = "https://generativelanguage.googleapis.com/v1beta/interactions";
 const TUTOR_TTS_MODELS = ["gemini-3.8-flash-lite-tts", "gemini-3.8-flash-tts"];   // 빠른 것부터 (무료 한도도 따로)
 // 튜터 목소리: 튜터 성별에 맞는 목소리만 고를 수 있다 (g: f 여성 / m 남성, app은 기기 음성을 성별에 맞춰 고름)
+// 대중적으로 듣기 좋은 밝고 자연스러운 목소리 위주 (설정에서 바꾸면 바로 한 마디 들려준다)
 const TUTOR_VOICES = {
-  Sulafat: { label: "구글 AI · 따뜻한 목소리", g: "f" }, Aoede: { label: "구글 AI · 산뜻한 목소리", g: "f" },
-  Achird: { label: "구글 AI · 친근한 목소리", g: "m" }, Puck: { label: "구글 AI · 활기찬 목소리", g: "m" },
+  Leda: { label: "구글 AI · 밝고 상큼한 목소리", g: "f" }, Zephyr: { label: "구글 AI · 맑고 경쾌한 목소리", g: "f" },
+  Kore: { label: "구글 AI · 또렷하고 차분한 목소리", g: "f" }, Despina: { label: "구글 AI · 부드러운 목소리", g: "f" },
+  Sulafat: { label: "구글 AI · 따뜻한 목소리", g: "f" },
+  Puck: { label: "구글 AI · 밝고 경쾌한 목소리", g: "m" }, Umbriel: { label: "구글 AI · 편안한 목소리", g: "m" },
+  Algieba: { label: "구글 AI · 부드러운 목소리", g: "m" }, Iapetus: { label: "구글 AI · 또렷한 목소리", g: "m" },
+  Achird: { label: "구글 AI · 친근한 목소리", g: "m" },
   app: { label: "기기 기본 음성", g: "" }
 };
-const TUTOR_TTS_STYLE = "warm, friendly and clear, like a patient English teacher talking to a student";
-const TUTOR_TTS_STYLE_SLOW = "slowly and very clearly, with short pauses between phrases, like a patient English teacher helping a beginner";
+// 말투: 선생님이 또박또박 읽는 느낌보다, 친구와 수다 떠는 듯한 자연스럽고 밝은 말투로
+const tutorTtsStyle = slow => `Speak like ${tutorChar().style}: natural, relaxed and expressive, at a comfortable conversational pace, with clear pronunciation.` +
+  (slow ? " This time speak slowly and very clearly, with short pauses between phrases, for an English learner." : "");
+// 목소리 기본값을 바꾼 뒤 처음 열 때, 예전 기본(따뜻한·친근한 목소리)으로 저장된 선택은 새 기본으로 (기기 음성 선택은 그대로)
+try {
+  if (!localStorage.getItem("tutorVoiceV2")) {
+    if (["Sulafat", "Aoede", "Achird", "Puck"].includes(localStorage.getItem("tutorVoice"))) localStorage.removeItem("tutorVoice");
+    localStorage.setItem("tutorVoiceV2", "1");
+  }
+} catch (e) {}
 function tutorVoiceId() {
   let v = null; try { v = localStorage.getItem("tutorVoice"); } catch (e) {}
   const ok = TUTOR_VOICES[v] && (v === "app" || TUTOR_VOICES[v].g === tutorChar().gender);
@@ -915,6 +930,12 @@ function tutorDeviceVoice(g) {
   const re = g === "m" ? TUTOR_MALE_VOICE : TUTOR_FEMALE_VOICE;
   const match = all.filter(v => re.test(v.name) && !(g === "m" ? TUTOR_FEMALE_VOICE : TUTOR_MALE_VOICE).test(v.name));
   return match.find(us) || match[0] || null;
+}
+let tutorDeviceTalking = false;   // 기기 음성이 실제로 소리를 내는 중
+/** 튜터 소리가 지금 실제로 나고 있는지 (말하는 영상은 이때만) */
+function tutorAudioPlaying() {
+  if (!tutorSpeaking) return false;
+  return tutorDeviceTalking || (typeof NeuralTTS !== "undefined" && !!NeuralTTS.isPlaying && NeuralTTS.isPlaying());
 }
 function tutorDeviceSpeak(text, slow) {
   const g = tutorChar().gender, rate = (typeof userRate === "number" ? userRate : 1) * (slow ? 0.7 : 1);
@@ -931,8 +952,9 @@ function tutorDeviceSpeak(text, slow) {
     if (v) u.voice = v;
     else if (g === "m") u.pitch = 0.7;                // 남성 목소리가 없는 기기면 기본 목소리를 낮게
     let done = false;
-    const finish = () => { if (!done) { done = true; clearTimeout(t); resolve(); } };
+    const finish = () => { if (!done) { done = true; tutorDeviceTalking = false; clearTimeout(t); resolve(); } };
     const t = setTimeout(finish, Math.max(5000, text.length * 150 / u.rate));
+    u.onstart = () => { if (!done) tutorDeviceTalking = true; };
     u.onend = u.onerror = finish;
     window.speechSynthesis.speak(u);
   });
@@ -1002,7 +1024,7 @@ async function tutorTtsRequest(model, text, slow, onPcm, stream = true) {
       method: "POST", headers: { "content-type": "application/json", "x-goog-api-key": tutorGetKey() }, signal: ctl.signal,
       body: JSON.stringify({
         model, store: false, ...(stream ? { stream: true } : {}),   // store: 구글 쪽에 대화 기록을 남기지 않는다
-        input: [{ type: "user_input", content: [{ type: "text", text, annotations: [{ type: "speech_metadata", style: slow ? TUTOR_TTS_STYLE_SLOW : TUTOR_TTS_STYLE }] }] }],
+        input: [{ type: "user_input", content: [{ type: "text", text, annotations: [{ type: "speech_metadata", style: tutorTtsStyle(slow) }] }] }],
         response_format: { type: "audio" },
         generation_config: { speech_config: [{ voice: tutorVoiceId() }] }
       })
@@ -1178,6 +1200,7 @@ async function speakTutor(text, token, slow) {
   tutorAfterSpeak(token);                // 다 말했으면 다시 듣는다
 }
 function stopTutorSpeech() {
+  tutorDeviceTalking = false;
   if (!tutorSpeaking) return;
   tutorSpeaking = false;
   tutorSpeechToken++;
@@ -1736,7 +1759,7 @@ const TutorAvatar = (() => {
       if (paused) { paused = false; playClip(clips[clip]); }
       const now = performance.now();
       // 말하는 동안은 talk, 말이 끝나고 0.35초 넘게 조용하면 idle (문장 사이 짧은 쉼에 깜빡이지 않게)
-      if (tutorSpeaking) { quietSince = 0; showClip("talk"); }
+      if (tutorAudioPlaying()) { quietSince = 0; showClip("talk"); }   // 실제로 소리가 나는 동안만 말하는 영상 (음성을 받는 중엔 듣는 영상)
       else { if (!quietSince) quietSince = now; if (now - quietSince > 350) showClip("idle"); }
       level = tutorSpeaking ? 1 : 0;
       return;
