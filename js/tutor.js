@@ -15,7 +15,9 @@ const TUTOR_AVATAR_FRAMES = null;
 // 튜터 페이지를 떠난 뒤 이 시간이 지나면 모델을 메모리에서 내린다 (휴대폰 메모리 보호)
 const TUTOR_UNLOAD_MS = 2 * 60 * 1000;
 // 작업자 파일 위치는 이 스크립트 기준 (스크립트가 처음 실행될 때만 currentScript를 알 수 있다)
-const TUTOR_WORKER_URL = new URL("tutor-worker.js", (document.currentScript && document.currentScript.src) || location.href).href;
+// index.html이 붙인 버전(?v=…)을 작업자 파일에도 붙여, 새 버전 화면이 옛 작업자 파일을 쓰지 않게 한다
+const TUTOR_ASSET_VER = (document.currentScript && document.currentScript.src) ? new URL(document.currentScript.src).search : "";
+const TUTOR_WORKER_URL = new URL("tutor-worker.js" + TUTOR_ASSET_VER, (document.currentScript && document.currentScript.src) || location.href).href;
 
 let tutorLib = null;          // WebLLM 모듈 (튜터 페이지를 열 때만 불러온다)
 let tutorEngine = null;
@@ -45,7 +47,8 @@ async function tutorCheckSupport() {
     if (!adapter) return fail("이 기기에서 AI 계산 장치를 찾지 못했어요. 크롬·사파리나 다른 기기에서 이용해 주세요.");
     const f16 = adapter.features.has("shader-f16");
     tutorModelId = (window.TUTOR_MODEL_OVERRIDE && window.TUTOR_MODEL_OVERRIDE[f16 ? "f16" : "f32"]) || TUTOR_MODELS[f16 ? "f16" : "f32"];
-    return (tutorSupport = { ok: true, f16 });
+    const info = adapter.info || {};   // 문제 생겼을 때 안내에 함께 적어, 어떤 기기에서 막히는지 알 수 있게
+    return (tutorSupport = { ok: true, f16, gpu: [info.vendor, info.architecture].filter(Boolean).join(" ") });
   } catch (e) {
     return fail("AI 계산 장치를 여는 중 문제가 생겼어요. (" + (e && e.message || e) + ")");
   }
@@ -508,7 +511,7 @@ async function tutorReply(token, learner) {
       setTutorStatus("튜터 다시 깨우는 중…", "thinking");
       bubbleText.textContent = "…";
       unloadTutorEngine();
-      await ensureTutorEngine();
+      await ensureTutorEngine(p => setTutorStatus(`튜터 다시 깨우는 중… ${Math.round(p * 100)}%`, "thinking"));
       if (token !== tutorSessionToken) throw e;
       setTutorStatus("생각 중…", "thinking");
       await generate();
@@ -522,7 +525,8 @@ async function tutorReply(token, learner) {
       bubbleText.textContent = "(답을 만들지 못했어요. 다시 말해 주세요.)";
       const why = document.createElement("div");
       why.className = "tutor-err";
-      why.textContent = String((e && e.message) || e).slice(0, 120);
+      const dev = tutorSupport ? [tutorSupport.gpu, tutorSupport.f16 ? "f16" : "f32"].filter(Boolean).join(" ") : "";
+      why.textContent = `${String((e && e.message) || e).slice(0, 120)}${dev ? " · " + dev : ""}${TUTOR_ASSET_VER ? " · " + TUTOR_ASSET_VER.slice(1) : ""}`;
       bubble.appendChild(why);
       setTutorStatus(tutorEngine ? "다시 시도해 주세요" : "튜터를 다시 열어 주세요", "");
       if (!tutorEngine) { showTutorSection("setup"); const btn = tutorEl("tutor-download-btn"); btn.classList.remove("hidden"); btn.disabled = false; btn.textContent = "다시 시도"; }
@@ -757,7 +761,7 @@ function sendTutorWhenFree(text, tries = 0) {
 // tiny.en: 짧은 문장은 base와 같은 결과에 2.5배 빠름(3초 음성 1.9초 vs 4.7초, 한 줄 실행 기준)
 const TUTOR_STT_MODEL = { model: "Xenova/whisper-tiny.en", dtype: "q8", device: "wasm" };
 const TUTOR_STT_SIZE_LABEL = "약 70MB";
-const TUTOR_STT_WORKER_URL = new URL("stt-worker.js", (document.currentScript && document.currentScript.src) || location.href).href;
+const TUTOR_STT_WORKER_URL = new URL("stt-worker.js" + TUTOR_ASSET_VER, (document.currentScript && document.currentScript.src) || location.href).href;
 let tutorUseWhisper = false;   // 브라우저 음성 인식이 실패하면 이번 실행 동안 Whisper로 바꾼다
 const TutorSTT = (() => {
   let worker = null, ready = false, loading = null, seq = 0;
