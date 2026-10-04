@@ -23,7 +23,7 @@
   <meta property="og:image" content="https://engo.life/logo.png">
   <meta property="og:site_name" content="ENGO">
 
-  <link rel="stylesheet" href="style.css?v=144" />
+  <link rel="stylesheet" href="style.css?v=145" />
 
   <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2078760660134095"
      crossorigin="anonymous"></script>
@@ -504,7 +504,7 @@
 
         <!-- 대화: 위에 Emma가 크게, 아래로 대화가 이어진다 -->
         <div id="tutor-chat-area" class="talk-room hidden">
-          <div class="talk-hero">
+          <div class="talk-hero" onclick="tutorTapTutor(event)">
             <div id="tutor-avatar" class="talk-avatar"></div>
             <div class="talk-top">
               <button class="call-icon" onclick="goTo('home')" aria-label="나가기">❮</button>
@@ -522,14 +522,11 @@
           <div id="tutor-log" class="tutor-log talk-log"></div>
 
           <div id="tutor-hint" class="tutor-hint talk-hint hidden"></div>
-          <div id="tutor-type-row" class="call-type hidden">
-            <input id="tutor-input" type="text" class="search-input" placeholder="영어로 입력…" autocomplete="off" onkeydown="if (event.key === 'Enter') sendTutorTyped()" />
-            <button class="tutor-round-btn send" onclick="sendTutorTyped()" aria-label="보내기">➤</button>
-          </div>
-          <div class="talk-controls">
-            <button class="call-ctl" onclick="toggleTutorHint()" aria-label="힌트"><i>💡</i><span>힌트</span></button>
-            <button id="tutor-mic-btn" class="call-mic" onclick="toggleTutorMic()" aria-label="말하기"><i>🎤</i><span>말하기</span></button>
-            <button class="call-ctl" onclick="toggleTutorType()" aria-label="글로 입력"><i>⌨️</i><span>입력</span></button>
+          <!-- 말은 자동으로 듣는다 (Emma를 누르면 듣기 시작·끝내기). 글로 쓰고 싶을 때는 아래 칸에 -->
+          <div id="tutor-type-row" class="call-type talk-input">
+            <input id="tutor-input" type="text" class="search-input" placeholder="말하거나 영어로 입력…" autocomplete="off" onkeydown="if (event.key === 'Enter') sendTutorTyped()" onfocus="tutorInputFocus(true)" onblur="tutorInputFocus(false)" />
+            <button id="tutor-hint-btn" class="tutor-round-btn" onmousedown="event.preventDefault()" onclick="toggleTutorHint()" aria-label="힌트">💡</button>
+            <button class="tutor-round-btn send" onmousedown="event.preventDefault()" onclick="sendTutorTyped()" aria-label="보내기">➤</button>
           </div>
 
           <!-- 아래에서 올라오는 판 -->
@@ -537,7 +534,6 @@
             <div class="call-sheet-head"><b>설정</b><button class="call-icon" onclick="toggleTutorSheet()" aria-label="닫기">✕</button></div>
             <div class="call-set-row"><span>내 영어 수준</span><div id="tutor-levels-set" class="tutor-levels" role="group" aria-label="내 영어 수준"></div></div>
             <div class="call-set-row"><span>🔊 선생님 목소리</span><select id="tutor-voice" class="tutor-select" onchange="changeTutorVoice()" aria-label="선생님 목소리"></select></div>
-            <label class="call-set-row call-set-check"><span>🎤 선생님 말이 끝나면 자동으로 듣기</span><input type="checkbox" id="tutor-auto-listen" onchange="changeTutorAutoListen()"></label>
             <div class="call-sheet-actions">
               <button class="chip-btn" onclick="newTutorConversation()">↺ 새 대화 시작</button>
               <button class="chip-btn" onclick="manageTutorKey()">🔑 키 연결 끊기</button>
@@ -674,12 +670,12 @@
 
   <div id="neural-loading" class="neural-loading hidden">🎙 자연스러운 음성 준비 중…</div>
 
-  <script src="pattern.js?v=144"></script>
-  <script src="conversation.js?v=144"></script>
-  <script src="idiom.js?v=144"></script>
-  <script src="word.js?v=144"></script>
+  <script src="pattern.js?v=145"></script>
+  <script src="conversation.js?v=145"></script>
+  <script src="idiom.js?v=145"></script>
+  <script src="word.js?v=145"></script>
 
-  <script src="js/core.js?v=144"></script>    <script src="js/storage.js?v=144"></script> <script src="js/neural-tts.js?v=144"></script> <script src="js/media.js?v=144"></script>   <script src="js/study.js?v=144"></script>   <script src="js/game.js?v=144"></script>    <script src="js/tutor.js?v=144"></script>    </body>
+  <script src="js/core.js?v=145"></script>    <script src="js/storage.js?v=145"></script> <script src="js/neural-tts.js?v=145"></script> <script src="js/media.js?v=145"></script>   <script src="js/study.js?v=145"></script>   <script src="js/game.js?v=145"></script>    <script src="js/tutor.js?v=145"></script>    </body>
 
 
 </html>
