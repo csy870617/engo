@@ -9,6 +9,11 @@ const WEBLLM_URL = "https://cdn.jsdelivr.net/npm/@mlc-ai/web-llm@0.2.85/+esm";
 // 후보 비교(같은 프롬프트·학습자 문장)에서 역할극 대화와 교정이 가장 좋았던 모델
 const TUTOR_MODELS = { f16: "Qwen2.5-1.5B-Instruct-q4f16_1-MLC", f32: "Qwen2.5-1.5B-Instruct-q4f32_1-MLC" };
 const TUTOR_SIZE_LABEL = "약 1GB";
+// 예전에 쓰던 튜터 모델 — 모델을 바꿀 때 위 TUTOR_MODELS의 이전 값을 이 목록 맨 앞에 옮겨 둔다.
+// 예전 모델을 받아 둔 사람은: 예전 모델로 계속 대화 → '새 튜터 받기'(대화하면서 뒤에서 받기) → '새 튜터로 바꾸기'
+// → 새 모델이 열리면 예전 모델은 기기에서 지운다. 사용 중인 WebLLM 목록에서 빠진 모델이면 이름 대신
+// { model_id, model, model_lib, overrides } 기록을 그대로 적는다. 예: [{ f16: "Qwen2.5-1.5B-Instruct-q4f16_1-MLC", f32: "Qwen2.5-1.5B-Instruct-q4f32_1-MLC" }]
+const TUTOR_OLD_MODELS = [];
 // 튜터 그림: 입 모양별 이미지 3장(다문 입·반쯤 벌린 입·크게 벌린 입)을 넣으면 소리에 맞춰 바뀐다.
 // 비워 두면 기본 캐릭터(SVG). 예: { closed: "images/tutor/closed.png", half: "images/tutor/half.png", open: "images/tutor/open.png" }
 const TUTOR_AVATAR_FRAMES = null;
@@ -23,7 +28,9 @@ let tutorLib = null;          // WebLLM 모듈 (튜터 페이지를 열 때만 �
 let tutorEngine = null;
 let tutorWorker = null;
 let tutorEngineLoading = null;
-let tutorModelId = null;
+let tutorModelId = null;       // 지금 버전의 튜터 모델
+let tutorActiveModelId = null; // 실제로 여는 모델: 보통 tutorModelId, 새 모델을 받기 전이면 예전 모델
+let tutorUpdate = null;        // 새 모델 받기 상태 { state: "available"|"downloading"|"ready"|"switching"|"failed", p, abort }
 let tutorSupport = null;      // { ok, f16, reason }
 let tutorMessages = [];       // 모델에 보내는 대화 (system 포함)
 let tutorLearnerLines = [];   // 학습자가 말한 문장 (피드백용)
@@ -59,8 +66,73 @@ async function loadTutorLib() {
   if (!tutorLib) tutorLib = await import(WEBLLM_URL);
   return tutorLib;
 }
-async function tutorModelCached() {
-  try { const lib = await loadTutorLib(); return await lib.hasModelInCache(tutorModelId); } catch (e) { return false; }
+/** WebLLM 모델 목록 + (목록에서 빠진) 예전 모델 기록 */
+function tutorAppConfig(lib) {
+  const extra = tutorOldModelList().filter(m => typeof m === "object");
+  const known = new Set(lib.prebuiltAppConfig.model_list.map(m => m.model_id));
+  return { ...lib.prebuiltAppConfig, model_list: [...lib.prebuiltAppConfig.model_list, ...extra.filter(m => !known.has(m.model_id))] };
+}
+/** 예전 모델 후보 (이 기기에 맞는 f16/f32 쪽을 먼저) */
+function tutorOldModelList() {
+  const olds = window.TUTOR_OLD_MODELS_OVERRIDE || TUTOR_OLD_MODELS;
+  const pref = tutorSupport && tutorSupport.f16 ? "f16" : "f32", other = pref === "f16" ? "f32" : "f16";
+  return olds.flatMap(o => [o[pref], o[other]]).filter(Boolean);
+}
+const tutorIdOf = m => (typeof m === "string" ? m : m.model_id);
+async function tutorIsCached(id) {
+  try { const lib = await loadTutorLib(); return await lib.hasModelInCache(id, tutorAppConfig(lib)); } catch (e) { return false; }
+}
+async function tutorModelCached() { return tutorIsCached(tutorModelId); }
+/** 받아 둔 예전 모델 (없으면 null) */
+async function tutorFindOldModel() {
+  for (const m of tutorOldModelList()) { const id = tutorIdOf(m); if (id !== tutorModelId && await tutorIsCached(id)) return id; }
+  return null;
+}
+/** 지금 모델이 열린 뒤: 예전 모델 파일을 지운다 (지금 모델과 같이 쓰는 실행 파일은 남긴다) */
+async function tutorRemoveOldModels() {
+  try {
+    const lib = await loadTutorLib(), cfg = tutorAppConfig(lib);
+    const rec = id => cfg.model_list.find(m => m.model_id === id);
+    const cur = rec(tutorModelId);
+    const ids = new Set([...tutorOldModelList().map(tutorIdOf), ...Object.values(TUTOR_MODELS)]);
+    ids.delete(tutorModelId);
+    for (const id of ids) {
+      const r = rec(id);
+      if (!r || !(await tutorIsCached(id))) continue;
+      await lib.deleteModelInCache(id, cfg);
+      await lib.deleteChatConfigInCache(id, cfg);
+      if (!cur || r.model_lib !== cur.model_lib) await lib.deleteModelWasmInCache(id, cfg);
+      // 라이브러리가 남기는 작은 목록 파일까지
+      const base = tutorModelBaseUrl(r.model);
+      for (const name of await caches.keys()) {
+        if (!name.startsWith("webllm")) continue;
+        const c = await caches.open(name);
+        for (const req of await c.keys()) if (req.url.startsWith(base)) await c.delete(req);
+      }
+    }
+  } catch (e) { console.warn("예전 튜터 모델 정리 실패", e); }
+}
+/** WebLLM과 같은 규칙으로 모델 파일 주소의 앞부분을 만든다 (…/resolve/main/) */
+function tutorModelBaseUrl(model) {
+  let u = model.endsWith("/") ? model : model + "/";
+  if (!/.+\/resolve\/.+\//.test(u)) u += "resolve/main/";
+  return new URL(u).href;
+}
+/** 새 모델 파일만 미리 받아 둔다 (메모리에 올리지 않으므로 예전 모델로 대화하면서 받을 수 있다).
+ *  WebLLM과 같은 저장소(webllm/model)·같은 주소로 저장해, 나중에 열 때 다시 받지 않는다. 중간에 멈춰도 받은 조각은 남아 이어 받는다 */
+async function tutorPrefetchModel(id, onProgress, signal) {
+  const lib = await loadTutorLib();
+  const r = tutorAppConfig(lib).model_list.find(m => m.model_id === id);
+  if (!r) throw new Error("모델 정보를 찾지 못했어요");
+  const base = tutorModelBaseUrl(r.model);
+  const cache = await caches.open("webllm/model");
+  const add = async url => { const req = new Request(url, { signal }); if (!(await cache.match(req))) await cache.add(req); };
+  const jsonUrl = new URL("tensor-cache.json", base).href;
+  await add(jsonUrl);
+  const recs = (await (await cache.match(jsonUrl)).json()).records || [];
+  const total = recs.reduce((a, x) => a + (x.nbytes || 1), 0) || 1;
+  let done = 0;
+  for (const x of recs) { await add(new URL(x.dataPath, base).href); done += x.nbytes || 1; onProgress && onProgress(done / total); }
 }
 
 /** 모델을 내려받거나(처음) 저장소에서 꺼내 메모리에 올린다. 진행 상황은 progress(0~1, 문구)로 */
@@ -82,7 +154,8 @@ function ensureTutorEngine(progress) {
     });
     // 휴대폰(안드로이드)은 GPU 메모리를 아끼려고 대화 기억 길이를 줄인다 (보내는 대화는 tutorContext로 600토큰 안팎이라 충분)
     const chatOpts = /Android/i.test(navigator.userAgent) ? { context_window_size: 2048 } : undefined;
-    const engine = await Promise.race([lib.CreateWebWorkerMLCEngine(tutorWorker, tutorModelId, {
+    const engine = await Promise.race([lib.CreateWebWorkerMLCEngine(tutorWorker, tutorActiveModelId || tutorModelId, {
+      appConfig: tutorAppConfig(lib),
       initProgressCallback: r => { lastProgress = Date.now(); tutorProgressCb && tutorProgressCb(r.progress || 0, r.text || ""); }
     }, chatOpts), failed]);
     tutorEngine = engine;
@@ -125,12 +198,79 @@ function setTutorProgress(p, text) {
   tutorEl("tutor-progress-text").textContent = text ? `${Math.round(p * 100)}% · ${text}` : `${Math.round(p * 100)}%`;
 }
 
+// ---------- 새 튜터(모델) 업데이트 ----------
+function renderTutorUpdate() {
+  const box = tutorEl("tutor-update");
+  if (!box) return;
+  const u = tutorUpdate;
+  box.classList.toggle("hidden", !u);
+  if (!u) return;
+  const btn = (label, fn) => `<button class="btn-main tutor-update-btn" onclick="${fn}">${label}</button>`;
+  if (u.state === "available") box.innerHTML = `<div class="tutor-update-text">새 AI 튜터가 나왔어요. 받는 동안에도 지금 튜터와 계속 대화할 수 있어요.</div>` + btn(`새 튜터 받기 (${TUTOR_SIZE_LABEL})`, "startTutorUpdate()");
+  else if (u.state === "downloading") box.innerHTML = `<div class="tutor-update-text">새 튜터 받는 중… ${Math.round((u.p || 0) * 100)}% <span class="tutor-update-sub">(지금 튜터와 계속 대화해도 돼요)</span></div>` +
+    `<div class="tutor-update-bar"><div style="width:${Math.round((u.p || 0) * 100)}%"></div></div>` + `<button class="tutor-update-link" onclick="pauseTutorUpdate()">나중에 마저 받기</button>`;
+  else if (u.state === "ready") box.innerHTML = `<div class="tutor-update-text">새 튜터가 준비됐어요! 바꾸면 예전 튜터 파일은 지워서 저장 공간을 비워요.</div>` + btn("새 튜터로 바꾸기", "switchTutorModel()");
+  else if (u.state === "switching") box.innerHTML = `<div class="tutor-update-text">새 튜터로 바꾸는 중… ${Math.round((u.p || 0) * 100)}%</div>`;
+  else if (u.state === "failed") box.innerHTML = `<div class="tutor-update-text">새 튜터를 이 기기에서 열지 못해 지금 튜터를 계속 써요.${u.msg ? `<span class="tutor-update-sub"> (${u.msg})</span>` : ""}</div>`;
+}
+/** 새 튜터 받기: 예전 모델은 그대로 두고, 새 모델 파일만 뒤에서 받는다 */
+async function startTutorUpdate() {
+  if (!tutorUpdate || tutorUpdate.state === "downloading") return;
+  if (!confirm(`새 AI 튜터(${TUTOR_SIZE_LABEL})를 받을게요.\n와이파이에서 받는 것을 권장해요. 받는 동안에도 지금 튜터와 대화할 수 있어요.`)) return;
+  const abort = new AbortController();
+  tutorUpdate = { state: "downloading", p: 0, abort };
+  renderTutorUpdate();
+  try {
+    await tutorPrefetchModel(tutorModelId, p => { if (tutorUpdate && tutorUpdate.abort === abort) { tutorUpdate.p = p; renderTutorUpdate(); } }, abort.signal);
+    if (!tutorUpdate || tutorUpdate.abort !== abort) return;
+    tutorUpdate = { state: "ready" };
+  } catch (e) {
+    if (!tutorUpdate || tutorUpdate.abort !== abort) return;
+    console.warn("새 튜터 받기 멈춤", e);
+    tutorUpdate = { state: "available" };
+    if (!(e && e.name === "AbortError")) alert("새 튜터를 받다가 멈췄어요. 받은 만큼은 저장돼 있어서 다시 누르면 이어서 받아요.\n(" + ((e && e.message) || e) + ")");
+  }
+  renderTutorUpdate();
+}
+function pauseTutorUpdate() {
+  if (tutorUpdate && tutorUpdate.abort) tutorUpdate.abort.abort();
+  tutorUpdate = { state: "available" };
+  renderTutorUpdate();
+}
+/** 새 튜터로 바꾸기: 예전 모델을 내리고 새 모델을 연다. 열리면 예전 모델을 지우고, 안 열리면 예전 모델로 돌아간다 */
+async function switchTutorModel() {
+  if (tutorBusy) { setTutorStatus("튜터가 말을 마치면 바꿀 수 있어요", ""); return; }
+  stopTutorActivity();
+  const prev = tutorActiveModelId;
+  tutorUpdate = { state: "switching", p: 0 };
+  renderTutorUpdate();
+  tutorBusy = true;
+  setTutorStatus("새 튜터로 바꾸는 중…", "loading");
+  unloadTutorEngine();
+  tutorActiveModelId = tutorModelId;
+  try {
+    await ensureTutorEngine(p => { if (tutorUpdate) { tutorUpdate.p = p; renderTutorUpdate(); } });
+    tutorUpdate = null;
+    await tutorRemoveOldModels();
+  } catch (e) {
+    console.warn("새 튜터를 열지 못함 → 예전 튜터로", e);
+    unloadTutorEngine();
+    tutorActiveModelId = prev;
+    tutorUpdate = { state: "failed", msg: String((e && e.message) || e).slice(0, 80) };
+    try { await ensureTutorEngine(); } catch (e2) { console.warn(e2); }
+  }
+  tutorBusy = false;
+  renderTutorUpdate();
+  setTutorStatus(tutorEngine ? "마이크를 누르고 영어로 말해 보세요" : "튜터를 다시 열어 주세요", "");
+}
+
 /** 튜터 페이지에 들어올 때 (core.js goTo) */
 async function renderTutorPage() {
   clearTimeout(tutorUnloadTimer);
   tutorCheckMicPermission();
   TutorAvatar.mount();
   fillTutorScenarios();
+  renderTutorUpdate();
   if (tutorEngine) { showTutorSection("chat"); if (tutorMessages.length === 0) startTutorSession(); else setTutorStatus("마이크를 누르고 영어로 말해 보세요", ""); return; }
   showTutorSection("setup");
   tutorEl("tutor-download-btn").disabled = true;
@@ -140,10 +280,15 @@ async function renderTutorPage() {
   tutorEl("tutor-download-btn").classList.toggle("hidden", !sup.ok);
   if (!sup.ok) { warn.textContent = sup.reason; warn.classList.remove("hidden"); setTutorStatus("이 기기에서는 쓸 수 없어요", ""); return; }
   warn.classList.add("hidden");
+  // 받아 둔 모델이 있으면 바로 연다: 지금 모델 → 없으면 예전 모델(새 튜터 받기 안내와 함께)
   const cached = await tutorModelCached();
-  // 받아 둔 모델이 있으면 바로 연다. 열지 못해도(메모리 부족 등) 지울 수 있게 삭제 버튼을 보여 준다
-  tutorEl("tutor-delete-setup").classList.toggle("hidden", !cached);
-  if (cached) { tutorEl("tutor-download-btn").textContent = "AI 튜터 시작"; await startTutorEngine(false); return; }
+  const old = cached ? null : await tutorFindOldModel();
+  tutorActiveModelId = cached ? tutorModelId : (old || tutorModelId);
+  if (old && !tutorUpdate) tutorUpdate = { state: "available" };
+  renderTutorUpdate();
+  // 열지 못해도(메모리 부족 등) 지울 수 있게 삭제 버튼을 보여 준다
+  tutorEl("tutor-delete-setup").classList.toggle("hidden", !cached && !old);
+  if (cached || old) { tutorEl("tutor-download-btn").textContent = "AI 튜터 시작"; await startTutorEngine(false); return; }
   tutorEl("tutor-download-btn").disabled = false;
   tutorEl("tutor-download-btn").textContent = `AI 튜터 받기 (${TUTOR_SIZE_LABEL})`;
   setTutorStatus("AI 튜터를 받으면 바로 대화할 수 있어요", "");
@@ -159,6 +304,8 @@ async function startTutorEngine(isDownload) {
   try {
     await ensureTutorEngine((p, text) => setTutorProgress(p, tutorProgressText(text)));
     tutorEl("tutor-progress").classList.add("hidden");
+    // 지금 버전 모델이 열렸으면 예전 모델은 더 필요 없다
+    if (tutorActiveModelId === tutorModelId) { tutorUpdate = null; renderTutorUpdate(); tutorRemoveOldModels(); }
     if (!document.getElementById("page-tutor").classList.contains("hidden")) {
       showTutorSection("chat");
       // 대화 중에 엔진이 끊겨 다시 연 경우에는 하던 대화를 이어 간다
@@ -166,6 +313,11 @@ async function startTutorEngine(isDownload) {
     }
   } catch (e) {
     console.warn("AI 튜터를 열지 못함", e);
+    // 새 모델이 이 기기에서 열리지 않으면, 남아 있는 예전 모델로 계속 쓴다
+    if (tutorActiveModelId === tutorModelId) {
+      const old = await tutorFindOldModel();
+      if (old) { tutorActiveModelId = old; tutorUpdate = { state: "failed" }; renderTutorUpdate(); return startTutorEngine(false); }
+    }
     tutorEl("tutor-progress").classList.add("hidden");
     btn.disabled = false;
     btn.textContent = "다시 시도";
@@ -174,7 +326,7 @@ async function startTutorEngine(isDownload) {
   }
 }
 // 이미 받아 둔 모델이면 다시 받는다는 안내 없이 바로 연다
-async function downloadTutor() { startTutorEngine(!(await tutorModelCached())); }
+async function downloadTutor() { startTutorEngine(!(await tutorIsCached(tutorActiveModelId || tutorModelId))); }
 // WebLLM 진행 문구(영어)를 짧은 한국어로: "Fetching param cache[3/22]: 120MB fetched..." / "Loading model from cache..."
 function tutorProgressText(text) {
   if (/Loading model from cache/i.test(text)) return "저장된 모델 여는 중";
@@ -191,8 +343,18 @@ async function deleteTutorModel() {
   try {
     const lib = await loadTutorLib();
     // 기기에 따라 f16/f32 중 받아 둔 것만 지운다 (안 받은 쪽을 지우려 하면 목록 파일을 새로 받아 버림)
-    for (const id of new Set([tutorModelId, ...Object.values(TUTOR_MODELS)].filter(Boolean))) {
-      if (await lib.hasModelInCache(id)) await lib.deleteModelAllInfoInCache(id);
+    if (tutorUpdate && tutorUpdate.abort) tutorUpdate.abort.abort();
+    tutorUpdate = null;
+    const cfg = tutorAppConfig(lib);
+    for (const id of new Set([tutorModelId, ...Object.values(TUTOR_MODELS), ...tutorOldModelList().map(tutorIdOf)].filter(Boolean))) {
+      if (await tutorIsCached(id)) await lib.deleteModelAllInfoInCache(id, cfg);
+    }
+    // 새 튜터를 받다 만 조각도 지운다
+    for (const m of [tutorModelId, ...Object.values(TUTOR_MODELS)]) {
+      const r = m && cfg.model_list.find(x => x.model_id === m);
+      if (!r) continue;
+      const base = tutorModelBaseUrl(r.model), c = await caches.open("webllm/model");
+      for (const req of await c.keys()) if (req.url.startsWith(base)) await c.delete(req);
     }
     TutorSTT.unload();
     await caches.delete("transformers-cache");
