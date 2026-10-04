@@ -1064,6 +1064,13 @@ body.list-playing .neural-loading { bottom: calc(86px + env(safe-area-inset-bott
 .tutor-err { margin-top: 4px; font-size: 0.68rem; color: var(--text-sub, #94a3b8); opacity: 0.7; word-break: break-all; }
 .tutor-fb-summary { margin-bottom: 6px; color: var(--text-sub); font-size: 0.85rem; }
 .tutor-fb-row { cursor: pointer; }
+/* 피드백 카드: 한 줄 총평 + 오늘의 핵심 */
+.tutor-fb-card { margin: 4px 0 12px; padding: 12px 14px; border-radius: 14px; background: linear-gradient(135deg, rgba(139,92,246,0.18), rgba(56,189,248,0.10)); border: 1px solid rgba(139,92,246,0.3); }
+.tutor-fb-overall { color: #fff; font-weight: 600; font-size: 0.95rem; line-height: 1.5; }
+.tutor-fb-focus { margin-top: 10px; padding-top: 10px; border-top: 1px dashed rgba(255,255,255,0.15); font-size: 0.88rem; line-height: 1.5; }
+.tutor-fb-focus b { display: block; color: #fde68a; font-size: 0.8rem; margin-bottom: 2px; }
+.tutor-fb-wait { color: var(--text-sub); font-weight: 400; font-size: 0.85rem; animation: tutorPulse 1.4s ease-in-out infinite; }
+.tutor-feedback-body .tutor-report-sec { margin-bottom: 12px; }
 
 /* ===== AI 튜터 (전체 화면) ===== */
 .call { position: fixed; inset: 0; z-index: 1100; display: flex; flex-direction: column; overflow: hidden; color: var(--text-main);

@@ -1383,39 +1383,79 @@ function renderTutorHint() {
   });
 }
 
-/** 오늘 대화 피드백: 대화 중 확인한 교정을 모아 보여 준다 (확인이 끝나지 않았거나 실패한 문장은 지금 확인) */
+/** 오늘 대화 피드백: 한 줄 총평 · 오늘의 핵심 하나 · 고쳐 말하기 · 써 볼 표현 2개 (짧고 깔끔하게).
+ *  선생님 정리(AI)와 문장 확인을 동시에 시작해서, 먼저 끝나는 것부터 보여 준다. 대화가 그대로면 다시 열 때 바로 */
+let tutorFeedbackCache = { key: "", r: null };
+const TUTOR_FB_SCHEMA = { type: "OBJECT", properties: {
+  overall: { type: "STRING" }, focus: { type: "STRING" },
+  expressions: { type: "ARRAY", items: { type: "OBJECT", properties: { en: { type: "STRING" }, kr: { type: "STRING" } }, required: ["en", "kr"] } }
+}, required: ["overall", "focus"] };
+function tutorFeedbackReport() {
+  return geminiJSON([
+    { role: "system", content: `You are a warm, sharp English conversation teacher. Give a Korean adult student at the ${tutorLevel().desc} level a very short feedback card on today's conversation, in simple Korean (존댓말).\n` +
+      "overall: ONE short sentence (under 45 Korean characters) - an honest, encouraging summary of how they did.\n" +
+      "focus: the ONE most important thing to practice next, as one short, concrete Korean sentence with a tiny English example (e.g. \"지난 일은 과거형으로: go → went\"). Pick the pattern that matters most, not a list.\n" +
+      "expressions: exactly 2 short, natural English expressions they could use in this kind of conversation, at their level, each with a short Korean meaning.\n" +
+      "No greetings, no filler, no extra advice." },
+    { role: "user", content: `Conversation:\n${tutorTranscript(30)}\n\nMistakes found so far:\n` +
+      (tutorLearnerItems.filter(it => it.fix).map(it => `- ${it.text} -> ${it.fix}`).join("\n") || "(none)") }
+  ], { temperature: 0.3, maxTokens: 350, chain: "chat", schema: TUTOR_FB_SCHEMA });
+}
 async function tutorFeedback() {
   const box = tutorEl("tutor-feedback");
+  box.classList.remove("hidden");
   if (tutorLearnerLines.length === 0) {
-    box.classList.remove("hidden");
-    box.innerHTML = `<div class="tutor-fb-summary">이번 통화에서는 아직 영어로 말한 문장이 없어요. 다음엔 한 마디라도 말해 봐요! 😊</div>`;
+    box.innerHTML = `<div class="tutor-fb-summary">아직 영어로 말한 문장이 없어요. 한 마디라도 말해 봐요! 😊</div>`;
     return;
   }
   if (!tutorReady()) return;
   const token = tutorSessionToken;
-  box.classList.remove("hidden");
-  box.innerHTML = `<div class="tutor-feedback-body"><div class="tutor-fb-summary">내가 한 문장을 확인하고 있어요…</div></div>`;
-  box.scrollIntoView({ behavior: "smooth", block: "nearest" });
+  const n = tutorLearnerLines.length;
+  box.innerHTML = `<div class="tutor-feedback-body">
+    <div class="tutor-fb-summary">영어로 ${n}번 말했어요</div>
+    <div class="tutor-fb-card"><div class="tutor-fb-overall tutor-fb-wait">선생님이 정리하고 있어요…</div><div class="tutor-fb-focus hidden"></div></div>
+    <div class="tutor-report-sec tutor-fb-fixes"><div class="tutor-report-title">✏️ 이렇게 고쳐 말해요</div><div class="tutor-fb-list tutor-fb-wait">내가 한 문장을 확인하고 있어요…</div></div>
+    <div class="tutor-report-sec tutor-fb-expr hidden"><div class="tutor-report-title">✨ 써 볼 표현</div></div>
+    <div class="tutor-fb-note">문장을 누르면 들을 수 있어요 · AI 평가는 참고용이에요</div>
+  </div>`;
+  const q = sel => box.querySelector(sel);
+  // ① 선생님 정리: 바로 시작 (대화가 그대로면 지난 결과를 그대로)
+  const key = [tutorGreeting, n, tutorLearnerLines[n - 1], tutorLevelId()].join("|");   // 같은 대화·같은 문장 수면 다시 요청하지 않는다
+  const reportP = (tutorFeedbackCache.key === key && tutorFeedbackCache.r ? Promise.resolve(tutorFeedbackCache.r) : tutorFeedbackReport())
+    .then(r => {
+      if (token !== tutorSessionToken) return;
+      if (!r || !r.overall) throw new Error("평가 형식 오류");
+      tutorFeedbackCache = { key, r };
+      const ov = q(".tutor-fb-overall"); ov.classList.remove("tutor-fb-wait"); ov.textContent = r.overall;
+      if (r.focus) { const f = q(".tutor-fb-focus"); f.innerHTML = `<b>🎯 오늘의 핵심</b><span></span>`; f.querySelector("span").textContent = r.focus; f.classList.remove("hidden"); }
+      const ex = (r.expressions || []).filter(x => x && x.en).slice(0, 2);
+      if (ex.length) {
+        const sec = q(".tutor-fb-expr");
+        ex.forEach(x => {
+          const d = document.createElement("div"); d.className = "tutor-report-expr";
+          d.innerHTML = `<b></b> <span></span>`; d.querySelector("b").textContent = x.en; d.querySelector("span").textContent = x.kr;
+          d.onclick = () => speakTutor(x.en, tutorSessionToken); sec.appendChild(d);
+        });
+        sec.classList.remove("hidden");
+      }
+    })
+    .catch(e => {
+      console.warn("평가 실패", e);
+      if (token !== tutorSessionToken) return;
+      const ov = q(".tutor-fb-overall"); ov.classList.remove("tutor-fb-wait"); ov.classList.add("tutor-report-err");
+      ov.textContent = "선생님 정리를 받지 못했어요. " + geminiErrorText(e);
+    });
+  // ② 고쳐 말하기: 대화 중에 확인 못 한 문장만 지금 확인
   const pending = tutorLearnerItems.map((it, i) => it.check || (it.fix === undefined
     ? tutorCheckItem(it, (tutorMessages.filter(m => m.role === "assistant")[i - 1] || {}).content, token) : null)).filter(Boolean);
   await Promise.all(pending);
   if (token !== tutorSessionToken) return;
-  const body = box.querySelector(".tutor-feedback-body");
-  body.innerHTML = "";
   const seen = new Set();   // 같은 문장을 여러 번 말했으면 교정은 한 번만
   tutorCorrections = tutorLearnerItems.filter(it => it.fix && !seen.has(tutorNorm(it.text)) && seen.add(tutorNorm(it.text))).map(it => ({ said: it.text, better: it.fix, why: it.why }));
-  const n = tutorLearnerLines.length, fixes = tutorCorrections.slice(-6);
-  const failed = tutorLearnerItems.filter(it => it.fix === undefined).length;
-  const summary = document.createElement("div");
-  summary.className = "tutor-fb-summary";
-  summary.textContent = fixes.length === 0
-    ? `영어로 ${n}번 말했어요. 눈에 띄는 실수 없이 잘했어요! 👏`
-    : `영어로 ${n}번 말했어요. 이렇게 고쳐 말하면 더 자연스러워요.`;
-  body.appendChild(summary);
-  const report = document.createElement("div");
-  report.className = "tutor-report";
-  report.textContent = "선생님이 오늘 대화를 살펴보고 있어요…";
-  body.appendChild(report);
+  const fixes = tutorCorrections.slice(-5), failed = tutorLearnerItems.filter(it => it.fix === undefined).length;
+  q(".tutor-fb-summary").textContent = `영어로 ${n}번 말했어요 · ` + (fixes.length ? `고쳐 볼 문장 ${tutorCorrections.length}개` : "눈에 띄는 실수 없이 잘했어요! 👏");
+  const list = q(".tutor-fb-list"); list.classList.remove("tutor-fb-wait"); list.innerHTML = "";
+  if (!fixes.length) q(".tutor-fb-fixes").classList.add("hidden");
   fixes.forEach(({ said, better, why }) => {
     const row = document.createElement("div"); row.className = "tutor-fb-row";
     row.innerHTML = `<span class="from"></span><span class="arrow">→</span><span class="to"></span><span class="why"></span>`;
@@ -1423,45 +1463,10 @@ async function tutorFeedback() {
     row.querySelector(".to").textContent = better;
     row.querySelector(".why").textContent = why || "";
     row.onclick = () => speakTutor(better, tutorSessionToken);
-    body.appendChild(row);
+    list.appendChild(row);
   });
-  const note = document.createElement("div"); note.className = "tutor-fb-note";
-  note.textContent = (fixes.length ? "고친 문장·표현을 누르면 들을 수 있어요. " : "표현을 누르면 들을 수 있어요. ") + (failed ? `${failed}문장은 확인하지 못했어요(잠시 뒤 다시 눌러 주세요). ` : "") + "AI 평가는 참고용이에요.";
-  box.appendChild(note);
-  box.scrollIntoView({ behavior: "smooth", block: "nearest" });
-  // 선생님 평가: 총평 · 잘한 점 · 다음에 써 볼 표현 · 다음 목표 (한국어)
-  try {
-    const r = await geminiJSON([
-      { role: "system", content: `You are an encouraging, skilled English conversation teacher. Write a short feedback report in Korean (존댓말) for a Korean adult student at the ${tutorLevel().desc} level, based on today's conversation. ` +
-        "overall: 2 warm, specific sentences about how the student did. good: 2 specific things the student did well. " +
-        "expressions: 3 useful English expressions the student could use next time in this kind of conversation, at their level, each with a Korean meaning. " +
-        "next: one concrete, small goal for the next practice. Write everything in Korean except the English expressions." },
-      { role: "user", content: `Conversation:\n${tutorTranscript(40)}\n\nCorrections already shown to the student:\n` +
-        (tutorCorrections.map(c => `- ${c.said} -> ${c.better}`).join("\n") || "(none)") }
-    ], { temperature: 0.4, maxTokens: 900, chain: "chat", schema: { type: "OBJECT", properties: {
-      overall: { type: "STRING" }, good: { type: "ARRAY", items: { type: "STRING" } },
-      expressions: { type: "ARRAY", items: { type: "OBJECT", properties: { en: { type: "STRING" }, kr: { type: "STRING" } }, required: ["en", "kr"] } },
-      next: { type: "STRING" } }, required: ["overall"] } });
-    if (token !== tutorSessionToken) return;
-    if (!r || !r.overall) throw new Error("평가 형식 오류");
-    report.innerHTML = "";
-    const sec = (title, cls) => { const d = document.createElement("div"); d.className = "tutor-report-sec " + (cls || ""); d.innerHTML = `<div class="tutor-report-title"></div>`; d.firstChild.textContent = title; report.appendChild(d); return d; };
-    const p = sec("👩‍🏫 선생님 한마디"); const t = document.createElement("div"); t.textContent = r.overall; p.appendChild(t);
-    if ((r.good || []).length) { const g = sec("👍 잘한 점"); r.good.slice(0, 3).forEach(x => { const d = document.createElement("div"); d.textContent = "· " + x; g.appendChild(d); }); }
-    if ((r.expressions || []).length) {
-      const ex = sec("✨ 다음에 써 볼 표현");
-      r.expressions.slice(0, 4).forEach(x => {
-        const d = document.createElement("div"); d.className = "tutor-report-expr";
-        d.innerHTML = `<b></b> <span></span>`; d.querySelector("b").textContent = x.en; d.querySelector("span").textContent = x.kr;
-        d.onclick = () => speakTutor(x.en, tutorSessionToken); ex.appendChild(d);
-      });
-    }
-    if (r.next) { const n2 = sec("🎯 다음 목표"); const d = document.createElement("div"); d.textContent = r.next; n2.appendChild(d); }
-  } catch (e) {
-    console.warn("평가 실패", e);
-    report.textContent = "선생님 평가를 받지 못했어요. " + geminiErrorText(e);
-    report.classList.add("tutor-report-err");
-  }
+  if (failed) { const d = document.createElement("div"); d.className = "tutor-fb-note"; d.textContent = `${failed}문장은 확인하지 못했어요. 잠시 뒤 다시 열어 주세요.`; list.appendChild(d); q(".tutor-fb-fixes").classList.remove("hidden"); }
+  await reportP;
 }
 
 // ---------- 튜터 얼굴 (입모양) ----------
