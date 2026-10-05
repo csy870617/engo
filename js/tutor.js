@@ -1526,7 +1526,7 @@ function fillTutorVoices() {
   ["tutor-voice", "tutor-voice-lobby"].forEach(id => {
     const sel = tutorEl(id); if (!sel) return;
     sel.innerHTML = "";
-    Object.entries(TUTOR_VOICES).filter(([k, v]) => k === "app" || v.g === g).forEach(([k, v]) => { const o = document.createElement("option"); o.value = k; o.textContent = (k === "app" ? "" : "구글 AI · ") + v.label; sel.appendChild(o); });
+    Object.entries(TUTOR_VOICES).filter(([k, v]) => k === "app" || v.g === g).forEach(([k, v]) => { const o = document.createElement("option"); o.value = k; o.textContent = v.label; sel.appendChild(o); });
     sel.value = tutorVoiceId();
   });
 }
