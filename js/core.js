@@ -75,6 +75,8 @@ function shuffleArray(arr) {
 // 2. 네비게이션 & UI 제어
 // ==========================================
 window.onpopstate = function(event) {
+  // AI 튜터의 기록·도움말 창이 열려 있으면 뒤로가기는 그 창만 닫는다
+  if (typeof tutorHandleBack === 'function' && tutorHandleBack()) return;
   const openModals = document.querySelectorAll('.modal:not(.hidden)');
   if (openModals.length > 0) {
     openModals.forEach(modal => modal.classList.add('hidden'));
