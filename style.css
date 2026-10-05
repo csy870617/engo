@@ -1192,4 +1192,8 @@ body.list-playing .neural-loading { bottom: calc(86px + env(safe-area-inset-bott
 @keyframes sendReady { 0% { box-shadow: 0 0 0 0 rgba(139,92,246,0.7); } 100% { box-shadow: 0 0 0 12px rgba(139,92,246,0); } }
 .tutor-voice-note { margin: 2px 0 6px; font-size: 0.75rem; color: #fbbf24; line-height: 1.4; }
 .tutor-voice-note.hidden { display: none; }
+.tutor-voice-dl { display: flex; align-items: center; gap: 10px; margin: 4px 0 8px; padding: 10px 12px; border-radius: 12px; background: rgba(56,189,248,0.08); border: 1px solid rgba(56,189,248,0.25); }
+.tutor-voice-dl.hidden { display: none; }
+.tutor-voice-dl-text { flex: 1; min-width: 0; font-size: 0.78rem; color: var(--text-main); line-height: 1.45; }
+.tutor-voice-dl button { flex-shrink: 0; }
 .tutor-hint-retry { margin-top: 6px; }

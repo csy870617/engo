@@ -22,9 +22,9 @@ const GEMINI_KEY_PAGE = "https://aistudio.google.com/apikey";
 const TUTOR_AVATAR_FRAMES = null;
 // 튜터: 이름 · 기본 목소리 · 영상 폴더 (같은 사진에서 만든 반복 영상: idle 듣기 / talk 말하기 / poster 첫 화면)
 const TUTORS = {
-  emma: { name: "Emma", label: "Emma", gender: "f", voice: "Leda", media: "images/tutor/emma/web/",
+  emma: { name: "Emma", label: "Emma", gender: "f", voice: "af_heart", media: "images/tutor/emma/web/",
     style: "a sweet, bright K-pop idol girl in her early 20s chatting with her fans on a live stream: cheerful, warm and cute, with a light, youthful voice" },
-  jay: { name: "Jay", label: "Jay", gender: "m", voice: "Algieba", media: "images/tutor/jay/web/",
+  jay: { name: "Jay", label: "Jay", gender: "m", voice: "am_michael", media: "images/tutor/jay/web/",
     style: "a gentle, charming K-pop idol boy in his early 20s chatting with his fans on a live stream: soft, warm and sweet, calm and friendly, with a youthful voice" }
 };
 function tutorCharId() { let v = null; try { v = localStorage.getItem("tutorChar"); } catch (e) {} return TUTORS[v] ? v : "emma"; }
@@ -288,13 +288,14 @@ function renderTutorPage() {
   toggleTutorSheet();
   tutorAudioSession(true);
   showTutorLobby();             // 바로 시작하지 않고 시작 화면부터 (튜터·수준·목소리를 고르고 '시작하기')
+  tutorWarmVoice();
 }
 
 // 아이폰: 무음 스위치를 켜 둬도 튜터 목소리가 들리게 (iOS 17+ 오디오 세션), 나가면 원래대로
 function tutorAudioSession(on) {
   try { if (navigator.audioSession) navigator.audioSession.type = on ? "play-and-record" : "auto"; } catch (e) {}
 }
-/** 아이폰은 사용자가 누른 순간에 한 번 말해 둬야 나중에 기기 음성(구글 음성 실패 시)이 나온다 → 소리 없는 한 마디 */
+/** 아이폰은 사용자가 누른 순간에 한 번 말해 둬야 나중에 기기 음성이 나온다 → 소리 없는 한 마디 */
 let tutorSpeechPrimed = false;
 function tutorPrimeSpeech() {
   if (tutorSpeechPrimed || !("speechSynthesis" in window) || typeof SpeechSynthesisUtterance === "undefined") return;
@@ -321,7 +322,7 @@ function tutorPrepGreeting(delay) {
     if (!tutorLobbyOpen() || !tutorReady()) return;
     const ng = tutorNextGreeting;
     if (!ng || ng.char !== tutorCharId() || ng.level !== tutorLevelId()) tutorNextGreeting = { ...tutorPickGreeting(), char: tutorCharId(), level: tutorLevelId() };
-    if (tutorUseGoogleVoice() && typeof NeuralTTS !== "undefined") tutorTtsFetch(tutorNextGreeting.text, false);
+    if (tutorUseNatural()) tutorTtsFetch(tutorNextGreeting.text, false);
   }, delay);
 }
 let tutorGreetPrep = null;
@@ -338,12 +339,65 @@ function tutorStartFromLobby(fresh) {
   if (!fresh && tutorLearnerLines.length) { setTutorStatus(tutorIdleMsg(), ""); tutorAfterSpeak(tutorSessionToken); }
   else startTutorSession();
 }
+// 자연스러운 목소리 받기 (시작 화면·설정): 처음 한 번만
+let tutorDl = null;   // 받는 중이면 { got, total }
+const tutorMB = b => Math.max(1, Math.round(b / 1048576));
+function tutorVoiceDlRender() {
+  const K = typeof KokoroVoice !== "undefined" ? KokoroVoice : null;
+  const need = !!K && K.supported() && !K.downloaded();
+  document.querySelectorAll(".tutor-voice-dl").forEach(box => {
+    const show = need || !!tutorDl;
+    box.classList.toggle("hidden", !show);
+    if (!show) return;
+    const txt = box.querySelector(".tutor-voice-dl-text"), btn = box.querySelector("button");
+    if (tutorDl) {
+      const pct = tutorDl.total ? Math.min(99, Math.round(tutorDl.got / tutorDl.total * 100)) : 0;
+      txt.textContent = tutorDl.total ? `자연스러운 목소리 받는 중… ${pct}% (${tutorMB(tutorDl.got)}/${tutorMB(tutorDl.total)}MB)` : "자연스러운 목소리 준비 중…";
+      btn.textContent = "받는 중"; btn.disabled = true;
+    } else {
+      const pl = K.plan();
+      txt.textContent = `🎧 사람처럼 자연스러운 영어 목소리 · 한 번만 받으면 계속 써요 (약 ${pl.mb}MB, 와이파이 권장)` +
+        (pl.device === "wasm" ? " · 그래픽 가속이 없는 기기라 느리면 기기 음성으로 읽어요" : "");
+      btn.textContent = "받기"; btn.disabled = false;
+    }
+  });
+}
+async function tutorDownloadVoice() {
+  if (tutorDl || typeof KokoroVoice === "undefined") return;
+  tutorDl = { got: 0, total: 0 }; tutorVoiceNote(""); tutorVoiceDlRender();
+  try {
+    await KokoroVoice.load((got, total) => { tutorDl = { got, total }; tutorVoiceDlRender(); }, tutorChar().voice);
+    tutorDl = null; tutorNaturalBroken = false; tutorTtsCache.clear();
+    if (KokoroVoice.tooSlow()) tutorVoiceNote("받았어요. 다만 이 기기에서는 목소리를 만드는 게 느려서 기기 음성으로 읽어요");
+    else {
+      if (tutorVoiceId() === "app") { try { localStorage.removeItem("tutorVoice"); } catch (e) {} fillTutorVoices(); }
+      tutorVoiceNote("");
+      tutorVoiceDlRender();
+      tutorPreviewVoice();                    // 바로 한 마디 들려준다
+      if (tutorLobbyOpen()) tutorPrepGreeting(800);
+    }
+  } catch (e) {
+    tutorDl = null;
+    tutorVoiceNote("목소리를 받지 못했어요. 인터넷 연결을 확인하고 다시 눌러 주세요 (" + ((e && e.message) || e) + ")");
+  }
+  tutorVoiceDlRender();
+}
+/** 튜터 화면을 열 때: 받아 둔 목소리가 아직 있는지 보고, 있으면 미리 불러 둔다 (첫 마디가 늦지 않게) */
+function tutorWarmVoice() {
+  if (typeof KokoroVoice === "undefined") return;
+  tutorVoiceDlRender();
+  if (!KokoroVoice.downloaded() || tutorDl) return;
+  KokoroVoice.verify().then(ok => {
+    tutorVoiceDlRender();
+    if (ok && tutorVoiceId() !== "app") KokoroVoice.load(null, tutorVoiceId()).catch(() => { tutorNaturalBroken = true; });
+  });
+}
 /** 목소리 들어 보기 (시작 화면) */
-/** 시작 화면·설정의 목소리 칸 아래 안내 (구글 음성을 못 쓸 때 — 상태 표시는 시작 화면에 가려 안 보여서) */
+/** 시작 화면·설정의 목소리 칸 아래 안내 (상태 표시는 시작 화면에 가려 안 보여서) */
 function tutorVoiceNote(text) {
   document.querySelectorAll(".tutor-voice-note").forEach(n => { n.textContent = text || ""; n.classList.toggle("hidden", !text); });
 }
-// 목소리 들어 보기: 버튼 하나로 [▶ 들어 보기] → [불러오는 중…] → [■ 그만] (구글 음성을 받는 동안 반응이 없어 보이지 않게)
+// 목소리 들어 보기: 버튼 하나로 [▶ 들어 보기] → [불러오는 중…] → [■ 그만] (목소리를 만드는 동안 반응이 없어 보이지 않게)
 let tutorPreviewing = 0, tutorPreviewSeq = 0, tutorPreviewTimer = null, tutorPreviewDebounce = null;
 function tutorPreviewButtons(state) {
   const label = { idle: "▶ 들어 보기", loading: "불러오는 중…", playing: "■ 그만" }[state];
@@ -362,10 +416,10 @@ function tutorPreviewVoice(fromSelect) {
   if (typeof NeuralTTS !== "undefined") NeuralTTS.unlockAudio();
   tutorCancelListening();
   stopTutorSpeech();
-  // 구글 음성을 잠시 못 쓰는 중이면 (사용량 초과 등) 기기 음성으로 몰래 바꾸지 않고 알려 준다
-  if (tutorVoiceId() !== "app" && tutorReady() && Date.now() <= tutorTtsDownUntil && !tutorTtsHas(tutorPreviewText())) {
+  if (tutorVoiceId() !== "app" && !tutorUseNatural()) {          // 아직 안 받았으면 기기 음성으로 몰래 들려주지 않고 알려 준다
     tutorPreviewing = 0; tutorPreviewButtons("idle");
-    tutorVoiceNote(tutorTtsDownReason === 429 ? `구글 음성 사용량이 차서 지금은 들어 볼 수 없어요 (${tutorTtsWaitText()})` : "구글 음성에 잠시 연결되지 않아요 · 조금 뒤 다시 눌러 주세요");
+    tutorVoiceNote(KokoroVoice.downloaded() && KokoroVoice.tooSlow() ? "이 기기에서는 자연스러운 음성이 느려서 기기 음성으로 읽어요" : "먼저 아래 '자연스러운 목소리 받기'를 눌러 주세요");
+    tutorVoiceDlRender();
     return;
   }
   const my = tutorPreviewing = ++tutorPreviewSeq;
@@ -449,6 +503,7 @@ function stopTutorActivity() {
 }
 function leaveTutorPage() {
   stopTutorActivity();
+  if (typeof KokoroVoice !== "undefined") KokoroVoice.scheduleUnload(90000);   // 잠시 뒤 메모리에서 내린다 (금방 돌아오면 그대로)
   tutorStopPreview();
   tutorCallActive = false;
   toggleTutorSheet(undefined, false, "leave");
@@ -1072,33 +1127,24 @@ function tutorSpeechQueue(token) {
   let chain = Promise.resolve(), dead = false;
   const spoken = [];                                 // 이미 줄에 넣은 문장
   const alive = () => !dead && token === tutorSessionToken && my === tutorSpeechToken;
-  let early = null, earlyText = "";                  // 첫 문장만 먼저 읽을지 잠깐 기다리는 중
+  let early = null;
   const q = {
     /** 읽을 문장이 text까지 늘었다: 아직 줄에 안 넣은 문장만 차례로 넣는다 (걸러 내기로 앞 문장이 바뀌어도 겹쳐 읽지 않음).
-     *  구글 AI 음성: 답 전체를 한 번에 받는 게 기본 (무료 사용량이 적어서 요청 수를 아낀다).
-     *  첫 문장이 끝났는데 나머지가 0.7초 안에 안 오면 그때 첫 문장부터 먼저 받아 읽는다 (기다림이 길어지지 않게) */
+     *  문장이 끝나는 대로 바로 목소리를 만들기 시작한다 → 앞 문장을 읽는 동안 다음 문장이 만들어진다 */
     upTo(text, final) {
       if (!alive() || !text) return;
-      const google = tutorUseGoogleVoice() && typeof NeuralTTS !== "undefined";
-      let parts = tutorSplitSentences(text).filter(x => !spoken.includes(x));
-      if (google && !final) {
-        if (spoken.length || !parts.length) return;
-        earlyText = parts[0];
-        if (!early) early = setTimeout(() => { early = null; if (!spoken.length && earlyText) q.say([earlyText], true); }, 700);
-        return;
-      }
-      clearTimeout(early); early = null;
-      if (google) parts = parts.length ? [parts.join(" ")] : [];
-      q.say(parts, google);
+      const nat = tutorUseNatural();
+      const parts = tutorSplitSentences(text).filter(x => !spoken.includes(x));
+      q.say(parts, nat);
     },
-    say(parts, google) {
+    say(parts, nat) {
       if (!alive()) return;
       for (const part of parts) {
         tutorSplitSentences(part).forEach(x => spoken.push(x));
-        tutorSpeaking = true; tutorSayDevice = !google;
+        tutorSpeaking = true; tutorSayDevice = !nat;
         if (!tutorAudioPlaying()) tutorMarkPreparing();
-        if (google) {
-          const clip = tutorTtsFetch(part, false);           // 앞 문장을 읽는 동안 미리 받아 둔다 (받는 중이어도 차례가 오면 바로 튼다)
+        if (nat) {
+          const clip = tutorTtsFetch(part, false);           // 지금 만들기 시작해 두고, 차례가 오면 (다 되는 대로) 튼다
           chain = chain.then(() => alive() && tutorPlayClip(clip, part, alive));
         } else {
           chain = chain.then(async () => { if (alive()) { try { await tutorDeviceSpeak(part); } catch (e) {} } });
@@ -1415,28 +1461,23 @@ function renderTutorNotes() {
 }
 
 
-// ---------- 구글 AI 음성 (Gemini TTS) ----------
-// 튜터 목소리를 사람처럼 자연스러운 구글 AI 음성으로. 문장을 보내면 음성 파일(WAV, 24kHz)을 받아 앱 재생기(입모양 연동)로 튼다.
-// 무료 사용량이 차거나 실패하면 잠시 앱 기본 음성으로 읽는다
-const TUTOR_TTS_API = "https://generativelanguage.googleapis.com/v1beta/interactions";
-const TUTOR_TTS_MODELS = ["gemini-3.8-flash-lite-tts", "gemini-3.8-flash-tts"];   // 빠른 것부터 (무료 한도도 따로)
+// ---------- 튜터 목소리 (기기 안에서 만드는 자연스러운 음성 Kokoro) ----------
+// 처음 한 번 음성 모델을 받아 두면 기기 안에서 사람처럼 자연스러운 영어 목소리를 만든다 (사용량 제한·요금 없음).
+// 받기 전이거나 기기가 너무 느리면 기기 기본 음성으로 읽는다
 // 튜터 목소리: 튜터 성별에 맞는 목소리만 고를 수 있다 (g: f 여성 / m 남성, app은 기기 음성을 성별에 맞춰 고름)
-// K팝 아이돌 튜터에 어울리는 젊고 밝은 목소리 (설정에서 바꾸면 바로 한 마디 들려준다)
 const TUTOR_VOICES = {
-  Leda: { label: "상큼 발랄 (추천)", g: "f" }, Laomedeia: { label: "통통 튀는", g: "f" },
-  Achernar: { label: "부드럽고 여린", g: "f" }, Zephyr: { label: "맑고 경쾌한", g: "f" }, Autonoe: { label: "밝고 또렷한", g: "f" },
-  Algieba: { label: "부드럽고 다정한 (추천)", g: "m" }, Enceladus: { label: "나긋한 숨결", g: "m" },
-  Umbriel: { label: "편안하고 차분한", g: "m" }, Puck: { label: "밝고 경쾌한", g: "m" }, Achird: { label: "친근한", g: "m" },
+  af_heart: { label: "따뜻하고 자연스러운 ★", g: "f" }, af_bella: { label: "밝고 생기 있는", g: "f" },
+  af_nicole: { label: "속삭이듯 부드러운", g: "f" }, af_kore: { label: "차분하고 또렷한", g: "f" }, af_sarah: { label: "상냥한", g: "f" },
+  am_michael: { label: "다정하고 자연스러운 ★", g: "m" }, am_puck: { label: "밝고 경쾌한", g: "m" },
+  am_fenrir: { label: "깊고 힘 있는", g: "m" }, bm_george: { label: "영국식 차분한", g: "m" },
   app: { label: "기기 기본 음성", g: "" }
 };
-// 말투: K팝 아이돌이 팬들과 라이브 방송에서 수다 떠는 듯한 밝고 다정한 말투. 영어 발음은 또렷하고 자연스럽게 (따라 배우는 소리라서)
-const tutorTtsStyle = slow => `Speak like ${tutorChar().style}. Speak fluent, natural English with clear pronunciation, relaxed and expressive, at a comfortable conversational pace.` +
-  (slow ? " This time speak slowly and very clearly, with short pauses between phrases, for an English learner." : "");
-// 목소리 목록을 아이돌 목소리로 바꾼 뒤 처음 열 때, 예전에 고른 구글 목소리는 새 기본으로 (기기 음성 선택은 그대로)
+// 예전 구글 목소리를 골라 두었으면 새 기본 목소리로 (기기 음성 선택은 그대로)
 try {
-  if (!localStorage.getItem("tutorVoiceV3")) {
+  if (!localStorage.getItem("tutorVoiceV4")) {
     if (localStorage.getItem("tutorVoice") !== "app") localStorage.removeItem("tutorVoice");
-    localStorage.setItem("tutorVoiceV3", "1");
+    localStorage.removeItem("tutorTtsDown");
+    localStorage.setItem("tutorVoiceV4", "1");
   }
 } catch (e) {}
 function tutorVoiceId() {
@@ -1444,7 +1485,7 @@ function tutorVoiceId() {
   const ok = TUTOR_VOICES[v] && (v === "app" || TUTOR_VOICES[v].g === tutorChar().gender);
   return ok ? v : tutorChar().voice;   // 따로 고르지 않았거나 다른 성별 목소리면 튜터의 기본 목소리
 }
-// 기기 음성(구글 AI 음성을 못 쓰거나 '기기 기본 음성'을 골랐을 때)도 튜터 성별에 맞춘다
+// 기기 음성(자연스러운 음성을 아직 안 받았거나 '기기 기본 음성'을 골랐을 때)도 튜터 성별에 맞춘다
 const TUTOR_MALE_VOICE = /\b(male|man|david|mark|daniel|alex|fred|tom|aaron|arthur|guy|rishi|george|james|ryan|eric|andrew|brian|roger|thomas|oliver|christopher|matthew|justin|joey|reed|evan|nathan)\b|#male/i;
 const TUTOR_FEMALE_VOICE = /\b(female|woman|samantha|karen|victoria|zira|susan|moira|tessa|fiona|allison|ava|serena|joanna|aria|jenny|kate|libby|sonia|michelle|nicky|salli|kimberly|ivy|kendra|google us english)\b|#female/i;
 function tutorDeviceVoice(g) {
@@ -1456,7 +1497,7 @@ function tutorDeviceVoice(g) {
 }
 let tutorDeviceTalking = false;   // 기기 음성이 실제로 소리를 내는 중
 let tutorDeviceWordAt = 0, tutorDeviceStartAt = 0;   // 기기 음성이 낱말을 읽기 시작한 때 (말하는 영상을 낱말에 맞춘다)
-/** 소리가 실제로 나기 전까지는 '목소리 준비 중…', 나기 시작하면 '말하는 중…' (구글 음성을 받는 1~3초 동안 말한다고 표시하지 않게) */
+/** 소리가 실제로 나기 전까지는 '목소리 준비 중…', 나기 시작하면 '말하는 중…' (목소리를 만드는 동안 말한다고 표시하지 않게) */
 let tutorPrepTimer = null, tutorSayDevice = false;
 const TUTOR_PREP_MSG = "목소리 준비 중…";
 function tutorMarkPreparing() {
@@ -1503,149 +1544,15 @@ function tutorDeviceSpeak(text, slow) {
     setTimeout(() => { if (!done && window.speechSynthesis.speaking) tutorDeviceTalking = true; }, 800);   // 말 시작 알림(onstart)이 안 오는 기기도 있다
   });
 }
-let tutorTtsModelIdx = 0;
-let tutorTtsStream = true;              // 음성을 조각조각 받아 바로 틀기 (안 되는 경우 한 번에 받기)
-let tutorTtsDownUntil = 0;              // 실패하면 잠시(이 시각까지) 앱 기본 음성으로
-let tutorTtsDownReason = 0;             // 그 까닭 (429면 사용량 초과)
-try { const d = JSON.parse(localStorage.getItem("tutorTtsDown") || "null"); if (d && d.until > Date.now()) { tutorTtsDownUntil = d.until; tutorTtsDownReason = d.reason || 0; } } catch (e) {}   // 새로 열어도 한도 초과를 기억한다
-const tutorTtsCache = new Map();        // 같은 문장 다시 듣기는 다시 받지 않는다
-const tutorUseGoogleVoice = () => tutorVoiceId() !== "app" && tutorReady() && Date.now() > tutorTtsDownUntil;
+const tutorTtsCache = new Map();        // 같은 문장 다시 듣기는 다시 만들지 않는다
+/** 자연스러운 음성으로 읽을 수 있나 (받아 두었고, 이 기기에서 충분히 빠르고, 기기 음성을 고르지 않았을 때) */
+const tutorUseNatural = () => tutorVoiceId() !== "app" && typeof KokoroVoice !== "undefined" && typeof NeuralTTS !== "undefined" && KokoroVoice.downloaded() && !KokoroVoice.tooSlow() && !tutorNaturalBroken;
+let tutorNaturalBroken = false;         // 이번 실행에서 음성 엔진을 못 열었으면 기기 음성으로
 const tutorTtsKey = (text, slow) => tutorVoiceId() + "|" + (slow ? "s|" : "") + text;
-/** 다 받아 둔 음성이 있으면 (구글 음성을 잠시 못 쓰는 동안에도 그건 튼다) */
-const tutorTtsHas = (text, slow) => { const c = tutorTtsCache.get(tutorTtsKey(text, slow)); return !!c && c.done && !c.error && c.chunks.length > 0; };
-/** 구글 음성을 다시 쓸 수 있을 때까지 남은 시간 → "3분쯤 뒤" */
-function tutorTtsWaitText() {
-  const m = Math.max(1, Math.ceil((tutorTtsDownUntil - Date.now()) / 60000));
-  return m >= 90 ? "오늘은 한도를 다 썼어요" : `${m}분쯤 뒤 다시`;
-}
 
-/** 응답 JSON 안에서 마지막 음성 데이터(base64)를 찾는다 (steps[].content[] 의 type "audio") */
-function tutorFindAudio(j) {
-  let found = null;
-  const walk = o => {
-    if (!o || typeof o !== "object") return;
-    if (Array.isArray(o)) { o.forEach(walk); return; }
-    if (o.type === "audio" && typeof o.data === "string") found = o;
-    Object.values(o).forEach(walk);
-  };
-  walk(j);
-  return found;
-}
-/** base64 음성 → 소리 데이터 (WAV면 브라우저가 풀고, 머리말 없는 PCM16이면 직접 푼다) */
-async function tutorDecodeAudio(b64) {
-  const bin = atob(b64), bytes = new Uint8Array(bin.length);
-  for (let i = 0; i < bin.length; i++) bytes[i] = bin.charCodeAt(i);
-  if (bin.slice(0, 4) === "RIFF") {
-    const ctx = NeuralTTS.unlockAudio();
-    const buf = await ctx.decodeAudioData(bytes.buffer.slice(0));
-    return { wav: buf.getChannelData(0), sampleRate: buf.sampleRate };
-  }
-  const n = bytes.length >> 1, out = new Float32Array(n), v = new DataView(bytes.buffer);
-  for (let i = 0; i < n; i++) out[i] = v.getInt16(i * 2, true) / 32768;
-  return { wav: out, sampleRate: 24000 };
-}
-/** 음성 조각(base64) → 소리 데이터. 기본은 머리말 없는 PCM16(24kHz)이고, 조각에 WAV 머리말이 붙어 오면 떼어 낸다.
- *  16비트 한 샘플이 두 조각에 나뉘어 와도 이어 붙인다 */
-function tutorPcmDecoder() {
-  let carry = null;
-  return (b64, mime) => {
-    const bin = atob(b64);
-    let bytes = new Uint8Array(bin.length + (carry ? 1 : 0)), off = 0;
-    if (carry) { bytes[0] = carry[0]; off = 1; carry = null; }
-    for (let i = 0; i < bin.length; i++) bytes[off + i] = bin.charCodeAt(i);
-    let rate = +(((mime || "").match(/rate=(\d+)/) || [])[1]) || 0;
-    if (bin.slice(0, 4) === "RIFF") {
-      const v = new DataView(bytes.buffer);
-      rate = v.getUint32(off + 24, true) || rate;
-      let p = off + 12;
-      while (p + 8 <= bytes.length && String.fromCharCode(...bytes.subarray(p, p + 4)) !== "data") p += 8 + v.getUint32(p + 4, true);
-      bytes = bytes.subarray(Math.min(p + 8, bytes.length));
-    }
-    if (bytes.length & 1) { carry = bytes.slice(-1); bytes = bytes.subarray(0, bytes.length - 1); }
-    const n = bytes.length >> 1, out = new Float32Array(n), v = new DataView(bytes.buffer, bytes.byteOffset, bytes.length);
-    for (let i = 0; i < n; i++) out[i] = v.getInt16(i * 2, true) / 32768;
-    return { wav: out, sampleRate: rate || 24000 };
-  };
-}
-/** 구글 AI 음성 받기 (스트리밍): 음성이 만들어지는 대로 조각을 onPcm으로 넘긴다 → 다 받기 전에 첫 조각부터 재생할 수 있다 */
-async function tutorTtsRequest(model, text, slow, onPcm, stream = true) {
-  const ctl = new AbortController();
-  let stall = null, stalled = false;
-  const wait = ms => { clearTimeout(stall); stall = setTimeout(() => { stalled = true; ctl.abort(); }, ms); };
-  // 첫 조각이 6초 안에 안 오거나, 중간에 6초 멈추면 다음 모델·기기 음성으로 (오래 조용하지 않게). 한 번에 받기는 다 만든 뒤에 오므로 더 기다린다
-  wait(stream ? 6000 : Math.min(20000, 6000 + text.length * 40));
-  try {
-    const res = await fetch(TUTOR_TTS_API, {
-      method: "POST", headers: { "content-type": "application/json", "x-goog-api-key": tutorGetKey() }, signal: ctl.signal,
-      body: JSON.stringify({
-        model, store: false, ...(stream ? { stream: true } : {}),   // store: 구글 쪽에 대화 기록을 남기지 않는다
-        input: [{ type: "user_input", content: [{ type: "text", text, annotations: [{ type: "speech_metadata", style: tutorTtsStyle(slow) }] }] }],
-        response_format: { type: "audio" },
-        generation_config: { speech_config: [{ voice: tutorVoiceId() }] }
-      })
-    });
-    if (!res.ok) {
-      let j = null; try { j = await res.json(); } catch (e) {}
-      const er = (j && j.error) || {}, det = er.details || [];
-      const ge = new GeminiError(er.message || `HTTP ${res.status}`, res.status, (det.find(d => d && d.reason) || {}).reason || er.status || "");
-      // 사용량 초과면 얼마 뒤 다시 되는지(RetryInfo)와 하루 한도인지(QuotaFailure)를 읽어 둔다
-      const ri = det.find(d => d && /RetryInfo$/.test(d["@type"] || ""));
-      if (ri && ri.retryDelay) ge.retryMs = parseFloat(ri.retryDelay) * 1000 || 0;
-      const qf = det.find(d => d && /QuotaFailure$/.test(d["@type"] || ""));
-      ge.daily = !!(qf && (qf.violations || []).some(v => /PerDay/i.test(v.quotaId || "")));
-      throw ge;
-    }
-    const decode = tutorPcmDecoder();
-    let got = 0, whole = null;
-    const take = (a) => { const d = decode(a.data, a.mime_type || a.mimeType); if (d.wav.length) { got++; onPcm(d.wav, d.sampleRate); } };
-    const handle = (ev, data) => {
-      if (!data || data === "[DONE]") return;
-      let j; try { j = JSON.parse(data); } catch (e) { return; }
-      if (j.error) { const er = j.error; throw new GeminiError(er.message || "음성 오류", er.code || 0, er.status || ""); }
-      const type = ev || j.event_type || j.type || "";
-      if (type === "step.delta" || (!type && j.delta)) { const a = tutorFindAudio(j.delta || j); if (a) take(a); }
-      else if (/complete/.test(type)) whole = tutorFindAudio(j);   // 조각이 하나도 안 왔을 때만 쓴다
-    };
-    // 조각(SSE)으로 오면 오는 대로, 한 번에(JSON) 오면 다 받은 뒤 처리한다 (어느 쪽인지는 첫 글자로 안다)
-    const reader = res.body ? res.body.getReader() : null, td = new TextDecoder();
-    let buf = "", ev = "", data = [], json = null;
-    if (!reader) json = await res.text();
-    while (reader) {
-      const { value, done } = await reader.read();
-      if (done) break;
-      wait(6000);
-      buf += td.decode(value, { stream: true });
-      if (json === null && /^\s*[{[]/.test(buf)) json = "";
-      if (json !== null) { json += buf; buf = ""; continue; }
-      let nl;
-      while ((nl = buf.indexOf("\n")) >= 0) {
-        const line = buf.slice(0, nl).replace(/\r$/, ""); buf = buf.slice(nl + 1);
-        if (!line) { handle(ev, data.join("\n")); ev = ""; data = []; }
-        else if (line.startsWith("event:")) ev = line.slice(6).trim();
-        else if (line.startsWith("data:")) data.push(line.slice(5).trim());
-      }
-    }
-    if (json !== null) {
-      let j = null; try { j = JSON.parse(json); } catch (e) {}
-      const a = j && tutorFindAudio(j);
-      if (!a) throw new GeminiError("음성이 오지 않았어요", 0, "NO_AUDIO");
-      const d = await tutorDecodeAudio(a.data);
-      onPcm(d.wav, d.sampleRate);
-      return;
-    }
-    if (buf.startsWith("data:")) data.push(buf.slice(5).trim());
-    handle(ev, data.join("\n"));
-    if (!got && whole) take(whole);
-    if (!got) throw new GeminiError("음성이 오지 않았어요", 0, "NO_AUDIO");
-  } catch (e) {
-    if (stalled && e && e.name === "AbortError") throw new GeminiError("음성이 너무 늦어요", 504, "TIMEOUT");
-    throw e;
-  } finally { clearTimeout(stall); }
-}
-
-// 첫 인사 음성은 기기에 저장해 두고, 같은 인사가 다시 나오면 바로 튼다 (기다림 없음 + 무료 한도 절약). 최근 40개까지만
+// 첫 인사·목소리 들어 보기 음성은 기기에 저장해 두고, 같은 문장이 다시 나오면 만들지 않고 바로 튼다. 최근 40개까지만
 const TUTOR_GREET_CACHE = "faith-voice-tutor-greet";   // faith-voice로 시작해서 앱 업데이트 때 지워지지 않는다
-const tutorGreetUrl = (text) => location.origin + "/__tutor-greet/" + tutorVoiceId() + "/" + encodeURIComponent(text);
+const tutorGreetUrl = (text) => location.origin + "/__tutor-greet/k-" + tutorVoiceId() + "/" + encodeURIComponent(text);
 const tutorPreviewText = () => `Hi, I'm ${tutorName()}! I'm so happy to talk with you today.`;
 // 기기에 저장해 두는 음성: 첫 인사(지금 것·시작 화면에서 미리 고른 것)와 목소리 들어 보기 문장
 const tutorPersistable = text => !!text && (text === tutorGreeting || (tutorNextGreeting && text === tutorNextGreeting.text) || text === tutorPreviewText());
@@ -1669,62 +1576,41 @@ async function tutorGreetSave(text, clip) {
   } catch (e) {}
 }
 
-/** 문장 → 음성 (모델을 차례로 시도, 같은 문장은 한 번만 받는다).
- *  돌려주는 clip은 받는 중에도 쓸 수 있다: chunks에 조각이 쌓이고, 새 조각이 오거나 끝나면 listeners를 부른다 */
+/** 문장 → 음성 (기기 안에서 만든다. 같은 문장은 한 번만).
+ *  돌려주는 clip은 만드는 중에도 쓸 수 있다: 다 되면 chunks에 소리가 들어가고 listeners를 부른다 */
 function tutorTtsFetch(text, slow) {
   const key = tutorTtsKey(text, slow);
   if (tutorTtsCache.has(key)) return tutorTtsCache.get(key);
   const clip = { chunks: [], sampleRate: 24000, done: false, error: null, listeners: new Set() };
   const emit = () => clip.listeners.forEach(f => f());
   const push = (wav, rate) => { clip.sampleRate = rate; clip.chunks.push(wav); emit(); };
+  const voice = tutorVoiceId();
   clip.ready = (async () => {
     const saved = slow ? null : await tutorGreetLoad(text);
     if (saved) { push(saved.wav, saved.sampleRate); return; }
-    let last = null;
-    for (let k = 0; k < TUTOR_TTS_MODELS.length; k++) {
-      const idx = (tutorTtsModelIdx + k) % TUTOR_TTS_MODELS.length;
-      try {
-        try { await tutorTtsRequest(TUTOR_TTS_MODELS[idx], text, slow, push, tutorTtsStream); }
-        catch (e) {   // 스트리밍 요청을 안 받아 주면 한 번에 받아 보고, 그게 되면 이번부터 한 번에 받기로
-          if (!tutorTtsStream || e.status !== 400 || clip.chunks.length || geminiKeyProblem(e)) throw e;
-          await tutorTtsRequest(TUTOR_TTS_MODELS[idx], text, slow, push, false);
-          tutorTtsStream = false;
-        }
-        tutorTtsModelIdx = idx; if (!slow) tutorGreetSave(text, clip);
-        if (tutorTtsDownReason === 429) { tutorTtsDownReason = 0; try { localStorage.removeItem("tutorTtsDown"); } catch (e2) {} }
-        return;
-      }
-      catch (e) {
-        if (!last || geminiErrRank(e) > geminiErrRank(last) || (e.status === 429 && last.status === 429 && (e.daily || (e.retryMs || 0) > (last.retryMs || 0)))) last = e;   // 한도 초과가 있었으면 그걸 알린다
-        if (clip.chunks.length || geminiKeyProblem(e) || !geminiTryNext(e)) break;   // 받다가 끊겼으면 받은 만큼만 튼다
-      }
+    try {
+      const a = await KokoroVoice.generate(text, voice, slow ? 0.8 : 1);
+      push(a.wav, a.sampleRate);
+      if (!slow) tutorGreetSave(text, clip);
+    } catch (e) {
+      clip.error = e;
+      tutorTtsCache.delete(key);
+      if (!KokoroVoice.isLoaded()) tutorNaturalBroken = true;   // 엔진 자체를 못 열었으면 이번에는 기기 음성으로
     }
-    clip.error = last || new GeminiError("음성이 오지 않았어요", 0, "NO_AUDIO");
-    tutorTtsCache.delete(key);
   })().finally(() => { clip.done = true; emit(); });
   tutorTtsCache.set(key, clip);
   while (tutorTtsCache.size > 40) tutorTtsCache.delete(tutorTtsCache.keys().next().value);
   return clip;
 }
-/** 받아 둔(또는 받는 중인) 음성을 튼다: 첫 조각이 오는 즉시 소리를 내고, 나머지는 오는 대로 이어 붙인다.
- *  하나도 못 받았으면 앱 기본 음성으로 읽고, 한동안 기본 음성을 쓴다 */
+/** 만든(또는 만드는 중인) 음성을 튼다. 못 만들었으면 기기 음성으로 읽는다 */
 async function tutorPlayClip(clip, text, alive) {
   if (!clip.chunks.length && !clip.done) {
     await new Promise(r => { const f = () => { if (clip.chunks.length || clip.done) { clip.listeners.delete(f); r(); } }; clip.listeners.add(f); });
   }
   if (!clip.chunks.length) {
-    const e = clip.error || {}, quota = e.status === 429;
-    if (!alive() && !quota) return;                    // 이미 다른 말로 넘어갔으면 잠깐의 연결 문제는 따지지 않는다
-    console.warn("구글 AI 음성 실패 → 기본 음성", e);
-    const fresh = Date.now() > tutorTtsDownUntil;
-    // 잠시 기기 음성으로: 하루 한도면 3시간, 알려 준 대기 시간이 있으면 그만큼, 아니면 2분 (연결 문제는 1분)
-    const ms = !quota ? 60 * 1000 : e.daily ? 3 * 3600 * 1000 : e.retryMs ? Math.min(30 * 60 * 1000, e.retryMs + 2000) : 2 * 60 * 1000;
-    tutorTtsDownUntil = Date.now() + ms;
-    tutorTtsDownReason = e.status || 0;
-    if (quota) { try { localStorage.setItem("tutorTtsDown", JSON.stringify({ until: tutorTtsDownUntil, reason: 429 })); } catch (e2) {} }
-    tutorVoiceNote(quota ? `구글 음성 사용량이 차서 지금은 기기 음성으로 들려줘요 (${tutorTtsWaitText()})` : "구글 음성을 받지 못해 기기 음성으로 들려줘요");
+    console.warn("자연스러운 음성 실패 → 기기 음성", clip.error);
     if (!alive()) return;
-    if (fresh) setTutorStatus(quota ? "구글 AI 음성 한도가 차서 잠시 기본 음성으로 읽어요" : "구글 AI 음성을 받지 못해 기본 음성으로 읽어요", "thinking");
+    tutorVoiceNote("자연스러운 음성을 만들지 못해 기기 음성으로 들려줘요");
     tutorSayDevice = true;
     if (typeof NeuralTTS !== "undefined") NeuralTTS.stopAudio();   // 아직 나던 소리 위에 겹치지 않게
     try { await tutorDeviceSpeak(text); } catch (e2) {}
@@ -1744,13 +1630,13 @@ async function tutorPlayClip(clip, text, alive) {
   await player.done;
   clip.listeners.delete(feed);
 }
-/** 튜터 목소리로 한 번 읽기 (구글 AI 음성 또는 앱 기본 음성) */
+/** 튜터 목소리로 한 번 읽기 (자연스러운 음성 또는 기기 기본 음성) */
 function tutorSay(text, slow, alive) {
   alive = alive || (() => true);
   if (typeof NeuralTTS !== "undefined") NeuralTTS.unlockAudio();     // 누른 순간에 소리 장치를 깨워 둔다 (아이폰)
-  const google = typeof NeuralTTS !== "undefined" && (tutorUseGoogleVoice() || (tutorVoiceId() !== "app" && tutorTtsHas(text, slow)));
-  tutorSayDevice = !google;
-  if (google) return tutorPlayClip(tutorTtsFetch(text, slow), text, alive);
+  const nat = tutorUseNatural();
+  tutorSayDevice = !nat;
+  if (nat) return tutorPlayClip(tutorTtsFetch(text, slow), text, alive);
   return tutorDeviceSpeak(text, slow);
 }
 function fillTutorVoices() {
@@ -1767,7 +1653,6 @@ function fillTutorVoices() {
 function changeTutorVoice(sel) {
   try { localStorage.setItem("tutorVoice", (sel || tutorEl("tutor-voice")).value); } catch (e) {}
   fillTutorVoices();
-  if (tutorTtsDownReason !== 429) tutorTtsDownUntil = 0;   // 사용량 초과는 목소리를 바꿔도 그대로 (같은 한도)
   tutorStopPreview();
   tutorPreviewButtons("loading");
   tutorPreviewDebounce = setTimeout(() => { tutorPreviewVoice(true); if (tutorLobbyOpen()) tutorPrepGreeting(1500); }, 500);   // 연달아 바꾸면 마지막 것만 들려준다 (첫 인사도 새 목소리로 미리)
@@ -1797,7 +1682,7 @@ function stopTutorSpeech() {
   tutorSilenceAll();
   setTutorStatus(tutorIdleMsg(), "");
 }
-/** 튜터 소리를 모두 멈춘다 (구글 음성·기기 음성·기기에 받아 둔 자연스러운 음성 — 아직 만드는 중인 문장도 나중에 나오지 않게) */
+/** 튜터 소리를 모두 멈춘다 (자연스러운 음성·기기 음성 — 아직 만드는 중인 문장도 나중에 나오지 않게) */
 function tutorSilenceAll() {
   if ("speechSynthesis" in window) window.speechSynthesis.cancel();
   if (typeof skipCurrentSpeech === "function") skipCurrentSpeech();
