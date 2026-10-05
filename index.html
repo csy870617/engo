@@ -534,7 +534,8 @@
             <div class="lobby-title">오늘의 영어 대화</div>
             <div id="tutor-chars-lobby" class="lobby-chars" role="group" aria-label="튜터 고르기"></div>
             <div class="call-set-row"><span>내 영어 수준</span><div id="tutor-levels-lobby" class="tutor-levels" role="group" aria-label="내 영어 수준"></div></div>
-            <div class="call-set-row"><span>🔊 목소리</span><div class="lobby-voice"><select id="tutor-voice-lobby" class="tutor-select" onchange="changeTutorVoice(this)" aria-label="선생님 목소리"></select><button class="tutor-round-btn lobby-try" onclick="tutorPreviewVoice()" aria-label="목소리 들어 보기">▶</button></div></div>
+            <div class="call-set-row"><span>🔊 목소리</span><div class="lobby-voice"><select id="tutor-voice-lobby" class="tutor-select" onchange="changeTutorVoice(this)" aria-label="선생님 목소리"></select><button class="chip-btn tutor-voice-try" onclick="tutorPreviewVoice()" aria-label="목소리 들어 보기">▶ 들어 보기</button></div></div>
+            <p class="tutor-voice-note hidden"></p>
             <div class="call-set-row"><span>⏱ 말 끝 기다리기</span><div id="tutor-endwait-lobby" class="tutor-levels" role="group" aria-label="말이 멈춘 뒤 기다리는 시간"></div></div>
             <button id="tutor-start-btn" class="btn-main lobby-start" onclick="tutorStartFromLobby(false)">▶ 시작하기</button>
             <button id="tutor-new-btn" class="chip-btn lobby-new hidden" onclick="tutorStartFromLobby(true)">↺ 새 대화로 시작하기</button>
@@ -547,7 +548,8 @@
             <div class="call-set-row"><span>👩‍🏫 튜터</span><div id="tutor-chars-set" class="tutor-levels" role="group" aria-label="튜터 고르기"></div></div>
             <div class="call-set-row"><span>내 영어 수준</span><div id="tutor-levels-set" class="tutor-levels" role="group" aria-label="내 영어 수준"></div></div>
             <div class="call-set-row"><span>⏱ 말 끝 기다리기</span><div id="tutor-endwait-set" class="tutor-levels" role="group" aria-label="말이 멈춘 뒤 기다리는 시간"></div></div>
-            <div class="call-set-row"><span>🔊 선생님 목소리</span><select id="tutor-voice" class="tutor-select" onchange="changeTutorVoice(this)" aria-label="선생님 목소리"></select></div>
+            <div class="call-set-row"><span>🔊 선생님 목소리</span><div class="lobby-voice"><select id="tutor-voice" class="tutor-select" onchange="changeTutorVoice(this)" aria-label="선생님 목소리"></select><button class="chip-btn tutor-voice-try" onclick="tutorPreviewVoice()" aria-label="목소리 들어 보기">▶ 들어 보기</button></div></div>
+            <p class="tutor-voice-note hidden"></p>
             <div class="call-sheet-actions">
               <button class="chip-btn" onclick="newTutorConversation()">↺ 새 대화 시작</button>
               <button class="chip-btn" onclick="manageTutorKey()">🔑 키 연결 끊기</button>

@@ -392,6 +392,8 @@ const NeuralTTS = (() => {
   return {
     VOICES, isSupported, isReady, fetchManifest, downloadSize, download, cancelDownload, remove,
     isLoaded, ensureLoaded, shutdown, synthesize, cancelBefore, unlockAudio, play, playStream, stopAudio, outputLevel, suspendAudio,
-    isPlaying: () => !!currentSource   // 지금 실제로 소리를 내는 중인지 (튜터 말하는 영상용)
+    isPlaying: () => !!currentSource,   // 지금 실제로 소리를 내는 중인지 (튜터 말하는 영상용)
+    // 재생 장치가 내보낸 소리가 실제로 귀에 들리기까지 걸리는 시간 (ms, 블루투스면 길다) — 입술 싱크를 여기에 맞춘다
+    outputLatencyMs: () => audioCtx ? ((audioCtx.outputLatency || 0) + (audioCtx.baseLatency || 0)) * 1000 : 0
   };
 })();
