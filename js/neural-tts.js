@@ -1,263 +1,80 @@
 // ==========================================
-// 자연스러운 음성(Supertonic 3) — 내려받기·생성·재생
+// 자연스러운 음성 (Kokoro) — 앱 전체 공용 창구 + 재생
 // ==========================================
-// 신앙일지 앱(neural-tts.js)의 구현을 engo의 일반 스크립트 구조에 맞게 옮긴 것.
-//
-// 음성 모델(약 440MB)은 faith-voice 저장소(GitHub Pages)에 있고, 사용자가 설정에서
-// 내려받기를 누르면 한 번만 받아 브라우저 저장소(Cache Storage)에 보관한다.
-// 받은 뒤에는 인터넷 없이 기기 안(웹 워커)에서 음성을 만든다.
-//
-// GitHub는 파일 하나에 100MB 제한이 있어 큰 모델은 조각으로 올려 두었다.
-// manifest.json에 조각 목록이 있고, 받을 때 다시 하나로 합쳐 저장한다.
+// 음성을 만드는 일은 js/kokoro-tts.js(KokoroVoice, 기기 안에서 만듦)가 맡고,
+// 여기서는 앱의 다른 화면(패턴·단어·회화·쉐도잉)이 쓰던 이름 그대로 연결해 주고 소리를 재생한다.
+// 모델은 처음 한 번 받아 두면(그래픽 가속 기기 약 330MB, 없는 기기 약 90MB) 인터넷 없이 쓴다.
 
 const NeuralTTS = (() => {
-  const CACHE_NAME = 'faith-voice-v1';          // service-worker.js 정리 대상에서 제외됨
-  const READY_KEY = 'faith_voice_ready';        // 받은 버전 (다 받았을 때만 기록)
-  const DEFAULT_BASE = 'https://csy870617.github.io/faith-voice/';
-
+  // pair: 대화에서 B 화자에게 쓸 반대 성별 목소리
   const VOICES = [
-    { id: 'F1', label: '여성 1' }, { id: 'F2', label: '여성 2' }, { id: 'F3', label: '여성 3' },
-    { id: 'F4', label: '여성 4' }, { id: 'F5', label: '여성 5' },
-    { id: 'M1', label: '남성 1' }, { id: 'M2', label: '남성 2' }, { id: 'M3', label: '남성 3' },
-    { id: 'M4', label: '남성 4' }, { id: 'M5', label: '남성 5' }
+    { id: 'af_heart', label: '여성 1 · 따뜻하고 자연스러운 ★', pair: 'am_michael' },
+    { id: 'af_bella', label: '여성 2 · 밝고 생기 있는', pair: 'am_puck' },
+    { id: 'af_nicole', label: '여성 3 · 속삭이듯 부드러운', pair: 'am_fenrir' },
+    { id: 'af_kore', label: '여성 4 · 차분하고 또렷한', pair: 'bm_george' },
+    { id: 'af_sarah', label: '여성 5 · 상냥한', pair: 'am_michael' },
+    { id: 'bf_emma', label: '여성 6 · 영국식', pair: 'bm_george' },
+    { id: 'am_michael', label: '남성 1 · 다정하고 자연스러운 ★', pair: 'af_heart' },
+    { id: 'am_puck', label: '남성 2 · 밝고 경쾌한', pair: 'af_bella' },
+    { id: 'am_fenrir', label: '남성 3 · 깊고 힘 있는', pair: 'af_nicole' },
+    { id: 'bm_george', label: '남성 4 · 영국식 차분한', pair: 'bf_emma' }
   ];
+  const K = () => (typeof KokoroVoice !== 'undefined' ? KokoroVoice : null);
 
-  // 공식 예제 기본값. 앱의 1.0배속이 모델의 1.05에 해당한다.
-  const MODEL_BASE_SPEED = 1.05;
-  // 품질 단계(반복 횟수). 많을수록 곱지만 느리다. 기기 속도에 맞춰 4~8 사이에서 자동 조절한다.
-  const MAX_STEPS = 8, MIN_STEPS = 4;
-  let denoiseSteps = MAX_STEPS;
-  let backendName = null;
-
-  /** 음성 저장소 주소 (테스트용으로 localStorage 'faith_voice_base'로 바꿀 수 있음) */
-  function voiceBase() {
-    try {
-      const override = localStorage.getItem('faith_voice_base');
-      if (override) return override.endsWith('/') ? override : override + '/';
-    } catch (e) { /* 저장소 접근 불가 시 기본값 */ }
-    return DEFAULT_BASE;
-  }
-
-  function isSupported() {
-    return typeof caches !== 'undefined' && typeof Worker !== 'undefined' &&
-      !!(window.AudioContext || window.webkitAudioContext);
-  }
-
-  async function fetchManifest() {
-    const res = await fetch(voiceBase() + 'manifest.json', { cache: 'no-cache' });
-    if (!res.ok) throw new Error('음성 목록을 불러오지 못했습니다 (' + res.status + ')');
-    return res.json();
-  }
-
-  function downloadSize(manifest) {
-    return manifest.files.reduce((s, f) => s + (f.size || 0), 0);
-  }
-
-  /**
-   * 받아 둔 음성이 온전히 남아 있는가.
-   * (아이폰 Safari는 오래 쓰지 않은 사이트의 저장 공간을 비울 수 있어 실제 파일까지 확인한다)
-   */
-  async function isReady() {
-    if (!isSupported()) return false;
-    let manifest;
-    try { manifest = JSON.parse(localStorage.getItem(READY_KEY + '_manifest') || 'null'); } catch (e) { manifest = null; }
-    if (!manifest || localStorage.getItem(READY_KEY) !== manifest.version) return false;
-    try {
-      const cache = await caches.open(CACHE_NAME);
-      const base = voiceBase();
-      for (const f of manifest.files) {
-        if (!(await cache.match(base + f.path))) return false;
-      }
-      return true;
-    } catch (e) {
-      return false;
+  // 예전 음성(Supertonic, 약 440MB)을 받아 두었으면 지워서 저장 공간을 돌려준다
+  try {
+    if (localStorage.getItem('faith_voice_ready') || localStorage.getItem('faith_voice_ready_manifest')) {
+      localStorage.removeItem('faith_voice_ready'); localStorage.removeItem('faith_voice_ready_manifest');
+      if (typeof caches !== 'undefined') caches.delete('faith-voice-v1').catch(() => {});
     }
-  }
+  } catch (e) {}
 
-  let downloadAbort = null;
+  const isSupported = () => !!K() && K().supported();
+  /** 받아 두었고 파일도 남아 있는가 */
+  const isReady = async () => !!K() && K().verify();
+  /** 이 기기에서 너무 느린가 (그러면 기본 음성으로 읽는다) */
+  const tooSlow = () => !!K() && K().tooSlow();
+  const downloadMB = () => (K() ? K().plan().mb : 0);
+  const pairOf = id => (VOICES.find(v => v.id === id) || {}).pair || id;
 
-  /** 음성 모델 전체를 내려받아 저장한다. onProgress(받은 바이트, 전체 바이트) */
+  let cancelled = false;
+  /** 모델 받기 (= 처음 불러오기). onProgress(받은 바이트, 전체 바이트) */
   async function download(onProgress) {
     if (!isSupported()) throw new Error('이 브라우저에서는 자연스러운 음성을 쓸 수 없습니다.');
-    const manifest = await fetchManifest();
-    const total = downloadSize(manifest);
-    // 저장 공간이 부족할 때 브라우저가 이 파일들을 먼저 지우지 않도록 요청 (거절돼도 계속 진행)
     try { if (navigator.storage && navigator.storage.persist) await navigator.storage.persist(); } catch (e) {}
-    try {
-      if (navigator.storage && navigator.storage.estimate) {
-        const { quota, usage } = await navigator.storage.estimate();
-        if (quota && usage != null && quota - usage < total * 1.1) {
-          throw new Error(`기기 저장 공간이 부족합니다. 약 ${Math.ceil(total / 1e6)}MB가 필요합니다.`);
-        }
-      }
-    } catch (e) {
-      if (/저장 공간/.test(e.message)) throw e;
-    }
-
-    const controller = new AbortController();
-    downloadAbort = controller;
-    const base = voiceBase();
-    const cache = await caches.open(CACHE_NAME);
-    let done = 0;
-    try {
-      for (const f of manifest.files) {
-        const url = base + f.path;
-        // 이미 받은 파일은 건너뛴다 (중간에 끊겼다가 다시 받을 때)
-        const existing = await cache.match(url);
-        if (existing && f.size && Number(existing.headers.get('X-Size')) === f.size) {
-          done += f.size; onProgress && onProgress(done, total);
-          continue;
-        }
-        const parts = f.parts && f.parts.length ? f.parts : [f.path];
-        const blobs = [];
-        for (const part of parts) {
-          // 휴대폰 네트워크에서는 큰 파일을 받다 끊기는 일이 흔하다. 조각 하나는 몇 번 다시 받아 본다.
-          let partBlob = null;
-          for (let attempt = 1; !partBlob; attempt++) {
-            const before = done;
-            try {
-              const res = await fetch(base + part, { signal: controller.signal, cache: 'no-cache' });
-              if (!res.ok) throw new Error(`음성 파일을 받지 못했습니다 (${res.status}): ${part}`);
-              const reader = res.body.getReader();
-              const chunks = [];
-              for (;;) {
-                const { done: end, value } = await reader.read();
-                if (end) break;
-                chunks.push(value);
-                done += value.byteLength;
-                onProgress && onProgress(Math.min(done, total), total);
-              }
-              partBlob = new Blob(chunks);
-            } catch (err) {
-              done = before;   // 이 조각은 처음부터 다시 받는다
-              if (controller.signal.aborted || attempt >= 3) throw err;
-              await new Promise(r => setTimeout(r, 2000 * attempt));
-            }
-          }
-          blobs.push(partBlob);
-        }
-        const blob = new Blob(blobs);
-        if (f.size && blob.size !== f.size) throw new Error('받은 파일 크기가 맞지 않습니다: ' + f.path);
-        await cache.put(url, new Response(blob, { headers: { 'Content-Type': f.type || 'application/octet-stream', 'X-Size': String(blob.size) } }));
-      }
-      localStorage.setItem(READY_KEY + '_manifest', JSON.stringify(manifest));
-      localStorage.setItem(READY_KEY, manifest.version);
-      return manifest;
-    } finally {
-      downloadAbort = null;
+    cancelled = false;
+    try { return await K().load(onProgress); }
+    catch (e) {
+      if (cancelled) { const err = new Error('받기를 멈췄습니다'); err.name = 'AbortError'; throw err; }
+      throw e;
     }
   }
+  function cancelDownload() { cancelled = true; if (K()) K().shutdown(); }
+  async function remove() { if (K()) await K().remove(); stopAudio(); }
 
-  function cancelDownload() {
-    if (downloadAbort) downloadAbort.abort();
-  }
-
-  async function remove() {
-    shutdown();
-    try { await caches.delete(CACHE_NAME); } catch (e) {}
-    localStorage.removeItem(READY_KEY);
-    localStorage.removeItem(READY_KEY + '_manifest');
-  }
-
-  // ─── 생성 (작업자) ───────────────────────────────────────────────
-
-  let worker = null;
-  let workerReady = null;     // Promise<backend>
-  let reqSeq = 0;
-  const pending = new Map();  // id → { resolve, reject }
-
-  function spawnWorker(forceWasm) {
-    const w = new Worker('js/neural-tts-worker.js');
-    w.onmessage = (e) => {
-      const d = e.data || {};
-      if (d.type === 'ready' || (d.type === 'error' && d.id == null)) return; // init 응답은 아래에서 처리
-      const p = pending.get(d.id);
-      if (!p) return;
-      pending.delete(d.id);
-      if (d.type === 'audio') {
-        adaptSteps(d.wav.length / d.sampleRate, (d.ms || 0) / 1000);
-        p.resolve({ wav: d.wav, sampleRate: d.sampleRate });
-      }
-      else if (d.type === 'skipped') p.resolve(null);
-      else p.reject(new Error(d.message || '음성을 만들지 못했습니다.'));
-    };
-    const ready = new Promise((resolve, reject) => {
-      const h = (e) => {
-        const d = e.data || {};
-        if (d.type === 'ready') { w.removeEventListener('message', h); resolve(d.backend); }
-        else if (d.type === 'error' && d.id == null) { w.removeEventListener('message', h); reject(d); }
-      };
-      w.addEventListener('message', h);
-      w.addEventListener('error', (ev) => reject({ message: ev.message || '음성 작업자를 시작하지 못했습니다.' }));
-    });
-    w.postMessage({ type: 'init', base: voiceBase(), cacheName: CACHE_NAME, forceWasm: !!forceWasm });
-    return { w, ready };
-  }
-
-  /**
-   * 만드는 속도가 읽는 속도를 못 따라가면 품질 단계를 낮추고, 여유가 많으면 다시 올린다.
-   * (지금 문장을 읽는 동안 다음 문장을 만들기 때문에 1배보다 조금만 빠르면 끊기지 않는다)
-   */
-  function adaptSteps(audioSec, genSec) {
-    if (!(audioSec > 0.5) || !(genSec > 0)) return;     // 아주 짧은 문장은 판단 근거로 쓰지 않는다
-    const ratio = audioSec / genSec;
-    if (ratio < 1.2 && denoiseSteps > MIN_STEPS) denoiseSteps--;
-    else if (ratio > 2.5 && denoiseSteps < MAX_STEPS) denoiseSteps++;
-  }
-
-  function isLoaded() {
-    return !!backendName && !!worker;
-  }
-
-  /** 모델을 연다 (처음 한 번은 수 초 걸린다). WebGPU로 열다 실패하면 WASM으로 다시 연다. */
-  function ensureLoaded() {
-    if (workerReady) return workerReady;
-    workerReady = (async () => {
-      let { w, ready } = spawnWorker(false);
-      worker = w;
-      try {
-        backendName = await ready;
-      } catch (err) {
-        w.terminate();
-        if (!err.webgpuFailed) throw new Error(err.message || '자연스러운 음성을 열지 못했습니다.');
-        ({ w, ready } = spawnWorker(true));
-        worker = w;
-        backendName = await ready;
-      }
-      // GPU 없이 계산하는 기기는 중간 단계에서 시작한다 (빠르면 자동으로 올라간다)
-      denoiseSteps = backendName === 'webgpu' ? MAX_STEPS : 5;
-      return backendName;
-    })();
-    workerReady.catch(() => { shutdown(); });
-    return workerReady;
-  }
-
-  function shutdown() {
-    if (worker) worker.terminate();
-    worker = null;
-    workerReady = null;
-    backendName = null;
-    pending.forEach(p => p.resolve(null));
-    pending.clear();
-    stopAudio();
-  }
+  const isLoaded = () => !!K() && K().isLoaded();
+  const ensureLoaded = () => (K() ? K().load() : Promise.reject(new Error('음성 엔진이 없습니다')));
+  let stopSeq = 0;
+  function shutdown() { stopSeq++; if (K()) K().shutdown(); stopAudio(); }
 
   /** 문장 하나를 음성으로 만든다. 정지 등으로 버려진 세대면 null */
+  let minGen = 0;
   async function synthesize(text, style, appSpeed, gen) {
-    await ensureLoaded();
-    if (!worker) return null;
-    const id = ++reqSeq;
-    const speed = Math.max(0.5, Math.min(2.0, MODEL_BASE_SPEED * (appSpeed || 1)));
-    return new Promise((resolve, reject) => {
-      pending.set(id, { resolve, reject });
-      worker.postMessage({ type: 'synth', id, gen, text, lang: 'en', style: style || 'F1', speed, steps: denoiseSteps });
-    });
+    if (!K()) return null;
+    if (gen != null && gen < minGen) return null;
+    const my = stopSeq;
+    const speed = Math.max(0.5, Math.min(2.0, appSpeed || 1));
+    try {
+      const r = await K().generate(text, style || 'af_heart', speed, gen);
+      if (!r || (gen != null && gen < minGen)) return null;
+      return r;
+    } catch (e) {
+      if (my !== stopSeq) return null;          // 일부러 멈춘 경우는 실패로 치지 않는다
+      throw e;
+    }
   }
-
   /** 정지·이동 시: 이 세대보다 오래된 대기 요청은 만들지 않게 한다 */
-  function cancelBefore(gen) {
-    if (worker) worker.postMessage({ type: 'cancelBefore', gen });
-  }
+  function cancelBefore(gen) { minGen = Math.max(minGen, gen); if (K()) K().cancelBefore(gen); }
 
   // ─── 재생 (Web Audio) ────────────────────────────────────────────
 
@@ -390,7 +207,7 @@ const NeuralTTS = (() => {
   }
 
   return {
-    VOICES, isSupported, isReady, fetchManifest, downloadSize, download, cancelDownload, remove,
+    VOICES, isSupported, isReady, tooSlow, downloadMB, pairOf, download, cancelDownload, remove,
     isLoaded, ensureLoaded, shutdown, synthesize, cancelBefore, unlockAudio, play, playStream, stopAudio, outputLevel, suspendAudio,
     isPlaying: () => !!currentSource,   // 지금 실제로 소리를 내는 중인지 (튜터 말하는 영상용)
     // 재생 장치가 내보낸 소리가 실제로 귀에 들리기까지 걸리는 시간 (ms, 블루투스면 길다) — 입술 싱크를 여기에 맞춘다

@@ -15,9 +15,9 @@ let voiceB = null;
 const DEFAULT_VOICE_NAME = "Google US English";
 let defaultVoice = null;
 
-// 자연스러운 음성(Supertonic, js/neural-tts.js) 상태
-const NEURAL_PREFIX = 'st:';     // 목소리 목록에서 자연스러운 음성을 구분하는 접두어 (예: 'st:F1')
-let neuralVoice = null;          // 고른 자연스러운 음성 ('F1'~'M5'), null이면 브라우저 음성 사용
+// 자연스러운 음성(Kokoro, js/neural-tts.js · js/kokoro-tts.js) 상태
+const NEURAL_PREFIX = 'st:';     // 목소리 목록에서 자연스러운 음성을 구분하는 접두어 (예: 'st:af_heart')
+let neuralVoice = null;          // 고른 자연스러운 음성 ('af_heart' 등), null이면 브라우저 음성 사용
 let neuralReady = false;         // 음성 모델이 이 기기에 받아져 있는지
 let neuralBroken = false;        // 모델을 열지 못한 기기 → 이번 실행 동안은 브라우저 음성으로 대체
 let neuralDownloading = false;
@@ -70,7 +70,9 @@ function loadVoices() {
       userRate = d.rate || 1.0;
       if (d.autoPlay !== undefined) autoPlayEnabled = d.autoPlay;
       if (d.fontSize) userFontSize = d.fontSize;
-      neuralVoice = neuralVoiceIds().includes(d.neuralVoice) ? d.neuralVoice : null;
+      // 예전 음성(F1~F5 · M1~M5)을 골랐었다면 새 음성의 같은 성별 기본 목소리로
+      const nv = /^F\d$/.test(d.neuralVoice || '') ? 'af_heart' : /^M\d$/.test(d.neuralVoice || '') ? 'am_michael' : d.neuralVoice;
+      neuralVoice = neuralVoiceIds().includes(nv) ? nv : null;
     } catch (e) { console.warn("ttsSettings parse 실패", e); }
   }
   applyFontSizeToBody(userFontSize);
@@ -93,7 +95,7 @@ function populateVoiceSelect(selectValue) {
     NeuralTTS.VOICES.forEach(v => {
       const opt = document.createElement('option');
       opt.value = NEURAL_PREFIX + v.id;
-      opt.textContent = `${v.label} (${v.id})`;
+      opt.textContent = v.label;
       g.appendChild(opt);
     });
     sel.appendChild(g);
@@ -261,15 +263,16 @@ function saveSettings() {
   closeSettingsModal();
 }
 
-// 1-2. 자연스러운 음성(Supertonic) 재생 · 내려받기
+// 1-2. 자연스러운 음성(Kokoro) 재생 · 내려받기
 function usingNeural() {
-  return !!neuralVoice && neuralReady && !neuralBroken && typeof NeuralTTS !== 'undefined';
+  // 기기에서 너무 느리면(그래픽 가속 없는 기기 등) 기다림이 길어져 기본 음성으로 읽는다
+  return !!neuralVoice && neuralReady && !neuralBroken && typeof NeuralTTS !== 'undefined' && !NeuralTTS.tooSlow();
 }
 
-// 대화의 B 화자는 같은 번호의 반대 성별 목소리로 구분 (F1 ↔ M1)
+// 대화의 B 화자는 짝이 되는 반대 성별 목소리로 구분 (예: af_heart ↔ am_michael)
 function neuralStyleFor(speaker, styleOverride) {
-  const base = styleOverride || neuralVoice || 'F1';
-  if (speaker === 'B') return (base[0] === 'F' ? 'M' : 'F') + base.slice(1);
+  const base = styleOverride || neuralVoice || 'af_heart';
+  if (speaker === 'B') return NeuralTTS.pairOf(base);
   return base;
 }
 
@@ -429,8 +432,10 @@ function refreshNeuralUI() {
   area.classList.remove('hidden');
   refreshNeuralPromo();
   if (neuralDownloading) return;
-  if (neuralReady) setNeuralUI('✅ 받아 둠 · 인터넷 없이 사용할 수 있어요. 위 목록에서 여성·남성 목소리 10종 중 고를 수 있습니다.', '받은 음성 삭제', null, 'text');
-  else setNeuralUI('기본 음성보다 훨씬 자연스러운 원어민 발음으로 읽어 줍니다. 한 번만 받으면 인터넷 없이 사용할 수 있어요. (약 440MB · Wi-Fi 권장)', '⬇ AI 음성 내려받기', null, 'primary');
+  if (neuralReady) setNeuralUI(NeuralTTS.tooSlow()
+    ? '받아 둠 · 다만 이 기기에서는 목소리를 만드는 게 느려서 기본 음성으로 읽어요.'
+    : `✅ 받아 둠 · 인터넷 없이 사용할 수 있어요. 위 목록에서 여성·남성 목소리 ${NeuralTTS.VOICES.length}종 중 고를 수 있습니다.`, '받은 음성 삭제', null, 'text');
+  else setNeuralUI(`사람처럼 자연스러운 원어민 목소리(Kokoro)로 읽어 줍니다. 한 번만 받으면 인터넷 없이 사용할 수 있어요. (약 ${NeuralTTS.downloadMB()}MB · Wi-Fi 권장)`, '⬇ AI 음성 내려받기', null, 'primary');
 }
 
 // 받은 직후 바로 쓰도록 자연스러운 음성 선택만 저장 (모달의 미저장 속도·글자 크기는 건드리지 않음)
@@ -471,12 +476,13 @@ async function onNeuralButton() {
     neuralDownloading = false;
     neuralReady = true;
     neuralBroken = false;
-    neuralVoice = neuralVoice || 'F1';
+    neuralVoice = neuralVoice || 'af_heart';
     persistNeuralVoiceChoice();
     populateVoiceSelect(NEURAL_PREFIX + neuralVoice);
     refreshNeuralUI();
-    NeuralTTS.ensureLoaded().catch(e => console.warn(e));   // 첫 재생이 빨라지도록 미리 열어 둔다
-    alert("✅ 자연스러운 음성을 받았습니다.\n이제 예문과 대화를 자연스러운 목소리로 들을 수 있어요.");
+    alert(NeuralTTS.tooSlow()
+      ? "자연스러운 음성을 받았습니다.\n다만 이 기기에서는 목소리를 만드는 게 느려서 지금은 기본 음성으로 읽어요."
+      : "✅ 자연스러운 음성을 받았습니다.\n이제 예문·대화·AI 튜터를 자연스러운 목소리로 들을 수 있어요.");
   } catch (e) {
     neuralDownloading = false;
     refreshNeuralUI();

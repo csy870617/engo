@@ -35,6 +35,7 @@ const KokoroVoice = (() => {
       if (m.type === "loaded") { if (loading && loading.resolve) loading.resolve(m); return; }
       const p = pending.get(m.id);
       if (m.type === "audio" && p) { pending.delete(m.id); p.resolve({ wav: m.audio, sampleRate: m.sampleRate }); }
+      else if (m.type === "skipped" && p) { pending.delete(m.id); p.resolve(null); }
       else if (m.type === "error") {
         if (p) { pending.delete(m.id); p.reject(new Error(m.message)); }
         else if (loading && loading.reject) loading.reject(new Error(m.message));
@@ -77,14 +78,16 @@ const KokoroVoice = (() => {
     };
   }
   /** 문장 → 소리 { wav: Float32Array, sampleRate } */
-  async function generate(text, voice, speed) {
+  async function generate(text, voice, speed, gen) {
     await load(null, voice);
     const id = ++reqId;
     return new Promise((resolve, reject) => {
       pending.set(id, { resolve, reject });
-      worker.postMessage({ type: "gen", id, text, voice, speed });
+      worker.postMessage({ type: "gen", id, text, voice, speed, gen });
     });
   }
+  /** 이 세대보다 오래된(이미 멈춘) 요청은 만들지 않고 건너뛴다 (null로 끝남) */
+  function cancelBefore(gen) { if (worker) worker.postMessage({ type: "cancelBefore", gen }); }
   /** 메모리에서 내린다 (튜터 화면을 떠나면 잠시 뒤) */
   function shutdown() {
     if (worker) { try { worker.terminate(); } catch (e) {} }
@@ -113,6 +116,6 @@ const KokoroVoice = (() => {
       return ok;
     } catch (e) { return true; }
   }
-  return { supported, verify, plan, downloaded, rtf, tooSlow, load, generate, shutdown, scheduleUnload, remove,
+  return { supported, verify, cancelBefore, plan, downloaded, rtf, tooSlow, load, generate, shutdown, scheduleUnload, remove,
     isLoaded: () => loaded, isLoading: () => !!loading, info: () => info };
 })();
