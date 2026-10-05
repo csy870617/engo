@@ -368,6 +368,12 @@ async function tutorDownloadVoice() {
   try {
     await KokoroVoice.load((got, total) => { tutorDl = { got, total }; tutorVoiceDlRender(); }, tutorChar().voice);
     tutorDl = null; tutorNaturalBroken = false; tutorTtsCache.clear();
+    // 앱의 다른 화면(예문·회화)도 같은 목소리를 쓰게 설정에 반영
+    if (typeof neuralReady !== "undefined") {
+      neuralReady = true; neuralBroken = false;
+      if (!neuralVoice) { neuralVoice = "af_heart"; persistNeuralVoiceChoice(); }
+      populateVoiceSelect(); refreshNeuralUI();
+    }
     if (KokoroVoice.tooSlow()) tutorVoiceNote("받았어요. 다만 이 기기에서는 목소리를 만드는 게 느려서 기기 음성으로 읽어요");
     else {
       if (tutorVoiceId() === "app") { try { localStorage.removeItem("tutorVoice"); } catch (e) {} fillTutorVoices(); }
@@ -1520,12 +1526,6 @@ function tutorAudioPlaying() {
 }
 function tutorDeviceSpeak(text, slow) {
   const g = tutorChar().gender, rate = (typeof userRate === "number" ? userRate : 1) * (slow ? 0.7 : 1);
-  const neuralForMale = g === "m" && typeof neuralReady !== "undefined" && neuralReady && !neuralBroken && typeof NeuralTTS !== "undefined" && NeuralTTS.isLoaded && NeuralTTS.isLoaded() && !tutorDeviceVoice("m");
-  if ((typeof usingNeural === "function" && usingNeural()) || neuralForMale) {   // 기기에 받아 둔 자연스러운 음성 (남자 목소리가 없는 기기에서 Jay도)
-    const keep = userRate; userRate = Math.max(0.5, rate);
-    const p = speakNeural(text, "A", g === "m" ? "M1" : "F1");
-    userRate = keep; return p;
-  }
   return new Promise(resolve => {
     if (!("speechSynthesis" in window)) { resolve(); return; }
     const u = new SpeechSynthesisUtterance(text);

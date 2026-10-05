@@ -3,7 +3,8 @@
 import { KokoroTTS } from "https://cdn.jsdelivr.net/npm/kokoro-js@1.2.1/dist/kokoro.web.js";
 
 const MODEL = "onnx-community/Kokoro-82M-v1.0-ONNX";
-let tts = null, setup = null;
+let tts = null, setup = null, minGen = 0;
+let chain = Promise.resolve();     // 한 번에 하나씩 차례로 만든다
 
 async function load(device, dtype) {
   const progress = p => {
@@ -14,8 +15,12 @@ async function load(device, dtype) {
   setup = { device, dtype };
 }
 
-self.onmessage = async (e) => {
+self.onmessage = (e) => {
   const m = e.data || {};
+  if (m.type === "cancelBefore") { minGen = Math.max(minGen, m.gen || 0); return; }
+  chain = chain.then(() => handle(m));
+};
+async function handle(m) {
   try {
     if (m.type === "load") {
       if (!tts) {
@@ -37,6 +42,7 @@ self.onmessage = async (e) => {
       const sec = a.audio.length / a.sampling_rate;
       self.postMessage({ type: "loaded", device: setup.device, dtype: setup.dtype, rtf: (performance.now() - t0) / 1000 / Math.max(0.3, sec) });
     } else if (m.type === "gen") {
+      if (m.gen != null && m.gen < minGen) { self.postMessage({ type: "skipped", id: m.id }); return; }
       const t0 = performance.now();
       const a = await tts.generate(m.text, { voice: m.voice, speed: m.speed || 1 });
       const audio = a.audio;
@@ -45,4 +51,4 @@ self.onmessage = async (e) => {
   } catch (err) {
     self.postMessage({ type: "error", id: m.id, message: String((err && err.message) || err) });
   }
-};
+}
