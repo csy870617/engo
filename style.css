@@ -1096,6 +1096,9 @@ body.list-playing .neural-loading { bottom: calc(86px + env(safe-area-inset-bott
 .tutor-feedback-body .tutor-report-sec { margin-bottom: 12px; }
 
 /* ===== AI 튜터 (전체 화면) ===== */
+/* 튜터 대화 중: 뒤 페이지를 고정 (키보드가 뜰 때 페이지가 밀려 올라가 원래대로 안 돌아오는 것 방지) */
+html.tutor-lock, html.tutor-lock body { overflow: hidden; overscroll-behavior: none; height: 100%; }
+html.tutor-lock body { position: fixed; inset: 0; width: 100%; }
 .call { position: fixed; inset: 0; z-index: 1100; display: flex; flex-direction: column; overflow: hidden; color: var(--text-main);
   background: radial-gradient(120% 70% at 50% 0%, #1e1b4b 0%, #0b1020 55%, #070a14 100%); }
 .call-setup-card { position: absolute; inset: 0; overflow-y: auto; padding: calc(12px + env(safe-area-inset-top)) 16px calc(24px + env(safe-area-inset-bottom)); max-width: 520px; margin: 0 auto; text-align: center; }

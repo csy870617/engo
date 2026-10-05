@@ -287,6 +287,7 @@ function renderTutorPage() {
   showTutorSection("chat");
   toggleTutorSheet();
   tutorAudioSession(true);
+  tutorLockScroll(true);
   showTutorLobby();             // 바로 시작하지 않고 시작 화면부터 (튜터·수준·목소리를 고르고 '시작하기')
   tutorWarmVoice();
 }
@@ -514,6 +515,9 @@ function leaveTutorPage() {
   tutorCallActive = false;
   toggleTutorSheet(undefined, false, "leave");
   tutorAudioSession(false);
+  tutorLockScroll(false);
+  const call = tutorEl("tutor-call"); if (call) call.style.top = call.style.height = call.style.bottom = "";   // 키보드용으로 줄였던 크기를 풀어 둔다
+  tutorKbOpen = false;
 }
 
 // ---------- 대화 화면 ----------
@@ -627,6 +631,7 @@ function tutorTapTutor(e) {
 function tutorInputFocus(on) {
   const room = tutorEl("tutor-chat-area");
   if (room) room.classList.toggle("typing", on);
+  tutorRefit();
   setTimeout(() => { const log = tutorEl("tutor-log"); log.scrollTop = log.scrollHeight; }, 300);   // 그림 크기가 바뀐 뒤 최근 대화가 보이게
   if (on) {
     if (tutorMic && tutorMic.edit) { tutorMic.edit(); return; }   // 받아쓴 말을 지우지 않고 고칠 수 있게
@@ -637,6 +642,14 @@ function tutorInputFocus(on) {
 }
 // 휴대폰 키보드가 올라오면 대화 화면을 키보드 위 영역에 맞춘다 (입력칸이 키보드에 가리지 않게)
 let tutorKbOpen = false, tutorBaseH = 0;
+const tutorPageVisible = () => { const pg = tutorEl("page-tutor"); return !!pg && !pg.classList.contains("hidden"); };
+/** 키보드가 열리고 닫히는 동안 몇 번 더 맞춘다 (화면 크기 알림이 늦거나 빠지는 기기가 있다) */
+function tutorRefit() { [60, 250, 600, 1000].forEach(ms => setTimeout(tutorFitViewport, ms)); }
+/** 튜터 대화 중에는 뒤쪽 페이지가 스크롤되지 않게 고정한다 (키보드가 페이지를 밀어 올려 화면이 어긋나지 않게) */
+function tutorLockScroll(on) {
+  document.documentElement.classList.toggle("tutor-lock", !!on);
+  if (on) window.scrollTo(0, 0);
+}
 function tutorFitViewport() {
   const call = tutorEl("tutor-call"), vv = window.visualViewport;
   if (!call || !vv) return;
@@ -647,7 +660,11 @@ function tutorFitViewport() {
   const pinned = log && log.scrollHeight - log.scrollTop - log.clientHeight < 40;   // 맨 아래를 보고 있었으면 크기가 바뀐 뒤에도 맨 아래로
   if (pinned) requestAnimationFrame(() => { log.scrollTop = log.scrollHeight; });
   if (open) { call.style.top = vv.offsetTop + "px"; call.style.height = vv.height + "px"; call.style.bottom = "auto"; }
-  else call.style.top = call.style.height = call.style.bottom = "";
+  else {
+    call.style.top = call.style.height = call.style.bottom = "";
+    // 아이폰은 키보드가 뜰 때 페이지를 위로 밀어 올리고, 닫혀도 그대로 두는 일이 있다 → 제자리로
+    if (tutorPageVisible() && (window.scrollY || document.documentElement.scrollTop)) window.scrollTo(0, 0);
+  }
   // 안드로이드 뒤로 가기로 키보드만 닫으면 입력칸에 초점이 남아 '글 쓰는 중'으로 멈춰 있게 된다 → 초점을 풀어 다시 듣게
   if (tutorKbOpen && !open) { const inp = tutorEl("tutor-input"); if (inp && document.activeElement === inp) inp.blur(); }
   tutorKbOpen = open;
