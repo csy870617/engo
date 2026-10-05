@@ -23,9 +23,9 @@ const TUTOR_AVATAR_FRAMES = null;
 // 튜터: 이름 · 기본 목소리 · 영상 폴더 (같은 사진에서 만든 반복 영상: idle 듣기 / talk 말하기 / poster 첫 화면)
 const TUTORS = {
   emma: { name: "Emma", label: "Emma", gender: "f", voice: "Leda", media: "images/tutor/emma/web/",
-    style: "a bright, warm, youthful young woman with a natural American accent, chatting happily with a friend" },
-  jay: { name: "Jay", label: "Jay", gender: "m", voice: "Puck", media: "images/tutor/jay/web/",
-    style: "a warm, upbeat, youthful young man with a natural American accent, chatting happily with a friend" }
+    style: "a sweet, bright K-pop idol girl in her early 20s chatting with her fans on a live stream: cheerful, warm and cute, with a light, youthful voice" },
+  jay: { name: "Jay", label: "Jay", gender: "m", voice: "Algieba", media: "images/tutor/jay/web/",
+    style: "a gentle, charming K-pop idol boy in his early 20s chatting with his fans on a live stream: soft, warm and sweet, calm and friendly, with a youthful voice" }
 };
 function tutorCharId() { let v = null; try { v = localStorage.getItem("tutorChar"); } catch (e) {} return TUTORS[v] ? v : "emma"; }
 const tutorChar = () => TUTORS[tutorCharId()];
@@ -257,9 +257,43 @@ function renderTutorPage() {
     return;
   }
   showTutorSection("chat");
-  tutorCallActive = true;
   toggleTutorSheet();
-  if (tutorMessages.length === 0) startTutorSession(); else { setTutorStatus(tutorIdleMsg(), ""); tutorAfterSpeak(tutorSessionToken); }
+  showTutorLobby();             // 바로 시작하지 않고 시작 화면부터 (튜터·수준·목소리를 고르고 '시작하기')
+}
+
+// ---------- 시작 화면 ----------
+function tutorLobbyOpen() { const l = tutorEl("tutor-lobby"); return !!l && !l.classList.contains("hidden"); }
+function showTutorLobby() {
+  tutorCallActive = false;      // 시작하기 전에는 듣지 않는다
+  tutorCancelListening();
+  const room = tutorEl("tutor-chat-area"); if (room) room.classList.add("lobby");
+  tutorEl("tutor-lobby").classList.remove("hidden");
+  const going = tutorLearnerLines.length > 0;   // 하던 대화가 있으면 '이어서 대화하기'가 먼저
+  tutorEl("tutor-start-btn").textContent = going ? "▶ 이어서 대화하기" : "▶ 시작하기";
+  tutorEl("tutor-new-btn").classList.toggle("hidden", !going);
+  setTutorStatus(`${tutorName()}와 대화할 준비가 됐어요`, "");
+}
+/** 시작하기 (누른 순간에 소리 장치를 깨워 둔다: 아이폰은 사용자가 누른 순간에만 소리를 켤 수 있다) */
+function tutorStartFromLobby(fresh) {
+  if (!tutorReady()) return;
+  if (typeof NeuralTTS !== "undefined") NeuralTTS.unlockAudio();
+  tutorEl("tutor-lobby").classList.add("hidden");
+  const room = tutorEl("tutor-chat-area"); if (room) room.classList.remove("lobby");
+  tutorCallActive = true;
+  if (!fresh && tutorLearnerLines.length) { setTutorStatus(tutorIdleMsg(), ""); tutorAfterSpeak(tutorSessionToken); }
+  else startTutorSession();
+}
+/** 목소리 들어 보기 (시작 화면) */
+function tutorPreviewVoice() {
+  if (typeof NeuralTTS !== "undefined") NeuralTTS.unlockAudio();
+  stopTutorSpeech();
+  speakTutor(`Hi, I'm ${tutorName()}! I'm so happy to talk with you today.`, tutorSessionToken);
+}
+/** 지금 대화를 지운다 (다른 튜터를 고르면) */
+function tutorResetConversation() {
+  stopTutorActivity();
+  tutorMessages = []; tutorLearnerLines = []; tutorLearnerItems = []; tutorCorrections = []; tutorSaidLines = [];
+  tutorEl("tutor-log").innerHTML = "";
 }
 
 function showTutorKeyMsg(text, isError) {
@@ -385,7 +419,7 @@ function tutorCancelListening() {
 /** Emma(위쪽 그림)를 누르면: 말하는 중이면 끊고 바로 듣기, 듣는 중이면 끝내고 보내기, 쉬는 중이면 듣기 시작 */
 function tutorTapTutor(e) {
   if (e && e.target.closest && e.target.closest("button")) return;
-  if (!tutorReady() || tutorBusy) return;
+  if (!tutorReady() || tutorBusy || !tutorCallActive) return;   // 시작 화면에서는 반응하지 않는다
   tutorQuietTries = 0;
   if (typeof NeuralTTS !== "undefined") NeuralTTS.unlockAudio();
   if (tutorMic || tutorRecRec) { toggleTutorMic(); return; }
@@ -418,7 +452,7 @@ document.addEventListener("visibilitychange", () => {
 // ---------- 수준 ----------
 function renderTutorLevels() {
   const cur = tutorLevelId();
-  ["tutor-levels", "tutor-levels-set"].forEach(id => {
+  ["tutor-levels-lobby", "tutor-levels-set"].forEach(id => {
     const box = tutorEl(id);
     if (box) box.innerHTML = Object.entries(TUTOR_LEVELS).map(([k, v]) =>
       `<button class="tutor-level-btn${k === cur ? " active" : ""}" onclick="changeTutorLevel('${k}')">${v.label}</button>`).join("");
@@ -427,20 +461,28 @@ function renderTutorLevels() {
 /** 수준 바꾸기: 지금 대화는 그대로 두고, 튜터가 다음 말부터 새 수준으로 말한다 */
 /** 튜터 고르기 (Emma / Jay): 얼굴·이름·목소리가 바뀌고 새 대화로 시작 */
 function renderTutorChars() {
-  const box = tutorEl("tutor-chars-set"), cur = tutorCharId();
+  const cur = tutorCharId();
+  const box = tutorEl("tutor-chars-set");
   if (box) box.innerHTML = Object.entries(TUTORS).map(([k, v]) =>
     `<button class="tutor-level-btn${k === cur ? " active" : ""}" onclick="changeTutorChar('${k}')">${v.label}</button>`).join("");
+  const lb = tutorEl("tutor-chars-lobby");   // 시작 화면: 얼굴 사진으로 고르기
+  if (lb) lb.innerHTML = Object.entries(TUTORS).map(([k, v]) =>
+    `<button class="lobby-char${k === cur ? " active" : ""}" onclick="changeTutorChar('${k}')" aria-label="${v.name}">` +
+    `<img src="${v.media}poster.jpg" alt=""><span>${v.name}</span></button>`).join("");
   const nm = tutorEl("tutor-name"); if (nm) nm.textContent = tutorName();
 }
 function changeTutorChar(id) {
   if (!TUTORS[id] || id === tutorCharId()) return;
+  const inLobby = tutorLobbyOpen();
   if (tutorLearnerLines.length && !confirm(`${TUTORS[id].name}와 새 대화를 시작할까요? 지금 대화는 지워져요.`)) return;
   try {
     localStorage.setItem("tutorChar", id);
     if (localStorage.getItem("tutorVoice") !== "app") localStorage.removeItem("tutorVoice");   // 목소리도 그 튜터의 기본 목소리로
   } catch (e) {}
+  stopTutorSpeech();
   renderTutorChars(); fillTutorVoices();
   TutorAvatar.remount();
+  if (inLobby) { tutorResetConversation(); showTutorLobby(); return; }   // 시작 화면에서는 고르기만 (시작하기를 눌러야 시작)
   toggleTutorSheet();
   if (typeof NeuralTTS !== "undefined") NeuralTTS.unlockAudio();
   startTutorSession();
@@ -1131,24 +1173,22 @@ function renderTutorNotes() {
 const TUTOR_TTS_API = "https://generativelanguage.googleapis.com/v1beta/interactions";
 const TUTOR_TTS_MODELS = ["gemini-3.8-flash-lite-tts", "gemini-3.8-flash-tts"];   // 빠른 것부터 (무료 한도도 따로)
 // 튜터 목소리: 튜터 성별에 맞는 목소리만 고를 수 있다 (g: f 여성 / m 남성, app은 기기 음성을 성별에 맞춰 고름)
-// 대중적으로 듣기 좋은 밝고 자연스러운 목소리 위주 (설정에서 바꾸면 바로 한 마디 들려준다)
+// K팝 아이돌 튜터에 어울리는 젊고 밝은 목소리 (설정에서 바꾸면 바로 한 마디 들려준다)
 const TUTOR_VOICES = {
-  Leda: { label: "구글 AI · 밝고 상큼한 목소리", g: "f" }, Zephyr: { label: "구글 AI · 맑고 경쾌한 목소리", g: "f" },
-  Kore: { label: "구글 AI · 또렷하고 차분한 목소리", g: "f" }, Despina: { label: "구글 AI · 부드러운 목소리", g: "f" },
-  Sulafat: { label: "구글 AI · 따뜻한 목소리", g: "f" },
-  Puck: { label: "구글 AI · 밝고 경쾌한 목소리", g: "m" }, Umbriel: { label: "구글 AI · 편안한 목소리", g: "m" },
-  Algieba: { label: "구글 AI · 부드러운 목소리", g: "m" }, Iapetus: { label: "구글 AI · 또렷한 목소리", g: "m" },
-  Achird: { label: "구글 AI · 친근한 목소리", g: "m" },
+  Leda: { label: "상큼 발랄 (추천)", g: "f" }, Laomedeia: { label: "통통 튀는", g: "f" },
+  Achernar: { label: "부드럽고 여린", g: "f" }, Zephyr: { label: "맑고 경쾌한", g: "f" }, Autonoe: { label: "밝고 또렷한", g: "f" },
+  Algieba: { label: "부드럽고 다정한 (추천)", g: "m" }, Enceladus: { label: "나긋한 숨결", g: "m" },
+  Umbriel: { label: "편안하고 차분한", g: "m" }, Puck: { label: "밝고 경쾌한", g: "m" }, Achird: { label: "친근한", g: "m" },
   app: { label: "기기 기본 음성", g: "" }
 };
-// 말투: 선생님이 또박또박 읽는 느낌보다, 친구와 수다 떠는 듯한 자연스럽고 밝은 말투로
-const tutorTtsStyle = slow => `Speak like ${tutorChar().style}: natural, relaxed and expressive, at a comfortable conversational pace, with clear pronunciation.` +
+// 말투: K팝 아이돌이 팬들과 라이브 방송에서 수다 떠는 듯한 밝고 다정한 말투. 영어 발음은 또렷하고 자연스럽게 (따라 배우는 소리라서)
+const tutorTtsStyle = slow => `Speak like ${tutorChar().style}. Speak fluent, natural English with clear pronunciation, relaxed and expressive, at a comfortable conversational pace.` +
   (slow ? " This time speak slowly and very clearly, with short pauses between phrases, for an English learner." : "");
-// 목소리 기본값을 바꾼 뒤 처음 열 때, 예전 기본(따뜻한·친근한 목소리)으로 저장된 선택은 새 기본으로 (기기 음성 선택은 그대로)
+// 목소리 목록을 아이돌 목소리로 바꾼 뒤 처음 열 때, 예전에 고른 구글 목소리는 새 기본으로 (기기 음성 선택은 그대로)
 try {
-  if (!localStorage.getItem("tutorVoiceV2")) {
-    if (["Sulafat", "Aoede", "Achird", "Puck"].includes(localStorage.getItem("tutorVoice"))) localStorage.removeItem("tutorVoice");
-    localStorage.setItem("tutorVoiceV2", "1");
+  if (!localStorage.getItem("tutorVoiceV3")) {
+    if (localStorage.getItem("tutorVoice") !== "app") localStorage.removeItem("tutorVoice");
+    localStorage.setItem("tutorVoiceV3", "1");
   }
 } catch (e) {}
 function tutorVoiceId() {
@@ -1405,16 +1445,18 @@ function tutorSay(text, slow, alive) {
   return tutorDeviceSpeak(text, slow);
 }
 function fillTutorVoices() {
-  const sel = tutorEl("tutor-voice");
-  if (!sel) return;
   const g = tutorChar().gender;   // 튜터 성별에 맞는 목소리만
-  sel.innerHTML = "";
-  Object.entries(TUTOR_VOICES).filter(([k, v]) => k === "app" || v.g === g).forEach(([k, v]) => { const o = document.createElement("option"); o.value = k; o.textContent = v.label; sel.appendChild(o); });
-  sel.value = tutorVoiceId();
+  ["tutor-voice", "tutor-voice-lobby"].forEach(id => {
+    const sel = tutorEl(id); if (!sel) return;
+    sel.innerHTML = "";
+    Object.entries(TUTOR_VOICES).filter(([k, v]) => k === "app" || v.g === g).forEach(([k, v]) => { const o = document.createElement("option"); o.value = k; o.textContent = (k === "app" ? "" : "구글 AI · ") + v.label; sel.appendChild(o); });
+    sel.value = tutorVoiceId();
+  });
 }
-/** 목소리 바꾸기: 바로 한 마디 들려준다 */
-function changeTutorVoice() {
-  try { localStorage.setItem("tutorVoice", tutorEl("tutor-voice").value); } catch (e) {}
+/** 목소리 바꾸기 (설정·시작 화면 어느 쪽에서든): 바로 한 마디 들려준다 */
+function changeTutorVoice(sel) {
+  try { localStorage.setItem("tutorVoice", (sel || tutorEl("tutor-voice")).value); } catch (e) {}
+  fillTutorVoices();
   tutorTtsDownUntil = 0;
   stopTutorSpeech();
   speakTutor(`Hi, I'm ${tutorName()}. Let's practice English together!`, tutorSessionToken);
@@ -1518,9 +1560,12 @@ function tutorEndWait(text) {
   return TUTOR_END_WAIT[tutorEndWaitId()].ms + (TUTOR_DANGLING.test(last) ? 1500 : 0);
 }
 function renderTutorEndWait() {
-  const box = tutorEl("tutor-endwait-set"), cur = tutorEndWaitId();
-  if (box) box.innerHTML = Object.entries(TUTOR_END_WAIT).map(([k, v]) =>
-    `<button class="tutor-level-btn${k === cur ? " active" : ""}" onclick="changeTutorEndWait('${k}')">${v.label}</button>`).join("");
+  const cur = tutorEndWaitId();
+  ["tutor-endwait-set", "tutor-endwait-lobby"].forEach(id => {
+    const box = tutorEl(id);
+    if (box) box.innerHTML = Object.entries(TUTOR_END_WAIT).map(([k, v]) =>
+      `<button class="tutor-level-btn${k === cur ? " active" : ""}" onclick="changeTutorEndWait('${k}')">${v.label}</button>`).join("");
+  });
 }
 function changeTutorEndWait(id) {
   if (!TUTOR_END_WAIT[id]) return;
@@ -1893,7 +1938,7 @@ async function tutorFeedback() {
 // ---------- 튜터 얼굴 (입모양) ----------
 const TutorAvatar = (() => {
   let mounted = false, raf = 0, level = 0, mouthEls = null, frames = null, lastBlink = 0;
-  let clips = null, clip = "idle", quietSince = 0, paused = false;   // 영상 튜터: idle(듣기)·talk(말하기)를 겹쳐 두고 번갈아 보인다
+  let clips = null, clip = "idle", quietSince = 0, paused = false, lastLoud = 0, talkHidAt = 0;   // 영상 튜터: idle(듣기)·talk(말하기)를 겹쳐 두고 번갈아 보인다
   const SVG = `
 <svg viewBox="0 0 200 200" class="tutor-svg" aria-hidden="true">
   <defs>
@@ -1954,7 +1999,9 @@ const TutorAvatar = (() => {
     if (!clips || k === clip) return;
     const nv = clips[k], ov = clips[clip];
     clip = k;
-    if (k === "talk" && nv.duration) { try { nv.currentTime = Math.random() * nv.duration; } catch (e) {} }
+    // 말하는 영상은 한동안 쉬었다 다시 말할 때만 다른 지점부터 (문장 사이 짧은 쉼 뒤에는 이어서 → 움직임이 튀지 않게)
+    if (k === "talk" && nv.duration && performance.now() - talkHidAt > 2500) { try { nv.currentTime = Math.random() * nv.duration; } catch (e) {} }
+    if (k === "idle") talkHidAt = performance.now();
     playClip(nv);
     nv.classList.add("on"); ov.classList.remove("on");
     setTimeout(() => { if (clips && clips[clip] !== ov) ov.pause(); }, 450);
@@ -2006,9 +2053,14 @@ const TutorAvatar = (() => {
       if (hidden) { if (!paused) { paused = true; Object.values(clips).forEach(v => v.pause()); } return; }
       if (paused) { paused = false; playClip(clips[clip]); }
       const now = performance.now();
-      // 말하는 동안은 talk, 말이 끝나고 0.35초 넘게 조용하면 idle (문장 사이 짧은 쉼에 깜빡이지 않게)
-      if (tutorAudioPlaying()) { quietSince = 0; showClip("talk"); }   // 실제로 소리가 나는 동안만 말하는 영상 (음성을 받는 중엔 듣는 영상)
-      else { if (!quietSince) quietSince = now; if (now - quietSince > 350) showClip("idle"); }
+      // 입 움직임을 소리에 맞춘다: 실제 소리 크기를 재서 말소리가 나는 동안만 말하는 영상,
+      // 문장 사이처럼 0.2초 넘게 조용하면 입을 다문 영상으로 (낱말 사이의 아주 짧은 틈은 그대로 말하는 영상)
+      const lv = typeof NeuralTTS !== "undefined" && NeuralTTS.outputLevel ? NeuralTTS.outputLevel() : 0;
+      if (lv > 0.012) lastLoud = now;
+      const talking = tutorSpeaking && (tutorDeviceTalking ||   // 기기 음성은 소리 크기를 잴 수 없어 말하는 동안 계속
+        (typeof NeuralTTS !== "undefined" && NeuralTTS.isPlaying && NeuralTTS.isPlaying() && now - lastLoud < 170));
+      if (talking) { quietSince = 0; showClip("talk"); }
+      else { if (!quietSince) quietSince = now; if (now - quietSince > 50) showClip("idle"); }
       level = tutorSpeaking ? 1 : 0;
       return;
     }

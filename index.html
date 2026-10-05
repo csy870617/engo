@@ -23,7 +23,7 @@
   <meta property="og:image" content="https://engo.life/logo.png">
   <meta property="og:site_name" content="ENGO">
 
-  <link rel="stylesheet" href="style.css?v=155" />
+  <link rel="stylesheet" href="style.css?v=156" />
 
   <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2078760660134095"
      crossorigin="anonymous"></script>
@@ -510,7 +510,7 @@
               <button class="call-icon" onclick="goTo('home')" aria-label="나가기">❮</button>
               <div class="talk-top-right">
                 <button class="call-icon" onclick="openTutorFeedback()" aria-label="오늘 대화 피드백">📝</button>
-                <button class="call-icon" onclick="toggleTutorSheet('settings')" aria-label="튜터 설정">⚙️</button>
+                <button class="call-icon talk-gear" onclick="toggleTutorSheet('settings')" aria-label="튜터 설정">⚙️</button>
               </div>
             </div>
             <div class="talk-name">
@@ -529,13 +529,25 @@
             <button class="tutor-round-btn send" onmousedown="event.preventDefault()" onclick="sendTutorTyped()" aria-label="보내기">➤</button>
           </div>
 
+          <!-- 시작 화면: 들어오면 먼저 튜터·수준·목소리를 고르고 '시작하기' -->
+          <div id="tutor-lobby" class="call-sheet tutor-lobby hidden">
+            <div class="lobby-title">오늘의 영어 대화</div>
+            <div id="tutor-chars-lobby" class="lobby-chars" role="group" aria-label="튜터 고르기"></div>
+            <div class="call-set-row"><span>내 영어 수준</span><div id="tutor-levels-lobby" class="tutor-levels" role="group" aria-label="내 영어 수준"></div></div>
+            <div class="call-set-row"><span>🔊 목소리</span><div class="lobby-voice"><select id="tutor-voice-lobby" class="tutor-select" onchange="changeTutorVoice(this)" aria-label="선생님 목소리"></select><button class="tutor-round-btn lobby-try" onclick="tutorPreviewVoice()" aria-label="목소리 들어 보기">▶</button></div></div>
+            <div class="call-set-row"><span>⏱ 말 끝 기다리기</span><div id="tutor-endwait-lobby" class="tutor-levels" role="group" aria-label="말이 멈춘 뒤 기다리는 시간"></div></div>
+            <button id="tutor-start-btn" class="btn-main lobby-start" onclick="tutorStartFromLobby(false)">▶ 시작하기</button>
+            <button id="tutor-new-btn" class="chip-btn lobby-new hidden" onclick="tutorStartFromLobby(true)">↺ 새 대화로 시작하기</button>
+            <p class="lobby-tip">시작하면 튜터가 먼저 말을 걸어요. 말이 끝나면 저절로 마이크가 켜지니 영어로 대답해 보세요.</p>
+          </div>
+
           <!-- 아래에서 올라오는 판 -->
           <div id="tutor-sheet-settings" class="call-sheet hidden">
             <div class="call-sheet-head"><b>설정</b><button class="call-icon" onclick="toggleTutorSheet()" aria-label="닫기">✕</button></div>
             <div class="call-set-row"><span>👩‍🏫 튜터</span><div id="tutor-chars-set" class="tutor-levels" role="group" aria-label="튜터 고르기"></div></div>
             <div class="call-set-row"><span>내 영어 수준</span><div id="tutor-levels-set" class="tutor-levels" role="group" aria-label="내 영어 수준"></div></div>
             <div class="call-set-row"><span>⏱ 말 끝 기다리기</span><div id="tutor-endwait-set" class="tutor-levels" role="group" aria-label="말이 멈춘 뒤 기다리는 시간"></div></div>
-            <div class="call-set-row"><span>🔊 선생님 목소리</span><select id="tutor-voice" class="tutor-select" onchange="changeTutorVoice()" aria-label="선생님 목소리"></select></div>
+            <div class="call-set-row"><span>🔊 선생님 목소리</span><select id="tutor-voice" class="tutor-select" onchange="changeTutorVoice(this)" aria-label="선생님 목소리"></select></div>
             <div class="call-sheet-actions">
               <button class="chip-btn" onclick="newTutorConversation()">↺ 새 대화 시작</button>
               <button class="chip-btn" onclick="manageTutorKey()">🔑 키 연결 끊기</button>
@@ -673,12 +685,12 @@
 
   <div id="neural-loading" class="neural-loading hidden">🎙 자연스러운 음성 준비 중…</div>
 
-  <script src="pattern.js?v=155"></script>
-  <script src="conversation.js?v=155"></script>
-  <script src="idiom.js?v=155"></script>
-  <script src="word.js?v=155"></script>
+  <script src="pattern.js?v=156"></script>
+  <script src="conversation.js?v=156"></script>
+  <script src="idiom.js?v=156"></script>
+  <script src="word.js?v=156"></script>
 
-  <script src="js/core.js?v=155"></script>    <script src="js/storage.js?v=155"></script> <script src="js/neural-tts.js?v=155"></script> <script src="js/media.js?v=155"></script>   <script src="js/study.js?v=155"></script>   <script src="js/game.js?v=155"></script>    <script src="js/tutor.js?v=155"></script>    </body>
+  <script src="js/core.js?v=156"></script>    <script src="js/storage.js?v=156"></script> <script src="js/neural-tts.js?v=156"></script> <script src="js/media.js?v=156"></script>   <script src="js/study.js?v=156"></script>   <script src="js/game.js?v=156"></script>    <script src="js/tutor.js?v=156"></script>    </body>
 
 
 </html>

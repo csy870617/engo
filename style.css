@@ -1130,7 +1130,7 @@ body.list-playing .neural-loading { bottom: calc(86px + env(safe-area-inset-bott
 .talk-avatar .tutor-frame.on { opacity: 1; }
 /* 영상 튜터: 듣기·말하기 영상을 겹쳐 두고 서서히 바꾼다 (얼굴이 위쪽에 오게 맞춤) */
 .talk-avatar.has-clips { padding: 0; background-size: cover; background-position: center 22%; }
-.talk-avatar .tutor-clip { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: center 22%; opacity: 0; transition: opacity 0.35s ease; pointer-events: none; }
+.talk-avatar .tutor-clip { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: center 22%; opacity: 0; transition: opacity 0.12s linear; pointer-events: none; }
 .talk-avatar .tutor-clip.on { opacity: 1; }
 .talk-top { position: absolute; top: calc(10px + env(safe-area-inset-top)); left: 12px; right: 12px; z-index: 3; display: flex; align-items: center; justify-content: space-between; }
 .talk-top-right { display: flex; gap: 8px; }
@@ -1154,3 +1154,20 @@ body.list-playing .neural-loading { bottom: calc(86px + env(safe-area-inset-bott
 .talk-room.typing .talk-avatar { padding-bottom: 36px; }
 /* 듣는 중: Emma 아래쪽에 은은한 초록 테두리 */
 .talk-room[data-mode="listening"] .talk-hero { box-shadow: inset 0 -3px 0 rgba(16,185,129,0.7); }
+
+/* AI 튜터 시작 화면: 튜터·수준·목소리 고르고 시작하기 */
+.tutor-lobby { max-height: 64%; z-index: 7; }
+.talk-room.lobby .talk-input, .talk-room.lobby .talk-hint, .talk-room.lobby .talk-gear { display: none; }
+.talk-room.lobby .talk-hero { cursor: default; }
+.lobby-title { color: #fff; font-weight: 700; font-size: 1.05rem; margin-bottom: 10px; }
+.lobby-chars { display: flex; gap: 10px; margin-bottom: 4px; }
+.lobby-char { flex: 1; display: flex; align-items: center; gap: 10px; padding: 8px; border-radius: 14px; border: 2px solid rgba(255,255,255,0.08); background: rgba(255,255,255,0.04); color: var(--text-sub); font-family: inherit; font-size: 0.95rem; font-weight: 700; cursor: pointer; }
+.lobby-char img { width: 44px; height: 44px; border-radius: 50%; object-fit: cover; object-position: center 20%; }
+.lobby-char.active { border-color: var(--primary); background: rgba(139,92,246,0.18); color: #fff; }
+.lobby-start { width: 100%; margin-top: 14px; font-size: 1.05rem; }
+.lobby-new { display: block; margin: 10px auto 0; }
+.lobby-new.hidden { display: none; }
+.lobby-tip { margin: 10px 0 0; font-size: 0.75rem; color: var(--text-sub); text-align: center; line-height: 1.5; }
+.lobby-voice { display: flex; gap: 8px; align-items: center; flex: 0 1 240px; min-width: 0; }
+.lobby-voice .tutor-select { flex: 1; min-width: 0; }
+.lobby-try { width: 36px; height: 36px; font-size: 0.85rem; }
