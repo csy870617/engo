@@ -1043,7 +1043,8 @@ body.list-playing .neural-loading { bottom: calc(86px + env(safe-area-inset-bott
 .tutor-practice-result { flex-basis: 100%; font-size: 0.82rem; color: #e2e8f0; }
 .tutor-practice-result small { color: var(--text-sub); }
 .tutor-practice-result.good { color: #6ee7b7; font-weight: 600; }
-.tutor-practice-result.listening { color: #6ee7b7; animation: tutorPulse 1.4s ease-in-out infinite; }
+.tutor-practice-result.listening { color: #6ee7b7; animation: tutorTextPulse 1.4s ease-in-out infinite; }
+@keyframes tutorTextPulse { 0%, 100% { opacity: 0.55; } 50% { opacity: 1; } }   /* 글자 줄은 테두리 대신 밝기로 깜빡인다 */
 /* 한국어로 물어본 표현 */
 .tutor-ko-card { align-self: flex-end; max-width: 88%; padding: 10px 12px; border-radius: 14px; background: rgba(56,189,248,0.08); border: 1px solid rgba(56,189,248,0.35); font-size: 0.86rem; line-height: 1.5; }
 .tutor-ko-q { color: var(--text-sub); margin-bottom: 6px; }
@@ -1091,7 +1092,7 @@ body.list-playing .neural-loading { bottom: calc(86px + env(safe-area-inset-bott
 .tutor-fb-overall { color: #fff; font-weight: 600; font-size: 0.95rem; line-height: 1.5; }
 .tutor-fb-focus { margin-top: 10px; padding-top: 10px; border-top: 1px dashed rgba(255,255,255,0.15); font-size: 0.88rem; line-height: 1.5; }
 .tutor-fb-focus b { display: block; color: #fde68a; font-size: 0.8rem; margin-bottom: 2px; }
-.tutor-fb-wait { color: var(--text-sub); font-weight: 400; font-size: 0.85rem; animation: tutorPulse 1.4s ease-in-out infinite; }
+.tutor-fb-wait { color: var(--text-sub); font-weight: 400; font-size: 0.85rem; animation: tutorTextPulse 1.4s ease-in-out infinite; }
 .tutor-feedback-body .tutor-report-sec { margin-bottom: 12px; }
 
 /* ===== AI 튜터 (전체 화면) ===== */
@@ -1190,7 +1191,7 @@ body.list-playing .neural-loading { bottom: calc(86px + env(safe-area-inset-bott
 .talk-input .send.ready { animation: sendReady 0.9s ease-out 2; }
 @keyframes sendReady { 0% { box-shadow: 0 0 0 0 rgba(139,92,246,0.7); } 100% { box-shadow: 0 0 0 12px rgba(139,92,246,0); } }
 /* 입술 싱크: 기본 얼굴 + 입 모양 조각 (소리 크기에 맞춰 바뀐다) */
-.talk-avatar .tutor-lips { position: absolute; inset: 0; overflow: hidden; opacity: 0; transition: opacity 0.16s linear; pointer-events: none; }
+.talk-avatar .tutor-lips { position: absolute; inset: 0; overflow: hidden; opacity: 0; transition: opacity 0.22s ease; pointer-events: none; }
 .talk-avatar .tutor-lips.on { opacity: 1; }
 .tutor-lips-box { position: absolute; animation: lipsBreath 4.2s ease-in-out infinite; }
 .tutor-lips-box img { position: absolute; display: block; }
