@@ -1,8 +1,11 @@
 // 캐시 버전 - 정적 자산을 변경했을 때 숫자를 올리세요. (index.html의 ?v= 숫자도 같이 올린다)
-const CACHE_NAME = 'engo-cache-v158';
+const CACHE_NAME = 'engo-cache-v159';
 // 자연스러운 음성 모델(약 440MB) 캐시 - 앱(js/neural-tts.js)이 직접 관리하므로 정리·가로채기 대상에서 제외
 const VOICE_CACHE_PREFIX = 'faith-voice';
 const VOICE_HOST_PATH = 'https://csy870617.github.io/faith-voice/';
+// 튜터의 자연스러운 음성(Kokoro) 모델 저장소 — 지우거나 가로채지 않는다 (수백 MB라 앱 캐시에 또 넣지 않게)
+const KEEP_CACHES = ['transformers-cache', 'kokoro-voices'];
+const MODEL_HOSTS = /^https:\/\/([a-z0-9-]+\.)*(huggingface\.co|hf\.co|xethub\.hf\.co)\/|^https:\/\/cdn\.jsdelivr\.net\/npm\/(@huggingface|onnxruntime|kokoro-js)/;
 
 // 캐싱할 파일 목록 (같은 출처의 핵심 자산)
 const ASSETS_TO_CACHE = [
@@ -17,6 +20,8 @@ const ASSETS_TO_CACHE = [
   './js/neural-tts.js',
   './js/neural-tts-worker.js',
   './js/tutor.js',
+  './js/kokoro-tts.js',
+  './js/kokoro-worker.js',
   './pattern.js',
   './word.js',
   './idiom.js',
@@ -56,8 +61,8 @@ self.addEventListener('activate', (event) => {
     caches.keys().then((keyList) => {
       return Promise.all(keyList.map((key) => {
         // 받아 둔 음성 모델 캐시는 지우지 않는다 (지우면 440MB를 다시 받아야 함)
-        // (예전 기기 안 AI 튜터 모델 캐시 webllm·tvmjs·transformers-cache도 여기서 함께 지워진다)
-        if (key !== CACHE_NAME && !key.startsWith(VOICE_CACHE_PREFIX)) {
+        // (예전 기기 안 AI 튜터 모델 캐시 webllm·tvmjs도 여기서 함께 지워진다. 튜터 음성 모델 캐시는 남긴다)
+        if (key !== CACHE_NAME && !key.startsWith(VOICE_CACHE_PREFIX) && !KEEP_CACHES.includes(key)) {
           console.log('[Service Worker] Removing old cache', key);
           return caches.delete(key);
         }
@@ -76,6 +81,7 @@ self.addEventListener('fetch', (event) => {
   if (req.method !== 'GET') return;
   // 음성 모델 내려받기는 가로채지 않는다 (앱 캐시에 440MB가 한 번 더 저장되는 것 방지)
   if (req.url.startsWith(VOICE_HOST_PATH)) return;
+  if (MODEL_HOSTS.test(req.url)) return;
   // 튜터 영상은 브라우저가 나눠 받기(Range)로 틀어서 가로채지 않는다 (아이폰은 가로채면 영상이 안 나오기도 함)
   if (/\.(mp4|webm)(\?|$)/.test(req.url)) return;
 
