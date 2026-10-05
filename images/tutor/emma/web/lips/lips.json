@@ -1,0 +1,52 @@
+{
+ "w": 720,
+ "h": 960,
+ "mouth": {
+  "x": 264,
+  "y": 388,
+  "w": 184,
+  "h": 178
+ },
+ "eyes": {
+  "x": 226,
+  "y": 274,
+  "w": 244,
+  "h": 120
+ },
+ "levels": 4,
+ "frames": [
+  {
+   "file": "lips-1a.jpg",
+   "level": 1
+  },
+  {
+   "file": "lips-1b.jpg",
+   "level": 1
+  },
+  {
+   "file": "lips-2a.jpg",
+   "level": 2
+  },
+  {
+   "file": "lips-2b.jpg",
+   "level": 2
+  },
+  {
+   "file": "lips-3a.jpg",
+   "level": 3
+  },
+  {
+   "file": "lips-3b.jpg",
+   "level": 3
+  },
+  {
+   "file": "lips-4a.jpg",
+   "level": 4
+  },
+  {
+   "file": "lips-4b.jpg",
+   "level": 4
+  }
+ ],
+ "blink": "lips-blink.jpg"
+}

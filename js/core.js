@@ -75,6 +75,14 @@ function shuffleArray(arr) {
 // 2. 네비게이션 & UI 제어
 // ==========================================
 window.onpopstate = function(event) {
+  // AI 튜터의 설정·피드백 판이 열려 있으면 뒤로 가기는 그 판만 닫는다
+  if (typeof tutorHandleBack === 'function' && tutorHandleBack()) return;
+  // 대화 중인 튜터 화면 안에서 남은 기록으로 돌아온 경우: 시작 화면으로 되돌리거나 말을 끊지 않는다
+  const target = (event.state && event.state.page) || location.hash.replace('#', '');
+  if (target === 'tutor' && typeof tutorCallActive !== 'undefined' && tutorCallActive && !document.querySelector('.modal:not(.hidden)')) {
+    const tp = document.getElementById('page-tutor');
+    if (tp && !tp.classList.contains('hidden')) { if (!event.state) history.replaceState({ page: 'tutor' }, "", "#tutor"); return; }
+  }
   const openModals = document.querySelectorAll('.modal:not(.hidden)');
   if (openModals.length > 0) {
     openModals.forEach(modal => modal.classList.add('hidden'));
