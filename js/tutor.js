@@ -2265,7 +2265,7 @@ const TutorAvatar = (() => {
   // 소리가 나면 입이 열리는 장면 쪽으로 (필요하면 빨리) 틀고, 조용하면 입이 닫힌 장면에서 멈춘다. 그림은 모두 실제 영상 그대로
   let talk = null;
   const ctl = { on: false, spk: false, quiet: 0, rate: 1, rateAt: 0, env: 0, peak: 0.05, hist: [], last: 0, prepAt: 0, prepFrame: -1, seeking: false, leaving: false, offAt: 0 };
-  const TALK = { on: 0.16, off: 0.08, gap: 0.06, base: 1.0, gain: 0.6, min: 0.85, max: 1.5, hurryOpen: 2.0, close: 1.6, holdAt: 3, slew: 0.2, longGap: 0.8 };   // 시뮬레이션으로 맞춘 값
+  const TALK = { on: 0.16, off: 0.08, gap: 0.06, base: 1.0, gain: 0.6, min: 0.85, max: 1.5, hurryOpen: 2.0, close: 1.6, holdAt: 3, slew: 0.2, longGap: 0.8, rest: 0.35, openGap: 0.4 };   // 시뮬레이션으로 맞춘 값
   const SVG = `
 <svg viewBox="0 0 200 200" class="tutor-svg" aria-hidden="true">
   <defs>
@@ -2419,7 +2419,7 @@ const TutorAvatar = (() => {
     else if (!audible || a < TALK.off) { ctl.quiet += dt; if (ctl.quiet > TALK.gap) ctl.spk = false; }
     let run = true, want = TALK.base;
     if (ctl.spk) want = closed ? (d.nextOpen[f] > 2 ? TALK.hurryOpen : TALK.base + 0.2) : Math.min(TALK.max, Math.max(TALK.min, TALK.base + TALK.gain * (a - Math.min(o, 1))));
-    else if (closed && d.nextOpen[f] <= TALK.holdAt) run = false;        // 입 닫힌, 곧 열릴 장면에서 기다린다 → 다음 소리에 바로 열린다
+    else if ((closed && d.nextOpen[f] <= TALK.holdAt) || (o <= TALK.rest && ctl.quiet > 0.12)) run = false;   // 입 닫힌(또는 살짝 다문) 장면에서 기다린다 → 다음 소리에 바로 열린다
     else want = TALK.close;                                              // 아직 입이 열려 있으면 닫힐 때까지 조금 빨리
     if (run) {
       ctl.rate += (want - ctl.rate) * (1 - Math.pow(1 - TALK.slew, dt * 60));
@@ -2430,7 +2430,8 @@ const TutorAvatar = (() => {
     } else if (!T.paused) T.pause();
     // 튜터 말이 끝났거나 문장 사이가 길면 듣는 얼굴로 (입이 닫힌 채 멈췄을 때. 말이 끝났는데 안 닫히면 0.6초 뒤엔 그냥)
     if (!tutorSpeaking) { if (!ctl.offAt) ctl.offAt = now; } else ctl.offAt = 0;
-    if (!ctl.leaving && !ctl.spk && ((T.paused && (!tutorSpeaking || ctl.quiet > TALK.longGap)) || (ctl.offAt && now - ctl.offAt > 600))) leaveTalk();
+    // 조용한데 입이 벌어진 채 닫힐 장면이 멀면 같은 자세의 듣는 얼굴로 바로 바꾼다 (입을 벌린 채 움직이지 않게)
+    if (!ctl.leaving && !ctl.spk && ((T.paused && (!tutorSpeaking || ctl.quiet > TALK.longGap)) || (!T.paused && ctl.quiet > TALK.openGap) || (ctl.offAt && now - ctl.offAt > 600))) leaveTalk();
   }
   /** talk.json이 없을 때: 소리가 나는 동안만 말하는 영상 */
   function stepGate(now) {
