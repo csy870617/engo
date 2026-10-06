@@ -13,7 +13,7 @@ const GEMINI_API = "https://generativelanguage.googleapis.com/v1beta/models/";
 const TUTOR_GEMINI_CHAINS = {
   chat: ["gemini-3.5-flash-lite", "gemini-3.6-flash", "gemini-3.5-flash", "gemini-3.1-flash-lite", "gemini-3.8-flash"],
   aux: ["gemini-3.1-flash-lite", "gemini-3.5-flash-lite", "gemini-3.6-flash"],
-  hint: ["gemini-3.6-flash", "gemini-3.1-flash-lite", "gemini-3.5-flash-lite"]   // 힌트는 대화와 다른 모델부터 (무료 사용량을 나눈다)
+  hint: ["gemini-3.1-flash-lite", "gemini-3.6-flash", "gemini-3.5-flash-lite"]   // 힌트는 대화와 다른, 빠른 모델부터 (무료 사용량도 나눈다)
 };
 const GEMINI_KEY_STORE = "geminiApiKey";
 const GEMINI_KEY_PAGE = "https://aistudio.google.com/apikey";
@@ -2093,17 +2093,28 @@ const TUTOR_HINT_SCHEMA = { type: "OBJECT", properties: { suggestions: { type: "
 function tutorTranscript(maxMsgs) {
   return tutorMessages.slice(1).slice(-(maxMsgs || 12)).map(m => (m.role === "user" ? "Student: " : "Teacher: ") + m.content).join("\n");
 }
+/** 힌트 한 줄씩 받기: "영어 ||| 한국어" 줄이 다 오는 대로 바로 보여 준다 (셋을 다 기다리지 않게) */
+function tutorParseHints(text, final) {
+  const lines = text.split("\n");
+  if (!final) lines.pop();                                 // 아직 쓰는 중인 마지막 줄은 다음에
+  return lines.map(l => l.replace(/^\s*(?:[-*•]|\d+[.)])\s*/, "").trim()).filter(l => l.includes("|||"))
+    .map(l => { const [en, kr] = l.split("|||").map(x => x.trim().replace(/^["“]|["”]$/g, "")); return { en, kr: kr || "" }; })
+    .filter(h => h.en && /[a-z]/i.test(h.en)).slice(0, 3);
+}
 async function loadTutorAiHints(key) {
   const said = tutorSaidLines[tutorSaidLines.length - 1] || "";
-  const j = await geminiJSON([
+  const entry = tutorHintCache;
+  const show = list => { if (tutorHintCache === entry && tutorHintCache.key === key && list.length > (entry.list || []).length) { entry.list = list; if (tutorHintShown) renderTutorHint(true); } };
+  const text = await geminiStream([
     { role: "system", content: `You help a Korean adult practice English conversation at the ${tutorLevel().desc} level. ` +
-      "Suggest 3 different, natural things the student could say next in reply to the teacher's last message. Make them sound like real spoken English at the student's level " +
-      "(beginner: short and simple), and make each one different (for example a short answer, an answer with a detail, and a question back). Give a natural Korean meaning for each." },
-    { role: "user", content: `Conversation so far:\n${tutorTranscript(10) || "(none)"}\n` +
+      "Suggest 3 different, natural things the student could say next in reply to the teacher's last message, in real spoken English at the student's level " +
+      "(beginner: short and simple): for example a short answer, an answer with a detail, and a question back.\n" +
+      "Write exactly 3 lines and nothing else. Each line: the English sentence, then ' ||| ', then its natural Korean meaning." },
+    { role: "user", content: `Conversation so far:\n${tutorTranscript(6) || "(none)"}\n` +
       (tutorMessages.length <= 1 && said ? `Teacher: ${said}\n` : "") + "Suggest what the student can say next." }
-  ], { temperature: 0.7, maxTokens: 300, schema: TUTOR_HINT_SCHEMA, chain: "hint" });
-  const list = ((j && j.suggestions) || []).filter(x => x && x.en).slice(0, 3);
-  if (tutorHintCache.key === key) tutorHintCache.list = list;
+  ], { temperature: 0.7, maxTokens: 220, chain: "hint", budget: 15000 }, partial => show(tutorParseHints(partial, false)));
+  const list = tutorParseHints(text || "", true);
+  show(list);
   return list;
 }
 /** 힌트를 미리 만들어 둔다: 튜터 말이 정해지면 바로 (💡를 누를 때는 이미 준비돼 있게). 실패했던 건 다시 시도 */
@@ -2112,13 +2123,14 @@ function tutorPrepareHints() {
   const key = tutorSessionToken + ":" + tutorSaidLines.length + ":" + tutorLevelId();
   if (tutorHintCache.key === key && !tutorHintCache.error) return;
   const entry = { key, list: null, error: null, loading: null };
+  tutorHintCache = entry;                                  // 먼저 바꿔 둬야 한 줄씩 온 힌트가 이 칸에 들어간다
   entry.loading = loadTutorAiHints(key)
     .then(list => { if (!list.length) entry.error = new Error("힌트를 받지 못했어요"); })
     .catch(e => { entry.error = e; })
     .finally(() => { entry.loading = null; if (tutorHintCache === entry && tutorHintShown) renderTutorHint(true); });   // 실패해도 여기서 다시 요청하지 않는다 (끝없이 되풀이 방지)
   tutorHintCache = entry;
 }
-/** 힌트 고르기: 입력칸에 넣고(➤로 바로 보내거나 고쳐 쓸 수 있게) 소리로도 들려준다. 힌트 창은 닫는다 */
+/** 힌트 고르기: 입력칸에 넣는다 (➤로 바로 보내거나, 그대로 따라 말하거나, 고쳐 쓸 수 있게). 힌트 창은 닫는다 */
 function tutorUseHint(en) {
   tutorCancelListening();
   stopTutorSpeech();                                   // 튜터가 아직 말하는 중이면 끊는다 (소리가 겹치지 않게)
@@ -2127,9 +2139,10 @@ function tutorUseHint(en) {
   tutorHintShown = false; renderTutorHint();
   const send = document.querySelector(".talk-input .send");
   if (send) { send.classList.remove("ready"); void send.offsetWidth; send.classList.add("ready"); }   // 보내기 버튼을 반짝여 알려 준다
+  // 튜터가 읽어 주지 않는다 (내가 할 말이라서). 바로 듣기 시작 → 그대로 따라 말하면 보내지고, ➤를 눌러 글로 보내도 된다
+  setTutorStatus("➤로 보내거나 그대로 따라 말해 보세요", "");
   const token = tutorSessionToken;
-  // 들려준 뒤에는 저절로 듣는다 → 그대로 따라 말하면 보내지고, ➤를 눌러 글로 보내도 된다
-  speakTutor(en, token, false, { then: () => { setTutorStatus("➤로 보내거나 그대로 따라 말해 보세요", ""); tutorAfterSpeak(token); } });
+  setTimeout(() => tutorAfterSpeak(token), 300);
 }
 function renderTutorHint(noRetry) {
   const box = tutorEl("tutor-hint");
@@ -2142,7 +2155,8 @@ function renderTutorHint(noRetry) {
   if (!tutorReady()) return;
   if (tutorBusy) { box.innerHTML = `<div class="tutor-hint-label">힌트 만드는 중…</div>`; return; }   // Emma 답이 정해지면 그 답에 맞춰 만든다
   if (!noRetry) tutorPrepareHints();
-  if (!tutorHintCache.list || !tutorHintCache.list.length) {
+  const hc = tutorHintCache;
+  if (!hc.list || !hc.list.length) {
     if (tutorHintCache.error) {
       box.innerHTML = `<div class="tutor-hint-label"></div><button class="tutor-slow-btn tutor-hint-retry">↻ 다시 시도</button>`;
       box.firstChild.textContent = "힌트를 만들지 못했어요. " + geminiErrorText(tutorHintCache.error);
@@ -2150,7 +2164,7 @@ function renderTutorHint(noRetry) {
     } else box.innerHTML = `<div class="tutor-hint-label">힌트 만드는 중…</div>`;
     return;
   }
-  box.innerHTML = `<div class="tutor-hint-label tutor-hint-head">이렇게 말해 볼까요? 누르면 입력칸에 넣고 들려줘요</div>`;
+  box.innerHTML = `<div class="tutor-hint-label tutor-hint-head">이렇게 말해 볼까요? 누르면 입력칸에 넣어요</div>`;
   tutorHintCache.list.forEach(h => {
     const row = document.createElement("div"); row.className = "tutor-hint-item";
     row.innerHTML = `<div class="tutor-hint-en"></div><div class="tutor-hint-kr"></div>`;
@@ -2159,6 +2173,7 @@ function renderTutorHint(noRetry) {
     row.onclick = () => tutorUseHint(h.en);
     box.appendChild(row);
   });
+  if (hc.loading && hc.list.length < 3) { const more = document.createElement("div"); more.className = "tutor-hint-label"; more.textContent = "더 만드는 중…"; box.appendChild(more); }
 }
 
 /** 오늘 대화 피드백: 한 줄 총평 · 오늘의 핵심 하나 · 고쳐 말하기 · 써 볼 표현 2개 (짧고 깔끔하게).
