@@ -22,7 +22,7 @@ const GEMINI_KEY_PAGE = "https://aistudio.google.com/apikey";
 const TUTOR_AVATAR_FRAMES = null;
 // 튜터: 이름 · 기본 목소리 · 영상 폴더 (같은 사진에서 만든 반복 영상: idle 듣기 / talk 말하기 / poster 첫 화면)
 const TUTORS = {
-  emma: { name: "Emma", label: "Emma", gender: "f", voice: "af_heart", media: "images/tutor/emma/web/",
+  emma: { name: "Emma", label: "Emma", gender: "f", voice: "af_bella", media: "images/tutor/emma/web/",
     style: "a sweet, bright K-pop idol girl in her early 20s chatting with her fans on a live stream: cheerful, warm and cute, with a light, youthful voice" },
   jay: { name: "Jay", label: "Jay", gender: "m", voice: "am_michael", media: "images/tutor/jay/web/",
     style: "a gentle, charming K-pop idol boy in his early 20s chatting with his fans on a live stream: soft, warm and sweet, calm and friendly, with a youthful voice" }
@@ -372,7 +372,7 @@ async function tutorDownloadVoice() {
     // 앱의 다른 화면(예문·회화)도 같은 목소리를 쓰게 설정에 반영
     if (typeof neuralReady !== "undefined") {
       neuralReady = true; neuralBroken = false;
-      if (!neuralVoice) { neuralVoice = "af_heart"; persistNeuralVoiceChoice(); }
+      if (!neuralVoice) { neuralVoice = "af_bella"; persistNeuralVoiceChoice(); }
       populateVoiceSelect(); refreshNeuralUI();
     }
     if (KokoroVoice.tooSlow()) tutorVoiceNote("받았어요. 다만 이 기기에서는 목소리를 만드는 게 느려서 기기 음성으로 읽어요");
@@ -1492,7 +1492,7 @@ function renderTutorNotes() {
 // 받기 전이거나 기기가 너무 느리면 기기 기본 음성으로 읽는다
 // 튜터 목소리: 튜터 성별에 맞는 목소리만 고를 수 있다 (g: f 여성 / m 남성, app은 기기 음성을 성별에 맞춰 고름)
 const TUTOR_VOICES = {
-  af_heart: { label: "따뜻하고 자연스러운 ★", g: "f" }, af_bella: { label: "밝고 생기 있는", g: "f" },
+  af_bella: { label: "밝고 생기 있는 ★", g: "f" }, af_heart: { label: "따뜻하고 자연스러운", g: "f" },
   af_nicole: { label: "속삭이듯 부드러운", g: "f" }, af_kore: { label: "차분하고 또렷한", g: "f" }, af_sarah: { label: "상냥한", g: "f" },
   am_michael: { label: "다정하고 자연스러운 ★", g: "m" }, am_puck: { label: "밝고 경쾌한", g: "m" },
   am_fenrir: { label: "깊고 힘 있는", g: "m" }, bm_george: { label: "영국식 차분한", g: "m" },
@@ -1504,6 +1504,11 @@ try {
     if (localStorage.getItem("tutorVoice") !== "app") localStorage.removeItem("tutorVoice");
     localStorage.removeItem("tutorTtsDown");
     localStorage.setItem("tutorVoiceV4", "1");
+  }
+  // 기본 여성 목소리를 '밝고 생기 있는'으로 바꿨다: 예전 기본(따뜻하고 자연스러운)에 있던 사람도 새 기본으로 (한 번만)
+  if (!localStorage.getItem("tutorVoiceV5")) {
+    if (localStorage.getItem("tutorVoice") === "af_heart") localStorage.removeItem("tutorVoice");
+    localStorage.setItem("tutorVoiceV5", "1");
   }
 } catch (e) {}
 function tutorVoiceId() {

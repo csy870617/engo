@@ -36,9 +36,9 @@ async function handle(m) {
         }
       }
       // 처음 한 번 만들어 보며 이 기기에서 얼마나 빠른지 잰다 (그래픽 가속은 이때 준비가 끝난다)
-      await tts.generate("Hi!", { voice: m.voice || "af_heart" });          // 한 번은 준비 운동 (그래픽 가속은 처음에 느리다)
+      await tts.generate("Hi!", { voice: m.voice || "af_bella" });          // 한 번은 준비 운동 (그래픽 가속은 처음에 느리다)
       const t0 = performance.now();
-      const a = await tts.generate("Hi there, nice to meet you.", { voice: m.voice || "af_heart" });
+      const a = await tts.generate("Hi there, nice to meet you.", { voice: m.voice || "af_bella" });
       const sec = a.audio.length / a.sampling_rate;
       self.postMessage({ type: "loaded", device: setup.device, dtype: setup.dtype, rtf: (performance.now() - t0) / 1000 / Math.max(0.3, sec) });
     } else if (m.type === "gen") {
