@@ -634,7 +634,7 @@ const TUTOR_OFFLINE = "Oops, I think the internet cut out. Hold on a second!";
 const TUTOR_SAY_AGAIN = "Sorry, could you say that again?";
 const TUTOR_PRAISE = { good: ["Perfect!", "Great job!", "Yes, that's it!"], try: ["Good try!", "Nice try!"] };
 // 정해 둔 말은 목소리를 기기에 저장해 두고 바로 튼다 (만드는 시간 없이)
-const tutorFixedLine = text => TUTOR_NUDGES.includes(text) || TUTOR_BRIDGES.back.includes(text) || TUTOR_BRIDGES.lobby.includes(text) ||
+const tutorFixedLine = text => TUTOR_NUDGES.includes(text) || TUTOR_FIX_LEADS.includes(text) || TUTOR_BRIDGES.back.includes(text) || TUTOR_BRIDGES.lobby.includes(text) ||
   TUTOR_LOST.includes(text) || text === TUTOR_OFFLINE || text === TUTOR_SAY_AGAIN || TUTOR_PRAISE.good.includes(text) || TUTOR_PRAISE.try.includes(text);
 /** 차례로 돌려 가며 고른다 (같은 말이 연달아 나오지 않게) */
 const tutorTurnPick = (() => { const at = new Map(); return (list, peek) => { const i = ((at.has(list) ? at.get(list) : -1) + 1) % list.length; if (!peek) at.set(list, i); return list[i]; }; })();
@@ -874,7 +874,7 @@ function tutorStyle() {
     "- Stay on a topic for a few turns by asking about details. When it runs out, move on through something already said (\"Speaking of food, ...\"). Remember what the student tells you (names, plans, likes, problems) and bring it up again later when it fits.",
     "- If the answer is very short (\"Yes.\", \"Fine.\"), react and ask an easier, more concrete follow-up. If the student says \"I don't know\" or seems stuck, make it easier: give two choices (\"Coffee or tea?\") or a short example answer they can copy.",
     "- The student is usually speaking through speech recognition, so a word can come out wrong. Go with the most likely meaning. Only if a sentence makes no sense at all (not for grammar mistakes), ask one short check question (\"Sorry, did you say Busan?\") instead of saying you don't understand.",
-    "- If the student makes a mistake, do not point it out. Naturally use the correct form in your reply instead (for example, if they say \"I go to park yesterday\", you might say \"Oh, you went to the park yesterday? What did you do there?\"). Corrections are shown to the student separately.",
+    "- If the student makes a mistake, do not point it out or repeat their sentence back: a more natural version is read to them separately right before your reply. Just reply naturally to what they meant, using correct English yourself.",
     "- If the student writes in Korean or says they don't know how to say something, give a simple English way to say it, starting with \"You can say:\", and encourage them to try it.",
     "- If the student asks what a word means, explain it simply in English with a short example.",
     ...tutorLevel().style.map(x => "- " + x),
@@ -1143,6 +1143,7 @@ function startTutorSession() {
   if (tutorUseNatural()) tutorTtsFetch(greet, false).ready.then(() => {
     if (token !== tutorSessionToken) return;
     tutorTtsFetch(tutorTurnPick(TUTOR_NUDGES, true), false);
+    tutorTtsFetch(tutorTurnPick(TUTOR_FIX_LEADS, true), false);   // 고친 문장 앞에 붙일 말도
     const gq = tutorSplitSentences(greet).filter(tutorIsQuestion).pop();
     if (gq) tutorTtsFetch(gq, false);
   });
@@ -1162,7 +1163,13 @@ async function sendTutorText(text) {
   const before = tutorSaidLines[tutorSaidLines.length - 1];
   const item = { text, bubble: myBubble, fix: undefined, why: "", check: null, before };
   tutorLearnerItems.push(item);
-  tutorCheckItem(item, before, token);   // 답과 동시에 교정 확인
+  // 답과 동시에 교정 확인 → 고칠 게 있으면 답보다 먼저 "A more natural way to say that is: …"를 읽어 준다 (Loora처럼)
+  const fixed = tutorCheckItem(item, before, token).then(() => {
+    if (!item.fix) return null;
+    const parts = tutorFixParts(item.fix);
+    if (tutorUseNatural()) parts.forEach(x => tutorTtsFetch(x, false));   // 목소리도 바로 만들기 시작
+    return parts;
+  });
   tutorCheckNoteUse(text, myBubble);
   // 한국어로 물어본 표현을 바로 써 봤으면: 카드에 표시하고, 튜터가 짧게 반가워한 뒤 이어 간다
   const note = tutorTurnNote(text);
@@ -1170,7 +1177,7 @@ async function sendTutorText(text) {
   tutorKoTarget = null;
   tutorMessages.push({ role: "user", content: text });
   tutorHintShown = false; renderTutorHint();
-  await tutorReply(token, { text, bubble: myBubble }, { note });
+  await tutorReply(token, { text, bubble: myBubble }, { note, fixed });
   return true;
 }
 // 한국어 도움으로 알려 준 표현 { en, card } (학습자가 바로 그 말을 하면 튜터가 알아보고 반가워한다)
@@ -1192,10 +1199,26 @@ function sendTutorTyped() {
 }
 /** 문장 하나 교정 확인 → 고칠 게 있으면 내 말풍선 아래에 팁 (실패해도 대화는 그대로, 피드백 때 다시 시도) */
 let tutorLastCheckErr = null;
+// 같은 말의 교정 요청은 한 번만 (말이 멈추면 미리 시작해 두고, 보낼 때 그 결과를 쓴다 — 고친 문장을 답보다 먼저 읽어 주려고)
+const tutorFixCache = new Map();
+function tutorFixFetch(text, before) {
+  const k = tutorNorm(text) + "|" + (before || "");
+  if (!tutorFixCache.has(k)) {
+    const p = geminiGenerate(tutorFixMessages(text, before), TUTOR_FIX_OPTS);
+    tutorFixCache.set(k, p);
+    p.catch(() => { if (tutorFixCache.get(k) === p) tutorFixCache.delete(k); });   // 실패한 건 다음에 다시
+    while (tutorFixCache.size > 30) tutorFixCache.delete(tutorFixCache.keys().next().value);
+  }
+  return tutorFixCache.get(k);
+}
+// 고친 문장을 읽어 줄 때 앞에 붙이는 말 (저장해 두고 바로 튼다)
+const TUTOR_FIX_LEADS = ["A more natural way to say that is:", "You can also say it like this:", "Here's a more natural way to say it:"];
+/** 고친 문장을 읽어 줄 말 조각들 [앞말, 고친 문장] */
+const tutorFixParts = better => better ? [tutorTurnPick(TUTOR_FIX_LEADS), better] : [];
 function tutorCheckItem(item, before, token) {
   if (!tutorNeedsCheck(item.text)) { item.fix = ""; return Promise.resolve(); }
   const conv = tutorConvId;
-  item.check = geminiGenerate(tutorFixMessages(item.text, before), TUTOR_FIX_OPTS)
+  item.check = tutorFixFetch(item.text, before)
     .then(out => {
       const r = parseTutorFix(item.text, out);
       if (r.unknown) { item.fix = undefined; return; }        // 답이 깨졌으면 '실수 없음'으로 치지 않는다 (피드백 때 다시 확인)
@@ -1224,6 +1247,11 @@ function tutorSpeculate(text) {
   const key = tutorNorm(text);
   if (!key || tutorBusy || tutorPractice || tutorHelping || !tutorReady() || !tutorMessages.length) return;
   const note = tutorTurnNote(text);
+  // 교정도 미리 시작하고, 고칠 게 있으면 고친 문장 목소리도 미리 (답보다 먼저 읽어 주려고)
+  if (tutorNeedsCheck(text)) tutorFixFetch(text, tutorSaidLines[tutorSaidLines.length - 1]).then(out => {
+    const r = parseTutorFix(text, out), cur = tutorSpec;
+    if (r.better && cur && !cur.dead && cur.key === tutorNorm(text) && tutorUseNatural()) tutorTtsFetch(r.better, false);
+  }, () => {});
   const s0 = tutorSpec;
   if (s0 && !s0.dead && s0.key === key && s0.note === note && s0.token === tutorSessionToken && s0.base === tutorMessages && s0.len === tutorMessages.length) return;   // 이미 받는 중
   tutorSpecDrop();
@@ -1287,6 +1315,7 @@ async function tutorReply(token, learner, opts = {}) {
   tutorAbort = abort;
   let shown = "", stopped = false;
   const voice = tutorSpeechQueue(token);
+  if (opts.fixed) voice.lead(opts.fixed, 2000);    // 고친 문장 먼저 (교정 결과를 길어야 2초 기다린다)
   const prev = () => tutorSaidLines.slice(-2);
   const said0 = learner && learner.text;
   const msgs = tutorMessages;                        // 이 대화의 기록 (새 대화가 시작되면 바뀐다)
@@ -1433,6 +1462,21 @@ function tutorSpeechQueue(token, prepMsg = "생각 중…") {
       const nat = tutorUseNatural();
       const parts = tutorSplitSentences(text).filter(x => !spokenN.has(tutorNorm(x)));
       q.say(parts, nat);
+    },
+    /** 답보다 먼저 읽을 말 (고친 문장): 결과가 올 때까지 최대 ms만 기다린다. 늦으면 읽지 않고 답으로 넘어간다 (말풍선 아래 팁은 그대로) */
+    lead(p, ms) {
+      if (!alive() || !p) return;
+      tutorSpeaking = true;
+      chain = chain.then(() => Promise.race([p.catch(() => null), new Promise(r => setTimeout(() => r(null), ms))])).then(parts => {
+        if (!parts || !parts.length || !alive()) return;
+        const nat = tutorUseNatural();
+        tutorSayDevice = !nat;
+        return parts.reduce((c, part) => c.then(() => {
+          if (!alive()) return;
+          if (nat) return tutorPlayClip(tutorTtsFetch(part, false), part, alive);
+          return tutorDeviceSpeak(part).catch(() => {});
+        }), Promise.resolve());
+      });
     },
     /** 줄에 넣은(들려준) 문장들 */
     said() { return spoken.map(x => x.replace(/^["“”]+|["“”]+$/g, "").trim()).filter(Boolean); },
