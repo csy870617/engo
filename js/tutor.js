@@ -13,6 +13,7 @@ const GEMINI_API = "https://generativelanguage.googleapis.com/v1beta/models/";
 const TUTOR_GEMINI_CHAINS = {
   chat: ["gemini-3.5-flash-lite", "gemini-3.6-flash", "gemini-3.5-flash", "gemini-3.1-flash-lite", "gemini-3.8-flash"],
   aux: ["gemini-3.1-flash-lite", "gemini-3.5-flash-lite", "gemini-3.6-flash"],
+  fix: ["gemini-3.6-flash", "gemini-3.5-flash", "gemini-3.1-flash-lite", "gemini-3.5-flash-lite"],   // 첨삭: 정확해야 해서 Flash부터 (막히면 Lite로)
   hint: ["gemini-3.1-flash-lite", "gemini-3.6-flash", "gemini-3.5-flash-lite"]   // 힌트는 대화와 다른, 빠른 모델부터 (무료 사용량도 나눈다)
 };
 const GEMINI_KEY_STORE = "geminiApiKey";
@@ -59,8 +60,8 @@ const tutorReady = () => !!tutorGetKey();
 class GeminiError extends Error {
   constructor(message, status, reason) { super(message); this.status = status || 0; this.reason = reason || ""; }
 }
-const tutorModelIdx = { chat: 0, aux: 0, hint: 0 };   // 일마다 지금 쓰는 모델 (목록 안의 위치)
-const tutorModelSince = { chat: 0, aux: 0, hint: 0 }; // 다음 모델로 넘어간 시각 (5분 지나면 가장 빠른 첫 모델부터 다시 시도)
+const tutorModelIdx = { chat: 0, aux: 0, hint: 0, fix: 0 };   // 일마다 지금 쓰는 모델 (목록 안의 위치)
+const tutorModelSince = { chat: 0, aux: 0, hint: 0, fix: 0 }; // 다음 모델로 넘어간 시각 (5분 지나면 가장 빠른 첫 모델부터 다시 시도)
 // 모델별 생각 수준: 기본은 MINIMAL(가장 빠름). 못 쓰는 모델은 LOW로 (알아낸 것은 기기에 기억해서 헛요청을 줄인다)
 const tutorThinking = (() => {
   let t = {};
@@ -634,7 +635,7 @@ const TUTOR_OFFLINE = "Oops, I think the internet cut out. Hold on a second!";
 const TUTOR_SAY_AGAIN = "Sorry, could you say that again?";
 const TUTOR_PRAISE = { good: ["Perfect!", "Great job!", "Yes, that's it!"], try: ["Good try!", "Nice try!"] };
 // 정해 둔 말은 목소리를 기기에 저장해 두고 바로 튼다 (만드는 시간 없이)
-const tutorFixedLine = text => TUTOR_NUDGES.includes(text) || TUTOR_FIX_LEADS.includes(text) || TUTOR_BRIDGES.back.includes(text) || TUTOR_BRIDGES.lobby.includes(text) ||
+const tutorFixedLine = text => TUTOR_NUDGES.includes(text) || TUTOR_BRIDGES.back.includes(text) || TUTOR_BRIDGES.lobby.includes(text) ||
   TUTOR_LOST.includes(text) || text === TUTOR_OFFLINE || text === TUTOR_SAY_AGAIN || TUTOR_PRAISE.good.includes(text) || TUTOR_PRAISE.try.includes(text);
 /** 차례로 돌려 가며 고른다 (같은 말이 연달아 나오지 않게) */
 const tutorTurnPick = (() => { const at = new Map(); return (list, peek) => { const i = ((at.has(list) ? at.get(list) : -1) + 1) % list.length; if (!peek) at.set(list, i); return list[i]; }; })();
@@ -874,7 +875,7 @@ function tutorStyle() {
     "- Stay on a topic for a few turns by asking about details. When it runs out, move on through something already said (\"Speaking of food, ...\"). Remember what the student tells you (names, plans, likes, problems) and bring it up again later when it fits.",
     "- If the answer is very short (\"Yes.\", \"Fine.\"), react and ask an easier, more concrete follow-up. If the student says \"I don't know\" or seems stuck, make it easier: give two choices (\"Coffee or tea?\") or a short example answer they can copy.",
     "- The student is usually speaking through speech recognition, so a word can come out wrong. Go with the most likely meaning. Only if a sentence makes no sense at all (not for grammar mistakes), ask one short check question (\"Sorry, did you say Busan?\") instead of saying you don't understand.",
-    "- If the student makes a mistake, do not point it out or repeat their sentence back: a more natural version is read to them separately right before your reply. Just reply naturally to what they meant, using correct English yourself.",
+    "- If the student makes a mistake, do not point it out (a corrected sentence is shown to them separately). Reply naturally to what they meant, and where it fits, use the correct form of their words in your own sentence.",
     "- If the student writes in Korean or says they don't know how to say something, give a simple English way to say it, starting with \"You can say:\", and encourage them to try it.",
     "- If the student asks what a word means, explain it simply in English with a short example.",
     ...tutorLevel().style.map(x => "- " + x),
@@ -1064,24 +1065,34 @@ function tutorPolish(clean, learner, prevSays, strict) {
 // ---------- 교정 ----------
 // 학습자가 한 문장마다 Gemini에게 고칠 데가 있는지 묻는다 (답과 동시에 따로 요청해서 대화가 느려지지 않게).
 // 고칠 문장과 한국어 한 줄 이유를 JSON으로 받는다
+// problems를 먼저 적게 해서(무엇이 틀리고 어색한지 짚은 뒤) 판단·고친 문장을 쓰게 한다 → 더 정확하다
 const TUTOR_FIX_SCHEMA = {
   type: "OBJECT",
-  properties: { ok: { type: "BOOLEAN" }, better: { type: "STRING" }, why: { type: "STRING" } },
-  required: ["ok"]
+  properties: { problems: { type: "ARRAY", items: { type: "STRING" } }, ok: { type: "BOOLEAN" }, better: { type: "STRING" }, why: { type: "STRING" } },
+  required: ["problems", "ok"],
+  propertyOrdering: ["problems", "ok", "better", "why"]
 };
 function tutorFixMessages(text, before) {
   return [
-    { role: "system", content: "You are a friendly English teacher checking one sentence that a Korean adult learner just said in an everyday conversation. " +
-      "Set ok=false when the sentence has ANY of these: a grammar mistake (a/an/the, tense, plural -s, subject-verb agreement, prepositions, word order, word form like bored/boring), " +
-      "a wrong or unnatural word choice (Konglish, a word a native speaker wouldn't use here), a missing word, or phrasing that is understandable but doesn't sound natural to a native speaker. " +
-      "Then put in 'better' the way a friendly native speaker would naturally say the same thing in casual conversation, at a simple level: keep the learner's meaning and as many of their words as possible, and fix everything in that one sentence. " +
-      "In 'why', name the main fix in short Korean (under 25 characters), e.g. \"과거형 went\", \"관사 the 필요\", \"home 앞엔 to 없이\", \"더 자연스러운 표현\". " +
-      "The text comes from speech recognition, so ignore capital letters, punctuation and missing periods, and don't change a word only because it might be misheard. " +
-      "Set ok=true only if a native speaker would naturally say it this way (other wordings being possible is fine). Short natural answers like \"Yes.\", \"Me too.\" or \"Medium, please.\" are correct." },
+    { role: "system", content: [
+      "You are a careful English teacher. A Korean adult learner just said one sentence in a casual everyday conversation. Check it the way a native speaker hears it.",
+      "1) In 'problems', list every issue in a few English words each (empty list if none). Check: articles (a/an/the), tense, plural -s, subject-verb agreement, missing be-verb or subject, prepositions, word order, word form (bored/boring, interesting/interested), countable/uncountable, wrong or Konglish words, missing words, and phrasing that is understandable but not what a native speaker would say in daily conversation.",
+      "2) ok=true only if the problems list is empty: the sentence is grammatical AND sounds natural in casual spoken English. Casual but correct speech (contractions, short answers like \"Yes.\", \"Me too.\", \"Not really.\") is fine. Do not change a natural sentence just to make it fancier.",
+      "3) If ok=false, write 'better': ONE sentence a friendly native speaker would actually say in everyday conversation with the same meaning. Fix every problem, keep the learner's words and meaning as much as possible, and keep it simple (no rare words). It must be fully grammatical.",
+      "4) 'why': the main fix in short Korean (under 25 characters) that names the point, e.g. \"과거형 went\", \"관사 the 필요\", \"home 앞엔 to 없이\", \"be동사 빠짐\", \"very는 동사 앞에 못 써요\".",
+      "The text comes from speech recognition: ignore capital letters, punctuation and missing periods, and don't change a word only because it might be misheard.",
+      "Examples:",
+      "\"I go to park yesterday\" -> ok=false, better \"I went to the park yesterday.\", why \"과거형 went · 관사 the\"",
+      "\"I fine\" -> ok=false, better \"I'm fine.\", why \"be동사 빠짐\"",
+      "\"I very like it\" -> ok=false, better \"I really like it.\", why \"very 대신 really\"",
+      "\"I'm going to my home\" -> ok=false, better \"I'm going home.\", why \"home 앞엔 to my 없이\"",
+      "\"I ate a lunch with my friend\" -> ok=false, better \"I had lunch with my friend.\", why \"lunch엔 a 없이 · had\"",
+      "\"Yes, I did. It was fun.\" -> ok=true"
+    ].join("\n") },
     { role: "user", content: (before ? `The tutor said: "${before}"\n` : "") + `Learner's sentence: "${text}"` }
   ];
 }
-const TUTOR_FIX_OPTS = { temperature: 0, maxTokens: 200, schema: TUTOR_FIX_SCHEMA, chain: "aux", thinking: "LOW" };   // 첨삭은 대화와 따로 오니 조금 더 생각해서 정확하게
+const TUTOR_FIX_OPTS = { temperature: 0, maxTokens: 300, schema: TUTOR_FIX_SCHEMA, chain: "fix", thinking: "LOW" };   // 첨삭은 대화와 따로 오니 더 좋은 모델로, 조금 더 생각해서   // 첨삭은 대화와 따로 오니 조금 더 생각해서 정확하게
 /** 교정 결과 정리: 원래 문장과 너무 다른 '고친 문장'은 버린다 (엉뚱한 답 방지) */
 function parseTutorFix(text, out) {
   let j = null; try { j = JSON.parse(out || "{}"); } catch (e) { return { better: "", why: "", unknown: true }; }
@@ -1143,7 +1154,6 @@ function startTutorSession() {
   if (tutorUseNatural()) tutorTtsFetch(greet, false).ready.then(() => {
     if (token !== tutorSessionToken) return;
     tutorTtsFetch(tutorTurnPick(TUTOR_NUDGES, true), false);
-    tutorTtsFetch(tutorTurnPick(TUTOR_FIX_LEADS, true), false);   // 고친 문장 앞에 붙일 말도
     const gq = tutorSplitSentences(greet).filter(tutorIsQuestion).pop();
     if (gq) tutorTtsFetch(gq, false);
   });
@@ -1163,13 +1173,7 @@ async function sendTutorText(text) {
   const before = tutorSaidLines[tutorSaidLines.length - 1];
   const item = { text, bubble: myBubble, fix: undefined, why: "", check: null, before };
   tutorLearnerItems.push(item);
-  // 답과 동시에 교정 확인 → 고칠 게 있으면 답보다 먼저 "A more natural way to say that is: …"를 읽어 준다 (Loora처럼)
-  const fixed = tutorCheckItem(item, before, token).then(() => {
-    if (!item.fix) return null;
-    const parts = tutorFixParts(item.fix);
-    if (tutorUseNatural()) parts.forEach(x => tutorTtsFetch(x, false));   // 목소리도 바로 만들기 시작
-    return parts;
-  });
+  tutorCheckItem(item, before, token);   // 답과 동시에 교정 확인 (고칠 게 있으면 내 말풍선 아래에 팁)
   tutorCheckNoteUse(text, myBubble);
   // 한국어로 물어본 표현을 바로 써 봤으면: 카드에 표시하고, 튜터가 짧게 반가워한 뒤 이어 간다
   const note = tutorTurnNote(text);
@@ -1177,7 +1181,7 @@ async function sendTutorText(text) {
   tutorKoTarget = null;
   tutorMessages.push({ role: "user", content: text });
   tutorHintShown = false; renderTutorHint();
-  await tutorReply(token, { text, bubble: myBubble }, { note, fixed });
+  await tutorReply(token, { text, bubble: myBubble }, { note });
   return true;
 }
 // 한국어 도움으로 알려 준 표현 { en, card } (학습자가 바로 그 말을 하면 튜터가 알아보고 반가워한다)
@@ -1199,7 +1203,7 @@ function sendTutorTyped() {
 }
 /** 문장 하나 교정 확인 → 고칠 게 있으면 내 말풍선 아래에 팁 (실패해도 대화는 그대로, 피드백 때 다시 시도) */
 let tutorLastCheckErr = null;
-// 같은 말의 교정 요청은 한 번만 (말이 멈추면 미리 시작해 두고, 보낼 때 그 결과를 쓴다 — 고친 문장을 답보다 먼저 읽어 주려고)
+// 같은 말의 교정 요청은 한 번만 (피드백 때 다시 확인해도 받아 둔 결과를 쓴다)
 const tutorFixCache = new Map();
 function tutorFixFetch(text, before) {
   const k = tutorNorm(text) + "|" + (before || "");
@@ -1211,10 +1215,6 @@ function tutorFixFetch(text, before) {
   }
   return tutorFixCache.get(k);
 }
-// 고친 문장을 읽어 줄 때 앞에 붙이는 말 (저장해 두고 바로 튼다)
-const TUTOR_FIX_LEADS = ["A more natural way to say that is:", "You can also say it like this:", "Here's a more natural way to say it:"];
-/** 고친 문장을 읽어 줄 말 조각들 [앞말, 고친 문장] */
-const tutorFixParts = better => better ? [tutorTurnPick(TUTOR_FIX_LEADS), better] : [];
 function tutorCheckItem(item, before, token) {
   if (!tutorNeedsCheck(item.text)) { item.fix = ""; return Promise.resolve(); }
   const conv = tutorConvId;
@@ -1247,11 +1247,6 @@ function tutorSpeculate(text) {
   const key = tutorNorm(text);
   if (!key || tutorBusy || tutorPractice || tutorHelping || !tutorReady() || !tutorMessages.length) return;
   const note = tutorTurnNote(text);
-  // 교정도 미리 시작하고, 고칠 게 있으면 고친 문장 목소리도 미리 (답보다 먼저 읽어 주려고)
-  if (tutorNeedsCheck(text)) tutorFixFetch(text, tutorSaidLines[tutorSaidLines.length - 1]).then(out => {
-    const r = parseTutorFix(text, out), cur = tutorSpec;
-    if (r.better && cur && !cur.dead && cur.key === tutorNorm(text) && tutorUseNatural()) tutorTtsFetch(r.better, false);
-  }, () => {});
   const s0 = tutorSpec;
   if (s0 && !s0.dead && s0.key === key && s0.note === note && s0.token === tutorSessionToken && s0.base === tutorMessages && s0.len === tutorMessages.length) return;   // 이미 받는 중
   tutorSpecDrop();
@@ -1315,7 +1310,6 @@ async function tutorReply(token, learner, opts = {}) {
   tutorAbort = abort;
   let shown = "", stopped = false;
   const voice = tutorSpeechQueue(token);
-  if (opts.fixed) voice.lead(opts.fixed, 2000);    // 고친 문장 먼저 (교정 결과를 길어야 2초 기다린다)
   const prev = () => tutorSaidLines.slice(-2);
   const said0 = learner && learner.text;
   const msgs = tutorMessages;                        // 이 대화의 기록 (새 대화가 시작되면 바뀐다)
@@ -1462,21 +1456,6 @@ function tutorSpeechQueue(token, prepMsg = "생각 중…") {
       const nat = tutorUseNatural();
       const parts = tutorSplitSentences(text).filter(x => !spokenN.has(tutorNorm(x)));
       q.say(parts, nat);
-    },
-    /** 답보다 먼저 읽을 말 (고친 문장): 결과가 올 때까지 최대 ms만 기다린다. 늦으면 읽지 않고 답으로 넘어간다 (말풍선 아래 팁은 그대로) */
-    lead(p, ms) {
-      if (!alive() || !p) return;
-      tutorSpeaking = true;
-      chain = chain.then(() => Promise.race([p.catch(() => null), new Promise(r => setTimeout(() => r(null), ms))])).then(parts => {
-        if (!parts || !parts.length || !alive()) return;
-        const nat = tutorUseNatural();
-        tutorSayDevice = !nat;
-        return parts.reduce((c, part) => c.then(() => {
-          if (!alive()) return;
-          if (nat) return tutorPlayClip(tutorTtsFetch(part, false), part, alive);
-          return tutorDeviceSpeak(part).catch(() => {});
-        }), Promise.resolve());
-      });
     },
     /** 줄에 넣은(들려준) 문장들 */
     said() { return spoken.map(x => x.replace(/^["“”]+|["“”]+$/g, "").trim()).filter(Boolean); },
