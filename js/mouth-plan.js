@@ -22,8 +22,11 @@ const MouthPlan = (() => {
     wShape: 0.06,     // 건너뛸 때 입 모양 차이(px)마다
     wSmile: 0.15,     // 얼굴(바탕 장면)과 웃는 정도가 다를 때
     self: 0.02,       // 바탕 장면 자기 입을 그대로 쓰면 조금 이득 (붙인 티가 전혀 없다)
-    wBase: 0.5,       // 바탕 장면 입이 조각보다 훨씬 크게 벌어져 있으면 (아래로 내려간 원래 턱선이 비칠 수 있어) 조금 손해
-    baseGap: 0.4      //   그 차이가 이만큼 넘을 때부터
+    wBase: 0.2,       // 바탕 장면 입이 조각보다 훨씬 크게 벌어져 있으면 (아래로 내려간 원래 턱선이 비칠 수 있어) 조금 손해
+    baseGap: 0.4,     //   그 차이가 이만큼 넘을 때부터
+    quietOpen: 0.15,  // 소리가 없는데 입을 벌리고 있으면 (말 시작 전에 미리 벌리거나 쉬는 동안 벌리고 있지 않게)
+    quietAt: 0.2,     //   이만큼 넘게 벌렸을 때부터
+    noBack: 6         // 바로 앞 몇 장면으로 되돌아가는 건너뛰기는 하지 않는다 (두 장면 사이를 오가며 이가 깜빡이는 것 방지)
   };
 
   /** 소리 → 장면마다 입 벌림 목표 0~1 (lead만큼 앞당겨져 있다) */
@@ -67,10 +70,13 @@ const MouthPlan = (() => {
     prepare(m);
     const n = m.n, K = m.K, T = tgt.length, INF = 1e30, knn = m.knnF, kd = m.kdF, openN = m.openN, smileN = m.smileN;
     const hold = P.hold, holdOpen = P.holdOpen, jump = P.jump, wShape = P.wShape, wOpen = P.wOpen, wSmile = P.wSmile, self = P.self, wBase = P.wBase, baseGap = P.baseGap;
+    const quietOpen = P.quietOpen, quietAt = P.quietAt, noBack = P.noBack;
+    const isBack = (from, k) => { const d = (from - k + n) % n; return d <= noBack; };   // from에서 k로 가는 게 되돌아가기(또는 제자리)인가
     let cur = new Float64Array(n), nxt = new Float64Array(n);
     const back = new Int16Array(T * n);
     const local = (k, tg, b) => {
       const d = openN[k] - tg; let c = wOpen * d * d;
+      if (tg === 0 && openN[k] > quietAt) c += quietOpen;
       if (b >= 0) {
         const sd = smileN[k] - smileN[b]; c += wSmile * sd * sd; if (k === b) c -= self;
         const g = openN[b] - openN[k] - baseGap; if (g > 0) c += wBase * g * g;
@@ -84,7 +90,7 @@ const MouthPlan = (() => {
       const relax0 = (k, c) => { c += local(k, tgt[0], b0); if (c < cur[k]) { cur[k] = c; back[k] = start; } };
       const s = (start + 1) % n;
       relax0(s, 0); relax0(start, hold + holdOpen * openN[start]);
-      for (let q = 0; q < K; q++) relax0(knn[s * K + q], jump + wShape * kd[s * K + q]);
+      for (let q = 0; q < K; q++) { const k = knn[s * K + q]; if (!isBack(start, k)) relax0(k, jump + wShape * kd[s * K + q]); }
     } else for (let k = 0; k < n; k++) cur[k] = local(k, tgt[0], b0);
     for (let t = 1; t < T; t++) {
       nxt.fill(INF);
@@ -96,7 +102,7 @@ const MouthPlan = (() => {
         let c = c0 + hold + holdOpen * openN[j];
         if (c < nxt[j]) { nxt[j] = c; back[row + j] = j; }
         const o = s * K, cj = c0 + jump;
-        for (let q = 0; q < K; q++) { const k = knn[o + q]; c = cj + wShape * kd[o + q]; if (c < nxt[k]) { nxt[k] = c; back[row + k] = j; } }
+        for (let q = 0; q < K; q++) { const k = knn[o + q]; if (isBack(j, k)) continue; c = cj + wShape * kd[o + q]; if (c < nxt[k]) { nxt[k] = c; back[row + k] = j; } }
       }
       for (let k = 0; k < n; k++) if (nxt[k] < INF) nxt[k] += local(k, tg, b);
       const tmp = cur; cur = nxt; nxt = tmp;
@@ -107,6 +113,15 @@ const MouthPlan = (() => {
     return out;
   }
 
+  /** cur 다음 장면에 k를 써도 자연스럽게 이어지나 (그대로·다음 장면·다음 장면과 비슷한 입, 되돌아가기 제외) */
+  function reachable(m, cur, k) {
+    prepare(m);
+    const n = m.n, s = (cur + 1) % n;
+    if (k === cur || k === s) return true;
+    if ((cur - k + n) % n <= P.noBack) return false;
+    for (let q = 0; q < m.K; q++) if (m.knnF[s * m.K + q] === k) return true;
+    return false;
+  }
   /** 소리를 미리 모를 때: 지금 조각 cur에서 목표 target에 맞춰 다음 조각 하나.
    *  바로 다음 장면만 보면 비슷한 입 모양 사이를 맴돌 수 있어서 (예: 반쯤 벌린 채로 못 닫음), 몇 장면 앞까지 같은 목표로 내다보고 첫 걸음을 고른다 */
   function step(m, cur, target, base, horizon) {
@@ -122,7 +137,7 @@ const MouthPlan = (() => {
     if (worker || workerBroken || !SRC || typeof Worker === "undefined") return worker;
     try {
       worker = new Worker(SRC);
-      worker.onmessage = e => { const w = waiting.get(e.data.id); if (!w) return; waiting.delete(e.data.id); if (e.data.seq) w.ok(e.data.seq); else w.no(new Error(e.data.error || "plan failed")); };
+      worker.onmessage = e => { const w = waiting.get(e.data.id); if (!w) return; waiting.delete(e.data.id); if (e.data.seq) w.ok(e.data.tgt ? { seq: e.data.seq, tgt: e.data.tgt } : e.data.seq); else w.no(new Error(e.data.error || "plan failed")); };
       worker.onerror = () => { workerBroken = true; worker = null; waiting.forEach(w => w.no(new Error("worker"))); waiting.clear(); };
     } catch (e) { workerBroken = true; worker = null; }
     return worker;
@@ -132,6 +147,19 @@ const MouthPlan = (() => {
     const w = getWorker(); if (!w) return;
     if (!m._key) m._key = "m" + (++seqNo) + "-" + m.n;
     if (!sent.has(m)) { w.postMessage({ type: "data", key: m._key, m: { n: m.n, open: m.open, smile: m.smile, knn: m.knn, kd: m.kd } }); sent.add(m); }
+  }
+  /** 문장 소리 → (pre 장면의 소리 전 구간 + 소리) 목표와 조각 순서. 소리 분석부터 워커에서 한다 (화면 그리기를 멈추지 않게).
+   *  돌려주는 값: { tgt: 소리 구간의 목표, seq: pre부터 시작하는 조각 순서 } */
+  function planAudio(m, wav, sr, fps, pre, start, base0) {
+    const local = () => { const tgt = targets(wav, sr, fps), t2 = new Float32Array(pre + tgt.length); t2.set(tgt, pre); return { tgt, seq: plan(m, t2, start, base0) }; };
+    const w = getWorker();
+    if (!w) return new Promise(ok => setTimeout(() => ok(local()), 0));
+    warm(m);
+    const id = ++seqNo;
+    return new Promise((ok, no) => {
+      waiting.set(id, { ok, no });
+      w.postMessage({ type: "audio", id, key: m._key, wav, sr, fps, pre, start, base0, P });
+    }).catch(() => local());
   }
   /** plan과 같지만 결과를 나중에 준다 (워커를 못 쓰면 여기서 계산) */
   function planAsync(m, tgt, start, base0) {
@@ -145,7 +173,7 @@ const MouthPlan = (() => {
     }).catch(() => plan(m, tgt, start, base0));                       // 워커가 실패하면 여기서
   }
 
-  return { P, targets, prepare, plan, step, planAsync, warm };
+  return { P, targets, prepare, plan, step, planAsync, planAudio, warm, reachable };
 })();
 if (typeof module !== "undefined" && module.exports) module.exports = MouthPlan;
 // 웹 워커로 불렸을 때: 장면 순서 계산만 맡는다
@@ -154,10 +182,16 @@ if (typeof window === "undefined" && typeof importScripts === "function" && type
   self.onmessage = e => {
     const d = e.data;
     if (d.type === "data") { datas[d.key] = MouthPlan.prepare(d.m); return; }
-    if (d.type !== "plan") return;
+    if (d.type !== "plan" && d.type !== "audio") return;
     try {
       if (!datas[d.key]) throw new Error("no data");
       if (d.P) Object.assign(MouthPlan.P, d.P);
+      if (d.type === "audio") {
+        const tgt = MouthPlan.targets(d.wav, d.sr, d.fps), t2 = new Float32Array(d.pre + tgt.length); t2.set(tgt, d.pre);
+        const seq = MouthPlan.plan(datas[d.key], t2, d.start, d.base0);
+        self.postMessage({ id: d.id, seq, tgt }, [seq.buffer, tgt.buffer]);
+        return;
+      }
       const seq = MouthPlan.plan(datas[d.key], d.tgt, d.start, d.base0);
       self.postMessage({ id: d.id, seq }, [seq.buffer]);
     } catch (err) { self.postMessage({ id: d.id, error: String(err && err.message || err) }); }

@@ -2381,10 +2381,10 @@ const TutorAvatar = (() => {
   // ---- 입 조각 방식 (mouth.json이 있으면) ----
   // 말하는 영상은 1배속으로 그대로 흐르게 두고(멈추거나 빨리 돌리거나 건너뛰지 않는다 → 얼굴이 끊기지 않음),
   // 입 부분만 장면마다 소리에 맞는 다른 장면의 입 조각으로 덮어 그린다 (캔버스: 영상 장면 + 입 조각, 경계는 가림막으로 부드럽게).
-  // 조각 고르기는 js/mouth-plan.js. 자료: mouth.json(장면별 위치 변환·입 벌림·비슷한 입 이웃), mouth.webp(입 조각 모음), mouth-mask.png
+  // 조각 고르기는 js/mouth-plan.js. 자료: mouth.json(장면별 위치 변환·입 벌림·비슷한 입 이웃·조각 자리), mouth-N.webp(장면에서 그대로 자른 입 조각 모음), mouth-mask.png(기준 좌표의 가림막)
   let mouth = null;
   const mst = { on: false, leaving: false, plan: null, cur: -1, target: 0, quiet: 0, prepFrame: -1, prepAt: 0, seeking: false, rvfc: 0, lastTime: -1, t: -1, last: 0, drawAt: 0 };
-  const MOUTH = { fps: 24, endGap: 2.0, endForce: 0.7, closeAt: 0.15, maxSec: 30, ver: 1 };   // ver: 입 조각 자료를 다시 만들면 올린다 (자료끼리 짝이 어긋나지 않게)
+  const MOUTH = { fps: 24, endGap: 2.0, endForce: 0.7, closeAt: 0.15, maxSec: 30, ver: 2 };   // ver: 입 조각 자료를 다시 만들면 올린다 (자료끼리 짝이 어긋나지 않게)
   let mouthLoad = 0;
   function loadMouth(media) {
     mouth = null;
@@ -2398,27 +2398,34 @@ const TutorAvatar = (() => {
       return fetch(url).then(r => { if (!r.ok) throw new Error(r.status); return r.blob(); }).then(b => createImageBitmap(b)).catch(viaTag);
     };
     fetch(media + "mouth.json?v=" + MOUTH.ver).then(r => (r.ok ? r.json() : null)).then(m => {
-      if (!m || !Array.isArray(m.M) || !m.n || tok !== mouthLoad || !mounted || !clips || tutorChar().media !== media) return null;
-      return Promise.all([img(m.atlas), img(m.mask)]).then(([atlas, mask]) => {
-        if (tok !== mouthLoad || !mounted || !clips || tutorChar().media !== media) return;
-        const [, , W, H] = m.box;
-        const pc = document.createElement("canvas"); pc.width = W; pc.height = H;
+      if (!m || m.v !== 2 || !Array.isArray(m.M) || !Array.isArray(m.R) || !m.n || tok !== mouthLoad || !mounted || !clips || tutorChar().media !== media) return null;
+      return Promise.all([img(m.mask), ...m.sheets.map(img)]).then(([mask, ...sheets]) => {
+        if (tok !== mouthLoad || !mounted || !clips || tutorChar().media !== media) { [mask, ...sheets].forEach(b => b && b.close && b.close()); return; }
+        const pc = document.createElement("canvas"); pc.width = 64; pc.height = 64;
         const cv = document.createElement("canvas"); cv.width = 720; cv.height = 960;   // 그릴 때 화면 상자 크기에 맞춘다 (fitMouth)
         cv.className = "tutor-clip tutor-mouth"; cv.setAttribute("aria-hidden", "true");
         const px = pc.getContext("2d"), cx = cv.getContext("2d");
         if (!px || !cx) return;
         try { cx.imageSmoothingQuality = "high"; } catch (e) {}
         clips.talk.insertAdjacentElement("afterend", cv);
-        if (!(typeof ImageBitmap !== "undefined" && atlas instanceof ImageBitmap)) { px.drawImage(atlas, 0, 0, W, H, 0, 0, W, H); px.getImageData(0, 0, 1, 1); }   // <img>로 받았으면 지금(조용할 때) 한 번 풀어 둔다
-        mouth = { m: MouthPlan.prepare(m), atlas, mask, pc, px, cv, cx, idle: { fps: MOUTH.fps, n: m.idleToTalk.length }, tk: { fps: MOUTH.fps, n: m.n } };
+        clips.talk.parentNode.classList.add("mouth-mode");               // 말하는 영상은 듣는 영상 아래에 숨겨 두고(그려 낼 원본), 캔버스만 나타났다 사라진다
+        // 조용할 때 한 번 그려 둔다 (<img>면 풀기, 그림 장치에 올리기 — 말 시작 순간에 하면 화면이 잠깐 멈춘다)
+        [mask, ...sheets].forEach(sh => { try { px.drawImage(sh, 0, 0, 8, 8, 0, 0, 8, 8); } catch (e) {} }); try { px.getImageData(0, 0, 1, 1); } catch (e) {}
+        // 장면마다 기준→장면 변환의 거꾸로 (조각을 '그 장면 좌표 → 기준 → 지금 장면 좌표'로 한 번에 옮긴다)
+        m.Minv = m.M.map(([a, b, c, d, e, f]) => { const k = a * e - b * d; return [e / k, -b / k, (b * f - e * c) / k, -d / k, a / k, (d * c - a * f) / k]; });
+        mouth = { m: MouthPlan.prepare(m), sheets, mask, pc, px, cv, cx, idle: { fps: MOUTH.fps, n: m.idleToTalk.length }, tk: { fps: MOUTH.fps, n: m.n } };
         try { MouthPlan.warm(mouth.m); } catch (e) {}
       });
     }).catch(() => { mouth = null; });
   }
+  /** 풀어 둔 입 조각 그림의 메모리를 바로 돌려준다 (튜터를 바꿀 때 등) */
+  function freeMouth(mo) { if (mo) [mo.mask, ...(mo.sheets || [])].forEach(b => { try { if (b && b.close) b.close(); } catch (e) {} }); }
   /** 입 조각 방식을 못 쓰게 되면 (그리기 실패 등) 예전 방식으로 */
   function dropMouth() {
     if (!mouth) return;
     try { mouth.cv.remove(); } catch (e) {}
+    freeMouth(mouth);
+    if (clips) clips.talk.parentNode.classList.remove("mouth-mode");
     mouth = null; mst.on = mst.leaving = false; mst.plan = null; mst.cur = -1;
     if (clips) { clips.talk.classList.remove("on"); clips.talk.pause(); clips.idle.classList.add("on"); playClip(clips.idle); }
     clip = "idle";
@@ -2441,8 +2448,13 @@ const TutorAvatar = (() => {
         if (Math.abs(t - ta) > 1.5) { pl.t0 = Math.round(ta) - pl.k; t = pl.t0 + pl.k; }
       }
       mst.t = t;
-      if (t >= 0 && t < pl.T && pl.seq) j = pl.seq[t];
-      else if (t >= 0 && t < pl.T) j = MouthPlan.step(m, mst.cur >= 0 ? mst.cur : b, pl.tgt[t], b);   // 순서가 아직 안 왔으면
+      const p = t + pl.pre;                                               // 짜 둔 순서에서의 자리 (소리 전 몇 장면 포함)
+      if (pl.seq && p >= 0 && p < pl.seq.length) {
+        const want = pl.seq[p];
+        // 짜 둔 순서에 처음 올라탈 때는 지금 입에서 자연스럽게 이어지는 조각일 때만 (아니면 이어질 때까지 한 장면씩 다가간다)
+        if (pl.joined || mst.cur < 0 || MouthPlan.reachable(m, mst.cur, want)) { pl.joined = true; j = want; }
+        else j = MouthPlan.step(m, mst.cur, t >= 0 && t < pl.T && pl.tgt ? pl.tgt[t] : 0, b);
+      } else if (t >= 0 && t < pl.T) j = MouthPlan.step(m, mst.cur >= 0 ? mst.cur : b, pl.tgt ? pl.tgt[t] : 0, b);   // 순서가 아직 안 왔으면
     }
     if (j < 0) j = MouthPlan.step(m, mst.cur >= 0 ? mst.cur : b, pl ? 0 : mst.target, b);
     mst.cur = j;
@@ -2452,7 +2464,7 @@ const TutorAvatar = (() => {
    *  (캔버스의 object-fit 지원에 기대지 않는다 — 캔버스와 상자의 가로세로 비율이 같아서 브라우저가 따로 맞추지 않는다) */
   function fitMouth() {
     const T = clips.talk, cv = mouth.cv, r = cv.getBoundingClientRect();
-    const dpr = Math.min(3, window.devicePixelRatio || 1);   // 화면 화소 그대로 (한 번만 늘려 그려야 흐려지지 않는다)
+    const dpr = Math.min(2, window.devicePixelRatio || 1);   // 영상 원본(720px)보다 촘촘할 필요는 없고, 그래픽 가속이 없는 기기에서도 가볍게
     const W = Math.max(1, Math.round(r.width * dpr)), H = Math.max(1, Math.round(r.height * dpr));
     if (cv.width !== W || cv.height !== H) { cv.width = W; cv.height = H; try { mouth.cx.imageSmoothingQuality = "high"; } catch (e) {} }
     const vw = T.videoWidth || 720, vh = T.videoHeight || 960;
@@ -2461,10 +2473,15 @@ const TutorAvatar = (() => {
     const sc = Math.max(W / vw, H / vh);
     mouth.fit = { vw, vh, sc, ox: (W - vw * sc) * pct(pos[0]), oy: (H - vh * sc) * pct(pos[1]), fx: sc * vw / 720, fy: sc * vh / 960 };
   }
+  // 2×3 변환 [a b c / d e f] 곱하기 (B를 먼저, 그다음 A)
+  const mul = (A, B) => [A[0] * B[0] + A[1] * B[3], A[0] * B[1] + A[1] * B[4], A[0] * B[2] + A[1] * B[5] + A[2],
+                         A[3] * B[0] + A[4] * B[3], A[3] * B[1] + A[4] * B[4], A[3] * B[2] + A[4] * B[5] + A[5]];
+  const setT = (ctx, T) => ctx.setTransform(T[0], T[3], T[1], T[4], T[2], T[5]);
   /** 캔버스에 말하는 영상의 지금 장면을 그리고, 그 위에 고른 입 조각을 덮는다.
-   *  얼굴과 입을 한 캔버스에 같은 장면으로 그려야 서로 어긋나지 않는다 (영상과 캔버스를 따로 겹치면 화면에 올라가는 때가 달라 입이 흔들린다) */
+   *  얼굴과 입을 한 캔버스에 같은 장면으로 그려야 서로 어긋나지 않는다 (영상과 캔버스를 따로 겹치면 화면에 올라가는 때가 달라 입이 흔들린다).
+   *  입 조각은 장면에서 그대로 자른 것을 한 번만 옮겨 그린다 (여러 번 늘이고 줄이면 흐려진다). 고른 조각이 바로 그 장면 자기 입이면 덧그리지 않는다 */
   function drawMouth(meta) {
-    const T = clips.talk, { m, cx, px, pc, atlas, mask } = mouth;
+    const T = clips.talk, { m, cx, px, pc, mask } = mouth;
     if (T.readyState < 2) return;                                         // 아직 장면이 없으면 지난 그림 그대로
     fitMouth();
     const f = mouth.fit;
@@ -2473,13 +2490,29 @@ const TutorAvatar = (() => {
     const j = pickMouth(b, meta);
     cx.setTransform(1, 0, 0, 1, 0, 0);
     cx.drawImage(T, 0, 0, f.vw, f.vh, f.ox, f.oy, f.vw * f.sc, f.vh * f.sc);
-    const [x0, y0, W, H] = m.box, col = j % m.cols, row = (j / m.cols) | 0;
-    px.globalCompositeOperation = "copy"; px.drawImage(atlas, col * W, row * H, W, H, 0, 0, W, H);
-    px.globalCompositeOperation = "destination-in"; px.drawImage(mask, 0, 0);
-    const a = m.M[b];                                                     // 기준 좌표 → 이 장면 좌표(720×960) → 캔버스
-    cx.setTransform(f.fx * a[0], f.fy * a[3], f.fx * a[1], f.fy * a[4], f.fx * a[2] + f.ox, f.fy * a[5] + f.oy);
-    cx.drawImage(pc, x0, y0);
-    cx.setTransform(1, 0, 0, 1, 0, 0);
+    if (j === b) return;
+    // 기준 좌표의 상자가 캔버스에서 차지하는 자리 (여기에만 조각을 만든다)
+    const FB = mul([f.fx, 0, f.ox, 0, f.fy, f.oy], m.M[b]);
+    const [x0, y0, W, H] = m.box;
+    let x1 = 1e9, y1 = 1e9, x2 = -1e9, y2 = -1e9;
+    for (const [u, v] of [[x0, y0], [x0 + W, y0], [x0, y0 + H], [x0 + W, y0 + H]]) {
+      const X = FB[0] * u + FB[1] * v + FB[2], Y = FB[3] * u + FB[4] * v + FB[5];
+      if (X < x1) x1 = X; if (X > x2) x2 = X; if (Y < y1) y1 = Y; if (Y > y2) y2 = Y;
+    }
+    const rx = Math.floor(x1) - 1, ry = Math.floor(y1) - 1, rw = Math.ceil(x2) + 1 - rx, rh = Math.ceil(y2) + 1 - ry;
+    if (pc.width < rw || pc.height < rh) { pc.width = Math.max(pc.width, rw); pc.height = Math.max(pc.height, rh); try { px.imageSmoothingQuality = "high"; } catch (e) {} }
+    const toR = [1, 0, -rx, 0, 1, -ry];
+    px.setTransform(1, 0, 0, 1, 0, 0); px.globalCompositeOperation = "source-over"; px.clearRect(0, 0, rw, rh);
+    // 조각: 장면 j 좌표 → 기준 좌표 → 장면 b 좌표 → 캔버스 (한 번에)
+    const [sh, sx, sy, sw, shh, ca, cb] = m.R[j];
+    setT(px, mul(toR, mul(FB, m.Minv[j])));
+    px.drawImage(mouth.sheets[sh], sx, sy, sw, shh, ca, cb, sw, shh);
+    // 가림막(기준 좌표)으로 가장자리를 부드럽게
+    px.globalCompositeOperation = "destination-in";
+    setT(px, mul(toR, FB));
+    px.drawImage(mask, x0, y0);
+    px.globalCompositeOperation = "source-over"; px.setTransform(1, 0, 0, 1, 0, 0);
+    cx.drawImage(pc, 0, 0, rw, rh, rx, ry, rw, rh);
   }
   function safeDraw(meta) { try { drawMouth(meta); } catch (e) { console.warn("입 조각 그리기 실패 → 예전 방식", e); dropMouth(); } }
   /** 영상 장면이 화면에 나올 때마다 그린다 (지원하지 않는 브라우저는 step에서 장면이 바뀔 때) */
@@ -2559,7 +2592,10 @@ const TutorAvatar = (() => {
     // 장면마다 그리기: requestVideoFrameCallback이 없으면 장면이 바뀔 때, 영상이 못 움직이면(저전력 모드 등) 멈춘 얼굴 위에서 입만이라도 1/24초마다
     const fi = Math.floor((T.currentTime || 0) * MOUTH.fps + 0.001);
     if (!T.requestVideoFrameCallback && fi !== mst.lastTime) { mst.lastTime = fi; mst.drawAt = now; safeDraw(null); }
-    else if (T.paused && !mst.leaving && now - (mst.drawAt || 0) > 1000 / MOUTH.fps) { mst.drawAt = now; safeDraw(null); }
+    else if (T.paused && !mst.leaving) {
+      const tf = mst.plan && tts ? Math.round((tts.heardTime() - mst.plan.at) * MOUTH.fps) : Math.floor(now * MOUTH.fps / 1000);
+      if (tf !== mst.drawAt) { mst.drawAt = tf; safeDraw(null); }        // 1/24초 장면이 바뀔 때마다 (화면 주사율과 상관없이 고르게)
+    }
     level = mouth && mst.cur >= 0 ? Math.min(1, m.openN[mst.cur]) : 0;
   }
   /** 지금 귀에 들리는 목소리 크기 0~1 (재생 장치 지연만큼 늦춰서, 목소리 크기에 맞춰 저절로 기준을 잡는다) */
@@ -2630,13 +2666,16 @@ const TutorAvatar = (() => {
       try {
         const m = mouth.m, T = clips.talk, tts = NeuralTTS;
         // 소리가 시작될 때 보일 바탕 장면 (입 조각이 얼굴 표정과 어울리게 고를 때 쓴다)
-        let base0 = -1;
-        if (mst.on && !T.paused) base0 = Math.round(frameOf(T, mouth.tk) + Math.max(0, at - tts.heardTime()) * MOUTH.fps) % m.n;
-        else if (mst.prepFrame >= 0) base0 = mst.prepFrame;
-        const tgt = MouthPlan.targets(wav, sr, MOUTH.fps);
-        // 순서 계산은 워커에서 (그동안은 목표 입 벌림에 맞춰 한 장면씩 고른다)
-        const pl = mst.plan = { at, T: tgt.length, tgt, seq: null };
-        MouthPlan.planAsync(m, tgt, -1, base0).then(seq => { if (mst.plan === pl && mouth && mouth.m === m) pl.seq = seq; }).catch(() => {});
+        // 소리가 들리기 전 몇 장면(pre)도 순서에 넣어, 지금 화면의 입에서 이어지게 짠다 (문장 시작에서 입 모양이 확 바뀌지 않게)
+        const pre = Math.max(0, Math.ceil((at - tts.heardTime()) * MOUTH.fps)) + 2;
+        let baseAt = -1;                                                  // 소리가 시작될 때 보일 바탕 장면 (표정이 어울리는 조각을 고르는 데 쓴다)
+        if (mst.on && !T.paused) baseAt = Math.round(frameOf(T, mouth.tk) + Math.max(0, at - tts.heardTime()) * MOUTH.fps) % m.n;
+        else if (mst.prepFrame >= 0) baseAt = (mst.prepFrame + 2) % m.n;   // 얼굴은 소리보다 2장면 먼저 나타난다
+        const start = mst.on && mst.cur >= 0 ? mst.cur : -1;
+        // 소리 분석과 순서 계산은 워커에서 (그동안은 입을 다문 쪽으로 한 장면씩 고른다 — 소리 전 몇 장면이라 다물어 있으면 된다)
+        const pl = mst.plan = { at, T: Math.ceil(wav.length / (sr / MOUTH.fps)), tgt: null, pre, seq: null, joined: false };
+        MouthPlan.planAudio(m, wav, sr, MOUTH.fps, pre, start, baseAt >= 0 ? (baseAt - pre + 2 * m.n) % m.n : -1)
+          .then(r => { if (mst.plan === pl && mouth && mouth.m === m && r) { pl.tgt = r.tgt; pl.T = r.tgt.length; pl.seq = r.seq; } }).catch(() => {});
         if (mst.leaving) mst.leaving = false;
       } catch (e) { mst.plan = null; }
       return;
@@ -2784,6 +2823,7 @@ const TutorAvatar = (() => {
   function remount() {
     const box = document.getElementById("tutor-avatar");
     if (clips) Object.values(clips).forEach(v => { try { v.pause(); v.querySelectorAll("source").forEach(s => s.remove()); v.removeAttribute("src"); v.load(); } catch (e) {} });   // 영상 받기를 확실히 멈춘다
+    freeMouth(mouth);
     clips = null; frames = null; mouthEls = null; mounted = false; talk = null; mouth = null; mouthLoad++;
     mst.on = mst.leaving = mst.seeking = false; mst.prepFrame = -1; mst.plan = null; mst.cur = -1; mst.rvfc = 0;
     ctl.on = ctl.leaving = ctl.seeking = false; ctl.prepFrame = -1; ctl.plan = null; ctl.hist = []; ctl.env = 0; clip = "idle";
