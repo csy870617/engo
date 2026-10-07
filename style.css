@@ -1036,6 +1036,9 @@ body.list-playing .neural-loading { bottom: calc(86px + env(safe-area-inset-bott
 .tutor-msg { max-width: 85%; padding: 10px 13px; border-radius: 16px; font-size: 0.95rem; line-height: 1.45; word-break: break-word; }
 .tutor-msg.tutor { align-self: flex-start; background: rgba(56,189,248,0.12); border: 1px solid rgba(56,189,248,0.25); color: var(--text-main); border-bottom-left-radius: 6px; cursor: pointer; }
 /* 대화 기록에 넣지 않는 짧은 튜터 말 ("Take your time." · "So, where were we?") */
+/* 실시간 대화면 '말 끝 기다리기'·'말 보내기'는 필요 없다 */
+.talk-room.live-mode .tutor-classic-only { display: none !important; }
+.talk-room:not(.live-mode) .tutor-live-tip { display: none; }
 .tutor-msg.tutor.tutor-nudge { background: transparent; border-style: dashed; opacity: 0.85; font-size: 0.88rem; }
 .tutor-msg.me { align-self: flex-end; background: var(--primary); color: #fff; border-bottom-right-radius: 6px; }
 .tutor-tip { align-self: flex-end; max-width: 85%; margin-top: -2px; padding: 8px 12px; border-radius: 12px; font-size: 0.82rem; line-height: 1.5; color: #fde68a; background: rgba(251,191,36,0.1); border: 1px solid rgba(251,191,36,0.3); }
