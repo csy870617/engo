@@ -4,6 +4,7 @@ import { KokoroTTS } from "https://cdn.jsdelivr.net/npm/kokoro-js@1.2.1/dist/kok
 
 const MODEL = "onnx-community/Kokoro-82M-v1.0-ONNX";
 let tts = null, setup = null, minGen = 0;
+const skipIds = new Set();         // 만들기 전에 그만둔 요청
 let chain = Promise.resolve();     // 한 번에 하나씩 차례로 만든다
 
 async function load(device, dtype) {
@@ -18,6 +19,7 @@ async function load(device, dtype) {
 self.onmessage = (e) => {
   const m = e.data || {};
   if (m.type === "cancelBefore") { minGen = Math.max(minGen, m.gen || 0); return; }
+  if (m.type === "skip") { skipIds.add(m.id); return; }
   chain = chain.then(() => handle(m));
 };
 async function handle(m) {
@@ -42,7 +44,7 @@ async function handle(m) {
       const sec = a.audio.length / a.sampling_rate;
       self.postMessage({ type: "loaded", device: setup.device, dtype: setup.dtype, rtf: (performance.now() - t0) / 1000 / Math.max(0.3, sec) });
     } else if (m.type === "gen") {
-      if (m.gen != null && m.gen < minGen) { self.postMessage({ type: "skipped", id: m.id }); return; }
+      if ((m.gen != null && m.gen < minGen) || skipIds.delete(m.id)) { self.postMessage({ type: "skipped", id: m.id }); return; }
       const t0 = performance.now();
       const a = await tts.generate(m.text, { voice: m.voice, speed: m.speed || 1 });
       const audio = a.audio;
