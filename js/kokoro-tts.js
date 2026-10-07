@@ -28,7 +28,7 @@ const KokoroVoice = (() => {
 
   function ensureWorker() {
     if (worker) return worker;
-    worker = new Worker("js/kokoro-worker.js?v=1", { type: "module" });
+    worker = new Worker("js/kokoro-worker.js?v=2", { type: "module" });
     worker.onmessage = (e) => {
       const m = e.data || {};
       if (m.type === "progress") { if (progressCb) progressCb(m); return; }
@@ -78,13 +78,22 @@ const KokoroVoice = (() => {
     };
   }
   /** 문장 → 소리 { wav: Float32Array, sampleRate } */
-  async function generate(text, voice, speed, gen) {
-    await load(null, voice);
+  function generate(text, voice, speed, gen) {
     const id = ++reqId;
-    return new Promise((resolve, reject) => {
+    const p = load(null, voice).then(() => new Promise((resolve, reject) => {
+      if (skipped.delete(id)) { resolve(null); return; }   // 줄을 서기 전에 그만뒀다
       pending.set(id, { resolve, reject });
       worker.postMessage({ type: "gen", id, text, voice, speed, gen });
-    });
+    }));
+    p.reqId = id;                                    // skip(reqId)으로 그만둘 수 있게
+    return p;
+  }
+  /** 이 요청은 아직 만들기 전이면 건너뛴다 (null로 끝남. 이미 만드는 중이면 그대로 끝까지) */
+  const skipped = new Set();
+  function skip(id) {
+    if (!id) return;
+    if (worker && pending.has(id)) worker.postMessage({ type: "skip", id });
+    else skipped.add(id);
   }
   /** 이 세대보다 오래된(이미 멈춘) 요청은 만들지 않고 건너뛴다 (null로 끝남) */
   function cancelBefore(gen) { if (worker) worker.postMessage({ type: "cancelBefore", gen }); }
@@ -116,6 +125,6 @@ const KokoroVoice = (() => {
       return ok;
     } catch (e) { return true; }
   }
-  return { supported, verify, cancelBefore, plan, downloaded, rtf, tooSlow, load, generate, shutdown, scheduleUnload, remove,
+  return { supported, verify, cancelBefore, skip, plan, downloaded, rtf, tooSlow, load, generate, shutdown, scheduleUnload, remove,
     isLoaded: () => loaded, isLoading: () => !!loading, info: () => info };
 })();
