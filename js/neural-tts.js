@@ -8,8 +8,8 @@
 const NeuralTTS = (() => {
   // pair: 대화에서 B 화자에게 쓸 반대 성별 목소리
   const VOICES = [
-    { id: 'af_heart', label: '여성 1 · 따뜻하고 자연스러운 ★', pair: 'am_michael' },
-    { id: 'af_bella', label: '여성 2 · 밝고 생기 있는', pair: 'am_puck' },
+    { id: 'af_bella', label: '여성 1 · 밝고 생기 있는 ★', pair: 'am_puck' },
+    { id: 'af_heart', label: '여성 2 · 따뜻하고 자연스러운', pair: 'am_michael' },
     { id: 'af_nicole', label: '여성 3 · 속삭이듯 부드러운', pair: 'am_fenrir' },
     { id: 'af_kore', label: '여성 4 · 차분하고 또렷한', pair: 'bm_george' },
     { id: 'af_sarah', label: '여성 5 · 상냥한', pair: 'am_michael' },
@@ -65,7 +65,7 @@ const NeuralTTS = (() => {
     const my = stopSeq;
     const speed = Math.max(0.5, Math.min(2.0, appSpeed || 1));
     try {
-      const r = await K().generate(text, style || 'af_heart', speed, gen);
+      const r = await K().generate(text, style || 'af_bella', speed, gen);
       if (!r || (gen != null && gen < minGen)) return null;
       return r;
     } catch (e) {

@@ -71,8 +71,12 @@ function loadVoices() {
       if (d.autoPlay !== undefined) autoPlayEnabled = d.autoPlay;
       if (d.fontSize) userFontSize = d.fontSize;
       // 예전 음성(F1~F5 · M1~M5)을 골랐었다면 새 음성의 같은 성별 기본 목소리로
-      const nv = /^F\d$/.test(d.neuralVoice || '') ? 'af_heart' : /^M\d$/.test(d.neuralVoice || '') ? 'am_michael' : d.neuralVoice;
+      let nv = /^F\d$/.test(d.neuralVoice || '') ? 'af_bella' : /^M\d$/.test(d.neuralVoice || '') ? 'am_michael' : d.neuralVoice;
+      // 기본 목소리를 '밝고 생기 있는'(af_bella)으로 바꿨다: 예전 기본(af_heart)이던 사람도 한 번 새 기본으로
+      if (nv === 'af_heart' && !localStorage.getItem('neuralVoiceV5')) nv = 'af_bella';
+      try { localStorage.setItem('neuralVoiceV5', '1'); } catch (e) {}
       neuralVoice = neuralVoiceIds().includes(nv) ? nv : null;
+      if (neuralVoice && neuralVoice !== d.neuralVoice) persistNeuralVoiceChoice();
     } catch (e) { console.warn("ttsSettings parse 실패", e); }
   }
   applyFontSizeToBody(userFontSize);
@@ -269,9 +273,9 @@ function usingNeural() {
   return !!neuralVoice && neuralReady && !neuralBroken && typeof NeuralTTS !== 'undefined' && !NeuralTTS.tooSlow();
 }
 
-// 대화의 B 화자는 짝이 되는 반대 성별 목소리로 구분 (예: af_heart ↔ am_michael)
+// 대화의 B 화자는 짝이 되는 반대 성별 목소리로 구분 (예: af_bella ↔ am_puck)
 function neuralStyleFor(speaker, styleOverride) {
-  const base = styleOverride || neuralVoice || 'af_heart';
+  const base = styleOverride || neuralVoice || 'af_bella';
   if (speaker === 'B') return NeuralTTS.pairOf(base);
   return base;
 }
@@ -476,7 +480,7 @@ async function onNeuralButton() {
     neuralDownloading = false;
     neuralReady = true;
     neuralBroken = false;
-    neuralVoice = neuralVoice || 'af_heart';
+    neuralVoice = neuralVoice || 'af_bella';
     persistNeuralVoiceChoice();
     populateVoiceSelect(NEURAL_PREFIX + neuralVoice);
     refreshNeuralUI();
