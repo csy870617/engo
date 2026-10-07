@@ -1603,7 +1603,7 @@ function tutorTtsFetch(text, slow) {
   if (tutorTtsCache.has(key)) return tutorTtsCache.get(key);
   const clip = { chunks: [], sampleRate: 24000, done: false, error: null, listeners: new Set() };
   const emit = () => clip.listeners.forEach(f => f());
-  const push = (wav, rate) => { clip.sampleRate = rate; clip.chunks.push(wav); emit(); };
+  const push = (wav, rate) => { clip.sampleRate = rate; clip.chunks.push(wav); clip.done = true; emit(); };   // 문장 하나가 통째로 온다 → 받자마자 '다 됨' (입 움직임을 미리 짜려면 재생 전에 알아야 한다)
   const voice = tutorVoiceId();
   clip.ready = (async () => {
     const saved = slow ? null : await tutorGreetLoad(text);
@@ -1642,13 +1642,23 @@ async function tutorPlayClip(clip, text, alive) {
   let i = 0;
   const feed = () => {
     if (!alive()) { player.end(); return; }
-    while (i < clip.chunks.length) player.push(clip.chunks[i++], clip.sampleRate);
+    const first = i === 0 && clip.done && clip.chunks.length;
+    while (i < clip.chunks.length) {
+      const at = player.push(clip.chunks[i++], clip.sampleRate);
+      // 문장 소리를 다 알고 시작하면, 입 움직임(영상 장면 순서)을 소리에 맞춰 미리 짜 둔다
+      if (first && i === 1 && at != null) TutorAvatar.speak(clip.chunks.length === 1 ? clip.chunks[0] : tutorJoinChunks(clip.chunks), clip.sampleRate, at);
+    }
     if (clip.done) player.end();
   };
   feed();
   if (!clip.done) clip.listeners.add(feed);
   await player.done;
   clip.listeners.delete(feed);
+}
+function tutorJoinChunks(chunks) {
+  const out = new Float32Array(chunks.reduce((n, c) => n + c.length, 0));
+  let o = 0; chunks.forEach(c => { out.set(c, o); o += c.length; });
+  return out;
 }
 /** 튜터 목소리로 한 번 읽기 (자연스러운 음성 또는 기기 기본 음성) */
 function tutorSay(text, slow, alive) {
@@ -2279,8 +2289,10 @@ const TutorAvatar = (() => {
   // 말하는 영상을 목소리에 맞춰 '연주'한다: 장면마다 입이 얼마나 벌어졌는지(talk.json)를 알고,
   // 소리가 나면 입이 열리는 장면 쪽으로 (필요하면 빨리) 틀고, 조용하면 입이 닫힌 장면에서 멈춘다. 그림은 모두 실제 영상 그대로
   let talk = null;
-  const ctl = { on: false, spk: false, quiet: 0, rate: 1, rateAt: 0, env: 0, peak: 0.05, hist: [], last: 0, prepAt: 0, prepFrame: -1, seeking: false, leaving: false, offAt: 0 };
+  const ctl = { on: false, spk: false, quiet: 0, rate: 1, rateAt: 0, env: 0, peak: 0.05, hist: [], last: 0, prepAt: 0, prepFrame: -1, seeking: false, leaving: false, offAt: 0, plan: null, fixAt: 0 };
   const TALK = { on: 0.16, off: 0.08, gap: 0.06, base: 1.0, gain: 0.6, min: 0.85, max: 1.5, hurryOpen: 2.0, close: 1.6, holdAt: 3, slew: 0.2, longGap: 0.8, rest: 0.35, openGap: 0.4 };   // 시뮬레이션으로 맞춘 값
+  // 미리 짜기: 문장 소리 전체를 알고 시작할 때, 소리 크기 곡선과 입 벌림 곡선이 가장 잘 겹치도록 장면 순서를 고른다 (영상은 멈춤·0.5~2.5배속으로만 따라간다)
+  const PLAN = { lead: 1, pow: 0.7, sil: 0.1, hold: 0.012, holdLoud: 0.15, k2: 0.015, chg: 0.03, quietOpen: 0.3, loudClosed: 0.3, look: 2, gain: 0.5, min: 0.5, max: 2.5, fix: 12, maxSec: 30 };
   const SVG = `
 <svg viewBox="0 0 200 200" class="tutor-svg" aria-hidden="true">
   <defs>
@@ -2377,6 +2389,108 @@ const TutorAvatar = (() => {
     ctl.peak = Math.max(0.035, ctl.peak * Math.pow(0.996, k), ctl.env);
     return ctl.env < 0.004 ? 0 : Math.min(1, ctl.env / ctl.peak);
   }
+  /** 소리 → 장면마다(1/24초) 입을 얼마나 벌려야 하는지 0~1.2 (문장 안에서 큰 소리 기준으로 맞춘다) */
+  function voiceShape(wav, sr, fps) {
+    const hop = sr / fps, M = Math.ceil(wav.length / hop), r = new Float32Array(M);
+    for (let i = 0; i < M; i++) {
+      const c = (i + 0.5) * hop, s0 = Math.max(0, Math.round(c - hop)), e = Math.min(wav.length, Math.round(c + hop));
+      let q = 0; for (let j = s0; j < e; j++) q += wav[j] * wav[j];
+      r[i] = e > s0 ? Math.sqrt(q / (e - s0)) : 0;
+    }
+    const ref = Math.max(1e-4, Float32Array.from(r).sort()[Math.floor(M * 0.9)]);
+    return r.map(v => (v < PLAN.sil * ref ? 0 : Math.pow(Math.min(1.2, v / ref), PLAN.pow)));
+  }
+  /** start 장면에서 시작해 소리 한 장면마다 영상을 0·1·2장면씩 나아가며 (입이 다물린 장면에서만 멈춤),
+   *  입 벌림이 소리와 가장 비슷해지는 길을 찾는다 (동적 계획법). 돌려주는 값: 소리 장면마다 영상이 start에서 몇 장면 나아가 있어야 하나 */
+  function planPath(d, start, tgt) {
+    const n = d.n, M = tgt.length, W = 2 * M + 2, K = 3, INF = 1e18;
+    const op = q => d.open[(start + q) % n];
+    const loc = (i, q) => {
+      const raw = op(q), v = Math.min(1.2, raw / 100), t = tgt[i];
+      let c = (v - t) * (v - t);
+      if (t === 0 && raw > d.openAt) c += PLAN.quietOpen;            // 조용한데 입을 벌리고 있음
+      if (t > 0.4 && raw <= d.closedAt) c += PLAN.loudClosed;        // 소리가 큰데 입을 다물고 있음
+      return c;
+    };
+    let cur = new Float64Array(W * K).fill(INF); cur[1] = loc(0, 0);
+    const back = new Int8Array(M * W * K);
+    for (let i = 1; i < M; i++) {
+      const nxt = new Float64Array(W * K).fill(INF);
+      for (let q = 0; q < W; q++) for (let kl = 0; kl < K; kl++) {
+        const c0 = cur[q * K + kl]; if (c0 >= INF) continue;
+        for (let k = 0; k < K; k++) {
+          const q2 = q + k; if (q2 >= W) continue;
+          if (k === 0 && op(q) > TALK.rest * 100) continue;          // 입을 벌린 채로는 멈추지 않는다
+          const c = c0 + loc(i, q2) + (k === 0 ? (tgt[i] > 0.3 ? PLAN.holdLoud : PLAN.hold) : k === 2 ? PLAN.k2 : 0) + (k !== kl ? PLAN.chg : 0);   // 말하는 동안 입이 굳어 있지 않게
+          if (c < nxt[q2 * K + k]) { nxt[q2 * K + k] = c; back[(i * W + q2) * K + k] = kl; }
+        }
+      }
+      cur = nxt;
+    }
+    let best = INF, bq = 0, bk = 1;
+    for (let q = 0; q < W; q++) for (let k = 0; k < K; k++) if (cur[q * K + k] < best) { best = cur[q * K + k]; bq = q; bk = k; }
+    const pos = new Float32Array(M);
+    for (let i = M - 1; i >= 0; i--) { pos[i] = bq; if (!i) break; const kl = back[(i * W + bq) * K + bk]; bq -= bk; bk = kl; }
+    return pos;
+  }
+  /** 자연스러운 음성이 문장 하나를 at(재생 장치 시계)부터 들려준다: 영상 장면 순서를 미리 짠다 */
+  function speak(wav, sr, at) {
+    const d = talk;
+    if (!d || !clips || !wav || !wav.length || wav.length / sr > PLAN.maxSec) return;
+    try {
+      const T = clips.talk, I = clips.idle, now = performance.now();
+      let start;
+      if (ctl.on) {
+        // 이미 말하는 얼굴이면 지금 장면에서 이어서 (재생 중이면 소리가 시작될 때쯤의 장면)
+        const ahead = T.paused ? 0 : Math.max(0, at - NeuralTTS.heardTime()) * d.fps * (T.playbackRate || 1);
+        start = Math.round(frameOf(T, d) + ahead) % d.n;
+        ctl.leaving = false;
+      } else {
+        start = ctl.prepFrame >= 0 ? ctl.prepFrame : d.idleToTalk[frameOf(I, d) % d.idleToTalk.length] || 0;
+        if (start !== ctl.prepFrame) { ctl.prepAt = now; ctl.prepFrame = start; ctl.seeking = true; T.pause(); seekFrame(T, start, d, () => { ctl.seeking = false; }); }
+      }
+      const raw = voiceShape(wav, sr, d.fps), M = raw.length;
+      // 입은 소리보다 살짝 먼저 움직인다 → lead 장면만큼 앞당긴 소리를 목표로
+      const tgt = Float32Array.from({ length: M }, (_, i) => raw[Math.min(M - 1, i + PLAN.lead)] * (i + PLAN.lead < M ? 1 : 0));
+      ctl.plan = { at, start, raw, pos: planPath(d, start, tgt), M, shown: false };
+    } catch (e) { ctl.plan = null; }
+  }
+  /** 짜 둔 장면 순서를 따라간다 (멈춤·재생 속도로). 문장이 끝났거나 소리가 멈췄으면 false */
+  function followPlan(now, dt) {
+    const pl = ctl.plan, d = talk, T = clips.talk;
+    const tts = typeof NeuralTTS !== "undefined" ? NeuralTTS : null;
+    if (!tts || !tts.isPlaying() || !tutorSpeaking) { ctl.plan = null; return false; }
+    const x = (tts.heardTime() - pl.at) * d.fps;                         // 지금 들리는 소리 장면 (소수)
+    if (x >= pl.M + 1) { ctl.plan = null; return false; }
+    if (x < -1) { if (ctl.on) { if (!T.paused) T.pause(); level = d.open[frameOf(T, d)] / 100; } return true; }   // 아직 소리 전
+    const P = t => { if (t <= 0) return pl.pos[0]; const i = Math.min(pl.M - 1, Math.floor(t)), f = t - i; return i >= pl.M - 1 ? pl.pos[pl.M - 1] : pl.pos[i] + (pl.pos[i + 1] - pl.pos[i]) * f; };
+    if (ctl.seeking && now - ctl.prepAt < 700) return true;           // 첫 장면으로 옮기는 중이면 기다린다 (그동안은 듣는 얼굴)
+    if (!ctl.on) { startTalk(); T.pause(); }
+    const want = P(x), ahead = P(x + PLAN.look) - want;
+    const cont = (T.currentTime || 0) * d.fps - 0.5;
+    let err = (pl.start + want - cont) % d.n; if (err > d.n / 2) err -= d.n; if (err < -d.n / 2) err += d.n;
+    // 너무 벌어졌으면 (영상 옮기기가 늦었거나 기기가 버벅였을 때) 한 번 옮긴다
+    if (Math.abs(err) > PLAN.fix && now - ctl.fixAt > 600) { ctl.fixAt = now; T.pause(); seekFrame(T, Math.round(pl.start + P(x + 4)) % d.n, d); return true; }
+    const r0 = ahead / PLAN.look + err * PLAN.gain;
+    if (ahead < 0.3) {
+      // 멈춰 기다릴 자리: 바로 그 장면에서 멈춘다 (지나쳤거나 멀면 그 장면으로 옮긴다 → 입 벌린 장면에서 굳지 않게)
+      const hold = Math.round(pl.start + want) % d.n;
+      if (frameOf(T, d) === hold) { if (!T.paused) T.pause(); }
+      else if (err > 0 && err < 3) { try { if (T.playbackRate !== 0.5) T.playbackRate = 0.5; } catch (e) {} if (T.paused) playClip(T); }
+      else { if (!T.paused) T.pause(); if (now - ctl.fixAt > 300) { ctl.fixAt = now; seekFrame(T, hold, d); } }
+    } else if (r0 < 0.25) { if (!T.paused) T.pause(); }
+    else {
+      const r = Math.round(Math.min(PLAN.max, Math.max(PLAN.min, r0)) * 10) / 10;
+      if (Math.abs(T.playbackRate - r) >= 0.1 && now - ctl.rateAt > 100) { try { T.playbackRate = r; } catch (e) {} ctl.rateAt = now; }
+      if (T.paused) playClip(T);
+    }
+    const f = frameOf(T, d), a = pl.raw[Math.max(0, Math.min(pl.M - 1, Math.floor(x)))];
+    level = Math.min(1, d.open[f] / 100); ctl.a = a; ctl.f = f;
+    // 문장이 끝나면 다시 지금 방식(반응형)이 닫고 물러나는 일을 맡는다
+    if (a > TALK.off) { ctl.spk = true; ctl.quiet = 0; } else { ctl.quiet += dt; if (ctl.quiet > TALK.gap) ctl.spk = false; }
+    ctl.rate = T.paused ? 1 : T.playbackRate; ctl.offAt = 0;
+    return true;
+  }
   /** 말하는 영상을 위에 띄운다 (듣는 영상은 아래 그대로 → 겹쳐 바뀌는 동안 배경이 비치지 않는다) */
   function startTalk() {
     const T = clips.talk;
@@ -2402,7 +2516,7 @@ const TutorAvatar = (() => {
   }
   /** 화면을 떠날 때 등: 바로 듣는 얼굴로 */
   function resetTalk() {
-    ctl.on = false; ctl.leaving = false; ctl.seeking = false; ctl.prepFrame = -1; clip = "idle";
+    ctl.on = false; ctl.leaving = false; ctl.seeking = false; ctl.prepFrame = -1; ctl.plan = null; clip = "idle";
     if (clips) { clips.talk.classList.remove("on"); clips.talk.pause(); }
   }
   /** 한 장면: 목소리 ↔ 말하는 영상 */
@@ -2413,10 +2527,11 @@ const TutorAvatar = (() => {
     const playing = !!(tts && tts.isPlaying && tts.isPlaying());
     const audible = tutorSpeaking && (tutorDeviceTalking || playing);
     const a = voiceLevel(now, dt, playing);
+    if (ctl.plan && followPlan(now, dt)) return;
     if (!ctl.on) {
       level = 0;
       // 말할 차례(목소리를 받는 중)가 되면 말하는 영상을 지금 자세와 가장 비슷한 '말 시작 장면'에 미리 맞춰 둔다
-      if (tutorSpeaking && !ctl.seeking && now - ctl.prepAt > 400) {
+      if (tutorSpeaking && !ctl.seeking && !ctl.plan && now - ctl.prepAt > 400) {
         const want = d.idleToTalk[frameOf(I, d) % d.idleToTalk.length];
         if (want != null && want !== ctl.prepFrame) {
           ctl.prepAt = now; ctl.prepFrame = want; ctl.seeking = true;
@@ -2462,7 +2577,7 @@ const TutorAvatar = (() => {
     const box = document.getElementById("tutor-avatar");
     if (clips) Object.values(clips).forEach(v => { try { v.pause(); v.querySelectorAll("source").forEach(s => s.remove()); v.removeAttribute("src"); v.load(); } catch (e) {} });   // 영상 받기를 확실히 멈춘다
     clips = null; frames = null; mouthEls = null; mounted = false; talk = null;
-    ctl.on = ctl.leaving = ctl.seeking = false; ctl.prepFrame = -1; ctl.hist = []; ctl.env = 0; clip = "idle";
+    ctl.on = ctl.leaving = ctl.seeking = false; ctl.prepFrame = -1; ctl.plan = null; ctl.hist = []; ctl.env = 0; clip = "idle";
     if (box) box.innerHTML = "";
     mount();
   }
@@ -2524,8 +2639,8 @@ const TutorAvatar = (() => {
       setTimeout(() => mouthEls && mouthEls.eyes.classList.remove("blink"), 140);
     }
   }
-  return { mount, remount, apply, get level() { return level; }, get clip() { return clips ? clip : null; },
+  return { mount, remount, apply, speak, get level() { return level; }, get clip() { return clips ? clip : null; },
     get mouth() { return talk && ctl.on && clips ? talk.open[frameOf(clips.talk, talk)] : -1; },     // 지금 보이는 말하는 장면의 입 벌림 (0~100, 시험용)
     get rate() { return clips && ctl.on ? (clips.talk.paused ? 0 : clips.talk.playbackRate) : 0; },
-    get debug() { return { a: ctl.a, spk: ctl.spk, f: ctl.f, on: ctl.on, t: clips ? clips.talk.currentTime : 0 }; } };
+    get debug() { return { a: ctl.a, spk: ctl.spk, f: ctl.f, on: ctl.on, plan: !!ctl.plan, t: clips ? clips.talk.currentTime : 0 }; } };
 })();
