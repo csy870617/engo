@@ -18,6 +18,7 @@ const ASSETS_TO_CACHE = [
   './js/study.js',
   './js/game.js',
   './js/neural-tts.js',
+  './js/mouth-plan.js',
   './js/tutor.js',
   './js/kokoro-tts.js',
   './js/kokoro-worker.js',
