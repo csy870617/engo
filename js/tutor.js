@@ -1259,11 +1259,11 @@ function tutorCheckItem(item, before, token) {
 // 기본은 실시간: 내 말을 구글이 바로 듣고 바로 소리로 대답한다 (사람끼리처럼 빠르게).
 // 연결이 안 되면(키에 권한이 없거나 사용량이 찼거나) 예전 방식(받아쓰기 → 답 → 기기 목소리)으로 저절로 바꾼다.
 // 튜터가 말하는 동안에는 마이크 소리를 보내지 않는다 (스피커 소리를 내 말로 알아듣지 않게). 끊고 싶으면 튜터를 누른다.
-const TUTOR_LIVE_VOICE = { emma: "Zephyr", jay: "Puck" };   // 기본: 밝은 여성 · 경쾌한 남성
+const TUTOR_LIVE_VOICE = { emma: "Kore", jay: "Puck" };   // 기본: 가장 인기 있는 여성 · 남성 목소리
 // 실시간 대화에서 고를 수 있는 구글 목소리 (튜터 성별에 맞는 것만 보여 준다. 예전에 고른 목소리가 목록에 없으면 기본 목소리로)
-const TUTOR_LIVE_VOICES = {   // 젊은 느낌의 인기 목소리만 남녀 3개씩
-  f: [["Zephyr", "밝은 ★"], ["Leda", "앳되고 발랄한"], ["Aoede", "산뜻하고 경쾌한"]],
-  m: [["Puck", "경쾌한 ★"], ["Fenrir", "활기찬"], ["Achird", "친근한"]]
+const TUTOR_LIVE_VOICES = {   // 가장 많이 쓰는 인기 목소리 남녀 5개씩 (처음 Gemini Live에 나온 대표 목소리 위주, 인기순)
+  f: [["Kore", "또렷하고 단단한 ★"], ["Zephyr", "밝은"], ["Aoede", "산뜻하고 경쾌한"], ["Leda", "앳되고 발랄한"], ["Sulafat", "따뜻한"]],
+  m: [["Puck", "경쾌한 ★"], ["Charon", "차분하고 믿음직한"], ["Fenrir", "활기찬"], ["Orus", "단단하고 묵직한"], ["Iapetus", "또렷한"]]
 };
 /** 이 튜터의 실시간 목소리 (튜터마다 따로 기억한다) */
 function tutorLiveVoiceId() {
