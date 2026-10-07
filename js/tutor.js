@@ -870,6 +870,7 @@ const tutorLevel = () => TUTOR_LEVELS[tutorLevelId()];
 function tutorStyle() {
   return [
     "How to talk:",
+    "- Start every reply with a very short reaction of 1 to 4 words as its own sentence, and vary it (e.g. \"Oh, nice!\", \"Wow!\", \"Haha, I see.\", \"Oh no!\", \"Sounds fun!\"), then go on. (Your voice starts as soon as that first short sentence is ready, so keep it short.)",
     "- Chat like a friend, not an interviewer. React to the exact thing the student just said (not a general \"That's great!\"), sometimes add one short thing about yourself (an opinion or a small experience), then ask ONE easy question that follows from it. Keep your turns short so the student talks more than you.",
     "- If the student asks you something, first give a real, personal answer, then ask back.",
     "- Stay on a topic for a few turns by asking about details. When it runs out, move on through something already said (\"Speaking of food, ...\"). Remember what the student tells you (names, plans, likes, problems) and bring it up again later when it fits.",
@@ -1233,7 +1234,7 @@ function tutorCheckItem(item, before, token) {
 // ---------- 미리 답 받기 ----------
 // 말이 잠깐 멈추면 ('말 끝 기다리기'가 끝나기 전에) 지금까지 들은 말로 답과 첫 문장 목소리를 미리 만들기 시작한다.
 // 그 말이 그대로 보내지면 받아 둔 답을 이어 써서 기다림이 거의 없고, 말을 더 하면 버린다.
-const TUTOR_SPEC = { ms: 600, dangling: 1600, max: 2 };   // 이만큼 조용하면 시작 (말이 이어질 낱말로 멈췄으면 더 기다린다) · 한 번 말하는 동안 최대 횟수
+const TUTOR_SPEC = { ms: 400, dangling: 1600, max: 2 };   // 이만큼 조용하면 시작 (말이 이어질 낱말로 멈췄으면 더 기다린다) · 한 번 말하는 동안 최대 횟수
 let tutorSpec = null;   // { key, note, token, base, len, raw, result, err, dead, adopted, subs, abort, clips }
 function tutorSpecDrop() {
   const s = tutorSpec; tutorSpec = null;
@@ -1436,6 +1437,8 @@ function tutorFinishedSentences(clean, raw) {
   const t = tutorProtectDots(clean);
   // 마지막 문장부호 뒤에 띄어쓰기가 이미 왔으면 마지막 문장도 끝난 것 (다음 문장이 화면에서 잘려도)
   if (raw && /[.!?]["”']?$/.test(t) && /[.!?]["”']?\s+\S*$/.test(raw)) return clean;
+  // 느낌표·물음표로 끝났으면 다음 조각을 기다리지 않고 끝난 것으로 본다 ("Oh, nice!" 목소리를 바로 만들기 시작하게)
+  if (raw && /[!?]["”']?$/.test(t) && /[!?]["”']?$/.test(raw.trim())) return clean;
   let end = -1;
   for (const m of t.matchAll(/[.!?]+["”']?(?=\s)/g)) end = m.index + m[0].length;
   return end < 0 ? "" : tutorRestoreDots(t.slice(0, end));
@@ -2034,11 +2037,11 @@ async function tutorPlayClip(clip, text, alive) {
     return;
   }
   if (!alive()) return;
-  // 문장 소리를 다 알고 시작하면, 말하는 영상의 시작 장면·재생 속도를 소리에 맞춰 미리 짠다 (첫 음절부터 맞게, 길어야 0.3초만 기다린다.
-  // 말하는 얼굴이 이미 보이는 다음 문장들은 0.15초만 — 늦으면 그동안은 1배로 이어 가다 따라붙는다)
+  // 문장 소리를 다 알고 시작하면, 말하는 영상의 시작 장면·재생 속도를 소리에 맞춰 미리 짠다 (첫 음절부터 맞게, 길어야 0.2초만 기다린다.
+  // 말하는 얼굴이 이미 보이는 다음 문장들은 0.12초만 — 늦으면 그동안은 1배로 이어 가다 따라붙는다)
   const whole = clip.done && clip.chunks.length ? (clip.chunks.length === 1 ? clip.chunks[0] : tutorJoinChunks(clip.chunks)) : null;
   if (whole) {
-    await Promise.race([TutorAvatar.prepare(whole, clip.sampleRate), new Promise(r => setTimeout(r, TutorAvatar.clip === "talk" ? 150 : 300))]);
+    await Promise.race([TutorAvatar.prepare(whole, clip.sampleRate), new Promise(r => setTimeout(r, TutorAvatar.clip === "talk" ? 120 : 200))]);
     if (!alive()) return;
   }
   if ("speechSynthesis" in window) window.speechSynthesis.cancel();
