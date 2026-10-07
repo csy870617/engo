@@ -2136,7 +2136,7 @@ let tutorSrNetErrors = 0;   // 음성 인식 'network' 오류가 연달아 난 �
 const TUTOR_END_WAIT = { short: { label: "짧게", ms: 1200 }, normal: { label: "보통", ms: 2000 }, long: { label: "길게", ms: 3200 } };
 // 이런 낱말로 끝나면 말이 이어질 가능성이 커서 더 기다린다 ("I went to the …", "because …", "um …")
 const TUTOR_DANGLING = /^(and|but|or|so|because|cause|if|when|while|that|which|who|the|a|an|to|of|in|on|at|for|with|from|about|into|my|your|his|her|their|our|i|i'm|um|uh|uhm|umm|er|erm|hmm|like)$/;
-function tutorEndWaitId() { let v = null; try { v = localStorage.getItem("tutorEndWait"); } catch (e) {} return TUTOR_END_WAIT[v] ? v : "normal"; }
+function tutorEndWaitId() { let v = null; try { v = localStorage.getItem("tutorEndWait"); } catch (e) {} return TUTOR_END_WAIT[v] ? v : "short"; }   // 기본은 짧게 (빨리 대답하게)
 // 말 끝 기다리기를 대화에 맞춘다: "How about you?"로 넘겼거나, 예/아니요 질문에 "Yes, I did."처럼 완전하게 답했으면 조금 빨리 보낸다
 const TUTOR_YIELD = /\b(how about you|what about you|and you)$/;
 // ("Yes, I have…"처럼 뒤가 이어질 수 있는 말은 빼고)
