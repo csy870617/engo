@@ -212,6 +212,7 @@ function geminiStream(messages, opts, onText, signal) {
 /** 한 번에 받기 (교정·힌트·번역·받아쓰기·피드백) */
 function geminiGenerate(messages, opts, signal) {
   return geminiCall(async (model, thinking) => {
+    if (opts.thinking && thinking === "MINIMAL") thinking = opts.thinking;   // 더 생각해야 하는 일 (첨삭)
     const tm = geminiTimer(signal, opts.timeout || 20000);   // 20초 넘게 답이 없으면 다른 시도로 ("만드는 중…"에서 멈추지 않게)
     try {
       const res = await geminiFetch(model, "generateContent", geminiBody(messages, { ...opts, thinking }), tm.signal);
@@ -1070,16 +1071,17 @@ const TUTOR_FIX_SCHEMA = {
 };
 function tutorFixMessages(text, before) {
   return [
-    { role: "system", content: "You check sentences spoken by Korean adult beginners practicing everyday English conversation. " +
-      "If the sentence has a grammar mistake (missing a/an/the, wrong tense, missing plural -s, wrong word form like bored/boring, wrong word order) " +
-      "or a clearly wrong word, set ok=false, give the corrected sentence in 'better' (keep the meaning and as many of the learner's words as possible), " +
-      "and in 'why' explain the main fix in very short Korean (under 20 characters, e.g. \"과거형 went\", \"관사 a 필요\"). " +
-      "The text comes from speech recognition, so ignore capital letters, punctuation and missing periods. " +
-      "If the sentence is already correct, set ok=true even if other wordings are possible. Short answers like \"Yes.\" or \"Medium, please.\" are correct." },
+    { role: "system", content: "You are a friendly English teacher checking one sentence that a Korean adult learner just said in an everyday conversation. " +
+      "Set ok=false when the sentence has ANY of these: a grammar mistake (a/an/the, tense, plural -s, subject-verb agreement, prepositions, word order, word form like bored/boring), " +
+      "a wrong or unnatural word choice (Konglish, a word a native speaker wouldn't use here), a missing word, or phrasing that is understandable but doesn't sound natural to a native speaker. " +
+      "Then put in 'better' the way a friendly native speaker would naturally say the same thing in casual conversation, at a simple level: keep the learner's meaning and as many of their words as possible, and fix everything in that one sentence. " +
+      "In 'why', name the main fix in short Korean (under 25 characters), e.g. \"과거형 went\", \"관사 the 필요\", \"home 앞엔 to 없이\", \"더 자연스러운 표현\". " +
+      "The text comes from speech recognition, so ignore capital letters, punctuation and missing periods, and don't change a word only because it might be misheard. " +
+      "Set ok=true only if a native speaker would naturally say it this way (other wordings being possible is fine). Short natural answers like \"Yes.\", \"Me too.\" or \"Medium, please.\" are correct." },
     { role: "user", content: (before ? `The tutor said: "${before}"\n` : "") + `Learner's sentence: "${text}"` }
   ];
 }
-const TUTOR_FIX_OPTS = { temperature: 0, maxTokens: 200, schema: TUTOR_FIX_SCHEMA, chain: "aux" };
+const TUTOR_FIX_OPTS = { temperature: 0, maxTokens: 200, schema: TUTOR_FIX_SCHEMA, chain: "aux", thinking: "LOW" };   // 첨삭은 대화와 따로 오니 조금 더 생각해서 정확하게
 /** 교정 결과 정리: 원래 문장과 너무 다른 '고친 문장'은 버린다 (엉뚱한 답 방지) */
 function parseTutorFix(text, out) {
   let j = null; try { j = JSON.parse(out || "{}"); } catch (e) { return { better: "", why: "", unknown: true }; }
@@ -1099,13 +1101,13 @@ function parseTutorCorrection(original, out) {
   const a = tutorNorm(original), b = tutorNorm(c);
   if (a === b) return "";                                                // 대소문자·문장부호만 다르면 고칠 것 없음
   const aw = a.split(" "), bw = b.split(" ");
-  if (bw.length > aw.length * 2 + 4 || bw.length < aw.length / 2) return "";   // 아예 다른 문장은 버린다
+  if (bw.length > aw.length * 2 + 5 || bw.length < aw.length / 2) return "";   // 아예 다른 문장은 버린다
   const common = aw.filter(w => bw.includes(w)).length;
-  if (common < Math.ceil(aw.length * 0.5)) return "";                     // 원래 문장과 겹치는 말이 절반도 안 되면 버린다
+  if (common < Math.ceil(aw.length * 0.4)) return "";                     // 원래 문장과 겹치는 말이 너무 적으면 버린다 (자연스럽게 고친 표현은 조금 더 바뀔 수 있다)
   return c;
 }
 /** 짧은 대답(Yes, Thank you 등)은 고칠 게 거의 없으니 건너뛴다 */
-function tutorNeedsCheck(text) { return tutorNorm(text).split(" ").filter(Boolean).length >= 3; }
+function tutorNeedsCheck(text) { return tutorNorm(text).split(" ").filter(Boolean).length >= 2; }
 
 // ---------- 대화 ----------
 function startTutorSession() {
@@ -1237,7 +1239,7 @@ function tutorSpeculate(text) {
     rested = true;
     tutorSplitSentences(tutorPolish(cleanTutorSay(raw), text, prevSays)).slice(0, 2).forEach((x, i) => {
       if (i === 1 && !((KokoroVoice.rtf() || 1) <= 0.5 && tutorWords(x).length <= 10)) return;
-      pre(x);
+      (i === 0 ? tutorVoicePieces(x) : [x]).forEach(pre);
     });
   };
   const msgs = tutorMessages.concat([{ role: "user", content: text }], note ? [{ role: "user", content: note }] : []);
@@ -1249,7 +1251,7 @@ function tutorSpeculate(text) {
     // 첫 문장 목소리도 미리 (진짜 답과 같은 문장이면 만들어 둔 걸 그대로 튼다)
     if (!voiced && tutorUseNatural()) {
       const first = tutorSplitSentences(tutorPolish(tutorFinishedSentences(cleanTutorSay(raw), raw), text, prevSays, true))[0];
-      if (first) { voiced = true; pre(first); }
+      if (first) { voiced = true; tutorVoicePieces(first).forEach(pre); }
     }
     if (tutorReplyDone(raw)) { voiceRest(raw); s.abort.abort(); }   // 답이 다 왔다 (더 받지 않는다)
   }, s.abort.signal);
@@ -1437,12 +1439,16 @@ function tutorSpeechQueue(token, prepMsg = "생각 중…") {
     say(parts, nat) {
       if (!alive()) return;
       for (const part of parts) {
+        const first = !spoken.length;
         tutorSplitSentences(part).forEach(x => { spoken.push(x); spokenN.add(tutorNorm(x)); });
         tutorSpeaking = true; tutorSayDevice = !nat;
         if (!tutorAudioPlaying()) tutorMarkPreparing(prepMsg);
         if (nat) {
-          const clip = tutorTtsFetch(part, false);           // 지금 만들기 시작해 두고, 차례가 오면 (다 되는 대로) 튼다
-          chain = chain.then(() => alive() && tutorPlayClip(clip, part, alive));
+          // 지금 만들기 시작해 두고, 차례가 오면 (다 되는 대로) 튼다. 첫 문장은 쉼표에서 나눠 앞부분부터 (첫 소리가 빨리 나게)
+          for (const piece of first ? tutorVoicePieces(part) : [part]) {
+            const clip = tutorTtsFetch(piece, false);
+            chain = chain.then(() => alive() && tutorPlayClip(clip, piece, alive));
+          }
         } else {
           chain = chain.then(async () => { if (alive()) { try { await tutorDeviceSpeak(part); } catch (e) {} } });
         }
@@ -1559,12 +1565,27 @@ function addTutorTip(bubble, tip, why, said) {
   const t = document.createElement("div");
   t.className = "tutor-tip";
   t.innerHTML = `💡 이렇게 말하면 더 자연스러워요<br><b></b><span class="tutor-tip-why"></span>`;
-  t.querySelector("b").textContent = tip;
+  tutorMarkChanges(t.querySelector("b"), said, tip);   // 바뀐 낱말에 표시
   if (why) t.querySelector(".tutor-tip-why").textContent = " · " + why;
   addPracticeButtons(t, tip);                       // 고친 문장을 직접 다시 말해 보게
   bubble.after(t);
   tutorNoteAdd({ en: tip, said, why, src: "fix" });
   const log = tutorEl("tutor-log"); log.scrollTop = log.scrollHeight;
+}
+/** 고친 문장을 넣으면서 내 말과 달라진 낱말에 형광펜 표시를 한다 (무엇을 고쳤는지 한눈에) */
+function tutorMarkChanges(el, said, better) {
+  const a = tutorNorm(said).split(" ").filter(Boolean), toks = better.split(/(\s+)/), b = toks.map(x => tutorNorm(x));
+  const idx = toks.map((x, i) => i).filter(i => b[i]);
+  // 같은 순서로 겹치는 낱말 찾기
+  const n = a.length, m = idx.length, dp = Array.from({ length: n + 1 }, () => new Array(m + 1).fill(0));
+  for (let i = n - 1; i >= 0; i--) for (let j = m - 1; j >= 0; j--) dp[i][j] = a[i] === b[idx[j]] ? dp[i + 1][j + 1] + 1 : Math.max(dp[i + 1][j], dp[i][j + 1]);
+  const same = new Set();
+  for (let i = 0, j = 0; i < n && j < m;) { if (a[i] === b[idx[j]]) { same.add(idx[j]); i++; j++; } else if (dp[i + 1][j] >= dp[i][j + 1]) i++; else j++; }
+  el.textContent = "";
+  toks.forEach((x, i) => {
+    if (b[i] && !same.has(i)) { const mk = document.createElement("mark"); mk.textContent = x; el.appendChild(mk); }
+    else el.appendChild(document.createTextNode(x));
+  });
 }
 // ---------- 다시 말해 보기 · 한국어 도움 · 내 표현 노트 ----------
 // 회화가 느는 순서: 말하기 → 고쳐 받기 → 고친 문장을 직접 다시 말하기 → 다음 대화에서 써먹기
@@ -1948,6 +1969,19 @@ function tutorTtsDrop(clip) {
   if (clip.reqId && KokoroVoice.skip) KokoroVoice.skip(clip.reqId);
   if (tutorTtsCache.get(clip.key) === clip) tutorTtsCache.delete(clip.key);
 }
+/** 답의 첫 문장이 길면 쉼표에서 둘로 나눠 앞부분 목소리부터 만든다 (목소리는 소리 길이에 비례해 오래 걸려서, 짧은 앞부분이 빨리 나온다).
+ *  뒷부분은 앞부분을 들려주는 동안(쉼표 쉼 포함) 다 만들어질 때만 나눈다 — 이 기기의 목소리 만드는 속도로 따진다 (낱말당 약 0.3초, 앞뒤 빈 소리 약 1초) */
+function tutorVoicePieces(sen) {
+  if (!sen || tutorFixedLine(sen)) return [sen];            // 정해 둔 짧은 말은 저장해 둔 그대로
+  const w = sen.trim().split(/\s+/);
+  if (w.length < 6) return [sen];
+  const r = Math.max(0.15, (typeof KokoroVoice !== "undefined" && KokoroVoice.rtf()) || 1);
+  for (let i = 2; i <= w.length - 3; i++) {
+    if (!/,$/.test(w[i - 1])) continue;
+    if (r * (0.3 * (w.length - i) + 1) <= 0.3 * i + 0.55) return [w.slice(0, i).join(" "), w.slice(i).join(" ")];
+  }
+  return [sen];
+}
 /** Kokoro는 문장 앞뒤에 0.4~0.6초씩 아무 소리 없는 부분을 붙여 만든다 → 앞은 0.05초, 뒤는 0.2초만 남긴다
  *  (첫 소리가 바로 나고, 문장 사이가 1초씩 늘어지지 않게) */
 function tutorTrimSilence(wav, sr) {
@@ -2149,6 +2183,7 @@ function tutorEndWait(text) {
   const done = /\b(think|hope|guess) so$/.test((text || "").trim().toLowerCase().replace(/[^a-z' ]/g, "").trim());
   if (TUTOR_DANGLING.test(last) && !done) return base + 1500;
   if (tutorPractice) return base;
+  if (tutorHintTarget && tutorSimilarity(text, tutorHintTarget) >= 0.85) return Math.min(base, 700);   // 힌트 문장을 끝까지 따라 읽었으면 바로 보낸다
   const t = tutorNorm(text);
   if (TUTOR_YIELD.test(t)) return Math.max(900, Math.round(base * 0.6));
   const q = tutorSplitSentences(tutorSaidLines[tutorSaidLines.length - 1] || "").filter(tutorIsQuestion).pop() || "";
@@ -2214,8 +2249,8 @@ function toggleTutorMic() {
   const manual = tutorSendManual();          // 직접 보내기: 조용해져도 보내지 않고 ➤를 기다린다
   const quietOn = !manual && !tutorPractice;   // 아무 말이 없으면 정해 둔 시간 뒤 튜터가 먼저 말을 건넨다 (브라우저가 먼저 듣기를 끝내도 그때까지는 다시 듣는다)
   const sendBtn = document.querySelector(".talk-input .send");
-  const prefill = inp.value;   // 힌트로 넣어 둔 문장 (아무 말도 안 들리면 되살린다)
-  const reading = !!prefill.trim();   // 입력칸에 문장(힌트·적던 글)이 있으면 그걸 보며 말하는 중: 칸은 그대로 두고 들은 말은 상태 줄에
+  let prefill = inp.value;   // 힌트로 넣어 둔 문장 (아무 말도 안 들리면 되살린다)
+  let reading = !!prefill.trim();   // 입력칸에 문장(힌트·적던 글)이 있으면 그걸 보며 말하는 중: 칸은 그대로 두고 들은 말은 상태 줄에
   const timers = [];
   const state = { rec: null, user: false, heardText: () => heard.trim() };
   const finish = (send = true) => {
@@ -2237,6 +2272,13 @@ function toggleTutorMic() {
   state.stop = () => finish(true);
   state.cancel = () => finish(false);
   // 입력칸을 눌렀다: 듣기만 멈추고 받아쓴 말은 칸에 남겨 둔다 (잘못 들은 낱말을 고쳐서 ➤로 보내게)
+  // 듣는 중에 힌트를 골랐다: 마이크를 끄고 다시 켜지 않고 그대로 들으면서 입력칸 문장을 따라 읽게 한다 (다시 켤 때 소리·지연이 없게)
+  state.read = () => {
+    if (done || heard.trim()) return false;
+    prefill = inp.value; reading = true; clearTimeout(quietTimer);   // 따라 읽는 동안 '말 걸기'는 하지 않는다
+    setTutorStatus("입력칸 문장을 따라 말하거나 ➤를 누르세요", live ? "listening" : "");
+    return true;
+  };
   state.edit = () => {
     const h = heard.trim();
     finish(false);
@@ -2584,7 +2626,8 @@ function tutorPrepareHints() {
 }
 /** 힌트 고르기: 입력칸에 넣는다 (➤로 바로 보내거나, 그대로 따라 말하거나, 고쳐 쓸 수 있게). 힌트 창은 닫는다 */
 function tutorUseHint(en) {
-  tutorCancelListening();
+  const keep = !!(tutorMic && tutorMic.read && !tutorMic.heardText());   // 이미 듣는 중이면 마이크는 그대로 둔다
+  if (!keep) tutorCancelListening();
   stopTutorSpeech();                                   // 튜터가 아직 말하는 중이면 끊는다 (소리가 겹치지 않게)
   const inp = tutorEl("tutor-input");
   inp.value = en; tutorHintTarget = en.trim();
@@ -2592,6 +2635,7 @@ function tutorUseHint(en) {
   const send = document.querySelector(".talk-input .send");
   if (send) { send.classList.remove("ready"); void send.offsetWidth; send.classList.add("ready"); }   // 보내기 버튼을 반짝여 알려 준다
   // 튜터가 읽어 주지 않는다 (내가 할 말이라서). 바로 듣기 시작 → 그대로 따라 말하면 보내지고, ➤를 눌러 글로 보내도 된다
+  if (keep && tutorMic.read()) return;
   setTutorStatus("➤로 보내거나 그대로 따라 말해 보세요", "");
   const token = tutorSessionToken;
   setTimeout(() => tutorAfterSpeak(token), 300);

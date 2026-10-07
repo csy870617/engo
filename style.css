@@ -1040,6 +1040,7 @@ body.list-playing .neural-loading { bottom: calc(86px + env(safe-area-inset-bott
 .tutor-msg.me { align-self: flex-end; background: var(--primary); color: #fff; border-bottom-right-radius: 6px; }
 .tutor-tip { align-self: flex-end; max-width: 85%; margin-top: -2px; padding: 8px 12px; border-radius: 12px; font-size: 0.82rem; line-height: 1.5; color: #fde68a; background: rgba(251,191,36,0.1); border: 1px solid rgba(251,191,36,0.3); }
 .tutor-tip b { color: #fff; font-weight: 600; }
+.tutor-tip mark { background: rgba(251,191,36,0.32); color: #fff; border-radius: 3px; padding: 0 2px; }
 /* 🎤 다시 말해 보기 */
 .tutor-practice { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; margin-top: 6px; }
 .tutor-practice-result { flex-basis: 100%; font-size: 0.82rem; color: #e2e8f0; }
