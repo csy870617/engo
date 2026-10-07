@@ -608,6 +608,7 @@ function tutorCanAutoListen(token) {
 }
 function tutorAfterSpeak(token) {
   if (!tutorCanAutoListen(token)) return;
+  if (tutorOnlineMissed && tutorRetryLast && navigator.onLine !== false && tutorLastIsError()) { tutorAutoRetry(); return; }   // 말하는 동안 인터넷이 돌아왔다
   if (tutorTypingNow()) {                          // 글로 쓰는 중이면 듣지 않는다
     const inp = tutorEl("tutor-input");
     if (inp.value.trim() && document.activeElement !== inp) setTutorStatus("입력칸의 문장을 ➤로 보내 보세요", "");
@@ -2204,7 +2205,7 @@ function toggleTutorMic() {
   // 브라우저가 말이 잠깐 멈출 때 듣기를 끝내 버려도(특히 안드로이드) 이어서 다시 듣고, 들은 말을 이어 붙인다.
   // 보내는 때는 브라우저가 아니라 우리가 정한다: 마지막 말소리 뒤 tutorEndWait()만큼 조용하면 보낸다
   let committed = "", heard = "", done = false, fatal = false, restarts = 0, silence = null, hinted = false, specTimer = null, specs = 0;
-  let live = false, quietTimer = null;
+  let live = false, quietTimer = null, quietRestarts = 0;
   const manual = tutorSendManual();          // 직접 보내기: 조용해져도 보내지 않고 ➤를 기다린다
   const quietOn = !manual && !tutorPractice;   // 아무 말이 없으면 정해 둔 시간 뒤 튜터가 먼저 말을 건넨다 (브라우저가 먼저 듣기를 끝내도 그때까지는 다시 듣는다)
   const sendBtn = document.querySelector(".talk-input .send");
@@ -2306,7 +2307,7 @@ function toggleTutorMic() {
         try { startRec(); return; } catch (e) {}
       }
       // 아무 말도 없는데 브라우저가 먼저 듣기를 끝냈다: 튜터가 말을 건넬 때까지는 조용히 다시 듣는다
-      if (!heard.trim() && quietOn && restarts < 10) { restarts++; try { startRec(); return; } catch (e) {} }
+      if (!heard.trim() && quietOn && quietRestarts < 40) { quietRestarts++; try { startRec(); return; } catch (e) {} }
       finish(true);
     };
     rec.start();
@@ -2334,13 +2335,15 @@ let tutorUseRecorder = false;   // 브라우저 음성 인식이 실패하면 �
 let tutorRecorderUntil = 0;     // 'network' 오류로 바꾼 녹음 방식은 이 시각까지만 (그 뒤 다시 음성 인식)
 window.addEventListener("online", () => { if (tutorRecorderUntil) { tutorUseRecorder = false; tutorRecorderUntil = 0; tutorSrNetErrors = 0; } });
 // 인터넷이 다시 연결되면 답을 못 받은 말을 저절로 다시 보낸다 (학습자가 말하는 중이 아닐 때만)
-window.addEventListener("online", () => setTimeout(tutorAutoRetry, 800));
+window.addEventListener("online", () => setTimeout(() => { tutorOnlineMissed = true; tutorAutoRetry(); }, 800));
+let tutorOnlineMissed = false;   // 연결이 돌아왔는데 그때는 바빠서 못 보냈다 (튜터 말이 끝나면 보낸다)
 function tutorAutoRetry() {
   const r = tutorRetryLast;
   if (!r || tutorBusy || tutorSpeaking || tutorHelping || tutorPractice || !tutorCallActive || tutorRecRec || tutorTranscribing) return;
   if (["settings", "feedback"].some(n => { const el = tutorEl("tutor-sheet-" + n); return el && !el.classList.contains("hidden"); })) return;   // 판을 닫으면 그때 (tutorResume)
   if (tutorMic && tutorMic.heardText && tutorMic.heardText()) return;
   if (!tutorLastIsError()) return;
+  tutorOnlineMissed = false;
   r();
 }
 /** 마이크로 한 마디 녹음: 말을 멈추면('말 끝 기다리기'만큼 조용) 자동으로 끝나고, 16kHz 소리 데이터를 돌려준다.
@@ -2389,12 +2392,16 @@ function tutorRecordUtterance(manual, { quietMs = 8000, onLive = null, onVoice =
         if (now - t0 < 350) return;
         const lv = floorWin.map(x => x[1]).sort((a, b) => a - b);
         const thr = Math.max(0.012, Math.min(0.06, (lv[Math.floor(lv.length * 0.1)] || 0) * 3));
-        // 작은 토막(약 0.02초)으로 나눠 0.13초 넘게 이어서 크면 말소리 (기침·딸깍 한 번은 무시). 말하는 동안에도 같은 기준으로 '아직 말하는 중'을 잰다
+        // 작은 토막(약 0.02초)으로 나눠 0.13초 넘게 이어서 크면 말소리 (기침·딸깍 한 번은 무시).
+        // 말이 시작된 뒤엔 큰 토막 하나만 와도 '아직 말하는 중' (음절 사이가 잠깐 작아져도 끊지 않게)
         const sub = 1024, subMs = sub / ctx.sampleRate * 1000;
+        let inRun = false;
         for (let o = 0; o < d.length; o += sub) {
           let q = 0; const e2 = Math.min(d.length, o + sub); for (let i = o; i < e2; i++) q += d[i] * d[i];
-          if (Math.sqrt(q / (e2 - o)) > thr) { loudMs += subMs; if (loudMs >= 130) { heardVoice = true; lastVoice = now; } } else loudMs = 0;
+          if (Math.sqrt(q / (e2 - o)) > thr) { loudMs += subMs; if (loudMs >= 130) { heardVoice = true; lastVoice = now; inRun = true; } else if (heardVoice) lastVoice = now; }
+          else loudMs = 0;
         }
+        if (inRun && rms > 1e-4) floorWin.pop();                 // 말소리 조각은 주변 소리 바닥에 넣지 않는다 (길게 말하면 기준이 말소리까지 올라가 끊기지 않게)
         if (heardVoice && lastVoice === now && onVoice) onVoice();
         if (manual ? now - t0 > 120000 || (!heardVoice && now - t0 > 30000)   // 직접 보내기: ➤를 누를 때까지 (최대 2분)
           : (heardVoice && now - lastVoice > tutorEndWait("")) || (!heardVoice && now - t0 > quietMs) || now - t0 > 30000) finish();   // 말이 멈추고 '말 끝 기다리기'만큼 조용하면
