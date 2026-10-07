@@ -27,7 +27,7 @@ const TUTORS = {
   emma: { name: "Emma", label: "Emma", gender: "f", voice: "af_bella", media: "images/tutor/emma/web/",
     style: "a sweet, bright K-pop idol girl in her early 20s chatting with her fans on a live stream: cheerful, warm and cute, with a light, youthful voice",
     about: "You're in your early 20s. You grew up in Los Angeles, moved to Seoul two years ago, and teach English online. You love iced lattes, spicy rice cakes, K-dramas and dance practice, and you have a lazy cat named Mochi. You're cheerful, a little clumsy, and you laugh easily." },
-  jay: { name: "Jay", label: "Jay", gender: "m", voice: "am_michael", media: "images/tutor/jay/web/",
+  jay: { name: "Jay", label: "Jay", gender: "m", voice: "am_puck", media: "images/tutor/jay/web/",
     style: "a gentle, charming K-pop idol boy in his early 20s chatting with his fans on a live stream: soft, warm and sweet, calm and friendly, with a youthful voice",
     about: "You're in your early 20s. You grew up in Seattle, moved to Seoul last year, and teach English online. You love basketball, playing guitar, hiking and late-night ramen, and you have a small dog named Bori. You're calm, kind and a bit shy, with a quiet sense of humor." }
 };
@@ -1799,7 +1799,7 @@ function renderTutorNotes() {
 const TUTOR_VOICES = {
   af_bella: { label: "밝고 생기 있는 ★", g: "f" }, af_heart: { label: "따뜻하고 자연스러운", g: "f" },
   af_nicole: { label: "속삭이듯 부드러운", g: "f" }, af_kore: { label: "차분하고 또렷한", g: "f" }, af_sarah: { label: "상냥한", g: "f" },
-  am_michael: { label: "다정하고 자연스러운 ★", g: "m" }, am_puck: { label: "밝고 경쾌한", g: "m" },
+  am_puck: { label: "밝고 경쾌한 ★", g: "m" }, am_michael: { label: "다정하고 자연스러운", g: "m" },
   am_fenrir: { label: "깊고 힘 있는", g: "m" }, bm_george: { label: "영국식 차분한", g: "m" },
   app: { label: "기기 기본 음성", g: "" }
 };
@@ -1814,6 +1814,11 @@ try {
   if (!localStorage.getItem("tutorVoiceV5")) {
     if (localStorage.getItem("tutorVoice") === "af_heart") localStorage.removeItem("tutorVoice");
     localStorage.setItem("tutorVoiceV5", "1");
+  }
+  // 기본 남성 목소리를 '밝고 경쾌한'으로 바꿨다: 예전 기본(다정하고 자연스러운)에 있던 사람도 새 기본으로 (한 번만)
+  if (!localStorage.getItem("tutorVoiceV6")) {
+    if (localStorage.getItem("tutorVoice") === "am_michael") localStorage.removeItem("tutorVoice");
+    localStorage.setItem("tutorVoiceV6", "1");
   }
 } catch (e) {}
 function tutorVoiceId() {
