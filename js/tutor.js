@@ -337,7 +337,7 @@ function tutorPrepGreeting(delay) {
     if (!tutorLobbyOpen() || !tutorReady()) return;
     const ng = tutorNextGreeting;
     if (!ng || ng.char !== tutorCharId() || ng.level !== tutorLevelId()) tutorNextGreeting = { ...tutorPickGreeting(), char: tutorCharId(), level: tutorLevelId() };
-    if (tutorUseNatural()) tutorTtsFetch(tutorNextGreeting.text, false);
+    if (tutorUseNatural() && tutorLiveModeId() !== "on") tutorTtsFetch(tutorNextGreeting.text, false);   // (실시간이면 구글이 인사하니 필요 없다)
   }, delay);
 }
 let tutorGreetPrep = null;
@@ -437,6 +437,7 @@ function tutorPreviewVoice(fromSelect) {
   if (typeof NeuralTTS !== "undefined") NeuralTTS.unlockAudio();
   tutorCancelListening();
   stopTutorSpeech();
+  if (tutorLiveModeId() === "on" && typeof TutorLive !== "undefined" && TutorLive.supported()) { tutorLivePreview(); return; }
   if (tutorVoiceId() !== "app" && !tutorUseNatural()) {          // 아직 안 받았으면 기기 음성으로 몰래 들려주지 않고 알려 준다
     tutorPreviewing = 0; tutorPreviewButtons("idle");
     tutorVoiceNote(KokoroVoice.downloaded() && KokoroVoice.tooSlow() ? "이 기기에서는 자연스러운 음성이 느려서 기기 음성으로 읽어요" : "먼저 아래 '자연스러운 목소리 받기'를 눌러 주세요");
@@ -1257,7 +1258,18 @@ function tutorCheckItem(item, before, token) {
 // 기본은 실시간: 내 말을 구글이 바로 듣고 바로 소리로 대답한다 (사람끼리처럼 빠르게).
 // 연결이 안 되면(키에 권한이 없거나 사용량이 찼거나) 예전 방식(받아쓰기 → 답 → 기기 목소리)으로 저절로 바꾼다.
 // 튜터가 말하는 동안에는 마이크 소리를 보내지 않는다 (스피커 소리를 내 말로 알아듣지 않게). 끊고 싶으면 튜터를 누른다.
-const TUTOR_LIVE_VOICE = { emma: "Zephyr", jay: "Puck" };   // 밝고 생기 있는 여성 · 밝고 경쾌한 남성
+const TUTOR_LIVE_VOICE = { emma: "Zephyr", jay: "Puck" };   // 기본: 밝은 여성 · 경쾌한 남성
+// 실시간 대화에서 고를 수 있는 구글 목소리 (튜터 성별에 맞는 것만 보여 준다. 예전에 고른 목소리가 목록에 없으면 기본 목소리로)
+const TUTOR_LIVE_VOICES = {   // 젊은 느낌의 인기 목소리만 남녀 3개씩
+  f: [["Zephyr", "밝은 ★"], ["Leda", "앳되고 발랄한"], ["Aoede", "산뜻하고 경쾌한"]],
+  m: [["Puck", "경쾌한 ★"], ["Fenrir", "활기찬"], ["Achird", "친근한"]]
+};
+/** 이 튜터의 실시간 목소리 (튜터마다 따로 기억한다) */
+function tutorLiveVoiceId() {
+  const list = TUTOR_LIVE_VOICES[tutorChar().gender] || TUTOR_LIVE_VOICES.f;
+  let v = null; try { v = localStorage.getItem("tutorLiveVoice_" + tutorCharId()); } catch (e) {}
+  return list.some(x => x[0] === v) ? v : (TUTOR_LIVE_VOICE[tutorCharId()] || list[0][0]);
+}
 const TUTOR_LIVE = { quietMs: 8000, restMs: 14000, tailMs: 350, retries: 3, brokenHours: 6 };
 let tutorLive = null;                                       // 지금 실시간 대화
 let tutorLiveHandle = null, tutorLiveHandleAt = 0;          // 이어 가기 표 (연결이 끊겨도 같은 대화로)
@@ -1270,6 +1282,7 @@ const tutorLiveWanted = () => tutorLiveModeId() === "on" && typeof TutorLive !==
 function changeTutorLiveMode(id) {
   try { localStorage.setItem("tutorLiveMode", id); if (id === "on") localStorage.removeItem("tutorLiveBrokenAt"); } catch (e) {}
   renderTutorLiveMode();
+  fillTutorVoices();
   if (!tutorCallActive || !tutorMessages.length) return;
   const token = tutorSessionToken;
   if (id === "off" && tutorLive) { tutorLiveStop(); setTutorStatus(tutorIdleMsg(), ""); }
@@ -1288,6 +1301,32 @@ function tutorLiveSystem() {
   return tutorSystemPrompt() + "\nThis is a live voice call: you hear the student and answer out loud right away. Speak clearly at a relaxed pace for a learner, " +
     "keep each turn short (1 to 3 short sentences), and stop after your question so the student can answer. If the student pauses to think, wait for them.";
 }
+/** 구글 목소리 들어 보기: 잠깐 연결해서 소개 한 마디를 그 목소리로 듣는다 (한 번 들은 목소리는 기억해 두고 바로 튼다) */
+const tutorLivePreviews = new Map();
+function tutorLivePreview() {
+  const voice = tutorLiveVoiceId(), my = tutorPreviewing = ++tutorPreviewSeq;
+  tutorVoiceNote("");
+  const done = () => { if (tutorPreviewing !== my) return; tutorPreviewing = 0; tutorPreviewButtons("idle"); };
+  const play = wav => { if (tutorPreviewing !== my) return; tutorPreviewButtons("playing"); NeuralTTS.play(wav, 24000).then(done); };
+  if (tutorLivePreviews.has(voice)) { play(tutorLivePreviews.get(voice)); return; }
+  tutorPreviewButtons("loading");
+  const chunks = []; let sess = null, finished = false;
+  const finish = ok => {
+    if (finished) return; finished = true;
+    if (sess) sess.close();
+    if (ok && chunks.length) { const wav = tutorJoinChunks(chunks); tutorLivePreviews.set(voice, wav); play(wav); }
+    else { done(); if (!ok) tutorVoiceNote("목소리를 불러오지 못했어요. 인터넷 연결과 키를 확인해 주세요"); }
+  };
+  setTimeout(() => finish(chunks.length > 0), 12000);
+  sess = TutorLive.connect({
+    key: tutorGetKey(), voice, minimal: true,
+    system: "You are a voice preview. When asked, say exactly the given sentence in a warm, natural, friendly way, and nothing else.",
+    onReady: () => sess.sendText(`Say exactly this: "${tutorPreviewText()}"`, true),
+    onAudio: f => chunks.push(f),
+    onTurnDone: () => finish(true),
+    onClose: info => finish(chunks.length > 0)
+  });
+}
 /** 실시간 대화 시작 (opts.greet: 첫 인사 · opts.resume: 하던 대화 이어 가기 · opts.back: 돌아왔다고 한마디) */
 function tutorLiveStart(token, opts = {}) {
   tutorLiveStop();
@@ -1297,10 +1336,10 @@ function tutorLiveStart(token, opts = {}) {
     retries: 0, lastMsg: null, lastAt: 0, usedHandle: false, greetText: opts.greet || "", heardModel: false };
   setTutorStatus("실시간 대화 연결 중…", "thinking");
   const connect = (minimal, o2) => {
-    const handle = o2.resume && !minimal && tutorLiveHandle && Date.now() - tutorLiveHandleAt < 9 * 60000 ? tutorLiveHandle : null;
+    const handle = o2.resume && !o2.fresh && !minimal && tutorLiveHandle && Date.now() - tutorLiveHandleAt < 9 * 60000 ? tutorLiveHandle : null;
     L.usedHandle = !!handle;
     L.sess = TutorLive.connect({
-      key: tutorGetKey(), system: tutorLiveSystem(), voice: TUTOR_LIVE_VOICE[tutorCharId()] || "Zephyr", handle, minimal,
+      key: tutorGetKey(), system: tutorLiveSystem(), voice: tutorLiveVoiceId(), handle, minimal,
       onReady: () => tutorLiveReady(L, o2),
       onAudio: (f, rate) => tutorLiveAudio(L, f, rate),
       onIn: t => tutorLiveIn(L, t),
@@ -2366,6 +2405,16 @@ function tutorSay(text, slow, alive) {
 }
 function fillTutorVoices() {
   const g = tutorChar().gender;   // 튜터 성별에 맞는 목소리만
+  if (tutorLiveModeId() === "on") {   // 실시간 대화: 구글 목소리
+    const cur = tutorLiveVoiceId();
+    ["tutor-voice", "tutor-voice-lobby"].forEach(id => {
+      const sel = tutorEl(id); if (!sel) return;
+      sel.innerHTML = "";
+      (TUTOR_LIVE_VOICES[g] || TUTOR_LIVE_VOICES.f).forEach(([k, v]) => { const o = document.createElement("option"); o.value = k; o.textContent = v; sel.appendChild(o); });
+      sel.value = cur;
+    });
+    return;
+  }
   ["tutor-voice", "tutor-voice-lobby"].forEach(id => {
     const sel = tutorEl(id); if (!sel) return;
     sel.innerHTML = "";
@@ -2376,6 +2425,17 @@ function fillTutorVoices() {
 }
 /** 목소리 바꾸기 (설정·시작 화면 어느 쪽에서든): 바로 한 마디 들려준다 */
 function changeTutorVoice(sel) {
+  if (tutorLiveModeId() === "on") {   // 실시간 대화: 구글 목소리를 바꾸고 바로 한 마디 들려준다 (대화 중이면 새 목소리로 다시 연결)
+    try { localStorage.setItem("tutorLiveVoice_" + tutorCharId(), (sel || tutorEl("tutor-voice")).value); } catch (e) {}
+    fillTutorVoices();
+    tutorStopPreview();
+    tutorPreviewButtons("loading");
+    tutorPreviewDebounce = setTimeout(() => {
+      tutorPreviewVoice(true);
+      if (tutorLive) { const token = tutorSessionToken; tutorLiveStop(); tutorLiveStart(token, { resume: true, fresh: true }); }
+    }, 500);
+    return;
+  }
   try { localStorage.setItem("tutorVoice", (sel || tutorEl("tutor-voice")).value); } catch (e) {}
   fillTutorVoices();
   tutorStopPreview();
