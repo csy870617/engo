@@ -1292,7 +1292,7 @@ function renderTutorLiveMode() {
   const cur = tutorLiveModeId();
   ["tutor-mode-lobby", "tutor-mode-set"].forEach(id => {
     const box = tutorEl(id);
-    if (box) box.innerHTML = [["on", "⚡ 실시간"], ["off", "기본"]].map(([k, v]) =>
+    if (box) box.innerHTML = [["on", "⚡ 실시간"], ["off", "수동 설정"]].map(([k, v]) =>
       `<button class="tutor-level-btn${k === cur ? " active" : ""}" onclick="changeTutorLiveMode('${k}')">${v}</button>`).join("");
   });
   const room = tutorEl("tutor-chat-area"); if (room) room.classList.toggle("live-mode", cur === "on");   // 실시간이면 '말 끝 기다리기'·'말 보내기'는 필요 없다
@@ -1366,11 +1366,11 @@ function tutorLiveStart(token, opts = {}) {
 }
 /** 연결이 안 된다: 예전 방식으로 바꿔 대화를 이어 간다 */
 function tutorLiveFail(L, info, opts) {
-  console.warn("실시간 대화 연결 실패 → 기본 방식", info);
+  console.warn("실시간 대화 연결 실패 → 수동 설정", info);
   tutorLiveStop();
   const bad = /api key|API_KEY|permission|denied|not found|not supported|quota|exhausted|exceeded|billing/i.test(info.reason || "") || info.code === 1008 || info.code === 1007;
   if (bad) { try { localStorage.setItem("tutorLiveBrokenAt", String(Date.now())); localStorage.setItem("tutorLiveBrokenKey", tutorGetKey().slice(-6)); } catch (e) {} }
-  tutorVoiceNote("실시간 대화를 쓸 수 없어서 기본 방식으로 대화해요" + (info.reason ? ` (${String(info.reason).slice(0, 80)})` : ""));
+  tutorVoiceNote("실시간 대화를 쓸 수 없어서 수동 설정으로 대화해요" + (info.reason ? ` (${String(info.reason).slice(0, 80)})` : ""));
   const token = tutorSessionToken;
   const greet = opts.greet || (!L.heardModel && L.greetText);       // 인사도 못 들었으면 기기 목소리로 인사부터
   if (greet) tutorClassicGreet(token, greet);
