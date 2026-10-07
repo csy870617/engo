@@ -14,7 +14,7 @@ const TUTOR_GEMINI_CHAINS = {
   chat: ["gemini-3.5-flash-lite", "gemini-3.6-flash", "gemini-3.5-flash", "gemini-3.1-flash-lite", "gemini-3.8-flash"],
   aux: ["gemini-3.1-flash-lite", "gemini-3.5-flash-lite", "gemini-3.6-flash"],
   fix: ["gemini-3.6-flash", "gemini-3.5-flash", "gemini-3.1-flash-lite", "gemini-3.5-flash-lite"],   // 첨삭: 정확해야 해서 Flash부터 (막히면 Lite로)
-  hint: ["gemini-3.1-flash-lite", "gemini-3.6-flash", "gemini-3.5-flash-lite"]   // 힌트는 대화와 다른, 빠른 모델부터 (무료 사용량도 나눈다)
+  hint: ["gemini-3.5-flash", "gemini-3.1-flash-lite", "gemini-3.6-flash", "gemini-3.5-flash-lite"]   // 힌트: 자연스러운 표현이 중요해서 Flash부터 (대화·첨삭과 다른 모델로 무료 사용량도 나눈다. 튜터가 말하는 동안 미리 만든다)
 };
 const GEMINI_KEY_STORE = "geminiApiKey";
 const GEMINI_KEY_PAGE = "https://aistudio.google.com/apikey";
@@ -2618,15 +2618,30 @@ function tutorParseHints(text, final) {
     .map(l => { const [en, kr] = l.split("|||").map(x => x.trim().replace(/^["“]|["”]$/g, "")); return { en, kr: kr || "" }; })
     .filter(h => h.en && /[a-z]/i.test(h.en)).slice(0, 3);
 }
+// 힌트 길이·낱말 수준 (수준별)
+const TUTOR_HINT_LEVEL = {
+  beginner: "4 to 10 words each, very common everyday words and simple grammar.",
+  intermediate: "up to about 14 words each, everyday expressions and common phrasal verbs.",
+  advanced: "up to about 18 words each, natural idioms and phrasal verbs a native speaker would use."
+};
 async function loadTutorAiHints(key) {
   const said = tutorSaidLines[tutorSaidLines.length - 1] || "";
   const entry = tutorHintCache;
   const show = list => { if (tutorHintCache === entry && tutorHintCache.key === key && list.length > (entry.list || []).length) { entry.list = list; if (tutorHintShown) renderTutorHint(true); } };
   const text = await geminiStream([
-    { role: "system", content: `You help a Korean adult practice English conversation at the ${tutorLevel().desc} level. ` +
-      "Suggest 3 different, natural things the student could say next in reply to the teacher's last message, in real spoken English at the student's level " +
-      "(beginner: short and simple): for example a short answer, an answer with a detail, and a question back.\n" +
-      "Write exactly 3 lines and nothing else. Each line: the English sentence, then ' ||| ', then its natural Korean meaning." },
+    { role: "system", content: [
+      `You help a Korean adult at the ${tutorLevel().desc} level reply in a casual English conversation. Suggest 3 different things the student could naturally say next, in reply to the teacher's last message.`,
+      "- Each must be what a native speaker would actually say in everyday conversation: natural and fully grammatical, with contractions (I'm, it's, didn't). Not stiff textbook English (never \"I am fine, thank you. And you?\").",
+      "- Directly answer or respond to the teacher's last message, using the conversation so far, and sound like the student's own real answer (concrete, with a small personal detail).",
+      "- Make the 3 different: 1) a short, easy answer 2) an answer with one detail or reason 3) an answer that also asks something back or keeps the chat going.",
+      `- Length and words: ${TUTOR_HINT_LEVEL[tutorLevelId()] || TUTOR_HINT_LEVEL.beginner}`,
+      "- The Korean is the natural spoken meaning (해요체), not a word-for-word translation.",
+      "Write exactly 3 lines and nothing else. Each line: the English, then ' ||| ', then the Korean.",
+      "Example (teacher: \"What did you do last weekend?\"):",
+      "I just stayed home and relaxed. ||| 그냥 집에서 쉬었어요.",
+      "I went hiking with my friends. It was really nice. ||| 친구들이랑 등산 갔어요. 정말 좋았어요.",
+      "Not much, honestly. How about you? ||| 솔직히 별거 안 했어요. 당신은요?"
+    ].join("\n") },
     { role: "user", content: `Conversation so far:\n${tutorTranscript(6) || "(none)"}\n` +
       (tutorMessages.length <= 1 && said ? `Teacher: ${said}\n` : "") + "Suggest what the student can say next." }
   ], { temperature: 0.7, maxTokens: 220, chain: "hint", budget: 15000 }, partial => show(tutorParseHints(partial, false)));
