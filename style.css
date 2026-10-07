@@ -1035,6 +1035,8 @@ body.list-playing .neural-loading { bottom: calc(86px + env(safe-area-inset-bott
 .tutor-log { display: flex; flex-direction: column; gap: 8px; max-height: 36vh; min-height: 120px; overflow-y: auto; padding: 4px 2px 8px; }
 .tutor-msg { max-width: 85%; padding: 10px 13px; border-radius: 16px; font-size: 0.95rem; line-height: 1.45; word-break: break-word; }
 .tutor-msg.tutor { align-self: flex-start; background: rgba(56,189,248,0.12); border: 1px solid rgba(56,189,248,0.25); color: var(--text-main); border-bottom-left-radius: 6px; cursor: pointer; }
+/* 대화 기록에 넣지 않는 짧은 튜터 말 ("Take your time." · "So, where were we?") */
+.tutor-msg.tutor.tutor-nudge { background: transparent; border-style: dashed; opacity: 0.85; font-size: 0.88rem; }
 .tutor-msg.me { align-self: flex-end; background: var(--primary); color: #fff; border-bottom-right-radius: 6px; }
 .tutor-tip { align-self: flex-end; max-width: 85%; margin-top: -2px; padding: 8px 12px; border-radius: 12px; font-size: 0.82rem; line-height: 1.5; color: #fde68a; background: rgba(251,191,36,0.1); border: 1px solid rgba(251,191,36,0.3); }
 .tutor-tip b { color: #fff; font-weight: 600; }
@@ -1165,6 +1167,8 @@ html.tutor-lock body { position: fixed; inset: 0; width: 100%; }
 /* 듣는 중: Emma 아래쪽에 은은한 초록 테두리 */
 .talk-room[data-mode="listening"] .talk-hero::before { content: ""; position: absolute; left: 0; right: 0; bottom: 0; height: 3px; z-index: 3; background: #10b981; box-shadow: 0 0 12px rgba(16,185,129,0.8); animation: tutorListenBar 1.6s ease-in-out infinite; }
 @keyframes tutorListenBar { 0%, 100% { opacity: 0.55; } 50% { opacity: 1; } }
+/* 말소리가 들어오는 동안 듣기 막대가 조금 두꺼워진다 */
+.talk-room[data-mode="listening"][data-hearing] .talk-hero::before { height: 4px; animation: none; opacity: 1; }
 
 /* AI 튜터 시작 화면: 튜터·수준·목소리 고르고 시작하기 */
 .tutor-lobby { max-height: 64%; z-index: 5; }   /* 설정·피드백 판(6)은 시작 화면 위에 열린다 */
