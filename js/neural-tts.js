@@ -170,6 +170,7 @@ const NeuralTTS = (() => {
         sources.add(src);
         src.onended = () => { sources.delete(src); settle(); };
         src.start(at);
+        return at;                                       // 이 조각이 시작하는 시각 (재생 장치 시계)
       },
       end() {
         if (ended) return;
@@ -211,6 +212,8 @@ const NeuralTTS = (() => {
     isLoaded, ensureLoaded, shutdown, synthesize, cancelBefore, unlockAudio, play, playStream, stopAudio, outputLevel, suspendAudio,
     isPlaying: () => !!currentSource,   // 지금 실제로 소리를 내는 중인지 (튜터 말하는 영상용)
     // 재생 장치가 내보낸 소리가 실제로 귀에 들리기까지 걸리는 시간 (ms, 블루투스면 길다) — 입술 싱크를 여기에 맞춘다
-    outputLatencyMs: () => audioCtx ? ((audioCtx.outputLatency || 0) + (audioCtx.baseLatency || 0)) * 1000 : 0
+    outputLatencyMs: () => audioCtx ? ((audioCtx.outputLatency || 0) + (audioCtx.baseLatency || 0)) * 1000 : 0,
+    // 지금 귀에 들리는 소리의 시각 (재생 장치 시계 기준, push가 돌려준 시각과 비교한다)
+    heardTime: () => audioCtx ? audioCtx.currentTime - Math.min(0.35, (audioCtx.outputLatency || 0) + (audioCtx.baseLatency || 0)) : 0
   };
 })();
