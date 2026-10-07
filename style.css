@@ -1137,11 +1137,6 @@ html.tutor-lock body { position: fixed; inset: 0; width: 100%; }
 .talk-avatar.has-clips { padding: 0; background-size: cover; background-position: center var(--face-y); }
 .talk-avatar .tutor-clip { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: center var(--face-y); opacity: 0; transition: opacity 0.12s linear; pointer-events: none; }
 .talk-avatar .tutor-clip.on { opacity: 1; }
-/* 입 조각 방식: 말하는 영상은 듣는 영상 아래에 늘 깔린 원본(보이지 않음), 위의 캔버스(얼굴+입)만 나타났다 사라진다 → 겹쳐 바뀌는 동안 원래 입이 비치지 않게 */
-.talk-avatar.mouth-mode { isolation: isolate; }
-.talk-avatar.mouth-mode .tutor-clip[data-clip="talk"] { z-index: 0; opacity: 1; transition: none; }
-.talk-avatar.mouth-mode .tutor-clip[data-clip="idle"] { z-index: 1; opacity: 1; }
-.talk-avatar.mouth-mode .tutor-mouth { z-index: 2; }
 .talk-top { position: absolute; top: calc(10px + env(safe-area-inset-top)); left: 12px; right: 12px; z-index: 3; display: flex; align-items: center; justify-content: space-between; }
 .talk-top-right { display: flex; gap: 8px; }
 .talk-name { position: absolute; left: 16px; right: 16px; bottom: 12px; z-index: 3; display: flex; align-items: center; gap: 10px; }
