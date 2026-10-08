@@ -1172,7 +1172,7 @@ html.tutor-lock body { position: fixed; inset: 0; width: 100%; }
 .talk-avatar .tutor-frame.on { opacity: 1; }
 /* 영상 튜터: 듣기·말하기 영상을 겹쳐 두고 서서히 바꾼다 (얼굴이 위쪽에 오게 맞춤) */
 .talk-room { --face-y: 22%; }                 /* 얼굴 높이 맞춤: 영상·첫 장면이 같은 값을 쓴다 */
-.talk-room.typing { --face-y: 44%; }          /* 글 쓰는 중 그림이 작으면 입까지 보이게 */
+.talk-room.typing { --face-y: 36%; }          /* 글 쓰는 중에도 얼굴이 가운데쯤 오게 */
 .talk-room.lobby { --face-y: 30%; }           /* 시작 화면 판 위로 입이 보이게 */
 .talk-avatar.has-clips { padding: 0; background-size: cover; background-position: center var(--face-y); }
 .talk-avatar .tutor-clip { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: center var(--face-y); opacity: 0; transition: opacity 0.12s linear; pointer-events: none; }
@@ -1194,12 +1194,12 @@ html.tutor-lock body { position: fixed; inset: 0; width: 100%; }
 .talk-input .search-input { height: 44px; border-radius: 22px; padding: 0 16px; font-size: max(16px, 1rem); }   /* 16px보다 작으면 아이폰이 눌렀을 때 확대한 채로 남는다 */
 .talk-input .tutor-round-btn { width: 42px; height: 42px; }
 #tutor-hint-btn.on { background: rgba(139,92,246,0.35); border-color: rgba(139,92,246,0.6); }
-/* 글로 쓰는 동안은 Emma를 줄여 대화가 잘 보이게 */
-.talk-room.typing .talk-hero { flex-basis: 30%; }
-.talk-room.typing .talk-hint { max-height: 34%; flex-shrink: 0; }
+/* 글로 쓰는 동안(키보드가 올라와 좁을 때)도 튜터가 크게 보이게: 대화는 마지막 몇 줄만 */
+.talk-room.typing .talk-hero { flex: 1 1 auto; min-height: 120px; }
+.talk-room.typing .talk-log { flex: 0 0 auto; height: clamp(64px, 26%, 150px); }
+.talk-room.typing .talk-hint { max-height: 30%; flex-shrink: 0; }
 .talk-room.typing .talk-hero::after { height: 18%; }
-.talk-room.typing.hinting .talk-hero { flex-basis: 22%; }      /* 키보드 + 힌트: 그림을 더 줄여 튜터 말과 힌트가 보이게 */
-.talk-room.typing.hinting .talk-log { min-height: 18%; }
+.talk-room.typing.hinting .talk-log { height: clamp(48px, 16%, 100px); }   /* 키보드 + 힌트: 대화를 더 줄여 튜터와 힌트가 보이게 */
 .talk-room.typing .talk-hint .tutor-hint-head { display: none; }   /* 키보드가 올라와 좁을 때는 안내 줄을 줄인다 */
 .talk-room.typing .talk-avatar { padding-bottom: 36px; }
 /* 듣는 중: Emma 아래쪽에 은은한 초록 테두리 */
