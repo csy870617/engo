@@ -761,13 +761,9 @@ function tutorLastIsError() { const last = tutorLastReal(); return !!(last && la
 function tutorQuietRestart() {
   const token = tutorSessionToken;
   if (!tutorCallActive) { tutorQuietTries = 0; return; }
-  if (tutorQuietTries >= 2) { tutorQuietTries = 0; setTutorStatus(`준비되면 ${tutorName()}를 눌러 주세요`, ""); return; }
-  const stage = tutorQuietTries++;
-  const helpOk = !tutorSendManual() && !tutorPractice && !tutorHintShown && tutorCanAutoListen(token) && !tutorTypingNow();
-  const q = tutorPendingQuestion(), err = tutorLastIsError();
-  // 대답할 거리가 있을 때만 말을 건넨다 (작별 인사 뒤처럼 물은 게 없으면 조용히 다시 듣기만)
-  if (helpOk && stage === 0 && (q || err || tutorKoTarget)) { tutorQuietNudge(token, !err && !tutorHintTarget && !tutorKoTarget ? q : ""); return; }
-  if (helpOk && stage === 1 && tutorCanRephrase(q, err)) { tutorQuietRephrase(token); return; }
+  // 말이 없어도 튜터가 먼저 말을 건네지 않는다: 조용히 계속 듣다가, 한참(약 30초) 말이 없으면 마이크만 쉰다
+  if (tutorQuietTries >= 4) { tutorQuietTries = 0; setTutorStatus(`준비되면 ${tutorName()}를 눌러 주세요`, ""); return; }
+  tutorQuietTries++;
   tutorAfterSpeak(token);
 }
 function tutorQuietNudge(token, q) {
@@ -1263,7 +1259,6 @@ function tutorClassicGreet(token, greet) {
   // 인사를 들려주는 동안 조용할 때 할 말과 인사의 질문만 따로 목소리를 미리 만들어 둔다 (말이 막히면 바로 건네게)
   if (tutorUseNatural()) tutorTtsFetch(greet, false).ready.then(() => {
     if (token !== tutorSessionToken) return;
-    tutorTtsFetch(tutorTurnPick(TUTOR_NUDGES, true), false);
     const gq = tutorSplitSentences(greet).filter(tutorIsQuestion).pop();
     if (gq) tutorTtsFetch(gq, false);
   });
@@ -1557,7 +1552,6 @@ async function tutorReply(token, learner, opts = {}) {
   if (tutorHintsUsed()) tutorPrepareHints();   // 듣는 동안 다음에 할 말 힌트를 미리 만들어 둔다
   if (opts.quiet && tutorHintsUsed() && !tutorHintShown) { tutorHintShown = true; renderTutorHint(); }   // 말이 막힌 것 같으면 힌트도 펼쳐 준다
   if (await voice.finish()) tutorHeardAll = true;
-  if (tutorUseNatural()) tutorTtsFetch(tutorTurnPick(TUTOR_NUDGES, true), false);   // 다음에 말이 막히면 건넬 말을 미리 (저장돼 있으면 바로 불러온다)
   tutorAfterSpeak(token);
 }
 
