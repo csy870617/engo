@@ -179,7 +179,7 @@ function renderWordList() {
     container.appendChild(div);
   });
   if (filtered.length === 0) container.innerHTML = keyword || !wordStudyingOnly ? '<div class="list-item"><div>검색 결과가 없습니다.</div></div>'
-    : '<div class="list-item"><div>🎉 이 레벨 단어를 모두 외웠어요! \'미암기만\'을 끄면 전체가 보여요.</div></div>';
+    : `<div class="list-item"><div>🎉 ${selectedWordLevel ? '이 레벨 ' : ''}단어를 모두 외웠어요! '미암기만'을 끄면 전체가 보여요.</div></div>`;
   afterListRender('word');
   updateWordProgress();
 }
@@ -288,7 +288,7 @@ function renderIdiomList() {
     container.appendChild(div);
   });
   if (filtered.length === 0) container.innerHTML = keyword || !idiomStudyingOnly ? '<div class="list-item"><div>검색 결과가 없습니다.</div></div>'
-    : '<div class="list-item"><div>🎉 이 레벨 숙어를 모두 외웠어요! \'미암기만\'을 끄면 전체가 보여요.</div></div>';
+    : `<div class="list-item"><div>🎉 ${selectedIdiomLevel ? '이 레벨 ' : ''}숙어를 모두 외웠어요! '미암기만'을 끄면 전체가 보여요.</div></div>`;
   afterListRender('idiom');
   updateIdiomProgress();
 }
