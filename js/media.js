@@ -25,17 +25,22 @@ let neuralGen = 0;               // 정지·이동할 때마다 증가 → 이�
 let neuralSpeakToken = 0;        // 새 문장을 재생하면 이전 재생을 멈추기 위한 표식
 const neuralClipCache = new Map(); // 만든 음성 재사용 (같은 문장 다시 듣기·미리 만들기)
 
-function loadVoices() {
+// 아이폰·맥의 장난스러운 목소리(효과음 목소리)는 기본 목소리로 고르지 않는다
+const NOVELTY_VOICE = /^(Albert|Bad News|Bahh|Bells|Boing|Bubbles|Cellos|Deranged|Good News|Hysterical|Jester|Junior|Kathy|Organ|Pipe Organ|Princess|Ralph|Superstar|Trinoids|Whisper|Wobble|Zarvox|Fred)\b/i;
+/** 브라우저 목소리 목록만 다시 읽는다 (목록은 늦게 도착하기도 해서 voiceschanged 때마다) */
+function refreshVoices() {
   // speechSynthesis 미지원 브라우저(일부 인앱 웹뷰 등)에서 예외가 나면 초기화 전체가 중단되므로 가드
   ttsVoices = ("speechSynthesis" in window) ? window.speechSynthesis.getVoices() : [];
-  const enVoices = ttsVoices.filter(v => v.lang.includes("en"));
+  const allEn = ttsVoices.filter(v => v.lang.includes("en"));
+  const enVoices = allEn.filter(v => !NOVELTY_VOICE.test(v.name)).length ? allEn.filter(v => !NOVELTY_VOICE.test(v.name)) : allEn;
   const preferredVoices = enVoices.filter(v => v.name.includes("Google") || v.name.includes("Samantha") || v.name.includes("Siri"));
 
-  // 기본 목소리 결정: Google US English → 다른 Google 계열 en-US → 임의 en-US → 첫 영어 목소리
+  // 기본 목소리 결정: Google US English → 다른 Google 계열 en-US → Samantha(아이폰) → 임의 en-US → 첫 영어 목소리
   const isEnUS = (v) => v.lang.replace("_", "-").toLowerCase().startsWith("en-us");
   defaultVoice =
     enVoices.find(v => v.name === DEFAULT_VOICE_NAME) ||
     enVoices.find(v => v.name.includes("Google") && isEnUS(v)) ||
+    enVoices.find(v => v.name.includes("Samantha")) ||
     enVoices.find(isEnUS) ||
     enVoices[0] || null;
 
@@ -57,8 +62,16 @@ function loadVoices() {
       voiceB = preferredVoices.find(v => v !== defaultVoice) || enVoices.find(v => v !== defaultVoice) || defaultVoice;
     }
   }
+  populateVoiceSelect();
+}
 
-  const raw = localStorage.getItem("ttsSettings");
+/** 시작할 때 한 번: 목소리 목록 + 저장된 설정(속도·글자 크기·자동 재생·AI 음성) */
+function loadVoices() {
+  refreshVoices();
+  let raw = null;
+  try { raw = localStorage.getItem("ttsSettings"); } catch (e) {}   // 사이트 저장이 막힌 브라우저에서도 시작은 되게
+  // 기본 목소리 바꾸기(af_heart → af_bella)는 예전 설정이 있던 사람에게만 한 번: 처음 쓰는 사람은 표시만 해 둔다
+  let migrated = true; try { migrated = !!localStorage.getItem('neuralVoiceV5'); localStorage.setItem('neuralVoiceV5', '1'); } catch (e) {}
   if(raw) {
     try {
       const d = JSON.parse(raw);
@@ -73,8 +86,7 @@ function loadVoices() {
       // 예전 음성(F1~F5 · M1~M5)을 골랐었다면 새 음성의 같은 성별 기본 목소리로
       let nv = /^F\d$/.test(d.neuralVoice || '') ? 'af_bella' : /^M\d$/.test(d.neuralVoice || '') ? 'am_michael' : d.neuralVoice;
       // 기본 목소리를 '밝고 생기 있는'(af_bella)으로 바꿨다: 예전 기본(af_heart)이던 사람도 한 번 새 기본으로
-      if (nv === 'af_heart' && !localStorage.getItem('neuralVoiceV5')) nv = 'af_bella';
-      try { localStorage.setItem('neuralVoiceV5', '1'); } catch (e) {}
+      if (nv === 'af_heart' && !migrated) nv = 'af_bella';
       neuralVoice = neuralVoiceIds().includes(nv) ? nv : null;
       if (neuralVoice && neuralVoice !== d.neuralVoice) persistNeuralVoiceChoice();
     } catch (e) { console.warn("ttsSettings parse 실패", e); }
@@ -120,9 +132,10 @@ function currentVoiceSelectValue() {
   if (neuralVoice && neuralReady) return NEURAL_PREFIX + neuralVoice;
   return userVoiceIndex !== null ? String(userVoiceIndex) : "";
 }
-if("speechSynthesis" in window) window.speechSynthesis.onvoiceschanged = loadVoices;
+if("speechSynthesis" in window) window.speechSynthesis.onvoiceschanged = refreshVoices;   // (설정은 다시 읽지 않는다: 고르던 속도가 되돌아가지 않게)
 
 function speakText(text, speaker = null) {
+  if (typeof stopAudio === 'function') stopAudio();   // 흐르던 자동 재생·전체 듣기는 멈추고 이 문장만
   if (usingNeural()) { speakNeural(text, speaker); return; }
   speakBrowser(text, speaker);
 }
@@ -134,12 +147,12 @@ function speakWithPromise(text, speaker) {
 
 function speakBrowser(text, speaker = null) {
   if (!("speechSynthesis" in window)) {
-    alert("이 브라우저는 음성 합성을 지원하지 않습니다.");
+    if (!speakBrowser.warned) { speakBrowser.warned = true; alert("이 브라우저는 영어 읽어 주기를 지원하지 않아요.\n크롬이나 사파리에서 열면 들을 수 있어요."); }
     return;
   }
   window.speechSynthesis.cancel();
   
-  const u = new SpeechSynthesisUtterance(text);
+  const u = new SpeechSynthesisUtterance(cleanForSpeech(text));
   u.lang = "en-US";
   u.rate = userRate || 1.0;
 
@@ -164,7 +177,7 @@ function speakBrowserWithPromise(text, speaker) {
     // TTS 미지원 브라우저에서 자동재생 루프가 예외로 죽지 않도록 가드
     if (!("speechSynthesis" in window)) { resolve(); return; }
 
-    const u = new SpeechSynthesisUtterance(text);
+    const u = new SpeechSynthesisUtterance(cleanForSpeech(text));
     u.lang = "en-US";
     u.rate = userRate || 1.0;
 
@@ -227,7 +240,7 @@ function previewVoiceSettings() {
   }
   if (!("speechSynthesis" in window)) return;
   window.speechSynthesis.cancel();
-  if (typeof NeuralTTS !== 'undefined') NeuralTTS.stopAudio();
+  skipCurrentSpeech();   // 만들던 AI 음성 미리 듣기도 버린다
   const u = new SpeechSynthesisUtterance("Hello.");
   u.lang = "en-US";
   u.rate = userRate;
@@ -254,6 +267,7 @@ function saveSettings() {
     if (Number.isNaN(userVoiceIndex)) userVoiceIndex = null;
   }
   autoPlayEnabled = document.getElementById("tts-autoplay-toggle").checked;
+  if (typeof touchSettings === "function") touchSettings();   // 동기화 때 이 기기에서 바꾼 설정이 이기게
   localStorage.setItem("ttsSettings", JSON.stringify({
     voiceIndex: userVoiceIndex,
     rate: userRate,
@@ -280,19 +294,27 @@ function neuralStyleFor(speaker, styleOverride) {
   return base;
 }
 
-// 패턴 제목의 '~'(빈칸 표시)처럼 소리 내지 않을 기호 정리
-function cleanForNeural(text) {
-  return String(text || '').replace(/[~∼]/g, ' ').replace(/\s+/g, ' ').trim();
+// 패턴·숙어의 '~'(빈칸 표시)는 "물결"로 읽지 않게 말로 바꾼다: ~ing → doing, run ~ by → run something by, 나머지 ~ → someone
+function cleanForSpeech(text) {
+  return String(text || '')
+    .replace(/\brun\s*[~∼]\s*by\b/gi, 'run something by')
+    .replace(/[~∼]\s?ing\b/g, 'doing')
+    .replace(/[~∼]/g, 'someone')
+    .replace(/\s+/g, ' ').trim();
 }
+const cleanForNeural = cleanForSpeech;
 
 function requestNeuralClip(text, style) {
   const key = `${style}|${userRate}|${text}`;
   let p = neuralClipCache.get(key);
-  if (p) { neuralClipCache.delete(key); neuralClipCache.set(key, p); return p; }
-  p = NeuralTTS.synthesize(cleanForNeural(text), style, userRate, neuralGen);
+  // 다 만든 것이나 지금 세대에서 만드는 중인 것만 다시 쓴다 (멈추기 전 세대의 요청은 빈 결과로 끝나 그 문장이 소리 없이 건너뛰어진다)
+  if (p && (p.ready || p.gen === neuralGen)) { neuralClipCache.delete(key); neuralClipCache.set(key, p); return p; }
+  p = NeuralTTS.synthesize(cleanForSpeech(text), style, userRate, neuralGen);
+  p.gen = neuralGen;
   neuralClipCache.set(key, p);
-  // 버려진(null) 요청이나 실패한 요청은 다시 만들 수 있게 지운다
-  p.then(r => { if (!r) neuralClipCache.delete(key); }, () => neuralClipCache.delete(key));
+  // 버려진(null) 요청이나 실패한 요청은 다시 만들 수 있게 지운다 (그사이 새 요청으로 바뀌었으면 건드리지 않는다)
+  p.then(r => { if (r) p.ready = true; else if (neuralClipCache.get(key) === p) neuralClipCache.delete(key); },
+         () => { if (neuralClipCache.get(key) === p) neuralClipCache.delete(key); });
   while (neuralClipCache.size > 30) neuralClipCache.delete(neuralClipCache.keys().next().value);
   return p;
 }
@@ -327,9 +349,13 @@ async function speakNeural(text, speaker, styleOverride) {
   const myGen = neuralGen;
   if (!NeuralTTS.isLoaded()) showNeuralLoading(true);
   try {
-    const clip = await requestNeuralClip(text, neuralStyleFor(speaker, styleOverride));
+    let late = null;
+    const clip = await Promise.race([requestNeuralClip(text, neuralStyleFor(speaker, styleOverride)),
+      new Promise(resolve => { late = setTimeout(() => resolve('late'), NeuralTTS.isLoaded() ? 15000 : 25000); })]);
+    clearTimeout(late);
     if (token !== neuralSpeakToken) return;
     showNeuralLoading(false);
+    if (clip === 'late') { if (myGen === neuralGen) await speakBrowserWithPromise(text, speaker); return; }   // 너무 늦으면 이번 문장은 기본 음성으로
     if (!clip || myGen !== neuralGen) return;
     // 재생 끝 신호가 오지 않는 경우(아이폰에서 앱을 내렸다 돌아올 때 등) 연속 재생이 멈추지 않도록
     // 문장 길이 + 3초가 지나면 다음으로 넘어간다
@@ -372,8 +398,15 @@ function stopNeuralSpeech() {
 
 // 아이폰은 사용자 동작 안에서만 소리 장치를 켤 수 있어, 화면을 누를 때마다 깨워 둔다
 // (쉐도잉처럼 잠시 뒤에 재생을 시작하는 경우 대비)
+let speechPrimed = false;
+const IS_IOS = /iPhone|iPad|iPod/i.test(navigator.userAgent) || (/Macintosh/.test(navigator.userAgent) && navigator.maxTouchPoints > 1);
 ['click', 'touchend'].forEach(type => document.addEventListener(type, () => {
   if (usingNeural()) NeuralTTS.unlockAudio();
+  // 아이폰은 누른 순간에 한 번 말해 둬야 나중에(자연스러운 음성이 실패해 대신 읽을 때) 기본 음성이 들린다
+  if (IS_IOS && !speechPrimed && "speechSynthesis" in window && typeof SpeechSynthesisUtterance !== 'undefined') {
+    speechPrimed = true;
+    try { const u = new SpeechSynthesisUtterance(" "); u.volume = 0; window.speechSynthesis.speak(u); } catch (e) {}
+  }
 }, true));
 
 /** 시작 시: 받아 둔 음성이 있는지 확인하고, 쓰고 있다면 모델을 미리 열어 둔다 */
@@ -436,6 +469,7 @@ function refreshNeuralUI() {
   area.classList.remove('hidden');
   refreshNeuralPromo();
   if (neuralDownloading) return;
+  if (neuralReady && neuralBroken) { setNeuralUI('자연스러운 음성을 열지 못해 지금은 기본 음성으로 읽고 있어요.', '↻ 다시 열어 보기', null, 'primary'); return; }
   if (neuralReady) setNeuralUI(NeuralTTS.tooSlow()
     ? '받아 둠 · 다만 이 기기에서는 목소리를 만드는 게 느려서 기본 음성으로 읽어요.'
     : `✅ 받아 둠 · 인터넷 없이 사용할 수 있어요. 위 목록에서 여성·남성 목소리 ${NeuralTTS.VOICES.length}종 중 고를 수 있습니다.`, '받은 음성 삭제', null, 'text');
@@ -454,6 +488,13 @@ function persistNeuralVoiceChoice() {
 async function onNeuralButton() {
   if (typeof NeuralTTS === 'undefined') return;
   if (neuralDownloading) { NeuralTTS.cancelDownload(); return; }
+  if (neuralReady && neuralBroken) {   // 다시 열어 보기
+    neuralBroken = false; neuralClipCache.clear(); NeuralTTS.shutdown();
+    setNeuralUI('여는 중…', '여는 중…', null, 'sub');
+    try { await NeuralTTS.ensureLoaded(); refreshNeuralUI(); alert("✅ 자연스러운 음성을 다시 열었어요."); }
+    catch (e) { neuralBroken = true; refreshNeuralUI(); alert("이번에도 열지 못했어요. 앱을 완전히 닫았다 다시 열어 보세요.\n(" + ((e && e.message) || e) + ")"); }
+    return;
+  }
 
   if (neuralReady) {
     if (!confirm("받아 둔 자연스러운 음성을 삭제할까요?\n다시 쓰려면 새로 내려받아야 합니다.")) return;
@@ -491,10 +532,10 @@ async function onNeuralButton() {
     neuralDownloading = false;
     refreshNeuralUI();
     if (e && e.name === 'AbortError') {
-      setNeuralUI('받기를 멈췄습니다. 다시 누르면 받은 부분부터 이어서 받습니다.', '⬇ 이어 받기', null, 'primary');
+      setNeuralUI('받기를 멈췄어요. 다시 누르면 처음부터 다시 받아요.', '⬇ 다시 받기', null, 'primary');
     } else {
       console.error(e);
-      alert("음성을 받지 못했습니다.\n" + (e && e.message || e) + "\n다시 누르면 받은 부분부터 이어서 받습니다.");
+      alert("음성을 받지 못했어요. 와이파이 연결을 확인하고 다시 눌러 주세요. (처음부터 다시 받아요)\n(" + (e && e.message || e) + ")");
     }
   }
 }
@@ -527,19 +568,21 @@ async function fetchRealNews() {
     if (!response.ok) throw new Error("HTTP " + response.status);
     const data = await response.json();
 
-    if (data.status === 'ok' && Array.isArray(data.items)) {
+    if (data.status === 'ok' && Array.isArray(data.items) && data.items.length) {
       container.innerHTML = "";
       const allArticles = data.items.slice(0, 15);
       const selectedArticles = shuffleArray(allArticles).slice(0, 3);
       
       selectedArticles.forEach(item => {
-        const cleanTitle = item.title.split(" - ")[0];
-        const sourceName = item.title.split(" - ")[1] || "News";
-        const timeAgo = getTimeAgo(new Date(item.pubDate));
+        const title = String(item.title || ""), cut = title.lastIndexOf(" - ");
+        const cleanTitle = cut > 0 ? title.slice(0, cut) : title;
+        const sourceName = cut > 0 ? title.slice(cut + 3) : "News";
+        const pub = String(item.pubDate || "");
+        const timeAgo = getTimeAgo(new Date(/^\d{4}-\d\d-\d\d \d\d:\d\d:\d\d$/.test(pub) ? pub.replace(" ", "T") + "Z" : pub));   // rss2json 시각은 UTC (시간대 표시 없음)
 
         const card = document.createElement('div');
         card.className = 'news-card';
-        card.onclick = () => window.open(item.link, '_blank', 'noopener,noreferrer');
+        card.onclick = () => { if (/^https?:\/\//i.test(item.link || "")) window.open(item.link, '_blank', 'noopener,noreferrer'); };
 
         let topicTag = "#Trending";
         if (currentTopicIndex === 0) topicTag = "#K-Culture";
@@ -591,7 +634,7 @@ function loadBackupNews() {
   newsData.forEach(news => {
     const card = document.createElement('div');
     card.className = 'news-card';
-    card.onclick = () => window.open(news.url, '_blank');
+    card.onclick = () => window.open(news.url, '_blank', 'noopener,noreferrer');
     card.innerHTML = `<div><span class="news-tag">#${news.tag}</span><div class="news-title">${news.title}</div><div class="news-summary">${news.summary}</div></div><div class="news-footer">Source: ${news.source}</div>`;
     container.appendChild(card);
   });
@@ -613,10 +656,7 @@ function getTimeAgo(date) {
   return years + (years === 1 ? " year ago" : " years ago");
 }
 
-// 3. Share
-if (typeof Kakao !== 'undefined' && !Kakao.isInitialized()) { 
-    try { Kakao.init('7e17cb2ba4738f9e3cd710879d487959'); } catch(e) {}
-}
+// 3. Share (휴대폰 기본 공유 · 안 되면 주소 복사)
 
 function shareApp() {
   const shareData = { 

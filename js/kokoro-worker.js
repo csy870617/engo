@@ -31,14 +31,16 @@ async function handle(m) {
           let ok = false; try { ok = !!(self.navigator.gpu && await self.navigator.gpu.requestAdapter()); } catch (err) {}
           if (!ok) { device = "wasm"; dtype = "q8"; }
         }
-        try { await load(device, dtype); }
+        // 열고 나서 한 번 만들어 보기(준비 운동)까지 해야 실제로 쓸 수 있는지 안다 (그래픽 가속은 처음에 느리다)
+        const ready = async (dv, dt) => { await load(dv, dt); await tts.generate("Hi!", { voice: m.voice || "af_bella" }); };
+        try { await ready(device, dtype); }
         catch (err) {
           if (device !== "webgpu") throw err;
-          await load("wasm", "q8");                 // 그래픽 가속을 못 쓰면 가벼운 모델로
+          tts = null;
+          await ready("wasm", "q8");                 // 그래픽 가속으로 열거나 처음 만들기에 실패하면 가벼운 모델로
         }
       }
-      // 처음 한 번 만들어 보며 이 기기에서 얼마나 빠른지 잰다 (그래픽 가속은 이때 준비가 끝난다)
-      await tts.generate("Hi!", { voice: m.voice || "af_bella" });          // 한 번은 준비 운동 (그래픽 가속은 처음에 느리다)
+      // 처음 한 번 만들어 보며 이 기기에서 얼마나 빠른지 잰다
       const t0 = performance.now();
       const a = await tts.generate("Hi there, nice to meet you.", { voice: m.voice || "af_bella" });
       const sec = a.audio.length / a.sampling_rate;

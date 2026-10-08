@@ -28,7 +28,7 @@ const KokoroVoice = (() => {
 
   function ensureWorker() {
     if (worker) return worker;
-    worker = new Worker("js/kokoro-worker.js?v=2", { type: "module" });
+    worker = new Worker("js/kokoro-worker.js?v=3", { type: "module" });
     worker.onmessage = (e) => {
       const m = e.data || {};
       if (m.type === "progress") { if (progressCb) progressCb(m); return; }
@@ -61,12 +61,17 @@ const KokoroVoice = (() => {
       .then(m => {
         loaded = true; info = m;
         try { localStorage.setItem(READY_KEY, m.device + ":" + m.dtype); localStorage.setItem(SPEED_KEY, String(Math.round(m.rtf * 100) / 100)); } catch (e) {}
+        setTimeout(cacheVoices, 8000);   // 고를 수 있는 목소리 파일도 받아 둔다 (인터넷 없이도 모든 목소리가 나오게)
         return m;
       })
       .finally(() => { loading = null; progressCb = null; });
     const waitGpu = gpuOk === null ? new Promise(r => setTimeout(r, 600)) : Promise.resolve();   // 그래픽 가속 확인이 끝나기를 잠깐 기다린다
     const my = loading;
-    waitGpu.then(() => { if (loading !== my) return; const pl = plan(); ensureWorker().postMessage({ type: "load", device: pl.device, dtype: pl.dtype, voice }); });
+    waitGpu.then(() => {
+      if (loading !== my) return;
+      try { const pl = plan(); ensureWorker().postMessage({ type: "load", device: pl.device, dtype: pl.dtype, voice }); }
+      catch (e) { if (loading === my && my.reject) my.reject(e); }   // 일꾼을 못 만들면 기다리지만 말고 실패로 (기본 음성으로 읽게)
+    });
     return loading.promise;
   }
   function mkProgress(cb) {
@@ -105,6 +110,28 @@ const KokoroVoice = (() => {
     if (loading && loading.reject) loading.reject(new Error("음성 엔진을 멈췄어요"));
   }
   function scheduleUnload(ms) { clearTimeout(unloadTimer); unloadTimer = setTimeout(shutdown, ms || 60000); }
+  // 목소리 파일(목소리마다 약 0.5MB): 처음 쓸 때 하나씩 받는 방식이라, 받아 두지 않은 목소리는 인터넷이 없으면 나오지 않는다.
+  // 모델을 연 뒤 모두 받아 둔다. 크기가 맞는 파일만 넣는다 (받다 끊긴 파일이나 와이파이 로그인 화면 같은 엉뚱한 응답이 저장되지 않게)
+  const VOICE_IDS = ["af_bella", "af_heart", "af_nicole", "af_kore", "af_sarah", "bf_emma", "am_michael", "am_puck", "am_fenrir", "bm_george"];
+  const voiceUrl = id => `https://huggingface.co/onnx-community/Kokoro-82M-v1.0-ONNX/resolve/main/voices/${id}.bin`;
+  let voicesCaching = false;
+  async function cacheVoices() {
+    if (voicesCaching || typeof caches === "undefined" || navigator.onLine === false) return;
+    voicesCaching = true;
+    try {
+      const c = await caches.open("kokoro-voices");
+      for (const id of VOICE_IDS) {
+        try {
+          if (await c.match(voiceUrl(id))) continue;
+          const res = await fetch(voiceUrl(id));
+          if (!res.ok) continue;
+          const buf = await res.arrayBuffer();
+          if (buf.byteLength !== 522240) continue;          // 510 × 256 숫자 (float32)
+          await c.put(voiceUrl(id), new Response(buf, { headers: { "content-type": "application/octet-stream" } }));
+        } catch (e) {}
+      }
+    } catch (e) {} finally { voicesCaching = false; }
+  }
   /** 받아 둔 모델 지우기 */
   async function remove() {
     shutdown();

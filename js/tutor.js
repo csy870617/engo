@@ -586,7 +586,7 @@ function leaveTutorPage() {
   const hd = document.querySelector("header"); if (hd) hd.inert = false;
   tutorMarkPause(false);
   stopTutorActivity();
-  if (typeof KokoroVoice !== "undefined" && !tutorDl && !KokoroVoice.isLoading()) KokoroVoice.scheduleUnload(90000);   // 잠시 뒤 메모리에서 내린다 (금방 돌아오면 그대로 · 받는 중이면 끝까지 받게)
+  if (typeof KokoroVoice !== "undefined" && !tutorDl && !KokoroVoice.isLoading() && !(typeof usingNeural === "function" && usingNeural())) KokoroVoice.scheduleUnload(90000);   // 잠시 뒤 메모리에서 내린다 (금방 돌아오면 그대로 · 받는 중이면 끝까지 받게 · 예문 읽기에 쓰면 그대로)
   tutorStopPreview();
   tutorCallActive = false;
   toggleTutorSheet(undefined, false, "leave");

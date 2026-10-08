@@ -3,13 +3,21 @@
 // ==========================================
 
 // --- Helper Functions ---
-function moveItemInList(currentId, list, offset, openFunc) {
-  if (!list || list.length === 0) { alert("목록이 비어있습니다."); return; }
+function moveItemInList(currentId, list, offset, openFunc, order) {
+  if (!list || list.length === 0) { showToast("목록이 비어 있어요"); return; }
   const idx = list.findIndex(item => item.id === currentId);
-  if (idx === -1) { openFunc(list[0].id); return; }
+  if (idx === -1) {
+    // 지금 항목이 필터(미암기만·미완료만)로 목록에서 빠졌으면: 원래 순서에서 그 방향으로 가장 가까운 항목으로 (맨 앞으로 튀지 않게)
+    const bi = (order || []).findIndex(item => item.id === currentId);
+    if (bi === -1) { openFunc(list[0].id); return; }
+    const inList = new Set(list.map(x => x.id));
+    for (let i = bi + offset; i >= 0 && i < order.length; i += offset) if (inList.has(order[i].id)) { openFunc(order[i].id); return; }
+    showToast(offset > 0 ? "마지막 항목이에요" : "첫 항목이에요");
+    return;
+  }
   const nextIdx = idx + offset;
   if (nextIdx >= 0 && nextIdx < list.length) openFunc(list[nextIdx].id);
-  else alert(offset > 0 ? "마지막 항목입니다." : "첫 번째 항목입니다.");
+  else showToast(offset > 0 ? "마지막 항목이에요" : "첫 항목이에요");
 }
 
 // --- 1. Patterns ---
@@ -49,14 +57,15 @@ function renderPatternList() {
     check.checked = memorizedPatterns.has(p.id);
     check.onclick = (e) => {
       e.stopPropagation();
-      if (check.checked) memorizedPatterns.add(p.id); else memorizedPatterns.delete(p.id);
-      saveData('pattern');
+      markMemorized('pattern', p.id, check.checked);
+      div.classList.toggle("memorized", check.checked);
       if (patternStudyingOnly) renderPatternList(); else updatePatternProgress();
     };
     div.appendChild(check);
     container.appendChild(div);
   });
-  if (filtered.length === 0) container.innerHTML = '<div class="list-item"><div>검색 결과가 없습니다.</div></div>';
+  if (filtered.length === 0) container.innerHTML = keyword || !patternStudyingOnly ? '<div class="list-item"><div>검색 결과가 없습니다.</div></div>'
+    : '<div class="list-item"><div>🎉 모두 완료했어요! \'미완료만 보기\'를 끄면 전체 목록이 보여요.</div></div>';
   afterListRender('pattern');
   updatePatternProgress();
 }
@@ -80,7 +89,6 @@ function renderPatternDetail() {
   document.getElementById("pattern-title").textContent = pattern.title;
   document.getElementById("pattern-desc").textContent = pattern.desc;
   document.getElementById("pattern-memorized-checkbox").checked = memorizedPatterns.has(currentPatternId);
-  document.getElementById("pattern-toggle-kr").checked = true;
   renderPatternExamples();
 }
 function renderPatternExamples() {
@@ -101,8 +109,8 @@ function renderPatternExamples() {
     container.appendChild(row);
   });
 }
-function togglePatternStudying() { patternStudyingOnly = !patternStudyingOnly; localStorage.setItem("patternStudyingOnly", patternStudyingOnly); renderPatternList(); }
-function togglePatternMemorizedDetail() { const chk = document.getElementById("pattern-memorized-checkbox"); if (chk.checked) memorizedPatterns.add(currentPatternId); else memorizedPatterns.delete(currentPatternId); saveData('pattern'); updatePatternProgress(); }
+function togglePatternStudying() { patternStudyingOnly = !patternStudyingOnly; localStorage.setItem("patternStudyingOnly", patternStudyingOnly); if (typeof touchSettings === "function") touchSettings(); renderPatternList(); }
+function togglePatternMemorizedDetail() { const chk = document.getElementById("pattern-memorized-checkbox"); markMemorized('pattern', currentPatternId, chk.checked); updatePatternProgress(); }
 async function playPatternExamples() {
   stopAudio();
   currentAudioSessionId++;
@@ -127,9 +135,11 @@ async function playPatternExamples() {
   }
   if (currentAudioSessionId === mySessionId) isConversationPlaying = false;
 }
-function movePattern(o) { moveItemInList(currentPatternId, currentPatternList, o, openPattern); }
+function movePattern(o) { moveItemInList(currentPatternId, currentPatternList, o, openPattern, categoriesOf(patternData).flatMap(cat => patternData.filter(p => categoryOf(p) === cat))); }
 
 // --- 2. Words ---
+let wordSearchTimer = null;
+function renderWordListSoon() { clearTimeout(wordSearchTimer); wordSearchTimer = setTimeout(renderWordList, 150); }
 function renderWordList() {
   const container = document.getElementById("word-list");
   if (!container || typeof wordData === "undefined") return;
@@ -161,14 +171,15 @@ function renderWordList() {
     check.checked = memorizedWords.has(w.id);
     check.onclick = (e) => {
       e.stopPropagation();
-      if (check.checked) memorizedWords.add(w.id); else memorizedWords.delete(w.id);
-      saveData('word');
+      markMemorized('word', w.id, check.checked);
+      div.classList.toggle("memorized", check.checked);
       if (wordStudyingOnly) renderWordList(); else updateWordProgress();
     };
     div.appendChild(check);
     container.appendChild(div);
   });
-  if (filtered.length === 0) container.innerHTML = '<div class="list-item"><div>검색 결과가 없습니다.</div></div>';
+  if (filtered.length === 0) container.innerHTML = keyword || !wordStudyingOnly ? '<div class="list-item"><div>검색 결과가 없습니다.</div></div>'
+    : `<div class="list-item"><div>🎉 ${selectedWordLevel ? '이 레벨 ' : ''}단어를 모두 외웠어요! '미암기만'을 끄면 전체가 보여요.</div></div>`;
   afterListRender('word');
   updateWordProgress();
 }
@@ -181,8 +192,8 @@ function updateWordProgress() {
   document.getElementById("word-progress").textContent = `현재 레벨 기준 암기 ${done} / ${total}개 (${percent}%)`;
   document.getElementById("word-progress-bar").style.width = `${percent}%`;
 }
-function setWordLevel(lvl) { selectedWordLevel = lvl; localStorage.setItem("selectedWordLevel", lvl); renderWordList(); }
-function toggleWordStudying() { wordStudyingOnly = !wordStudyingOnly; localStorage.setItem("wordStudyingOnly", wordStudyingOnly); renderWordList(); }
+function setWordLevel(lvl) { selectedWordLevel = lvl; localStorage.setItem("selectedWordLevel", lvl); if (typeof touchSettings === "function") touchSettings(); renderWordList(); }
+function toggleWordStudying() { wordStudyingOnly = !wordStudyingOnly; localStorage.setItem("wordStudyingOnly", wordStudyingOnly); if (typeof touchSettings === "function") touchSettings(); renderWordList(); }
 function openWord(id) { currentWordId = id; localStorage.setItem("currentWordId", id); goTo("word-detail"); if (autoPlayEnabled) playWordExamples(); }
 function renderWordDetail() {
   const w = wordData.find(x => x.id === currentWordId);
@@ -190,13 +201,13 @@ function renderWordDetail() {
   document.getElementById("word-title").textContent = `${w.word} - ${w.meaning}`;
   document.getElementById("word-desc").textContent = w.examples?.[0]?.kr || w.meaning;
   document.getElementById("word-memorized-checkbox").checked = memorizedWords.has(currentWordId);
-  document.getElementById("word-toggle-kr").checked = true;
   renderWordExamples();
 }
 function renderWordExamples() {
   const w = wordData.find(x => x.id === currentWordId);
   if (!w) return;
   const showKr = document.getElementById("word-toggle-kr").checked;
+  const desc = document.getElementById("word-desc"); if (desc) desc.style.visibility = showKr ? "" : "hidden";
   const container = document.getElementById("word-examples");
   container.innerHTML = "";
   w.examples.forEach(ex => {
@@ -211,7 +222,7 @@ function renderWordExamples() {
     container.appendChild(row);
   });
 }
-function toggleWordMemorizedDetail() { const chk = document.getElementById("word-memorized-checkbox"); if (chk.checked) memorizedWords.add(currentWordId); else memorizedWords.delete(currentWordId); saveData('word'); updateWordProgress(); }
+function toggleWordMemorizedDetail() { const chk = document.getElementById("word-memorized-checkbox"); markMemorized('word', currentWordId, chk.checked); updateWordProgress(); }
 async function playWordExamples() {
   stopAudio();
   currentAudioSessionId++;
@@ -236,7 +247,7 @@ async function playWordExamples() {
   }
   if (currentAudioSessionId === mySessionId) isConversationPlaying = false;
 }
-function moveWord(o) { moveItemInList(currentWordId, currentWordList, o, openWord); }
+function moveWord(o) { moveItemInList(currentWordId, currentWordList, o, openWord, wordData); }
 
 // --- 3. Idioms ---
 function renderIdiomList() {
@@ -269,14 +280,15 @@ function renderIdiomList() {
     check.checked = memorizedIdioms.has(i.id);
     check.onclick = (e) => {
       e.stopPropagation();
-      if (check.checked) memorizedIdioms.add(i.id); else memorizedIdioms.delete(i.id);
-      saveData('idiom');
+      markMemorized('idiom', i.id, check.checked);
+      div.classList.toggle("memorized", check.checked);
       if (idiomStudyingOnly) renderIdiomList();
     };
     div.appendChild(check);
     container.appendChild(div);
   });
-  if (filtered.length === 0) container.innerHTML = '<div class="list-item"><div>검색 결과가 없습니다.</div></div>';
+  if (filtered.length === 0) container.innerHTML = keyword || !idiomStudyingOnly ? '<div class="list-item"><div>검색 결과가 없습니다.</div></div>'
+    : `<div class="list-item"><div>🎉 ${selectedIdiomLevel ? '이 레벨 ' : ''}숙어를 모두 외웠어요! '미암기만'을 끄면 전체가 보여요.</div></div>`;
   afterListRender('idiom');
   updateIdiomProgress();
 }
@@ -288,8 +300,8 @@ function updateIdiomProgress() {
   document.getElementById("idiom-progress").textContent = `현재 레벨 기준 암기 ${done} / ${total}개 (${percent}%)`;
   document.getElementById("idiom-progress-bar").style.width = `${percent}%`;
 }
-function setIdiomLevel(lvl) { selectedIdiomLevel = lvl; localStorage.setItem("selectedIdiomLevel", lvl); renderIdiomList(); }
-function toggleIdiomStudying() { idiomStudyingOnly = !idiomStudyingOnly; localStorage.setItem("idiomStudyingOnly", idiomStudyingOnly); renderIdiomList(); }
+function setIdiomLevel(lvl) { selectedIdiomLevel = lvl; localStorage.setItem("selectedIdiomLevel", lvl); if (typeof touchSettings === "function") touchSettings(); renderIdiomList(); }
+function toggleIdiomStudying() { idiomStudyingOnly = !idiomStudyingOnly; localStorage.setItem("idiomStudyingOnly", idiomStudyingOnly); if (typeof touchSettings === "function") touchSettings(); renderIdiomList(); }
 function openIdiom(id) { currentIdiomId = id; localStorage.setItem("currentIdiomId", id); goTo("idiom-detail"); if (autoPlayEnabled) playIdiomExamples(); }
 function renderIdiomDetail() {
   const item = idiomData.find(x => x.id === currentIdiomId);
@@ -297,7 +309,6 @@ function renderIdiomDetail() {
   document.getElementById("idiom-title").textContent = `${item.idiom} - ${item.meaning}`;
   document.getElementById("idiom-desc").textContent = item.desc;
   document.getElementById("idiom-memorized-checkbox").checked = memorizedIdioms.has(currentIdiomId);
-  document.getElementById("idiom-toggle-kr").checked = true;
   renderIdiomExamples();
 }
 function renderIdiomExamples() {
@@ -318,7 +329,7 @@ function renderIdiomExamples() {
     container.appendChild(row);
   });
 }
-function toggleIdiomMemorizedDetail() { const chk = document.getElementById("idiom-memorized-checkbox"); if (chk.checked) memorizedIdioms.add(currentIdiomId); else memorizedIdioms.delete(currentIdiomId); saveData('idiom'); updateIdiomProgress(); }
+function toggleIdiomMemorizedDetail() { const chk = document.getElementById("idiom-memorized-checkbox"); markMemorized('idiom', currentIdiomId, chk.checked); updateIdiomProgress(); }
 async function playIdiomExamples() {
   stopAudio();
   currentAudioSessionId++;
@@ -343,7 +354,7 @@ async function playIdiomExamples() {
   }
   if (currentAudioSessionId === mySessionId) isConversationPlaying = false;
 }
-function moveIdiom(o) { moveItemInList(currentIdiomId, currentIdiomList, o, openIdiom); }
+function moveIdiom(o) { moveItemInList(currentIdiomId, currentIdiomList, o, openIdiom, idiomData); }
 
 // --- 4. Conversations ---
 // 패턴·회화·쉐도잉 목록 공용: 상황(category) 칩과 상황별 머리글
@@ -404,8 +415,7 @@ function renderConversationDetail() {
   const conv = conversationData.find(c => c.id === currentConvId);
   if (!conv) return;
   document.getElementById("conv-title").textContent = conv.title;
-  // 진입 시 기본값(해석 켜짐)만 1회 설정하고, 실제 라인 렌더는 분리된 함수로 위임
-  document.getElementById("conv-toggle-kr").checked = true;
+  // 해석 보기는 사용자가 고른 대로 둔다 (이전/다음 대화로 넘어가도 유지)
   renderConversationLines();
 }
 // 토글 onchange가 호출 - 현재 체크박스 상태를 그대로 읽어 라인만 다시 그림
@@ -447,7 +457,7 @@ async function playConversationAll() {
   }
   if (currentAudioSessionId === mySessionId) isConversationPlaying = false;
 }
-function moveConv(o) { moveItemInList(currentConvId, currentConvList, o, openConversation); }
+function moveConv(o) { moveItemInList(currentConvId, currentConvList, o, openConversation, convCategories().flatMap(cat => conversationData.filter(c => convCategoryOf(c) === cat))); }
 
 // --- 4-1. 목록 전체 듣기 (패턴·단어·숙어·대화) ---
 // 지금 화면의 목록(검색·레벨·미암기 필터가 적용된 그대로)을 처음부터 순서대로 읽는다.
@@ -471,7 +481,7 @@ function toggleListPlay(type) {
 async function playListAll(type) {
   const cfg = LIST_PLAY[type];
   const items = (cfg.list() || []).slice();
-  if (items.length === 0) { alert("재생할 항목이 없습니다."); return; }
+  if (items.length === 0) { showToast("재생할 항목이 없어요"); return; }
   stopAudio();
   currentAudioSessionId++;
   const mySessionId = currentAudioSessionId;
@@ -549,7 +559,7 @@ function updateListPlayerUI(scroll) {
   const el = container && [...container.children].find(c => c.dataset && c.dataset.id === item.id);
   if (el) {
     el.classList.add('playing');
-    if (scroll && container.offsetParent !== null) el.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+    if (scroll && container.offsetParent !== null) el.scrollIntoView({ block: 'center', behavior: 'smooth' });   // 아래 재생 막대에 가리지 않게 가운데로
   }
 }
 
@@ -597,7 +607,7 @@ function startShadowingFromConv(id) {
   shadowingLineIndex = 0; rolePlayRevealedKey = "";
   goTo("shadowing");
   isBlindMode = true; isHideKr = false; updateShadowingOptionsUI();
-  setTimeout(() => { updateShadowingUI(); if (isRolePlay) autoPlayShadowingLine(); else playShadowingCurrent(); }, 100);
+  setTimeout(() => { updateShadowingUI(); if (isRolePlay) autoPlayShadowingLine(); else if (autoPlayEnabled) playShadowingCurrent(); }, 100);
 }
 function setShadowingMode(rolePlay) {
   isRolePlay = rolePlay;
@@ -664,6 +674,8 @@ function playShadowingCurrent() {
   if(btn) { btn.style.transform = "scale(0.95)"; setTimeout(() => btn.style.transform = "scale(1)", 100); }
   const conv = conversationData.find(c => c.id === currentShadowingId);
   if (!conv) return;
+  rolePlayToken++;   // 앞서 걸어 둔 '내 차례로 넘기기'는 취소한다
+  if (isRolePlay && !isMyTurn(conv.lines[shadowingLineIndex])) { stopAudio(); autoPlayShadowingLine(); return; }   // 상대 대사: 다시 들은 뒤에 내 차례로
   if (isMyTurn(conv.lines[shadowingLineIndex])) { rolePlayRevealedKey = `${currentShadowingId}:${shadowingLineIndex}`; updateShadowingUI(); }
   speakText(conv.lines[shadowingLineIndex].en, conv.lines[shadowingLineIndex].speaker);
   // 자연스러운 음성: 다음 문장 2개를 미리 만들기
