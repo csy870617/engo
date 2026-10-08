@@ -7,6 +7,7 @@ let puzzleList = []; let currentPuzzleIndex = 0; let currentPuzzleAnswer = ""; l
 function setPuzzleLevel(lvl) {
   selectedPuzzleLevel = parseInt(lvl);
   localStorage.setItem("selectedPuzzleLevel", selectedPuzzleLevel);
+  if (typeof touchSettings === "function") touchSettings();
   document.querySelectorAll("[data-puzzle-level-btn]").forEach(b => {
     b.classList.toggle("active", parseInt(b.dataset.puzzleLevelBtn) === selectedPuzzleLevel);
   });
@@ -21,6 +22,7 @@ function initPuzzle() {
     const addIfValid = (pool, en, kr) => {
       if (!en) return;
       const cleanEn = en.trim().replace(/\s+/g, " ");
+      if (/ - /.test(cleanEn)) return;
       const len = cleanEn.split(" ").length;
       if (len < 5) return; // 5단어 미만은 제외
 
@@ -70,6 +72,7 @@ function nextPuzzle() {
   // 중복 단어를 안전하게 다루기 위해 각 토큰에 고유 id 부여
   const words = currentPuzzleAnswer.split(" ");
   puzzleShuffledTokens = shuffleArray(words.map((w, i) => ({ id: i, text: w })));
+  for (let k = 0; k < 8 && puzzleShuffledTokens.map(t => t.text).join(" ") === currentPuzzleAnswer && new Set(words).size > 1; k++) shuffleArray(puzzleShuffledTokens);
   renderPuzzle();
 }
 function renderPuzzle() {
@@ -95,9 +98,11 @@ function renderPuzzle() {
 // 두 문장 이상인 문제("Nice to meet you. I just started...")는 문장 순서만 바뀌어도 어순은 맞으므로 정답 처리
 function splitSentences(text) {
   const out = []; let cur = [];
-  text.split(" ").forEach(tok => {
+  const toks = text.split(" ");
+  toks.forEach((tok, i) => {
     cur.push(tok);
-    if (/[.!?]$/.test(tok) && !/^(Mr|Mrs|Ms|Dr|St|vs|a\.m|p\.m)\.$/i.test(tok)) { out.push(cur.join(" ")); cur = []; }
+    const next = toks[i + 1];
+    if (/[.!?]["”']?$/.test(tok) && !/^(Mr|Mrs|Ms|Dr|St|vs|a\.m|p\.m|U\.S|U\.K|e\.g|i\.e)\.$/i.test(tok) && (!next || /^["“']?[A-Z0-9]/.test(next))) { out.push(cur.join(" ")); cur = []; }
   });
   if (cur.length) out.push(cur.join(" "));
   return out;
@@ -116,4 +121,9 @@ function checkPuzzle() {
 }
 function resetPuzzle() { puzzleTargetTokens = []; const fb = document.getElementById("puzzle-feedback"); fb.textContent = ""; fb.style.color = ""; renderPuzzle(); }
 function showPuzzleAnswer() { const fb = document.getElementById("puzzle-feedback"); fb.textContent = `정답: ${currentPuzzleAnswer}`; fb.className = "feedback-msg"; fb.style.color = "#38bdf8"; }
-function movePuzzle(offset) { if (offset === 1) nextPuzzle(); else alert("이전 문제는 지원하지 않습니다. (랜덤 방식)"); }
+function movePuzzle(offset) {
+  if (offset === 1) { nextPuzzle(); return; }
+  if (currentPuzzleIndex <= 1) { showToast("첫 문제예요"); return; }
+  currentPuzzleIndex -= 2;   // 지금 문제는 currentPuzzleIndex-1번째: 그 앞 문제를 다시 낸다
+  nextPuzzle();
+}

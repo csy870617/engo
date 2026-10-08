@@ -1,6 +1,18 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
+  <script>
+    // 카카오톡 인앱 브라우저 탈출: 무거운 파일을 받기 전에 바깥 브라우저로 넘긴다
+    // (intent 주소에는 #페이지를 붙일 수 없어서 ?go=페이지 로 넘긴다)
+    (function () {
+      var ua = navigator.userAgent.toLowerCase();
+      if (ua.indexOf('kakaotalk') < 0) return;
+      var page = location.hash.replace('#', '');
+      var url = location.origin + location.pathname + (page ? '?go=' + encodeURIComponent(page) : location.search);
+      if (ua.indexOf('android') > -1) location.href = 'intent://' + url.replace(/https?:\/\//i, '') + '#Intent;scheme=https;end';
+      else if (/iphone|ipad|ipod/.test(ua)) location.href = 'kakaotalk://web/openExternal?url=' + encodeURIComponent(url);
+    })();
+  </script>
   <meta name="google-site-verification" content="HifdWX2uxLGAKhbFDjWkqorIkQ9NPCblF_yd9YiPujc" />
   <meta name="naver-site-verification" content="8f83181083159d00f1384546b63e290af99c59da" />
   <meta charset="UTF-8" />
@@ -23,16 +35,11 @@
   <meta property="og:image" content="https://engo.life/logo.png">
   <meta property="og:site_name" content="ENGO">
 
-  <link rel="stylesheet" href="style.css?v=185" />
+  <link rel="stylesheet" href="style.css?v=186" />
 
   <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2078760660134095"
      crossorigin="anonymous"></script>
   
-  <script src="https://t1.kakaocdn.net/kakao_js_sdk/2.6.0/kakao.min.js"></script>
-  
-  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
 
   <script>
     if ('serviceWorker' in navigator) {
@@ -200,19 +207,19 @@
         <div class="youtube-scroll-area">
           <div class="youtube-item">
             <div class="video-wrapper">
-              <iframe src="https://www.youtube.com/embed/videoseries?list=PLzefhHvgKfYr1gVylL9tbKHaP8DUbu4UI" title="상황별 표현" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+              <iframe loading="lazy" src="https://www.youtube.com/embed/videoseries?list=PLzefhHvgKfYr1gVylL9tbKHaP8DUbu4UI&enablejsapi=1" title="상황별 표현" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
             </div>
             <div class="video-title">상황별 가장 유용한 표현 200개</div>
           </div>
           <div class="youtube-item">
             <div class="video-wrapper">
-              <iframe src="https://www.youtube.com/embed/videoseries?list=PLzefhHvgKfYqrn1nd05lFbZP46zx19JKa" title="유용한 패턴" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+              <iframe loading="lazy" src="https://www.youtube.com/embed/videoseries?list=PLzefhHvgKfYqrn1nd05lFbZP46zx19JKa&enablejsapi=1" title="유용한 패턴" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
             </div>
             <div class="video-title">가장 유용한 패턴 100개</div>
           </div>
           <div class="youtube-item">
             <div class="video-wrapper">
-              <iframe src="https://www.youtube.com/embed/videoseries?list=PLzefhHvgKfYrkx6WiArVNg57ggV2GZHg3" title="기초 표현" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+              <iframe loading="lazy" src="https://www.youtube.com/embed/videoseries?list=PLzefhHvgKfYrkx6WiArVNg57ggV2GZHg3&enablejsapi=1" title="기초 표현" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
             </div>
             <div class="video-title">기초 유용한 표현 200개</div>
           </div>
@@ -233,7 +240,7 @@
     </section>
 
     <section id="page-blog-list" class="hidden">
-      <div class="nav-header"><span class="back-btn" onclick="goTo('home')">❮ 뒤로</span><h2>한 장에 모아보기</h2></div>
+      <div class="nav-header"><span class="back-btn" onclick="goBack('home')">❮ 뒤로</span><h2>한 장에 모아보기</h2></div>
       
       <div class="filter-area scroll-x" style="justify-content: center;">
         <button class="chip-btn active" onclick="filterBlog('pattern', this)">패턴</button>
@@ -245,7 +252,7 @@
     </section>
 
     <section id="page-blog-detail" class="hidden">
-      <div class="nav-header no-print"><span class="back-btn" onclick="goTo('blog-list')">❮ 목록으로</span></div>
+      <div class="nav-header no-print"><span class="back-btn" onclick="goBack('blog-list')">❮ 목록으로</span></div>
       
       <div class="paper-container">
         <div id="paper-content">
@@ -258,7 +265,7 @@
     </section>
 
     <section id="page-patterns" class="hidden">
-      <div class="nav-header"><span class="back-btn" onclick="goTo('home')">❮ 뒤로</span><h2>패턴 학습</h2></div>
+      <div class="nav-header"><span class="back-btn" onclick="goBack('home')">❮ 뒤로</span><h2>패턴 학습</h2></div>
       <div class="card progress-card">
         <div class="progress-text" id="pattern-progress">0% 완료</div>
         <div class="progress-track"><div id="pattern-progress-bar" class="progress-fill"></div></div>
@@ -273,7 +280,7 @@
     </section>
 
     <section id="page-pattern-detail" class="hidden">
-      <div class="nav-header"><span class="back-btn" onclick="goTo('patterns')">❮ 목록</span></div>
+      <div class="nav-header"><span class="back-btn" onclick="goBack('patterns')">❮ 목록</span></div>
       <div class="detail-card">
         <h1 id="pattern-title">Pattern</h1>
         <p id="pattern-desc">설명</p>
@@ -296,7 +303,7 @@
     </section>
 
     <section id="page-words" class="hidden">
-      <div class="nav-header"><span class="back-btn" onclick="goTo('home')">❮ 뒤로</span><h2>단어장</h2></div>
+      <div class="nav-header"><span class="back-btn" onclick="goBack('home')">❮ 뒤로</span><h2>단어장</h2></div>
       <div class="card progress-card">
         <div class="progress-text" id="word-progress">0%</div>
         <div class="progress-track"><div id="word-progress-bar" class="progress-fill"></div></div>
@@ -312,13 +319,13 @@
       </div>
       <div class="list-tools">
         <button class="chip-btn play-chip" data-list-play="word" onclick="toggleListPlay('word')">🔊 전체 듣기</button>
-        <input id="word-search" type="text" placeholder="단어 검색..." class="search-input" oninput="renderWordList()" />
+        <input id="word-search" type="text" placeholder="단어 검색..." class="search-input" oninput="renderWordListSoon()" />
       </div>
       <div id="word-list" class="list-view"></div>
     </section>
 
     <section id="page-word-detail" class="hidden">
-      <div class="nav-header"><span class="back-btn" onclick="goTo('words')">❮ 목록</span></div>
+      <div class="nav-header"><span class="back-btn" onclick="goBack('words')">❮ 목록</span></div>
       <div class="detail-card">
         <h1 id="word-title">Word</h1>
         <p id="word-desc">뜻</p>
@@ -341,7 +348,7 @@
     </section>
 
     <section id="page-idioms" class="hidden">
-      <div class="nav-header"><span class="back-btn" onclick="goTo('home')">❮ 뒤로</span><h2>숙어장</h2></div>
+      <div class="nav-header"><span class="back-btn" onclick="goBack('home')">❮ 뒤로</span><h2>숙어장</h2></div>
       <div class="card progress-card">
         <div class="progress-text" id="idiom-progress">0%</div>
         <div class="progress-track"><div id="idiom-progress-bar" class="progress-fill"></div></div>
@@ -363,7 +370,7 @@
     </section>
 
     <section id="page-idiom-detail" class="hidden">
-      <div class="nav-header"><span class="back-btn" onclick="goTo('idioms')">❮ 목록</span></div>
+      <div class="nav-header"><span class="back-btn" onclick="goBack('idioms')">❮ 목록</span></div>
       <div class="detail-card">
         <h1 id="idiom-title">Idiom</h1>
         <p id="idiom-desc">뜻</p>
@@ -386,7 +393,7 @@
     </section>
 
     <section id="page-conversations" class="hidden">
-      <div class="nav-header"><span class="back-btn" onclick="goTo('home')">❮ 뒤로</span><h2>실전 대화</h2></div>
+      <div class="nav-header"><span class="back-btn" onclick="goBack('home')">❮ 뒤로</span><h2>실전 대화</h2></div>
       <div class="list-tools">
         <button class="chip-btn play-chip" data-list-play="conv" onclick="toggleListPlay('conv')">🔊 전체 듣기</button>
         <input id="conv-search" type="text" placeholder="검색 (예: 공항, check)" class="search-input" oninput="renderConversationList()" />
@@ -396,7 +403,7 @@
     </section>
 
     <section id="page-conv-detail" class="hidden">
-      <div class="nav-header"><span class="back-btn" onclick="goTo('conversations')">❮ 목록</span></div>
+      <div class="nav-header"><span class="back-btn" onclick="goBack('conversations')">❮ 목록</span></div>
       <div class="detail-card">
         <h1 id="conv-title">Conversation</h1>
         <div class="action-row">
@@ -417,7 +424,7 @@
     </section>
 
     <section id="page-shadowing-list" class="hidden">
-      <div class="nav-header"><span class="back-btn" onclick="goTo('home')">❮ 뒤로</span><h2>쉐도잉 목록</h2></div>
+      <div class="nav-header"><span class="back-btn" onclick="goBack('home')">❮ 뒤로</span><h2>쉐도잉 목록</h2></div>
       <p class="subtext" style="margin-bottom: 15px; color:var(--text-sub);">연습하고 싶은 상황을 골라 보세요.</p>
       <input id="shadowing-search" type="text" placeholder="주제 검색..." class="search-input mb-4" oninput="renderShadowingList()" />
       <div id="shadowing-cats" class="filter-area cat-chips"></div>
@@ -425,7 +432,7 @@
     </section>
 
     <section id="page-shadowing" class="hidden">
-      <div class="nav-header"><span class="back-btn" onclick="goTo('shadowing-list')">❮ 목록</span></div>
+      <div class="nav-header"><span class="back-btn" onclick="goBack('shadowing-list')">❮ 목록</span></div>
       <div class="game-card">
         <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
           <h2 style="margin:0;">🗣️ 쉐도잉</h2>
@@ -465,10 +472,10 @@
             <p id="shadowing-play-label" class="subtext" style="margin-top: 10px; font-size:0.9rem;">다시 듣기 (반복)</p>
         </div>
 
-        <div class="game-controls" style="display:flex; gap:10px;">
+        <div class="game-controls btn-row" style="display:flex; gap:8px;">
           <button class="btn-sub" onclick="prevShadowing()" style="flex:1;">❮ 이전</button>
-          <button class="btn-sub" onclick="nextRandomShadowingTopic()" style="flex:1;">🎲 다음 주제</button>
-          <button class="btn-main" onclick="nextShadowing()" style="flex:2;">다음 문장 ❯</button>
+          <button class="btn-sub" onclick="nextRandomShadowingTopic()" style="flex:1.35;">🎲 다음 주제</button>
+          <button class="btn-main" onclick="nextShadowing()" style="flex:1.65;">다음 문장 ❯</button>
         </div>
       </div>
     </section>
@@ -575,14 +582,14 @@
     </section>
 
 <section id="page-puzzle" class="hidden">
-      <div class="nav-header"><span class="back-btn" onclick="goTo('home')">❮ 나가기</span></div>
+      <div class="nav-header"><span class="back-btn" onclick="goBack('home')">❮ 나가기</span></div>
       
       <div class="game-card">
         <div class="game-header" style="justify-content:center; position:relative;">
           <h2>🧩 문장 퍼즐</h2>
         </div>
         
-        <div class="filter-area" style="justify-content: center; margin-bottom: 15px;">
+        <div class="filter-area puzzle-levels" style="justify-content: center; margin-bottom: 15px;">
           <button class="chip-btn active" data-puzzle-level-btn="0" onclick="setPuzzleLevel(0)">전체</button>
           <button class="chip-btn" data-puzzle-level-btn="1" onclick="setPuzzleLevel(1)">Lv.1 (5-6단어)</button>
           <button class="chip-btn" data-puzzle-level-btn="2" onclick="setPuzzleLevel(2)">Lv.2 (7-8단어)</button>
@@ -600,10 +607,10 @@
         
         <div id="puzzle-feedback" class="feedback-msg"></div>
         
-        <div class="game-bottom" style="margin-top:20px; display:flex; gap:10px;">
-          <button class="btn-sub" onclick="resetPuzzle()" style="flex:1;">↺ 다시</button>
+        <div class="game-bottom btn-row" style="margin-top:20px; display:flex; gap:8px;">
+          <button class="btn-sub" onclick="resetPuzzle()" style="flex:1;">🔄 다시</button>
           <button class="btn-sub" onclick="showPuzzleAnswer()" style="flex:1;">👁️ 정답</button>
-          <button class="btn-main" onclick="checkPuzzle()" style="flex:2;">확인</button>
+          <button class="btn-main" onclick="checkPuzzle()" style="flex:1.6;">확인</button>
         </div>
       </div>
 
@@ -692,12 +699,15 @@
 
   <div id="neural-loading" class="neural-loading hidden">🎙 자연스러운 음성 준비 중…</div>
 
-  <script src="pattern.js?v=185"></script>
-  <script src="conversation.js?v=185"></script>
-  <script src="idiom.js?v=185"></script>
-  <script src="word.js?v=185"></script>
+  <script src="pattern.js?v=186"></script>
+  <script src="conversation.js?v=186"></script>
+  <script src="idiom.js?v=186"></script>
+  <script src="word.js?v=186"></script>
 
-  <script src="js/core.js?v=185"></script>    <script src="js/storage.js?v=185"></script> <script src="js/neural-tts.js?v=185"></script> <script src="js/kokoro-tts.js?v=185"></script> <script src="js/media.js?v=185"></script>   <script src="js/study.js?v=185"></script>   <script src="js/game.js?v=185"></script>    <script src="js/talk-plan.js?v=185"></script> <script src="js/tutor.js?v=185"></script>    </body>
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
+  <script src="js/core.js?v=186"></script>    <script src="js/storage.js?v=186"></script> <script src="js/neural-tts.js?v=186"></script> <script src="js/kokoro-tts.js?v=186"></script> <script src="js/media.js?v=186"></script>   <script src="js/study.js?v=186"></script>   <script src="js/game.js?v=186"></script>    <script src="js/talk-plan.js?v=186"></script> <script src="js/tutor.js?v=186"></script>    </body>
 
 
 </html>
