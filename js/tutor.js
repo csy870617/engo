@@ -636,8 +636,17 @@ const TUTOR_SAY_AGAIN = "Sorry, could you say that again?";
 const TUTOR_PRAISE = { good: ["Perfect!", "Great job!", "Yes, that's it!"], try: ["Good try!", "Nice try!"] };
 // 정해 둔 말은 목소리를 기기에 저장해 두고 바로 튼다 (만드는 시간 없이)
 // 답 첫머리의 짧은 반응: 이 중에서 고르게 하고 목소리를 미리 만들어 기기에 저장해 둔다 → 답의 첫 소리가 바로 나온다
-const TUTOR_REACTIONS = ["Oh, nice!", "Wow!", "Oh, really?", "I see.", "Oh no!", "That's great!", "Cool!", "Sounds fun!",
-  "Aw, that's sweet!", "Haha, nice!", "Good for you!", "Oh, I see.", "Nice!", "That's too bad.", "Oh, wow!", "Hmm, interesting!"];
+const TUTOR_REACTIONS = [
+  // 좋은 일·재미있는 얘기 (자주 쓰는 것부터: 목소리를 이 차례로 미리 만든다)
+  "Oh, nice!", "Wow!", "That's great!", "Sounds fun!", "Oh, cool!", "Nice!", "Awesome!", "Oh, how fun!", "That's amazing!", "Oh, I love that!",
+  "Haha, nice!", "Good for you!", "Lucky you!", "Oh, that's exciting!", "Sounds great!", "Ooh, nice!", "Oh, sweet!", "Love that!", "Oh, wow!", "No way!", "Wow, really?", "Yay!",
+  // 알아들었다·궁금하다
+  "I see.", "Oh, I see.", "Oh, really?", "Ah, okay.", "Got it.", "Makes sense.", "Hmm, interesting!", "Interesting!", "Ah, I get it.", "Fair enough.",
+  // 안된 일
+  "Oh no!", "That's too bad.", "Oh, I'm sorry.", "Aw, that's tough.", "Oh, that's a shame.", "Aw, poor you!",
+  // 귀엽거나 웃긴 얘기·맞장구
+  "Aw, that's sweet!", "Aw, how cute!", "Haha, I love it!", "Haha, that's funny!", "Me too!", "Same here!", "Totally!", "Oh, for sure!", "Right?"
+];
 const tutorFixedLine = text => TUTOR_NUDGES.includes(text) || TUTOR_REACTIONS.includes(text) || TUTOR_BRIDGES.back.includes(text) || TUTOR_BRIDGES.lobby.includes(text) ||
   TUTOR_LOST.includes(text) || text === TUTOR_OFFLINE || text === TUTOR_SAY_AGAIN || TUTOR_PRAISE.good.includes(text) || TUTOR_PRAISE.try.includes(text);
 /** 차례로 돌려 가며 고른다 (같은 말이 연달아 나오지 않게) */
@@ -873,7 +882,7 @@ const tutorLevel = () => TUTOR_LEVELS[tutorLevelId()];
 function tutorStyle() {
   return [
     "How to talk:",
-    "- Start every reply with ONE of these short reactions as its own sentence, picking the one that fits what the student said (don't use the same one twice in a row): " + TUTOR_REACTIONS.map(x => `\"${x}\"`).join(", ") + ". Then go on.",
+    "- Start every reply with ONE of these short reactions as its own sentence, picking one that really fits what the student said (happy news, something interesting, bad news, something cute or funny, or something you agree with). Mix them up a lot: don't reuse a reaction you used in your last several replies. Reactions: " + TUTOR_REACTIONS.map(x => `\"${x}\"`).join(", ") + ". Then go on.",
     "- Chat like a friend, not an interviewer. React to the exact thing the student just said (not a general \"That's great!\"), sometimes add one short thing about yourself (an opinion or a small experience), then ask ONE easy question that follows from it. Keep your turns short so the student talks more than you.",
     "- If the student asks you something, first give a real, personal answer, then ask back.",
     "- Stay on a topic for a few turns by asking about details. When it runs out, move on through something already said (\"Speaking of food, ...\"). Remember what the student tells you (names, plans, likes, problems) and bring it up again later when it fits.",
@@ -1947,7 +1956,7 @@ const tutorUseNatural = () => tutorVoiceId() !== "app" && typeof KokoroVoice !==
 let tutorNaturalBroken = false;         // 이번 실행에서 음성 엔진을 못 열었으면 기기 음성으로
 const tutorTtsKey = (text, slow) => tutorVoiceId() + "|" + (slow ? "s|" : "") + text;
 
-// 첫 인사·목소리 들어 보기·정해 둔 짧은 말("Take your time." 등) 음성은 기기에 저장해 두고, 같은 문장이 다시 나오면 만들지 않고 바로 튼다. 최근 60개까지만
+// 첫 인사·목소리 들어 보기·정해 둔 짧은 말("Take your time." 등) 음성은 기기에 저장해 두고, 같은 문장이 다시 나오면 만들지 않고 바로 튼다. 최근 120개까지만
 const TUTOR_GREET_CACHE = "faith-voice-tutor-greet";   // faith-voice로 시작해서 앱 업데이트 때 지워지지 않는다
 const tutorGreetUrl = (text) => location.origin + "/__tutor-greet/k-" + tutorVoiceId() + "/" + encodeURIComponent(text);
 const tutorPreviewText = () => `Hi, I'm ${tutorName()}! I'm so happy to talk with you today.`;
@@ -1968,8 +1977,8 @@ async function tutorGreetSave(text, clip) {
     let o = 0; clip.chunks.forEach(c => { all.set(c, o); o += c.length; });
     const cache = await caches.open(TUTOR_GREET_CACHE);
     await cache.put(tutorGreetUrl(text), new Response(all.buffer, { headers: { "x-rate": String(clip.sampleRate) } }));
-    const keys = await cache.keys();                              // 오래된 것부터 지워 60개까지만
-    for (const k of keys.slice(0, Math.max(0, keys.length - 60))) await cache.delete(k);
+    const keys = await cache.keys();                              // 오래된 것부터 지워 120개까지만 (반응 목소리 47개 + 인사 등)
+    for (const k of keys.slice(0, Math.max(0, keys.length - 120))) await cache.delete(k);
   } catch (e) {}
 }
 
@@ -2002,7 +2011,7 @@ function tutorTtsFetch(text, slow) {
     }
   })().finally(() => { clip.done = true; emit(); });
   tutorTtsCache.set(key, clip);
-  while (tutorTtsCache.size > 60) tutorTtsCache.delete(tutorTtsCache.keys().next().value);
+  while (tutorTtsCache.size > 100) tutorTtsCache.delete(tutorTtsCache.keys().next().value);
   return clip;
 }
 // 반응 목소리 미리 만들기: 튜터 답의 목소리를 다 만들어 두고 아직 말하는 중일 때(엔진이 노는 때) 한 번에 하나씩.
