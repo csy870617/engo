@@ -1,5 +1,5 @@
 // 캐시 버전 - 정적 자산을 변경했을 때 숫자를 올리세요. (index.html의 ?v= 숫자도 같이 올린다)
-const CACHE_NAME = 'engo-cache-v189';
+const CACHE_NAME = 'engo-cache-v190';
 const V = CACHE_NAME.replace('engo-cache-v', '');   // index.html이 붙이는 ?v= 숫자 (같은 주소로 미리 받아 둬야 바로 꺼내 쓴다)
 // 예전 음성 모델 저장소 이름(튜터 인사 음성 저장소도 이 이름으로 시작) - 정리·가로채기 대상에서 제외
 const VOICE_CACHE_PREFIX = 'faith-voice';
@@ -87,6 +87,8 @@ self.addEventListener('fetch', (event) => {
   if (MODEL_HOSTS.test(req.url)) return;
   // 튜터 영상은 브라우저가 나눠 받기(Range)로 틀어서 가로채지 않는다 (아이폰은 가로채면 영상이 안 나오기도 함)
   if (/\.(mp4|webm)(\?|$)/.test(req.url)) return;
+  // 튜터 목소리 묶음(audio/tutor/)은 튜터가 따로 저장해 두고 쓴다 (앱 캐시에 한 번 더 넣지 않게)
+  if (/\/audio\/tutor\//.test(req.url)) return;
 
   const sameOrigin = new URL(req.url).origin === self.location.origin;
   const isNavigation = req.mode === 'navigate' ||
