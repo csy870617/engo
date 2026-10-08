@@ -1274,7 +1274,10 @@ function tutorLiveVoiceId() {
 const TUTOR_LIVE = { quietMs: 8000, restMs: 14000, tailMs: 350, retries: 3, brokenHours: 6 };
 let tutorLive = null;                                       // 지금 실시간 대화
 let tutorLiveHandle = null, tutorLiveHandleAt = 0;          // 이어 가기 표 (연결이 끊겨도 같은 대화로)
-function tutorLiveModeId() { try { return localStorage.getItem("tutorLiveMode") === "off" ? "off" : "on"; } catch (e) { return "on"; } }
+// 기본은 수동 설정(기기 목소리 Kokoro): 구글 목소리보다 자연스러워서. 실시간은 설정에서 고를 수 있다
+function tutorLiveModeId() { try { return localStorage.getItem("tutorLiveMode") === "on" ? "on" : "off"; } catch (e) { return "off"; } }
+// 실시간을 기본으로 쓰던 때 저장된 설정은 한 번 지운다 (모두 예전 목소리로 돌아가게)
+try { if (!localStorage.getItem("tutorLiveModeV2")) { localStorage.removeItem("tutorLiveMode"); localStorage.setItem("tutorLiveModeV2", "1"); } } catch (e) {}
 /** 실시간으로 할 수 있나 (이 키로 안 됐던 적이 최근에 있으면 잠시 예전 방식) */
 function tutorLiveBroken() {
   try { const at = +localStorage.getItem("tutorLiveBrokenAt2") || 0; return Date.now() - at < TUTOR_LIVE.brokenHours * 3600000 && localStorage.getItem("tutorLiveBrokenKey") === tutorGetKey().slice(-6); } catch (e) { return false; }
