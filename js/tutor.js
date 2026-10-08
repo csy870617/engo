@@ -202,7 +202,11 @@ function geminiStream(messages, opts, onText, signal) {
         }
       }
     } catch (e) {
-      if (e && e.name === "AbortError" && tm.timedOut()) { if (text) return text; throw geminiTimeoutError(); }   // 멈췄어도 받은 글이 있으면 그만큼
+      if (e && e.name === "AbortError" && tm.timedOut()) {   // 멈췄어도 받은 글이 있으면 그만큼 (대화는 끝난 문장까지만)
+        const fin = (opts.chain || "chat") === "chat" ? text.replace(/[^.!?]*$/, "") : text;
+        if (fin.trim()) return fin;
+        throw geminiTimeoutError();
+      }
       if (e && e.name === "AbortError") return text;
       throw e;
     } finally { tm.clear(); }
@@ -438,7 +442,9 @@ async function tutorDownloadVoice() {
       if (!neuralVoice) { neuralVoice = "af_bella"; persistNeuralVoiceChoice(); }
       populateVoiceSelect(); refreshNeuralUI();
     }
+    if (!tutorPageVisible()) KokoroVoice.scheduleUnload(90000);   // 다른 화면에 있는 동안 다 받았다: 소리 내지 않고 잠시 뒤 내린다 (돌아오면 다시 불러온다)
     if (KokoroVoice.tooSlow()) tutorVoiceNote("받았어요. 다만 이 기기에서는 목소리를 만드는 게 느려서 기기 음성으로 읽어요");
+    else if (!tutorPageVisible()) { tutorVoiceNote(""); if (tutorVoiceId() === "app") { try { localStorage.removeItem("tutorVoice"); } catch (e) {} fillTutorVoices(); } }
     else {
       if (tutorVoiceId() === "app") { try { localStorage.removeItem("tutorVoice"); } catch (e) {} fillTutorVoices(); }
       tutorVoiceNote("");
@@ -459,7 +465,7 @@ function tutorWarmVoice() {
   if (!KokoroVoice.downloaded() || tutorDl) return;
   KokoroVoice.verify().then(ok => {
     tutorVoiceDlRender();
-    if (ok && tutorVoiceId() !== "app") KokoroVoice.load(null, tutorVoiceId()).catch(() => { tutorNaturalBroken = true; });
+    if (ok && tutorVoiceId() !== "app") KokoroVoice.load(null, tutorVoiceId()).then(() => { if (!tutorPageVisible()) KokoroVoice.scheduleUnload(90000); }, () => { tutorNaturalBroken = true; });
   });
 }
 /** 목소리 들어 보기 (시작 화면) */
@@ -476,9 +482,7 @@ function tutorPreviewButtons(state) {
 }
 function tutorStopPreview() {
   clearTimeout(tutorPreviewDebounce);
-  if (!tutorPreviewing) return;
-  tutorPreviewing = 0; clearInterval(tutorPreviewTimer);
-  stopTutorSpeech();
+  if (tutorPreviewing) { tutorPreviewing = 0; clearInterval(tutorPreviewTimer); stopTutorSpeech(); }
   tutorPreviewButtons("idle");
 }
 function tutorPreviewVoice(fromSelect) {
@@ -582,7 +586,7 @@ function leaveTutorPage() {
   const hd = document.querySelector("header"); if (hd) hd.inert = false;
   tutorMarkPause(false);
   stopTutorActivity();
-  if (typeof KokoroVoice !== "undefined") KokoroVoice.scheduleUnload(90000);   // 잠시 뒤 메모리에서 내린다 (금방 돌아오면 그대로)
+  if (typeof KokoroVoice !== "undefined" && !tutorDl && !KokoroVoice.isLoading()) KokoroVoice.scheduleUnload(90000);   // 잠시 뒤 메모리에서 내린다 (금방 돌아오면 그대로 · 받는 중이면 끝까지 받게)
   tutorStopPreview();
   tutorCallActive = false;
   toggleTutorSheet(undefined, false, "leave");
@@ -655,7 +659,7 @@ function toggleTutorSheet(name, viaHistory, mode) {
   }
   // 판을 여는 동안은 듣지 않고, 닫으면 하던 대화로 돌아간다
   if (opened) { tutorMarkPause(true); tutorCancelListening(); if (tutorHintShown) { tutorHintShown = false; renderTutorHint(); } }
-  else if (closed && mode !== "leave") tutorResume("sheet");
+  else if (closed && mode !== "leave") { tutorStopPreview(); tutorResume("sheet"); }   // 미리 듣던 목소리는 멈춘다 (안 그러면 다시 듣기가 켜지지 않는다)
 }
 // 듣기: 말하기 버튼 없이 튜터 말이 끝나면 저절로 마이크를 켠다 (실제 대화처럼).
 // 조용하면 튜터가 먼저 말을 건네고(천천히 하라고·더 쉽게 다시 묻기), 그래도 말이 없으면 쉰다 (Emma를 누르면 다시 듣기)
@@ -668,18 +672,19 @@ function tutorTypingNow() {
   return document.activeElement === inp || (!!v && v !== tutorHintTarget);
 }
 let tutorRecFailAt = 0;   // 녹음 마이크를 못 연 때 (잠시 저절로 듣지 않는다: 매번 안내 창이 뜨지 않게)
+let tutorNoMic = false;   // 마이크를 찾지 못했다: 저절로 켜지 않는다 (튜터를 누르면 다시 해 본다)
 /** 지금 저절로 마이크를 켜도 되는지 (튜터 말·답 만들기·다른 판·화면 밖이면 안 된다) */
 function tutorCanAutoListen(token) {
   if (token !== tutorSessionToken || !tutorCallActive || tutorMicDenied) return false;
   if (tutorBusy || tutorSpeaking || tutorMic || tutorRecRec || tutorHelping || tutorTranscribing) return false;
-  if (Date.now() - tutorRecFailAt < 30000) return false;
+  if (tutorNoMic || Date.now() - tutorRecFailAt < 30000) return false;
   const page = tutorEl("page-tutor");
   if (!page || page.classList.contains("hidden") || document.hidden) return false;
   return !["settings", "feedback"].some(n => { const el = tutorEl("tutor-sheet-" + n); return el && !el.classList.contains("hidden"); });
 }
 function tutorAfterSpeak(token) {
   if (!tutorCanAutoListen(token)) return;
-  if (tutorOnlineMissed && tutorRetryLast && navigator.onLine !== false && tutorLastIsError()) { tutorAutoRetry(); return; }   // 말하는 동안 인터넷이 돌아왔다
+  if (tutorOnlineMissed && tutorRetryLast && navigator.onLine !== false && tutorLastIsError() && tutorAutoRetry()) return;   // 말하는 동안 인터넷이 돌아왔다
   if (tutorTypingNow()) {                          // 글로 쓰는 중이면 듣지 않는다
     const inp = tutorEl("tutor-input");
     if (inp.value.trim() && document.activeElement !== inp) setTutorStatus("입력칸의 문장을 ➤로 보내 보세요", "");
@@ -774,7 +779,7 @@ function tutorQuietNudge(token, q) {
 const tutorCanRephrase = (q, err) => !!q && !err && !tutorHintTarget && !tutorKoTarget && tutorQuietAsked < 3 && tutorQuietTurn !== tutorSaidLines.length && Date.now() - tutorChat429At > 60000;
 const TUTOR_QUIET_NOTE = "(The student has been quiet for a while after your last question. They may not understand it or may not know what to say. " +
   "Ask about the same thing again in a much easier way: one short sentence with very easy words, and give two easy choices (like \"Coffee or tea?\"). " +
-  "Don't say \"take your time\", don't apologize, and don't mention that they were quiet.)";
+  "Don't start with a reaction like \"Oh, nice!\" this time (they didn't say anything), don't say \"take your time\", don't apologize, and don't mention that they were quiet.)";
 function tutorQuietRephrase(token) {
   tutorQuietAsked++; tutorQuietTurn = tutorSaidLines.length;
   tutorReply(token, null, { note: TUTOR_QUIET_NOTE, quiet: true });
@@ -802,7 +807,7 @@ function tutorResume(kind) {
       return;
     }
     tutorUnanswered = null;
-    if (free && tutorRetryLast && navigator.onLine !== false && tutorLastIsError()) { tutorAutoRetry(); return; }   // 연결이 끊겼던 말: 다시 보낸다
+    if (free && tutorRetryLast && navigator.onLine !== false && tutorLastIsError() && tutorAutoRetry()) return;   // 연결이 끊겼던 말: 다시 보낸다
     if (!tutorCanAutoListen(token) || tutorTypingNow()) { tutorAfterSpeak(token); return; }
     const q = tutorPendingQuestion();
     if (q && !tutorLastIsError() && (kind === "lobby" || !tutorHeardAll || away >= 12000)) {
@@ -892,7 +897,8 @@ document.addEventListener("keydown", e => {
 document.addEventListener("visibilitychange", () => {
   if (!tutorCallActive || !tutorPageVisible()) return;
   if (document.hidden) {
-    if (tutorBusy || tutorSpeaking || tutorDeviceTalking) { tutorMarkPause(false); stopTutorActivity(); setTutorStatus(tutorIdleMsg(), ""); }   // 말하던 중이면 멈춘다 (안 보이는 동안 혼자 말하지 않게)
+    if (tutorBusy || tutorSpeaking || tutorDeviceTalking || tutorHelping) { tutorMarkPause(false); stopTutorActivity(); setTutorStatus(tutorIdleMsg(), ""); }   // 말하던 중이면 멈춘다 (안 보이는 동안 혼자 말하지 않게)
+    else if (tutorMic && tutorMic.edit && tutorMic.heardText && tutorMic.heardText()) tutorMic.edit();   // 들은 말은 입력칸에 남겨 둔다 (돌아와서 ➤로 보내게)
     else tutorCancelListening();
     return;
   }
@@ -1098,11 +1104,13 @@ function cleanTutorSay(raw) {
     kept.push(line.replace(/^\s*\**\s*(B|Emma|Jay|Tutor|Teacher)\s*\**\s*:\s*/i, ""));
   }
   let s = kept.join(" ")
+    .replace(/\*\s*(laugh|giggle|smile|grin|nod|chuckle|sigh|wink|wave|clap|gasp)[a-z]*\b[^*]{0,20}\*/gi, "")   // *giggles* 같은 지문 (강조한 *really*는 글자만 남긴다)
+    .replace(/\^\^|\^_\^|[:;]-?[)(DPp](?![a-z])/g, "")
     .replace(/[*_#`~]/g, "")
     .replace(/\p{Extended_Pictographic}/gu, "")
     .replace(/\([^)]*\)|\[[^\]]*\]/g, "")
     .replace(/[가-힣ㄱ-ㅎ]+/g, "")
-    .replace(/\s+/g, " ").trim();
+    .replace(/\s+/g, " ").replace(/([.!?])\s+[.!?,]+(?=\s|$)/g, "$1").replace(/\s+([,.!?])/g, "$1").trim();   // 지운 말 뒤에 홀로 남은 문장부호도 정리
   const wrapped = s.match(/^["“]([^"“”]*)["”]$/);           // 답 전체를 감싼 따옴표만 벗긴다 (안쪽 인용·아포스트로피는 그대로)
   if (wrapped) s = wrapped[1].trim();
   s = s.replace(/^[\s,.;:!?-]+/, "").trim();
@@ -1147,13 +1155,14 @@ function tutorPolish(clean, learner, prevSays, strict) {
   // 학습자가 다시 말해 달라고 했으면 같은 말을 되풀이하는 게 맞다 (되풀이 거르기를 하지 않는다)
   const askedRepeat = /\b(again|repeat|pardon|one more time|say (that|it)|what did you (say|mean)|come again|excuse me|(didn'?t|don'?t|can'?t|couldn'?t) (catch|understand|get|hear)|slow(ly|er)|speak (more )?slow)\b|^(sorry|what|huh|excuse me)\??$/i.test((learner || "").trim());
   const qs = sents.filter(tutorIsQuestion);
+  const askedName = /\b(your name|who are you|call you|introduce yourself)\b/i.test(learner || "");
   const kept = sents.filter(x => {
     const w = words(x);
     if (!w.length) return false;
-    if (w.length >= 3 && w.filter(t => lw.has(t)).length / w.length >= 0.8) return false;
+    if (w.length >= 3 && w.filter(t => lw.has(t)).length / w.length >= 0.8 && !(qs.length === 1 && qs[0] === x)) return false;   // 내 말을 따라 한 문장은 뺀다 (하나뿐인 질문은 남긴다)
     // 앞에서 한 말과 같으면 뺀다. 다만 하나뿐인 (짧지 않은) 질문은 남긴다 (질문 없이 "Sure!"만 남지 않게)
     if (!askedRepeat && prev.has(tutorNorm(x)) && !(qs.length === 1 && qs[0] === x && w.length >= 4)) return false;
-    if ((prevSays || []).length && /\b(i'm|i am) (emma|jay)\b/i.test(x)) return false;
+    if ((prevSays || []).length && !askedName && /\b(i'm|i am) (emma|jay)\b/i.test(x)) return false;
     return true;
   });
   return kept.length ? kept.map(x => x.trim()).join(" ") : (strict ? "" : clean);
@@ -1207,7 +1216,7 @@ function parseTutorCorrection(original, out) {
     .replace(/^["“']+|["”']+$/g, "").trim();
   if (!c || /^ok[.!]?$/i.test(c) || /[가-힣]/.test(c)) return "";
   const a = tutorNorm(original), b = tutorNorm(c);
-  if (a === b) return "";                                                // 대소문자·문장부호만 다르면 고칠 것 없음
+  if (a === b || tutorLooseWords(original).join(" ") === tutorLooseWords(c).join(" ")) return "";   // 대소문자·문장부호·숫자 표기·줄임말만 다르면 고칠 것 없음
   const aw = a.split(" "), bw = b.split(" ");
   if (bw.length > aw.length * 2 + 5 || bw.length < aw.length / 2) return "";   // 아예 다른 문장은 버린다
   const common = aw.filter(w => bw.includes(w)).length;
@@ -1276,12 +1285,13 @@ async function sendTutorText(text) {
 /** 학습자가 한 말을 기록한다: 말풍선·교정 확인·노트 표현·대화 기록 (돌려주는 값: 이번 답에만 붙일 안내) */
 function tutorRecordLearner(text, myBubble) {
   const token = tutorSessionToken;
+  const fromHint = !!tutorHintTarget && tutorSimilarity(text, tutorHintTarget) >= 0.85;   // 힌트 문장을 그대로 말했다
   if (tutorHintTarget) { const inp = tutorEl("tutor-input"); if (inp && inp.value.trim() === tutorHintTarget) inp.value = ""; tutorHintTarget = ""; }   // 말로 보냈어도 지난 힌트는 치운다
   tutorLearnerLines.push(text);
   const before = tutorSaidLines[tutorSaidLines.length - 1];
   const item = { text, bubble: myBubble, fix: undefined, why: "", check: null, before };
   tutorLearnerItems.push(item);
-  tutorCheckItem(item, before, token);   // 답과 동시에 교정 확인 (고칠 게 있으면 내 말풍선 아래에 팁)
+  if (fromHint) item.fix = ""; else tutorCheckItem(item, before, token);   // 답과 동시에 교정 확인 (고칠 게 있으면 내 말풍선 아래에 팁 · 힌트 문장은 앱이 준 것이라 고치지 않는다)
   tutorCheckNoteUse(text, myBubble);
   // 한국어로 물어본 표현을 바로 써 봤으면: 카드에 표시하고, 튜터가 짧게 반가워한 뒤 이어 간다
   const note = tutorTurnNote(text);
@@ -1339,7 +1349,7 @@ function tutorCheckItem(item, before, token) {
   item.check = tutorFixFetch(item.text, before)
     .then(out => {
       const r = parseTutorFix(item.text, out);
-      if (r.unknown) { item.fix = undefined; return; }        // 답이 깨졌으면 '실수 없음'으로 치지 않는다 (피드백 때 다시 확인)
+      if (r.unknown) { item.fix = undefined; tutorFixCache.delete(tutorNorm(item.text) + "|" + (before || "")); return; }   // 답이 깨졌으면 '실수 없음'으로 치지 않고 다음에 다시 묻는다 (피드백 때)
       item.fix = r.better; item.why = r.why;
       if (r.better && conv === tutorConvId && item.bubble && item.bubble.isConnected && !item.tipped) { item.tipped = true; addTutorTip(item.bubble, r.better, r.why, item.text); }
     })
@@ -1460,7 +1470,7 @@ async function tutorReply(token, learner, opts = {}) {
       tutorBusy = false;
       return;
     }
-    if (opts.quiet) { bubble.remove(); tutorBusy = false; tutorAfterSpeak(token); return; }   // 다시 묻기를 못 받았으면 조용히 다시 듣는다
+    if (opts.quiet) { bubble.remove(); tutorBusy = false; if (tutorHintShown) renderTutorHint(); tutorAfterSpeak(token); return; }   // 다시 묻기를 못 받았으면 조용히 다시 듣는다
     // 답을 못 한 문장은 대화 기록에서 빼서 다음 말이 자연스럽게 이어지게 한다
     const last = tutorMessages[tutorMessages.length - 1];
     if (last && last.role === "user") tutorMessages.pop();
@@ -1473,22 +1483,22 @@ async function tutorReply(token, learner, opts = {}) {
     why.className = "tutor-err";
     why.textContent = geminiErrorText(e);
     bubble.appendChild(why);
-    if (!transient) setTutorStatus("답을 못 받았어요 · 다시 보내기를 눌러 주세요", "");
+    if (!transient) setTutorStatus(e && e.status === 429 ? "사용량이 다 찼어요 · 잠시 뒤 다시 보내기를 눌러 주세요" : "답을 못 받았어요 · 다시 보내기를 눌러 주세요", "");
     if (geminiKeyProblem(e)) { tutorSetKey(""); setTimeout(() => { renderTutorPage(); tutorAlert(geminiErrorText(e)); }, 0); }
     else if (last && last.role === "user") {
       // 같은 말을 다시 보내기 (말하거나 다시 입력하지 않아도 되게). 인터넷이 다시 연결되면 저절로
-      const again = document.createElement("button");
+      const again = document.createElement("button"), conv = tutorConvId;
       again.className = "tutor-slow-btn";
       again.innerHTML = `<span aria-hidden="true">🔄</span> 다시 보내기`;
       const resend = () => {
         if (tutorRetryLast === resend) tutorRetryLast = null;
-        if (tutorBusy || token !== tutorSessionToken || tutorLastReal() !== bubble) { again.remove(); return; }
+        if (tutorBusy || conv !== tutorConvId || !bubble.isConnected || tutorLastReal() !== bubble) { again.remove(); return; }
         tutorCancelListening();
         stopTutorSpeech();
         while (bubble.nextElementSibling) bubble.nextElementSibling.remove();   // 그 뒤에 건넨 짧은 말("Take your time.")도 치운다
         bubble.remove();
         tutorMessages.push(last);
-        tutorReply(token, learner);
+        tutorReply(tutorSessionToken, learner);
       };
       again.onclick = ev => { ev.stopPropagation(); resend(); };
       bubble.appendChild(again);
@@ -1502,6 +1512,7 @@ async function tutorReply(token, learner, opts = {}) {
       else tutorSayLines(token, [line]);           // 말한 뒤 다시 듣는다
       return;
     }
+    if (e && [429, 403, 404].includes(e.status)) return;   // 사용량 초과 등은 바로 다시 말해도 또 안 된다: 마이크를 켜지 않고 안내를 남겨 둔다
     tutorAfterSpeak(token);                        // 바로 다시 말할 수 있게 듣는다
     return;
   }
@@ -1532,7 +1543,7 @@ async function tutorReply(token, learner, opts = {}) {
   const said = voice.said();
   let text = said.length ? [...said, ...tutorSplitSentences(kept || "").filter(x => !said.some(y => tutorNorm(y) === tutorNorm(x)))].join(" ") : kept;
   if (!text) {
-    if (opts.quiet) { bubble.remove(); tutorBusy = false; tutorAfterSpeak(token); return; }
+    if (opts.quiet) { bubble.remove(); tutorBusy = false; if (tutorHintShown) renderTutorHint(); tutorAfterSpeak(token); return; }
     text = TUTOR_SAY_AGAIN;
   }
   tutorSaidLines.push(text);
@@ -1670,6 +1681,7 @@ function addTranslateButton(bubble, text) {
   btn.innerHTML = `<span aria-hidden="true">🇰🇷</span> 해석`;
   btn.onclick = async e => {
     e.stopPropagation();
+    tutorQuietTries = 0; if (tutorMic && tutorMic.poke) tutorMic.poke();   // 해석을 읽는 동안 튜터가 끼어들지 않게
     let box = bubble.querySelector(".tutor-trans");
     if (box && !box.dataset.err) { box.classList.toggle("hidden"); return; }
     if (box) box.remove();   // 못 했던 해석은 다시 해 본다
@@ -1715,8 +1727,7 @@ function addTutorTip(bubble, tip, why, said) {
   if (why) t.querySelector(".tutor-tip-why").textContent = " · " + why;
   addPracticeButtons(t, tip);                       // 고친 문장을 직접 다시 말해 보게
   bubble.after(t);
-  tutorNoteAdd({ en: tip, said, why, src: "fix" });
-  const log = tutorEl("tutor-log"); log.scrollTop = log.scrollHeight;
+  tutorNoteAdd({ en: tip, said, why, src: "fix" });   // (맨 아래를 보고 있으면 tutorLogFollow가 따라간다)
 }
 /** 고친 문장을 넣으면서 내 말과 달라진 낱말에 형광펜 표시를 한다 (무엇을 고쳤는지 한눈에) */
 function tutorMarkChanges(el, said, better) {
@@ -1725,13 +1736,22 @@ function tutorMarkChanges(el, said, better) {
   // 같은 순서로 겹치는 낱말 찾기
   const n = a.length, m = idx.length, dp = Array.from({ length: n + 1 }, () => new Array(m + 1).fill(0));
   for (let i = n - 1; i >= 0; i--) for (let j = m - 1; j >= 0; j--) dp[i][j] = a[i] === b[idx[j]] ? dp[i + 1][j + 1] + 1 : Math.max(dp[i + 1][j], dp[i][j + 1]);
-  const same = new Set();
-  for (let i = 0, j = 0; i < n && j < m;) { if (a[i] === b[idx[j]]) { same.add(idx[j]); i++; j++; } else if (dp[i + 1][j] >= dp[i][j + 1]) i++; else j++; }
+  const same = new Set(), del = new Map(), tail = [];   // 빠진 낱말: 고친 문장의 어느 낱말 앞에서 빠졌는지
+  const drop = (j, w) => { if (j < m) { if (!del.has(idx[j])) del.set(idx[j], []); del.get(idx[j]).push(w); } else tail.push(w); };
+  for (let i = 0, j = 0; i < n;) {
+    if (j < m && a[i] === b[idx[j]]) { same.add(idx[j]); i++; j++; }
+    else if (j >= m || dp[i + 1][j] >= dp[i][j + 1]) { drop(j, a[i]); i++; }
+    else j++;
+  }
+  const onlyDrops = idx.every(i => same.has(i)) && (del.size > 0 || tail.length > 0);   // 새로 넣은 낱말 없이 빼기만 했다
+  const strike = ws => { const d = document.createElement("del"); d.textContent = ws.join(" "); el.appendChild(d); };
   el.textContent = "";
   toks.forEach((x, i) => {
+    if (onlyDrops && del.has(i)) { strike(del.get(i)); el.appendChild(document.createTextNode(" ")); }
     if (b[i] && !same.has(i)) { const mk = document.createElement("mark"); mk.textContent = x; el.appendChild(mk); }
     else el.appendChild(document.createTextNode(x));
   });
+  if (onlyDrops && tail.length) { el.appendChild(document.createTextNode(" ")); strike(tail); }
 }
 // ---------- 다시 말해 보기 · 한국어 도움 · 내 표현 노트 ----------
 // 회화가 느는 순서: 말하기 → 고쳐 받기 → 고친 문장을 직접 다시 말하기 → 다음 대화에서 써먹기
@@ -1764,6 +1784,10 @@ function tutorExpand(w) {
 }
 const tutorWords = x => tutorNorm(x).replace(/\b([ap]) m\b/g, "$1m").split(" ").filter(Boolean)
   .flatMap(w => /^\d{1,3}$/.test(w) ? tutorNumWords(+w).split(" ") : tutorExpand(w).split(" "));
+// 교정 비교용: 위와 같지만 ' 빠진 dont·im·its·cant는 그대로 둔다 (글로 쓴 이런 실수는 진짜로 고친 것)
+const TUTOR_REAL_FIX = new Set(["its", "im", "dont", "cant"]);
+const tutorLooseWords = x => tutorNorm(x).replace(/\b([ap]) m\b/g, "$1m").split(" ").filter(Boolean)
+  .flatMap(w => /^\d{1,3}$/.test(w) ? tutorNumWords(+w).split(" ") : TUTOR_REAL_FIX.has(w) ? [w] : tutorExpand(w).split(" "));
 const TUTOR_FILLERS = new Set(["um", "uh", "umm", "uhh", "hmm", "er", "erm", "ah", "eh", "mm"]);
 /** 같은 순서로 겹치는 낱말 수 */
 function tutorLcs(a, b) {
@@ -1822,6 +1846,8 @@ function tutorHandleSaid(text) {
   tutorPractice = null;
   const token = tutorSessionToken;
   const score = tutorSimilarity(text, pr.target);
+  // 🔊 듣기 뒤 저절로 켠 마이크에 전혀 다른 말을 했으면 따라 하기가 아니라 튜터에게 한 대답이다: 채점하지 않고 보낸다
+  if (pr.quietIfSilent && !pr.tries && score < 0.5) { tutorPracticeShow(pr.box, "", "", ""); tutorHandleSaid(text); return; }
   const good = score >= 0.85;
   // 처음에 틀리면 튜터가 천천히 한 번 더 들려주고 다시 따라 하게 한다
   if (!good && !pr.tries && (!pr.quietIfSilent || score >= 0.5)) {   // (들어 보기 뒤 저절로 켠 마이크에 전혀 다른 말을 했으면 다시 들려주지 않는다)
@@ -1892,6 +1918,8 @@ async function tutorKoreanHelp(ko) {
     if (conv === tutorConvId && card.isConnected) tutorKoTarget = { en, card };   // 학습자가 이 말을 하면 튜터가 알아보고 반가워한다
     if (stale) return;                                     // (다른 찾기가 진행 중일 수 있어 tutorHelping은 건드리지 않는다)
     tutorHelping = false;
+    const sheetOpen = ["settings", "feedback"].some(n => { const el = tutorEl("tutor-sheet-" + n); return el && !el.classList.contains("hidden"); });
+    if (sheetOpen || tutorBusy || tutorSpeaking) return;   // 판을 열었거나 튜터가 다른 말을 하는 중이면 소리 내지 않는다 (판을 닫으면·말이 끝나면 하던 대로 이어 간다)
     speakTutor(en, token);                                 // 들려준 뒤 저절로 듣기 시작 → 말하면 튜터에게 간다
   } catch (e) {
     if (token !== tutorSessionToken) { card.querySelector(".tutor-ko-a").textContent = "취소됐어요 · 다시 적어 주세요"; return; }
@@ -1940,7 +1968,7 @@ function renderTutorNotes() {
   const box = tutorEl("tutor-notes");
   if (!box) return;
   const list = tutorNotes();
-  box.innerHTML = `<div class="tutor-report-title">📒 내 표현 노트 <small>${list.length}개</small></div>`;
+  box.innerHTML = `<div class="tutor-report-title">📒 내 표현 노트 <small>${list.length}개${list.length > 30 ? " · 최근 30개" : ""}</small></div>`;
   if (!list.length) {
     const d = document.createElement("div"); d.className = "tutor-fb-note";
     d.textContent = `고친 문장과 배운 표현이 여기에 모여요. 다음 대화에서 이 표현을 써 볼 수 있게 ${tutorName()}가 도와줘요.`;
@@ -2230,7 +2258,7 @@ function changeTutorVoice(sel) {
   fillTutorVoices();
   tutorStopPreview();
   tutorPreviewButtons("loading");
-  tutorPreviewDebounce = setTimeout(() => { tutorPreviewVoice(true); if (tutorLobbyOpen()) tutorPrepGreeting(1500); }, 500);   // 연달아 바꾸면 마지막 것만 들려준다 (첫 인사도 새 목소리로 미리)
+  tutorPreviewDebounce = setTimeout(() => { const set = tutorEl("tutor-sheet-settings"); if (!tutorLobbyOpen() && !(set && !set.classList.contains("hidden"))) return; tutorPreviewVoice(true); if (tutorLobbyOpen()) tutorPrepGreeting(1500); }, 500);   // 연달아 바꾸면 마지막 것만 들려준다 (첫 인사도 새 목소리로 미리)
 }
 
 // ---------- 말하기 (튜터 목소리 + 입모양) ----------
@@ -2436,6 +2464,12 @@ function toggleTutorMic() {
   };
   state.stop = () => finish(true);
   state.cancel = () => finish(false);
+  // 아직 아무 말도 없을 때 '말 걸기'를 처음부터 다시 잰다 (해석을 읽거나 막 말을 꺼내는 중)
+  state.poke = () => {
+    if (done || heard.trim() || !quietTimer) return;
+    clearTimeout(quietTimer);
+    quietTimer = setTimeout(() => { if (!done && !heard.trim()) finish(true); }, tutorQuietMs()); timers.push(quietTimer);
+  };
   // 입력칸을 눌렀다: 듣기만 멈추고 받아쓴 말은 칸에 남겨 둔다 (잘못 들은 낱말을 고쳐서 ➤로 보내게)
   // 듣는 중에 힌트를 골랐다: 마이크를 끄고 다시 켜지 않고 그대로 들으면서 입력칸 문장을 따라 읽게 한다 (다시 켤 때 소리·지연이 없게)
   state.read = () => {
@@ -2450,11 +2484,11 @@ function toggleTutorMic() {
     if (tutorMic === state) tutorMic = null;
     if (h && !reading) { inp.value = h; setTutorStatus("고친 뒤 ➤를 눌러 보내세요", ""); }
   };
-  const listenMsg = reading && !tutorPractice ? "문장을 따라 말하거나 ➤를 누르세요" : manual ? "듣고 있어요… 다 말하면 ➤를 누르세요" : "듣고 있어요… 영어로 말해 보세요";
+  const listenMsg = reading && !tutorPractice ? "문장을 따라 말하거나 ➤를 누르세요" : tutorPractice && !tutorPractice.quietIfSilent ? "듣고 있어요… 따라 말해 보세요" : manual ? "듣고 있어요… 다 말하면 ➤를 누르세요" : "듣고 있어요… 영어로 말해 보세요";
   // 마이크가 실제로 소리를 받기 시작했을 때만 '듣고 있어요' (그 전에 말하면 첫 낱말이 사라진다)
   const markLive = () => {
     if (live || done) return;
-    live = true;
+    live = true; tutorNoMic = false;
     if (quietOn && !heard.trim()) { quietTimer = setTimeout(() => { if (!done && !heard.trim()) finish(true); }, tutorQuietMs()); timers.push(quietTimer); }
     if (heard.trim() || hinted) tutorSetMode("listening"); else setTutorStatus(listenMsg, "listening");
   };
@@ -2481,6 +2515,7 @@ function toggleTutorMic() {
     rec.lang = "en-US"; rec.interimResults = true; rec.maxAlternatives = 1; rec.continuous = true;
     state.rec = rec;
     rec.onaudiostart = markLive;
+    rec.onspeechstart = () => state.poke();
     rec.onresult = e => {
       tutorSrNetErrors = 0;
       const text = (committed + " " + tutorJoinResults(e.results)).replace(/\s+/g, " ").trim();
@@ -2495,7 +2530,7 @@ function toggleTutorMic() {
       if (e.error === "no-speech" || e.error === "aborted") return;   // 끝 처리는 onend에서
       // 브라우저 음성 인식 서비스를 못 쓰는 환경이면 다음부터 녹음 + Gemini 받아쓰기로 (마이크 권한 자체가 막힌 건 아님)
       if (e.error === "network" && navigator.onLine !== false && ++tutorSrNetErrors < 2) {   // 한 번은 일시적인 끊김으로 보고 그대로 다시 듣는다
-        setTimeout(() => setTutorStatus("연결이 잠깐 끊겼어요 · 다시 들을게요", ""), 0);
+        hinted = false; setTimeout(() => { if (!done) setTutorStatus("연결이 잠깐 끊겼어요 · 다시 들을게요", "listening"); }, 0);
         return;
       }
       if (e.error === "service-not-allowed" || e.error === "network" || e.error === "language-not-supported") {
@@ -2508,7 +2543,7 @@ function toggleTutorMic() {
         setTimeout(() => toggleTutorRecordMic(), 0);
       }
       else if (e.error === "not-allowed") { fatal = true; tutorMicDenied = true; showMicPermissionHelp(); }
-      else if (TUTOR_MIC_MSG[e.error]) { fatal = true; tutorAlert(TUTOR_MIC_MSG[e.error]); }
+      else if (TUTOR_MIC_MSG[e.error]) { fatal = true; if (e.error === "audio-capture") tutorNoMic = true; tutorAlert(TUTOR_MIC_MSG[e.error]); }
       finish(!fatal);
     };
     rec.onend = () => {
@@ -2551,12 +2586,13 @@ window.addEventListener("online", () => setTimeout(() => { tutorOnlineMissed = t
 let tutorOnlineMissed = false;   // 연결이 돌아왔는데 그때는 바빠서 못 보냈다 (튜터 말이 끝나면 보낸다)
 function tutorAutoRetry() {
   const r = tutorRetryLast;
-  if (!r || tutorBusy || tutorSpeaking || tutorHelping || tutorPractice || !tutorCallActive || tutorRecRec || tutorTranscribing) return;
-  if (["settings", "feedback"].some(n => { const el = tutorEl("tutor-sheet-" + n); return el && !el.classList.contains("hidden"); })) return;   // 판을 닫으면 그때 (tutorResume)
-  if (tutorMic && tutorMic.heardText && tutorMic.heardText()) return;
-  if (!tutorLastIsError()) return;
+  if (!r || tutorBusy || tutorSpeaking || tutorHelping || tutorPractice || !tutorCallActive || tutorRecRec || tutorTranscribing) return false;
+  if (["settings", "feedback"].some(n => { const el = tutorEl("tutor-sheet-" + n); return el && !el.classList.contains("hidden"); })) return false;   // 판을 닫으면 그때 (tutorResume)
+  if (tutorMic && tutorMic.heardText && tutorMic.heardText()) return false;
+  if (!tutorLastIsError()) return false;
   tutorOnlineMissed = false;
   r();
+  return !!tutorBusy;   // 실제로 다시 보냈는지 (이미 다른 대화면 보내지 않고 버튼만 치운다)
 }
 /** 마이크로 한 마디 녹음: 말을 멈추면('말 끝 기다리기'만큼 조용) 자동으로 끝나고, 16kHz 소리 데이터를 돌려준다.
  *  quietMs: 아무 말이 없으면 이만큼 뒤에 끝낸다 · onLive: 마이크가 실제로 소리를 받기 시작했을 때 · onVoice: 말소리가 들어올 때 */
@@ -2683,7 +2719,7 @@ async function toggleTutorRecordMic() {
   const token = tutorSessionToken;
   const rec = tutorRecordUtterance(tutorSendManual(), {
     quietMs: tutorPractice || tutorSendManual() ? 8000 : tutorQuietMs(),
-    onLive: () => { if (tutorRecRec === rec) setTutorStatus(tutorSendManual() ? "듣고 있어요… 다 말하면 ➤를 누르세요" : "듣고 있어요… 말을 멈추면 보내요", "listening"); },
+    onLive: () => { tutorNoMic = false; if (tutorRecRec === rec) setTutorStatus(tutorSendManual() ? "듣고 있어요… 다 말하면 ➤를 누르세요" : "듣고 있어요… 말을 멈추면 보내요", "listening"); },
     onVoice: tutorHearPulse
   });
   tutorRecRec = rec;
@@ -2696,7 +2732,7 @@ async function toggleTutorRecordMic() {
     setTutorStatus(tutorIdleMsg(), "");
     tutorPracticeEnd("");
     if (e && (e.name === "NotAllowedError" || e.name === "SecurityError")) { tutorMicDenied = true; showMicPermissionHelp(); }
-    else if (e && e.name === "NotFoundError") { tutorRecFailAt = Date.now(); tutorAlert("마이크를 찾지 못했어요.\n아래 입력칸에 적어서 대화할 수 있어요."); }
+    else if (e && e.name === "NotFoundError") { tutorRecFailAt = Date.now(); tutorNoMic = true; tutorAlert("마이크를 찾지 못했어요.\n아래 입력칸에 적어서 대화할 수 있어요."); }
     else { tutorRecFailAt = Date.now(); console.warn("마이크 열기 실패", e); tutorAlert("마이크를 열지 못했어요. 다른 앱이 마이크를 쓰고 있지 않은지 확인해 주세요.\n아래 입력칸에 적어서 대화할 수도 있어요."); }
     return;
   }
@@ -2733,6 +2769,7 @@ async function toggleTutorRecordMic() {
     else if (tutorPractice) tutorPracticeEnd("말을 알아듣지 못했어요. 다시 눌러 주세요");
     else if (e && e.status === 429) setTutorStatus("사용량이 다 찼어요 · 잠시 뒤 다시 해 주세요", "");
     else if (e && e.reason === "OFFLINE") setTutorStatus("인터넷 연결을 확인해 주세요", "");
+    else if (geminiTransient(e)) setTutorStatus(`연결이 불안정해요 · ${tutorName()}를 눌러 다시 말해 주세요`, "");
     else tutorRecMiss(token);
   }
 }
@@ -2816,7 +2853,7 @@ function tutorUseHint(en) {
   if (send) { send.classList.remove("ready"); void send.offsetWidth; send.classList.add("ready"); }   // 보내기 버튼을 반짝여 알려 준다
   // 튜터가 읽어 주지 않는다 (내가 할 말이라서). 바로 듣기 시작 → 그대로 따라 말하면 보내지고, ➤를 눌러 글로 보내도 된다
   if (keep && tutorMic.read()) return;
-  setTutorStatus("➤로 보내거나 그대로 따라 말해 보세요", "");
+  setTutorStatus(document.activeElement === inp ? "➤를 눌러 보내 보세요" : "➤로 보내거나 그대로 따라 말해 보세요", "");
   const token = tutorSessionToken;
   setTimeout(() => tutorAfterSpeak(token), 300);
 }
@@ -2826,7 +2863,7 @@ function renderTutorHint(noRetry) {
   box.classList.toggle("hidden", !tutorHintShown);
   const hb = tutorEl("tutor-hint-btn"); if (hb) { hb.classList.toggle("on", tutorHintShown); hb.setAttribute("aria-expanded", String(tutorHintShown)); }
   const room = tutorEl("tutor-chat-area"); if (room) room.classList.toggle("hinting", tutorHintShown);
-  requestAnimationFrame(() => { const log = tutorEl("tutor-log"); if (log) log.scrollTop = log.scrollHeight; });   // 힌트가 답하는 튜터 말이 보이게
+  requestAnimationFrame(() => { const log = tutorEl("tutor-log"); if (log && tutorLogPinned) log.scrollTop = log.scrollHeight; });   // 힌트가 답하는 튜터 말이 보이게 (위로 올려 읽는 중이면 그대로)
   if (!tutorHintShown) return;
   if (!tutorReady()) return;
   if (tutorBusy) { box.innerHTML = `<div class="tutor-hint-label">힌트 만드는 중…</div>`; return; }   // Emma 답이 정해지면 그 답에 맞춰 만든다
@@ -2934,7 +2971,7 @@ async function tutorFeedback() {
   const seen = new Set();   // 같은 문장을 여러 번 말했으면 교정은 한 번만
   tutorCorrections = tutorLearnerItems.filter(it => it.fix && !seen.has(tutorNorm(it.text)) && seen.add(tutorNorm(it.text))).map(it => ({ said: it.text, better: it.fix, why: it.why }));
   const fixes = tutorCorrections.slice(-5), failed = tutorLearnerItems.filter(it => it.fix === undefined).length;
-  q(".tutor-fb-summary").textContent = `영어로 ${n}번 말했어요 · ` + (fixes.length ? `고쳐 볼 문장 ${tutorCorrections.length}개`
+  q(".tutor-fb-summary").textContent = `영어로 ${n}번 말했어요 · ` + (fixes.length ? `고쳐 볼 문장 ${tutorCorrections.length}개` + (tutorCorrections.length > fixes.length ? ` (최근 ${fixes.length}개)` : "")
     : failed ? "문장 확인을 다 하지 못했어요" : "눈에 띄는 실수 없이 잘했어요! 👏");   // 확인을 못 했는데 '실수 없음'이라고 칭찬하지 않게
   const list = q(".tutor-fb-list"); list.classList.remove("tutor-fb-wait"); list.innerHTML = "";
   if (!fixes.length) q(".tutor-fb-fixes").classList.add("hidden");

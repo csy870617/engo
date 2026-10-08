@@ -88,7 +88,7 @@ const NeuralTTS = (() => {
     const Ctx = window.AudioContext || window.webkitAudioContext;
     if (!Ctx) return null;
     if (!audioCtx) audioCtx = new Ctx();
-    if (audioCtx.state === 'suspended') audioCtx.resume().catch(() => {});
+    if (audioCtx.state !== 'running' && audioCtx.state !== 'closed') audioCtx.resume().catch(() => {});   // 아이폰은 전화 뒤 'interrupted'로 남기도 한다
     return audioCtx;
   }
 
@@ -159,7 +159,7 @@ const NeuralTTS = (() => {
     return {
       push(samples, sampleRate) {
         if (stopped || !samples || !samples.length) return;
-        if (ctx.state === 'suspended') ctx.resume().catch(() => {});
+        if (ctx.state !== 'running' && ctx.state !== 'closed') ctx.resume().catch(() => {});
         const buf = ctx.createBuffer(1, samples.length, sampleRate);
         buf.copyToChannel(samples, 0);
         const src = ctx.createBufferSource();
@@ -204,7 +204,7 @@ const NeuralTTS = (() => {
       try { currentSource.stop(); } catch (e) {}
       currentSource = null;
     }
-    if (audioCtx && audioCtx.state === 'suspended') audioCtx.resume().catch(() => {});
+    if (audioCtx && audioCtx.state !== 'running' && audioCtx.state !== 'closed') audioCtx.resume().catch(() => {});
   }
 
   return {
