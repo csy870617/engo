@@ -463,6 +463,7 @@ function tutorWarmVoice() {
   if (typeof KokoroVoice === "undefined") return;
   tutorVoiceDlRender();
   if (!KokoroVoice.downloaded() || tutorDl) return;
+  tutorPackLoad();                 // 정해 둔 말(반응 등)의 목소리 묶음도 받아 둔다 (답의 첫 소리가 바로 나게)
   KokoroVoice.verify().then(ok => {
     tutorVoiceDlRender();
     if (ok && tutorVoiceId() !== "app") KokoroVoice.load(null, tutorVoiceId()).then(() => { if (!tutorPageVisible()) KokoroVoice.scheduleUnload(90000); }, () => { tutorNaturalBroken = true; });
@@ -1356,7 +1357,7 @@ function tutorCheckItem(item, before, token) {
 // ---------- 미리 답 받기 ----------
 // 말이 잠깐 멈추면 ('말 끝 기다리기'가 끝나기 전에) 지금까지 들은 말로 답과 첫 문장 목소리를 미리 만들기 시작한다.
 // 그 말이 그대로 보내지면 받아 둔 답을 이어 써서 기다림이 거의 없고, 말을 더 하면 버린다.
-const TUTOR_SPEC = { ms: 400, dangling: 1600, max: 2 };   // 이만큼 조용하면 시작 (말이 이어질 낱말로 멈췄으면 더 기다린다) · 한 번 말하는 동안 최대 횟수
+const TUTOR_SPEC = { ms: 300, dangling: 1600, max: 2 };   // 이만큼 조용하면 시작 (말이 이어질 낱말로 멈췄으면 더 기다린다) · 한 번 말하는 동안 최대 횟수
 let tutorSpec = null;   // { key, note, token, base, len, raw, result, err, dead, adopted, subs, abort, clips }
 function tutorSpecDrop() {
   const s = tutorSpec; tutorSpec = null;
@@ -1385,7 +1386,7 @@ function tutorSpeculate(text) {
     rested = true;
     tutorSplitSentences(tutorPolish(cleanTutorSay(raw), text, prevSays)).slice(0, 2).forEach((x, i, arr) => {
       if (i === 1 && !(((KokoroVoice.rtf() || 1) <= 0.5 || TUTOR_REACTIONS.includes(arr[0])) && tutorWords(x).length <= 12)) return;
-      (i === 0 ? tutorVoicePieces(x) : [x]).forEach(pre);
+      (i === 0 || TUTOR_REACTIONS.includes(arr[0]) ? tutorVoicePieces(x) : [x]).forEach(pre);   // 목소리 줄(tutorSpeechQueue)과 같은 기준으로 나눈다
     });
   };
   const msgs = tutorMessages.concat([{ role: "user", content: text }], note ? [{ role: "user", content: note }] : []);
@@ -1588,13 +1589,14 @@ function tutorSpeechQueue(token, prepMsg = "생각 중…") {
     say(parts, nat) {
       if (!alive()) return;
       for (const part of parts) {
-        const first = !spoken.length;
+        // 첫 문장(첫 문장이 바로 트는 짧은 반응이면 그다음 문장)은 쉼표에서 나눠 앞부분 목소리부터 만든다 — 미리 받기(tutorSpeculate)와 같은 기준이라 미리 만든 목소리를 그대로 쓴다
+        const lead = !spoken.length || (spoken.length === 1 && TUTOR_REACTIONS.includes(spoken[0]));
         tutorSplitSentences(part).forEach(x => { spoken.push(x); spokenN.add(tutorNorm(x)); });
         tutorSpeaking = true; tutorSayDevice = !nat;
         if (!tutorAudioPlaying()) tutorMarkPreparing(prepMsg);
         if (nat) {
-          // 지금 만들기 시작해 두고, 차례가 오면 (다 되는 대로) 튼다. 첫 문장은 쉼표에서 나눠 앞부분부터 (첫 소리가 빨리 나게)
-          for (const piece of first ? tutorVoicePieces(part) : [part]) {
+          // 지금 만들기 시작해 두고, 차례가 오면 (다 되는 대로) 튼다
+          for (const piece of lead ? tutorVoicePieces(part) : [part]) {
             const clip = tutorTtsFetch(piece, false);
             chain = chain.then(() => alive() && tutorPlayClip(clip, piece, alive));
           }
@@ -2100,6 +2102,65 @@ async function tutorGreetSave(text, clip) {
   } catch (e) {}
 }
 
+// 정해 둔 말(답 첫머리의 반응·다시 말해 줄래요·칭찬·목소리 들어 보기)은 목소리마다 미리 만들어 둔 묶음 파일(audio/tutor/목소리.json)을
+// 한 번 받아 기기에 두고 바로 튼다 → 기기에서 만드는 시간 없이 답의 첫 소리가 바로 난다 (처음 쓰는 날·주소가 바뀐 뒤에도).
+// 묶음을 아직 못 받았으면 예전처럼 기기에서 만든다
+const TUTOR_PACK_VER = 1;
+const TUTOR_PACK_CACHE = "faith-voice-tutor-pack-" + TUTOR_PACK_VER;   // faith-voice로 시작해서 앱 업데이트 때 지워지지 않는다
+let tutorPack = { voice: "", lines: null, loading: null };
+function tutorPackLoad(voice = tutorVoiceId()) {
+  if (!TUTOR_VOICES[voice] || voice === "app") return Promise.resolve(null);
+  const cur = tutorPack;
+  if (cur.voice === voice && (cur.lines || cur.loading)) return cur.loading || Promise.resolve(cur.lines);
+  const my = tutorPack = { voice, lines: null, loading: null };
+  const url = `audio/tutor/${voice}.json?v=${TUTOR_PACK_VER}`;
+  const ok = j => j && j.v === TUTOR_PACK_VER && j.voice === voice && j.lines && typeof j.lines === "object";
+  my.loading = (async () => {
+    let lines = null;
+    try {
+      const c = "caches" in window ? await caches.open(TUTOR_PACK_CACHE) : null;
+      const key = new URL(url, location.href).href;
+      let j = null;
+      const hit = c && await c.match(key);
+      if (hit) { try { j = await hit.json(); } catch (e) {} if (!ok(j)) { j = null; c.delete(key).catch(() => {}); } }
+      if (!j) {
+        const res = await fetch(url);
+        if (!res.ok) throw new Error("HTTP " + res.status);
+        const txt = await res.text();
+        j = JSON.parse(txt);
+        if (!ok(j)) throw new Error("bad pack");   // 와이파이 로그인 화면 같은 엉뚱한 응답은 저장하지 않는다
+        if (c) c.put(key, new Response(txt, { headers: { "content-type": "application/json" } })).catch(() => {});
+        // 예전 판의 묶음은 지운다
+        caches.keys().then(ks => ks.forEach(k => { if (k.startsWith("faith-voice-tutor-pack") && k !== TUTOR_PACK_CACHE) caches.delete(k); })).catch(() => {});
+      }
+      lines = j.lines;
+    } catch (e) { console.warn("튜터 목소리 묶음을 받지 못했어요", e); }
+    if (tutorPack === my) { my.lines = lines; my.loading = null; }   // 못 받았으면 다음에 다시 시도한다
+    return lines;
+  })();
+  return my.loading;
+}
+/** 묶음에 있는 말인지 (받아 둔 목소리 기준) */
+const tutorPackHas = (text, voice = tutorVoiceId()) => tutorPack.voice === voice && !!tutorPack.lines && !!tutorPack.lines[text];
+/** 묶음에 있는 말이면 풀어서 { wav, sampleRate } (없으면 null). 묶음을 받는 중이면 잠깐(길어야 1.5초) 기다린다 */
+async function tutorPackDecode(text, voice) {
+  if (!TUTOR_VOICES[voice] || voice === "app") return null;
+  if (!tutorPackHas(text, voice)) {
+    const ld = tutorPack.voice === voice && !tutorPack.lines ? tutorPack.loading : tutorPackLoad(voice);
+    if (!ld || !tutorFixedLine(text) && text !== tutorPreviewText()) return null;   // 정해 둔 말이 아니면 묶음에 없다
+    await Promise.race([ld, new Promise(r => setTimeout(r, 1500))]);
+    if (!tutorPackHas(text, voice)) return null;
+  }
+  try {
+    const bin = atob(tutorPack.lines[text]), u8 = new Uint8Array(bin.length);
+    for (let i = 0; i < bin.length; i++) u8[i] = bin.charCodeAt(i);
+    const OAC = window.OfflineAudioContext || window.webkitOfflineAudioContext;
+    let ac; try { ac = new OAC(1, 1, 24000); } catch (e) { ac = new OAC(1, 1, 44100); }
+    const buf = await new Promise((res, rej) => { const r = ac.decodeAudioData(u8.buffer, res, rej); if (r && r.then) r.then(res, rej); });
+    return { wav: buf.getChannelData(0), sampleRate: buf.sampleRate };
+  } catch (e) { console.warn("묶음 목소리를 풀지 못했어요", e); return null; }
+}
+
 /** 문장 → 음성 (기기 안에서 만든다. 같은 문장은 한 번만).
  *  돌려주는 clip은 만드는 중에도 쓸 수 있다: 다 되면 chunks에 소리가 들어가고 listeners를 부른다 */
 function tutorTtsFetch(text, slow) {
@@ -2110,6 +2171,8 @@ function tutorTtsFetch(text, slow) {
   const push = (wav, rate) => { clip.sampleRate = rate; clip.chunks.push(tutorTrimSilence(wav, rate)); clip.done = true; emit(); };   // 문장 하나가 통째로 온다 → 받자마자 '다 됨' (입 움직임을 미리 짜려면 재생 전에 알아야 한다)
   const voice = tutorVoiceId();
   clip.ready = (async () => {
+    const packed = slow ? null : await tutorPackDecode(text, voice);   // 미리 만들어 둔 묶음에 있으면 바로
+    if (packed) { push(packed.wav, packed.sampleRate); return; }
     const saved = slow ? null : await tutorGreetLoad(text);
     if (saved) { push(saved.wav, saved.sampleRate); return; }
     try {
@@ -2140,7 +2203,7 @@ async function tutorWarmReaction() {
   tutorWarmBusy = true;
   try {
     for (const x of TUTOR_REACTIONS) {
-      if (tutorTtsCache.has(tutorTtsKey(x, false))) continue;
+      if (tutorTtsCache.has(tutorTtsKey(x, false)) || tutorPackHas(x)) continue;   // 묶음에 있는 말은 만들 필요가 없다
       const saved = await tutorGreetLoad(x);
       if (saved) { tutorTtsFetch(x, false); continue; }                  // 저장해 둔 것은 바로 불러온다
       if (!tutorSpeaking || tutorTtsPending || tutorSpec) break;
@@ -2354,7 +2417,7 @@ function tutorJoinResults(results) {
 }
 let tutorSrNetErrors = 0;   // 음성 인식 'network' 오류가 연달아 난 횟수
 // 말 끝 기다리기: 말이 멈춘 뒤 이만큼 조용하면 다 말한 것으로 보고 보낸다 (생각하느라 멈춘 건 기다려 준다)
-const TUTOR_END_WAIT = { short: { label: "짧게", ms: 1200 }, normal: { label: "보통", ms: 2000 }, long: { label: "길게", ms: 3200 } };
+const TUTOR_END_WAIT = { short: { label: "짧게", ms: 900 }, normal: { label: "보통", ms: 2000 }, long: { label: "길게", ms: 3200 } };
 // 이런 낱말로 끝나면 말이 이어질 가능성이 커서 더 기다린다 ("I went to the …", "because …", "um …")
 const TUTOR_DANGLING = /^(and|but|or|so|because|cause|if|when|while|that|which|who|the|a|an|to|of|in|on|at|for|with|from|about|into|my|your|his|her|their|our|i|i'm|um|uh|uhm|umm|er|erm|hmm|like)$/;
 function tutorEndWaitId() { let v = null; try { v = localStorage.getItem("tutorEndWait"); } catch (e) {} return TUTOR_END_WAIT[v] ? v : "short"; }   // 기본은 짧게 (빨리 대답하게)
@@ -2368,14 +2431,14 @@ function tutorEndWait(text) {
   const last = (text || "").trim().toLowerCase().replace(/[^a-z' ]/g, "").split(/\s+/).pop() || "";
   // 말이 이어질 낱말(and, because, the, I…)로 멈췄으면 더 기다린다. "I think so"처럼 so로 끝나는 완전한 대답은 빼고
   const done = /\b(think|hope|guess) so$/.test((text || "").trim().toLowerCase().replace(/[^a-z' ]/g, "").trim());
-  if (TUTOR_DANGLING.test(last) && !done) return base + 1500;
+  if (TUTOR_DANGLING.test(last) && !done) return Math.max(base + 1500, 2700);   // (짧게여도 말하다 멈춘 건 넉넉히: 낱말을 찾는 중일 수 있다)
   if (tutorPractice) return base;
   if (tutorHintTarget && tutorSimilarity(text, tutorHintTarget) >= 0.85) return Math.min(base, 700);   // 힌트 문장을 끝까지 따라 읽었으면 바로 보낸다
   const t = tutorNorm(text);
-  if (TUTOR_YIELD.test(t)) return Math.max(900, Math.round(base * 0.6));
+  if (TUTOR_YIELD.test(t)) return Math.max(600, Math.round(base * 0.6));
   const q = tutorSplitSentences(tutorSaidLines[tutorSaidLines.length - 1] || "").filter(tutorIsQuestion).pop() || "";
   const closedQ = TUTOR_CLOSED_Q.test(q) || /\bor\b[^?]*\?["”']?$/i.test(q);
-  if (closedQ && TUTOR_COMPLETE.test(t)) return Math.max(1000, Math.round(base * 0.7));
+  if (closedQ && TUTOR_COMPLETE.test(t)) return Math.max(650, Math.round(base * 0.7));
   return base;
 }
 /** 아무 말이 없을 때 튜터가 먼저 말을 건네기까지 (말 끝 기다리기에 맞춰: 6 / 7 / 11.2초) */
@@ -2514,9 +2577,11 @@ function toggleTutorMic() {
       tutorSrNetErrors = 0;
       const text = (committed + " " + tutorJoinResults(e.results)).replace(/\s+/g, " ").trim();
       if (text !== heard) {                                      // 새 말이 들릴 때마다 기다리는 시간을 다시 잰다
+        // 낱말은 그대로이고 대문자·문장부호만 바뀐 최종 결과는 새 말이 아니다: 기다리는 시간을 처음부터 다시 재지 않는다 (답이 그만큼 늦어지지 않게)
+        const same = !!heard && tutorNorm(text) === tutorNorm(heard);
         if (tutorSpec && tutorSpec.key !== tutorNorm(text)) tutorSpecDrop();   // 말이 이어졌다: 미리 받던 답은 버린다
-        markLive(); tutorHearPulse();
-        heard = text; armSilence();
+        markLive(); if (!same) tutorHearPulse();
+        heard = text; if (!same) armSilence();
         if (reading) setTutorStatus("🎤 " + heard, "listening"); else inp.value = heard;
       }
     };
