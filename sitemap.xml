@@ -1,16 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
-    <loc>https://engo.life/</loc>
+    <loc>https://csy870617.github.io/engo/</loc>
     <lastmod>2026-10-08</lastmod>
     <priority>1.0</priority>
   </url>
   <url>
-    <loc>https://engo.life/archive.html</loc>
+    <loc>https://csy870617.github.io/engo/archive.html</loc>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://engo.life/privacy.html</loc>
+    <loc>https://csy870617.github.io/engo/privacy.html</loc>
     <priority>0.5</priority>
   </url>
 </urlset>
