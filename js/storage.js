@@ -66,6 +66,10 @@ function loadMemorizedData() {
     const iSet = safeParseIdSet("idiomMemorizedIds");
     if (iSet) memorizedIdioms = iSet;
     migrateIdSet(memorizedWords, typeof wordIdAliases !== 'undefined' ? wordIdAliases : null);
+    const cSet = safeParseIdSet("convDoneIds");
+    if (cSet) doneConvs = cSet;
+    const pzSet = safeParseIdSet("puzzleDoneIds");
+    if (pzSet) donePuzzles = pzSet;
     migrateIdSet(memorizedIdioms, typeof idiomIdAliases !== 'undefined' ? idiomIdAliases : null);
 
     const pStudy = localStorage.getItem("patternStudyingOnly");
@@ -74,6 +78,8 @@ function loadMemorizedData() {
     if(wStudy !== null) wordStudyingOnly = (wStudy === 'true');
     const iStudy = localStorage.getItem("idiomStudyingOnly");
     if(iStudy !== null) idiomStudyingOnly = (iStudy === 'true');
+    const cStudy = localStorage.getItem("convStudyingOnly");
+    if(cStudy !== null) convStudyingOnly = (cStudy === 'true');
 
     const wLevel = safeParseLevel("selectedWordLevel");
     if (wLevel !== null) selectedWordLevel = wLevel;
@@ -92,15 +98,23 @@ function loadMemorizedData() {
 // 암기 표시를 바꾼 기록 { pattern: { id: [1|0, 시각] }, word: {...}, idiom: {...} }
 // 합치기만 하면 한 번 서버에 올라간 암기는 해제해도 다음 동기화 때 다시 살아나므로, 항목마다 마지막으로 바꾼 쪽이 이긴다
 const MEM_LOG_KEY = "memorizedLog";
+// conv: 대화 학습 '완료' · puzzle: 문장 퍼즐 '완료(다시 안 보기)'도 같은 방식으로 기록한다
 function memLogLoad() { try { const d = JSON.parse(localStorage.getItem(MEM_LOG_KEY) || "{}"); return d && typeof d === "object" && !Array.isArray(d) ? d : {}; } catch (e) { return {}; } }
 function memLogSave(log) { try { localStorage.setItem(MEM_LOG_KEY, JSON.stringify(log)); } catch (e) { console.warn(e); } }
 /** 암기 표시를 켜거나 끈다 (목록·상세의 체크): 바꾼 시각을 남기고 저장한다 */
-function markMemorized(type, id, on) {
-  const set = type === 'pattern' ? memorizedPatterns : type === 'word' ? memorizedWords : type === 'idiom' ? memorizedIdioms : null;
-  if (!set || !id) return;
-  if (on) set.add(id); else set.delete(id);
-  const log = memLogLoad();
-  (log[type] = log[type] || {})[id] = [on ? 1 : 0, Date.now()];
+function memSetOf(type) {
+  return type === 'pattern' ? memorizedPatterns : type === 'word' ? memorizedWords : type === 'idiom' ? memorizedIdioms
+    : type === 'conv' ? doneConvs : type === 'puzzle' ? donePuzzles : null;
+}
+function markMemorized(type, id, on) { markMemorizedMany(type, [id], on); }
+/** 여러 항목을 한 번에 (퍼즐 '모두 다시 보기' 등): 기록과 저장은 한 번만 */
+function markMemorizedMany(type, ids, on) {
+  const set = memSetOf(type);
+  ids = (ids || []).filter(Boolean);
+  if (!set || !ids.length) return;
+  const log = memLogLoad(), now = Date.now();
+  log[type] = log[type] || {};
+  ids.forEach(id => { if (on) set.add(id); else set.delete(id); log[type][id] = [on ? 1 : 0, now]; });
   memLogSave(log);
   saveData(type);
 }
@@ -123,25 +137,34 @@ function touchSettings() { try { localStorage.setItem("settingsUpdatedAt", Strin
 
 // 같은 기기의 다른 탭·설치한 앱에서 바꾼 암기 기록을 바로 반영한다 (오래된 탭이 새 기록을 덮어쓰지 않게)
 window.addEventListener('storage', (e) => {
-  const map = { patternMemorizedIds: 'pattern', wordMemorizedIds: 'word', idiomMemorizedIds: 'idiom' };
+  const map = { patternMemorizedIds: 'pattern', wordMemorizedIds: 'word', idiomMemorizedIds: 'idiom', convDoneIds: 'conv', puzzleDoneIds: 'puzzle' };
   const type = e && map[e.key];
   if (!type) return;
   const set = safeParseIdSet(e.key) || new Set();
   if (type === 'pattern') memorizedPatterns = set;
   if (type === 'word') memorizedWords = migrateIdSet(set, typeof wordIdAliases !== 'undefined' ? wordIdAliases : null);
   if (type === 'idiom') memorizedIdioms = migrateIdSet(set, typeof idiomIdAliases !== 'undefined' ? idiomIdAliases : null);
-  if (typeof refreshMemorizedViews === 'function') refreshMemorizedViews();
+  if (type === 'conv') doneConvs = set;
+  if (type === 'puzzle') donePuzzles = set;
+  if (typeof refreshMemorizedViews === 'function') refreshMemorizedViews(type === 'puzzle');
 });
 /** 암기 기록이 바뀐 뒤 지금 보고 있는 목록·상세·진행률을 다시 그린다 */
-function refreshMemorizedViews() {
+function refreshMemorizedViews(puzzleChanged) {
   if (typeof updatePatternProgress === 'function') updatePatternProgress();
   if (typeof updateWordProgress === 'function') updateWordProgress();
   if (typeof updateIdiomProgress === 'function') updateIdiomProgress();
+  if (typeof updateConvProgress === 'function') updateConvProgress();
   const page = history.state ? history.state.page : 'home';
-  const R = { patterns: 'renderPatternList', words: 'renderWordList', idioms: 'renderIdiomList' };
+  const R = { patterns: 'renderPatternList', words: 'renderWordList', idioms: 'renderIdiomList', conversations: 'renderConversationList' };
   if (R[page] && typeof window[R[page]] === 'function') window[R[page]]();
-  const D = { 'pattern-detail': ['pattern-memorized-checkbox', () => memorizedPatterns.has(currentPatternId)], 'word-detail': ['word-memorized-checkbox', () => memorizedWords.has(currentWordId)], 'idiom-detail': ['idiom-memorized-checkbox', () => memorizedIdioms.has(currentIdiomId)] };
+  const D = { 'pattern-detail': ['pattern-memorized-checkbox', () => memorizedPatterns.has(currentPatternId)], 'word-detail': ['word-memorized-checkbox', () => memorizedWords.has(currentWordId)], 'idiom-detail': ['idiom-memorized-checkbox', () => memorizedIdioms.has(currentIdiomId)],
+    'conv-detail': ['conv-done-checkbox', () => doneConvs.has(currentConvId)] };
   if (D[page]) { const chk = document.getElementById(D[page][0]); if (chk) chk.checked = D[page][1](); }
+  // 다른 기기·탭에서 퍼즐 완료가 바뀌었으면 문제 목록을 새로 만든다 (완료한 문장이 다시 나오지 않게)
+  if (puzzleChanged && typeof puzzleList !== 'undefined') {
+    puzzleList = []; currentPuzzleAnswer = "";
+    if (page === 'puzzle' && typeof initPuzzle === 'function') initPuzzle();
+  }
 }
 // 사파리는 한동안 열지 않은 사이트의 저장 기록을 지우기도 한다: 지워지지 않게 요청해 둔다 (지원하는 브라우저만)
 try { if (navigator.storage && navigator.storage.persisted) navigator.storage.persisted().then(p => { if (!p && navigator.storage.persist) navigator.storage.persist().catch(() => {}); }).catch(() => {}); } catch (e) {}
@@ -150,6 +173,8 @@ function saveDataLocally(type) {
   if (type === 'pattern') { localStorage.setItem("patternMemorizedIds", JSON.stringify(Array.from(memorizedPatterns))); if(typeof updatePatternProgress === 'function') updatePatternProgress(); }
   if (type === 'word') { localStorage.setItem("wordMemorizedIds", JSON.stringify(Array.from(memorizedWords))); if(typeof updateWordProgress === 'function') updateWordProgress(); }
   if (type === 'idiom') { localStorage.setItem("idiomMemorizedIds", JSON.stringify(Array.from(memorizedIdioms))); if(typeof updateIdiomProgress === 'function') updateIdiomProgress(); }
+  if (type === 'conv') { localStorage.setItem("convDoneIds", JSON.stringify(Array.from(doneConvs))); if(typeof updateConvProgress === 'function') updateConvProgress(); }
+  if (type === 'puzzle') { localStorage.setItem("puzzleDoneIds", JSON.stringify(Array.from(donePuzzles))); if(typeof updatePuzzleDoneNote === 'function') updatePuzzleDoneNote(); }
 }
 function saveData(type) { saveDataLocally(type); }
 
@@ -274,6 +299,9 @@ async function performSmartSync() {
   const mergedPatterns = mergeType('pattern', memorizedPatterns, serverData.patterns, null);
   const mergedWords = mergeType('word', memorizedWords, serverData.words, typeof wordIdAliases !== 'undefined' ? wordIdAliases : null);
   const mergedIdioms = mergeType('idiom', memorizedIdioms, serverData.idioms, typeof idiomIdAliases !== 'undefined' ? idiomIdAliases : null);
+  const mergedConvs = mergeType('conv', doneConvs, serverData.convs, null);
+  const mergedPuzzles = mergeType('puzzle', donePuzzles, serverData.puzzles, null);
+  const puzzleChanged = mergedPuzzles.size !== donePuzzles.size || [...mergedPuzzles].some(id => !donePuzzles.has(id));
   memLogSave(mergedLog);
 
   // 설정 합치기: 더 최근에 바꾼 쪽을 쓴다 (예전에는 서버 값이 늘 이겨서, 한 번 동기화한 뒤로는 바꾼 설정이 되돌아갔다)
@@ -293,6 +321,7 @@ async function performSmartSync() {
     if (typeof serverSettings.filterPattern === 'boolean') patternStudyingOnly = serverSettings.filterPattern;
     if (typeof serverSettings.filterWord === 'boolean') wordStudyingOnly = serverSettings.filterWord;
     if (typeof serverSettings.filterIdiom === 'boolean') idiomStudyingOnly = serverSettings.filterIdiom;
+    if (typeof serverSettings.filterConv === 'boolean') convStudyingOnly = serverSettings.filterConv;
     try { localStorage.setItem("settingsUpdatedAt", String(serverTs)); } catch (e) {}
   }
 
@@ -308,13 +337,14 @@ async function performSmartSync() {
     localStorage.setItem("patternStudyingOnly", String(patternStudyingOnly));
     localStorage.setItem("wordStudyingOnly", String(wordStudyingOnly));
     localStorage.setItem("idiomStudyingOnly", String(idiomStudyingOnly));
+    localStorage.setItem("convStudyingOnly", String(convStudyingOnly));
   } catch (e) { console.warn(e); }
   if (typeof applyFontSizeToBody === 'function') applyFontSizeToBody(userFontSize);
 
   const finalSettings = {
     voiceIndex: userVoiceIndex, rate: userRate, autoPlay: autoPlayEnabled, fontSize: userFontSize,
     wordLevel: selectedWordLevel, idiomLevel: selectedIdiomLevel,
-    filterPattern: patternStudyingOnly, filterWord: wordStudyingOnly, filterIdiom: idiomStudyingOnly,
+    filterPattern: patternStudyingOnly, filterWord: wordStudyingOnly, filterIdiom: idiomStudyingOnly, filterConv: convStudyingOnly,
     puzzleLevel: selectedPuzzleLevel,
     updatedAt: Math.max(localTs, serverTs)
   };
@@ -322,16 +352,17 @@ async function performSmartSync() {
   memorizedPatterns = mergedPatterns;
   memorizedWords = mergedWords;
   memorizedIdioms = mergedIdioms;
+  doneConvs = mergedConvs;
+  donePuzzles = mergedPuzzles;
 
   saveDataLocally('pattern');
   saveDataLocally('word');
   saveDataLocally('idiom');
+  saveDataLocally('conv');
+  saveDataLocally('puzzle');
 
-  refreshMemorizedViews();   // 보고 있는 목록·상세 체크·진행률
-  if (selectedPuzzleLevel !== oldPuzzleLevel && typeof puzzleList !== 'undefined') {   // 퍼즐 레벨이 바뀌었으면 문제를 새 레벨로
-    puzzleList = []; currentPuzzleAnswer = "";
-    if ((history.state ? history.state.page : 'home') === 'puzzle' && typeof initPuzzle === 'function') initPuzzle();
-  }
+  // 보고 있는 목록·상세 체크·진행률 (퍼즐 레벨이 바뀌었거나 다른 기기에서 퍼즐을 완료했으면 문제를 새로)
+  refreshMemorizedViews(puzzleChanged || selectedPuzzleLevel !== oldPuzzleLevel);
 
   const payload = {
     updatedAt: new Date().toISOString(),
@@ -339,6 +370,8 @@ async function performSmartSync() {
     patterns: Array.from(mergedPatterns),   // (예전 버전 앱도 읽을 수 있게 지금 상태 그대로)
     words: Array.from(mergedWords),
     idioms: Array.from(mergedIdioms),
+    convs: Array.from(mergedConvs),
+    puzzles: Array.from(mergedPuzzles),
     memLog: mergedLog,
     settings: finalSettings
   };

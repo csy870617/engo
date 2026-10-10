@@ -40,6 +40,11 @@ let patternStudyingOnly = false;
 
 let selectedPuzzleLevel = 0;
 
+// '완료'로 숨기기: 대화 학습(완료한 대화)과 문장 퍼즐(다시 안 나와도 되는 문장). 암기 표시와 같은 방식으로 저장·동기화한다
+let doneConvs = new Set();
+let convStudyingOnly = true;     // 대화 목록 '미완료만 보기' (기본 켬: 완료하면 바로 목록에서 빠진다)
+let donePuzzles = new Set();
+
 let currentShadowingId = null;
 let shadowingLineIndex = 0;
 let isBackAction = false; 
@@ -118,6 +123,7 @@ function goTo(page, isReplace = false) {
   // AI 튜터를 떠날 때만: 듣기·말하기·답 만들기를 멈추고 잠시 뒤 모델을 메모리에서 내린다
   // (튜터에 가지 않았는데 다른 화면끼리 오갈 때마다 부르면, 예문 읽기에 쓰는 자연스러운 음성까지 90초 뒤 내려진다)
   if (page !== "tutor" && currentPageName === "tutor" && typeof leaveTutorPage === 'function') leaveTutorPage();
+  if (page !== "shadowing" && currentPageName === "shadowing" && typeof leaveShadowing === 'function') leaveShadowing();
   // 홈의 유튜브 영상은 화면을 떠나면 멈춘다 (숨겨도 소리가 계속 나서)
   if (page !== "home" && currentPageName === "home") pauseHomeVideos();
   if (currentPageName) pageScrollY[currentPageName] = window.scrollY || document.documentElement.scrollTop || 0;
