@@ -1,5 +1,5 @@
 // 캐시 버전 - 정적 자산을 변경했을 때 숫자를 올리세요. (index.html의 ?v= 숫자도 같이 올린다)
-const CACHE_NAME = 'engo-cache-v192';
+const CACHE_NAME = 'engo-cache-v193';
 const V = CACHE_NAME.replace('engo-cache-v', '');   // index.html이 붙이는 ?v= 숫자 (같은 주소로 미리 받아 둬야 바로 꺼내 쓴다)
 // 예전 음성 모델 저장소 이름(튜터 인사 음성 저장소도 이 이름으로 시작) - 정리·가로채기 대상에서 제외
 const VOICE_CACHE_PREFIX = 'faith-voice';

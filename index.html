@@ -35,7 +35,7 @@
   <meta property="og:image" content="https://csy870617.github.io/engo/logo.png">
   <meta property="og:site_name" content="ENGO">
 
-  <link rel="stylesheet" href="style.css?v=192" />
+  <link rel="stylesheet" href="style.css?v=193" />
 
   <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2078760660134095"
      crossorigin="anonymous"></script>
@@ -447,27 +447,12 @@
           <h2 style="margin:0;">🗣️ 쉐도잉</h2>
           <span id="shadowing-counter" class="shadow-counter">1 / 8</span>
         </div>
-        <div class="shadow-progress"><div id="shadowing-progress-bar"></div></div>
-
-        <div class="btn-group shadowing-mode" role="group" aria-label="연습 방법">
-          <button data-shadow-mode="repeat" onclick="setShadowingMode('repeat')"><span class="sm-ico" aria-hidden="true">🎤</span>따라 말하기</button>
-          <button data-shadow-mode="shadow" onclick="setShadowingMode('shadow')"><span class="sm-ico" aria-hidden="true">🎧</span>동시에 말하기</button>
-          <button data-shadow-mode="roleplay" onclick="setShadowingMode('roleplay')"><span class="sm-ico" aria-hidden="true">🎭</span>역할극 (내가 A)</button>
-        </div>
-        <p id="shadowing-mode-tip" class="shadow-mode-tip"></p>
-
-        <div class="shadowing-controls-row">
-          <button id="btn-blind-mode" class="toggle-btn" onclick="toggleShadowingOption('blind')">🙈 영어 가리기</button>
-          <button id="btn-hide-kr" class="toggle-btn" onclick="toggleShadowingOption('hideKr')">🇰🇷 해석 숨김</button>
-          <button id="btn-shadow-slow" class="toggle-btn" onclick="toggleShadowingOption('slow')">🐢 천천히</button>
-          <button id="btn-shadow-mic" class="toggle-btn" onclick="toggleShadowingOption('mic')">🎤 말한 것 확인</button>
-        </div>
 
         <div class="shadowing-display" onclick="revealTextTemp()">
           <p id="shadowing-speaker" class="shadow-speaker">Speaker A</p>
           <p id="shadowing-text" class="shadow-en blind-text">Ready...</p>
           <p id="shadowing-kr" class="shadow-kr">준비...</p>
-          <p id="shadowing-hint" class="shadow-hint">(문장을 터치하면 잠시 보입니다)</p>
+          <p id="shadowing-hint" class="shadow-hint">(영어는 터치하면 잠깐 보여요)</p>
         </div>
 
         <div class="shadow-feedback" aria-live="polite">
@@ -485,9 +470,8 @@
         <div id="shadowing-summary" class="shadow-summary hidden"></div>
 
         <div class="game-controls btn-row" style="display:flex; gap:8px;">
-          <button class="btn-sub" onclick="prevShadowing()" style="flex:1;">❮ 이전</button>
-          <button class="btn-sub" onclick="nextRandomShadowingTopic()" style="flex:1.35;" aria-label="다른 주제로">🎲 새 주제</button>
-          <button class="btn-main" onclick="nextShadowing()" style="flex:1.65;">다음 문장 ❯</button>
+          <button class="btn-sub" onclick="prevShadowing()" style="flex:1;">❮ 이전 문장</button>
+          <button class="btn-main" onclick="nextShadowing()" style="flex:1;">다음 문장 ❯</button>
         </div>
       </div>
     </section>
@@ -713,15 +697,15 @@
 
   <div id="neural-loading" class="neural-loading hidden">🎙 자연스러운 음성 준비 중…</div>
 
-  <script src="pattern.js?v=192"></script>
-  <script src="conversation.js?v=192"></script>
-  <script src="idiom.js?v=192"></script>
-  <script src="word.js?v=192"></script>
+  <script src="pattern.js?v=193"></script>
+  <script src="conversation.js?v=193"></script>
+  <script src="idiom.js?v=193"></script>
+  <script src="word.js?v=193"></script>
 
   <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
   <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
   <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
-  <script src="js/core.js?v=192"></script>    <script src="js/storage.js?v=192"></script> <script src="js/neural-tts.js?v=192"></script> <script src="js/kokoro-tts.js?v=192"></script> <script src="js/media.js?v=192"></script>   <script src="js/study.js?v=192"></script>   <script src="js/game.js?v=192"></script>    <script src="js/talk-plan.js?v=192"></script> <script src="js/tutor.js?v=192"></script>    </body>
+  <script src="js/core.js?v=193"></script>    <script src="js/storage.js?v=193"></script> <script src="js/neural-tts.js?v=193"></script> <script src="js/kokoro-tts.js?v=193"></script> <script src="js/media.js?v=193"></script>   <script src="js/study.js?v=193"></script>   <script src="js/game.js?v=193"></script>    <script src="js/talk-plan.js?v=193"></script> <script src="js/tutor.js?v=193"></script>    </body>
 
 
 </html>
