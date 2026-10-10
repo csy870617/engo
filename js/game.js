@@ -23,33 +23,38 @@ function setPuzzleLevel(lvl) {
   initPuzzle();
 }
 
+/** 퍼즐로 낼 문장 모으기: 실전 회화(대화·패턴)와 단어·숙어 예문을 따로 (level: 0 전체, 1~3 단계 · withDone: 완료한 문장도) */
+function puzzleLevelOk(en, level) {
+  const len = en.split(" ").length;
+  if (len < 5) return false;                       // 5단어 미만은 제외
+  if (level === 1) return len <= 6;                // Lv.1: 5~6단어
+  if (level === 2) return len >= 7 && len <= 8;    // Lv.2: 7~8단어
+  if (level === 3) return len >= 9;                // Lv.3: 9단어 이상
+  return true;
+}
+function puzzleCollect(level, withDone) {
+  const convPool = [], examplePool = [], seen = new Set();
+  let hidden = 0;
+  const add = (pool, en, kr) => {
+    if (!en) return;
+    const cleanEn = en.trim().replace(/\s+/g, " ");
+    if (/ - /.test(cleanEn) || !puzzleLevelOk(cleanEn, level)) return;
+    if (seen.has(cleanEn)) return;                 // 여러 데이터에 같은 문장이 있으면 한 번만
+    seen.add(cleanEn);
+    const key = puzzleKey(cleanEn);
+    if (!withDone && donePuzzles.has(key)) { hidden++; return; }   // 완료한 문장은 다시 내지 않는다
+    pool.push({ en: cleanEn, kr, key });
+  };
+  if (typeof conversationData !== "undefined") conversationData.forEach(c => c.lines.forEach(l => add(convPool, l.en, l.kr)));
+  if (typeof patternData !== "undefined") patternData.forEach(p => p.examples.forEach(ex => add(convPool, ex.en, ex.kr)));
+  if (typeof wordData !== "undefined") wordData.forEach(w => { const idStr = w.id || ""; if (idStr.startsWith("L1") || idStr.startsWith("L2") || idStr.startsWith("L3")) if (w.examples) w.examples.forEach(ex => add(examplePool, ex.en, ex.kr)); });
+  if (typeof idiomData !== "undefined") idiomData.forEach(i => { if (i.level && i.level <= 3) if (i.examples) i.examples.forEach(ex => add(examplePool, ex.en, ex.kr)); });
+  return { convPool, examplePool, hidden };
+}
 function initPuzzle() {
   if (puzzleList.length === 0) {
-    // 실전 회화(대화·패턴) 문장과 단어·숙어 예문을 따로 모아, 회화 문장이 두 문제에 한 번은 나오도록 섞는다
-    const convPool = [], examplePool = [], seen = new Set();
-    const addIfValid = (pool, en, kr) => {
-      if (!en) return;
-      const cleanEn = en.trim().replace(/\s+/g, " ");
-      if (/ - /.test(cleanEn)) return;
-      const len = cleanEn.split(" ").length;
-      if (len < 5) return; // 5단어 미만은 제외
-
-      // 레벨별 필터링
-      if (selectedPuzzleLevel === 1) { if (len > 6) return; } // Lv.1: 5~6단어만
-      else if (selectedPuzzleLevel === 2) { if (len < 7 || len > 8) return; } // Lv.2: 7~8단어만
-      else if (selectedPuzzleLevel === 3) { if (len < 9) return; } // Lv.3: 9단어 이상만
-
-      if (seen.has(cleanEn)) return; // 여러 데이터에 같은 문장이 있으면 한 번만
-      seen.add(cleanEn);
-      if (donePuzzles.has(puzzleKey(cleanEn))) return; // 완료한 문장은 다시 내지 않는다
-      pool.push({ en: cleanEn, kr: kr });
-    };
-
-    if (typeof conversationData !== "undefined") conversationData.forEach(c => c.lines.forEach(l => addIfValid(convPool, l.en, l.kr)));
-    if (typeof patternData !== "undefined") patternData.forEach(p => p.examples.forEach(ex => addIfValid(convPool, ex.en, ex.kr)));
-    if (typeof wordData !== "undefined") wordData.forEach(w => { const idStr = w.id || ""; if (idStr.startsWith("L1") || idStr.startsWith("L2") || idStr.startsWith("L3")) if (w.examples) w.examples.forEach(ex => addIfValid(examplePool, ex.en, ex.kr)); });
-    if (typeof idiomData !== "undefined") idiomData.forEach(i => { if (i.level && i.level <= 3) if (i.examples) i.examples.forEach(ex => addIfValid(examplePool, ex.en, ex.kr)); });
-
+    // 회화 문장이 두 문제에 한 번은 나오도록 섞는다
+    const { convPool, examplePool, hidden } = puzzleCollect(selectedPuzzleLevel, false);
     shuffleArray(convPool); shuffleArray(examplePool);
     const pool = [];
     for (let i = 0; i < Math.max(convPool.length, examplePool.length); i++) {
@@ -57,8 +62,8 @@ function initPuzzle() {
       if (i < examplePool.length) pool.push(examplePool[i]);
     }
     if (pool.length === 0) {
-      if (seen.size) { puzzleAllDone(); return; }   // 이 단계 문장을 모두 완료했다
-      pool.push({ en: "Welcome to the English puzzle game.", kr: "영어 퍼즐 게임에 오신 것을 환영합니다." });
+      if (hidden) { puzzleAllDone(); return; }     // 이 단계 문장을 모두 완료했다
+      pool.push({ en: "Welcome to the English puzzle game.", kr: "영어 퍼즐 게임에 오신 것을 환영합니다.", key: "" });
     }
     puzzleList = pool;
     currentPuzzleIndex = 0;
@@ -66,45 +71,85 @@ function initPuzzle() {
   updatePuzzleDoneNote();
   if (!currentPuzzleAnswer) nextPuzzle(); else renderPuzzle();
 }
-/** 완료해서 숨긴 문장 수와 '모두 다시 보기' */
+/** 지금 문제의 완료 체크와 '완료한 문장 N개' */
 function updatePuzzleDoneNote() {
-  const box = document.getElementById("puzzle-done-note"), cnt = document.getElementById("puzzle-done-count");
-  if (!box || !cnt) return;
-  box.classList.toggle("hidden", !donePuzzles.size);
-  cnt.textContent = `완료해서 숨긴 문장 ${donePuzzles.size}개 ·`;
+  const t = document.getElementById("puzzle-done-toggle");
+  if (t) t.textContent = `✅ 완료한 문장 ${donePuzzles.size}개 ${document.getElementById("puzzle-done-list").classList.contains("hidden") ? "보기" : "닫기"}`;
+  const chk = document.getElementById("puzzle-done-check"), item = puzzleList[currentPuzzleIndex - 1];
+  if (chk) { chk.checked = !!(item && item.key && donePuzzles.has(item.key)); chk.disabled = !(currentPuzzleAnswer && item && item.key); }
 }
 /** 이 단계의 문장을 모두 완료했을 때 */
 function puzzleAllDone() {
   puzzleList = []; currentPuzzleIndex = 0; currentPuzzleAnswer = ""; puzzleTargetTokens = []; puzzleShuffledTokens = [];
   document.getElementById("puzzle-counter").textContent = "0 / 0";
-  document.getElementById("puzzle-question").textContent = "🎉 이 단계의 문장을 모두 완료했어요! 다른 단계를 고르거나 '모두 다시 보기'를 눌러 주세요.";
+  document.getElementById("puzzle-question").textContent = "🎉 이 단계의 문장을 모두 완료했어요! 다른 단계를 고르거나, 아래 '완료한 문장'에서 체크를 풀면 다시 나와요.";
   const fb = document.getElementById("puzzle-feedback"); fb.textContent = ""; fb.className = "feedback-msg"; fb.style.color = "";
   renderPuzzle();
   updatePuzzleDoneNote();
 }
-/** ✅ 완료: 지금 문장은 다시 내지 않고 다음 문제로 */
-function markPuzzleDone() {
-  const i = currentPuzzleIndex - 1, item = puzzleList[i];
-  if (!item || !currentPuzzleAnswer) return;
-  markMemorized('puzzle', puzzleKey(item.en), true);
-  puzzleList.splice(i, 1);
-  currentPuzzleIndex = i;
-  currentPuzzleAnswer = "";
-  showToast("✅ 완료! 이 문장은 다시 나오지 않아요");
-  if (!puzzleList.length) { puzzleAllDone(); return; }
-  nextPuzzle();
+/** 완료 체크: 체크하면 다음부터 안 나오고, 풀면 다시 나온다 (지금 문제는 그대로 둔다) */
+function togglePuzzleDoneCheck() {
+  const chk = document.getElementById("puzzle-done-check"), item = puzzleList[currentPuzzleIndex - 1];
+  if (!item || !item.key || !currentPuzzleAnswer) { chk.checked = false; return; }
+  markMemorized('puzzle', item.key, chk.checked);
+  if (chk.checked) showToast("✅ 완료! 다음부터 이 문장은 안 나와요");
+  updatePuzzleDoneNote();
+  renderPuzzleDoneList();
 }
-/** 완료해서 숨긴 문장을 모두 다시 낸다 */
-function restorePuzzles() {
-  const n = donePuzzles.size;
-  if (!n || !confirm(`완료해서 숨긴 문장 ${n}개를 다시 문제로 낼까요?`)) return;
-  markMemorizedMany('puzzle', [...donePuzzles], false);
-  puzzleList = []; currentPuzzleAnswer = "";
-  initPuzzle();
-  showToast("숨긴 문장을 다시 문제로 내요");
+/** 완료한 문장 목록 열기·닫기 */
+function togglePuzzleDoneList() {
+  const box = document.getElementById("puzzle-done-list"), t = document.getElementById("puzzle-done-toggle");
+  const open = box.classList.contains("hidden");
+  box.classList.toggle("hidden", !open);
+  t.setAttribute("aria-expanded", String(open));
+  if (open) renderPuzzleDoneList(true);
+  updatePuzzleDoneNote();
+}
+let puzzleDoneShown = [];   // 목록을 연 동안 보여 줄 문장 (체크를 풀어도 바로 사라지지 않게 — 다시 체크할 수 있게)
+function renderPuzzleDoneList(fresh) {
+  const box = document.getElementById("puzzle-done-list");
+  if (!box || box.classList.contains("hidden")) return;
+  if (fresh || !puzzleDoneShown.length) {
+    const all = puzzleCollect(0, true);
+    puzzleDoneShown = [...all.convPool, ...all.examplePool].filter(x => donePuzzles.has(x.key));
+  }
+  box.innerHTML = "";
+  if (!puzzleDoneShown.length) { box.innerHTML = '<div class="puzzle-done-empty">완료한 문장이 없어요. 문제 아래 \'완료\'를 체크하면 여기 모여요.</div>'; return; }
+  const note = document.createElement("div"); note.className = "puzzle-done-empty"; note.textContent = "체크를 풀면 그 문장이 다시 문제로 나와요";
+  box.appendChild(note);
+  puzzleDoneShown.forEach(x => {
+    const row = document.createElement("label"); row.className = "puzzle-done-item";
+    const on = donePuzzles.has(x.key);
+    row.classList.toggle("restored", !on);
+    const c = document.createElement("input"); c.type = "checkbox"; c.checked = on;
+    c.onchange = () => {
+      markMemorized('puzzle', x.key, c.checked);
+      row.classList.toggle("restored", !c.checked);
+      if (!c.checked && puzzleLevelOk(x.en, selectedPuzzleLevel) && !puzzleList.some(p => p.key === x.key)) {
+        if (puzzleList.length) puzzleList.push({ en: x.en, kr: x.kr, key: x.key });   // 이번 문제 목록 뒤에 다시 넣는다
+        else { currentPuzzleAnswer = ""; initPuzzle(); }   // 모두 완료였던 단계면 다시 시작
+      }
+      updatePuzzleDoneNote();
+    };
+    const txt = document.createElement("div");
+    const en = document.createElement("div"); en.className = "en"; en.textContent = x.en;
+    const kr = document.createElement("div"); kr.className = "kr"; kr.textContent = x.kr;
+    txt.appendChild(en); txt.appendChild(kr);
+    row.appendChild(c); row.appendChild(txt);
+    box.appendChild(row);
+  });
 }
 
-function nextPuzzle() {
+function nextPuzzle(back) {
+  if (!back) {   // 앞으로 갈 때: 완료로 체크한 문장은 목록에서 빼고 건너뛴다
+    for (let i = puzzleList.length - 1; i >= 0; i--) {
+      if (puzzleList[i].key && donePuzzles.has(puzzleList[i].key)) {
+        puzzleList.splice(i, 1);
+        if (i < currentPuzzleIndex) currentPuzzleIndex--;
+      }
+    }
+    if (puzzleList.length === 0) { currentPuzzleAnswer = ""; initPuzzle(); return; }
+  }
   if (puzzleList.length === 0) { initPuzzle(); return; }
   if (currentPuzzleIndex >= puzzleList.length) { currentPuzzleIndex = 0; shuffleArray(puzzleList); }
   const target = puzzleList[currentPuzzleIndex];
@@ -122,6 +167,7 @@ function nextPuzzle() {
   puzzleShuffledTokens = shuffleArray(words.map((w, i) => ({ id: i, text: w })));
   for (let k = 0; k < 8 && puzzleShuffledTokens.map(t => t.text).join(" ") === currentPuzzleAnswer && new Set(words).size > 1; k++) shuffleArray(puzzleShuffledTokens);
   renderPuzzle();
+  updatePuzzleDoneNote();
 }
 function renderPuzzle() {
   const bank = document.getElementById("puzzle-bank"); const target = document.getElementById("puzzle-target");
@@ -174,6 +220,6 @@ function movePuzzle(offset) {
   if (!puzzleList.length) return;   // 모두 완료한 단계
   if (offset === 1) { nextPuzzle(); return; }
   if (currentPuzzleIndex <= 1) { showToast("첫 문제예요"); return; }
-  currentPuzzleIndex -= 2;   // 지금 문제는 currentPuzzleIndex-1번째: 그 앞 문제를 다시 낸다
-  nextPuzzle();
+  currentPuzzleIndex -= 2;   // 지금 문제는 currentPuzzleIndex-1번째: 그 앞 문제를 다시 낸다 (완료 체크한 문제여도 보여 준다 — 체크를 풀 수 있게)
+  nextPuzzle(true);
 }

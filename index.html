@@ -35,7 +35,7 @@
   <meta property="og:image" content="https://csy870617.github.io/engo/logo.png">
   <meta property="og:site_name" content="ENGO">
 
-  <link rel="stylesheet" href="style.css?v=194" />
+  <link rel="stylesheet" href="style.css?v=195" />
 
   <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2078760660134095"
      crossorigin="anonymous"></script>
@@ -594,7 +594,6 @@
         
         <div style="text-align:center; margin-bottom:15px; color:var(--text-sub); font-size:0.9rem;">
           <span id="puzzle-counter">1 / 100</span>
-          <div id="puzzle-done-note" class="puzzle-done-note hidden"><span id="puzzle-done-count"></span> <button type="button" onclick="restorePuzzles()">모두 다시 보기</button></div>
         </div>
 
         <p class="puzzle-kr" id="puzzle-question" style="min-height:3rem;">문제가 나옵니다...</p>
@@ -603,6 +602,8 @@
         <div id="puzzle-bank" class="puzzle-pieces"></div>
         
         <div id="puzzle-feedback" class="feedback-msg"></div>
+
+        <label class="puzzle-done-row"><input type="checkbox" id="puzzle-done-check" onchange="togglePuzzleDoneCheck()" /> 완료 (체크하면 다음부터 안 나와요)</label>
         
         <div class="game-bottom btn-row" style="margin-top:20px; display:flex; gap:8px;">
           <button class="btn-sub" onclick="resetPuzzle()" style="flex:1;">🔄 다시</button>
@@ -613,8 +614,12 @@
 
       <div class="nav-buttons">
         <button onclick="movePuzzle(-1)">이전 문제</button>
-        <button class="puzzle-done-btn" onclick="markPuzzleDone()">✅ 완료</button>
         <button onclick="movePuzzle(1)">다음 문제</button>
+      </div>
+
+      <div class="puzzle-done-box">
+        <button type="button" id="puzzle-done-toggle" class="chip-btn" onclick="togglePuzzleDoneList()" aria-expanded="false">✅ 완료한 문장 0개</button>
+        <div id="puzzle-done-list" class="puzzle-done-list hidden"></div>
       </div>
     </section>
         
@@ -697,15 +702,15 @@
 
   <div id="neural-loading" class="neural-loading hidden">🎙 자연스러운 음성 준비 중…</div>
 
-  <script src="pattern.js?v=194"></script>
-  <script src="conversation.js?v=194"></script>
-  <script src="idiom.js?v=194"></script>
-  <script src="word.js?v=194"></script>
+  <script src="pattern.js?v=195"></script>
+  <script src="conversation.js?v=195"></script>
+  <script src="idiom.js?v=195"></script>
+  <script src="word.js?v=195"></script>
 
   <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
   <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
   <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
-  <script src="js/core.js?v=194"></script>    <script src="js/storage.js?v=194"></script> <script src="js/neural-tts.js?v=194"></script> <script src="js/kokoro-tts.js?v=194"></script> <script src="js/media.js?v=194"></script>   <script src="js/study.js?v=194"></script>   <script src="js/game.js?v=194"></script>    <script src="js/talk-plan.js?v=194"></script> <script src="js/tutor.js?v=194"></script>    </body>
+  <script src="js/core.js?v=195"></script>    <script src="js/storage.js?v=195"></script> <script src="js/neural-tts.js?v=195"></script> <script src="js/kokoro-tts.js?v=195"></script> <script src="js/media.js?v=195"></script>   <script src="js/study.js?v=195"></script>   <script src="js/game.js?v=195"></script>    <script src="js/talk-plan.js?v=195"></script> <script src="js/tutor.js?v=195"></script>    </body>
 
 
 </html>
