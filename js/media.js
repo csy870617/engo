@@ -541,103 +541,112 @@ async function onNeuralButton() {
 }
 
 // 2. News API
+// 구글 뉴스 RSS는 rss2json으로 더는 변환되지 않아(2026-10) 한국 영자 신문 RSS를 쓴다. 주제마다 첫 소식지에서 고르고, 모자라면 다른 소식지로 채운다
 const NEWS_TOPICS = [
-  "https://news.google.com/rss/search?q=South+Korea+(k-pop+OR+k-drama+OR+movie)+(popular+OR+success)&hl=en-US&gl=US&ceid=US:en",
-  "https://news.google.com/rss/search?q=South+Korea+(technology+OR+samsung+OR+economy)+(growth+OR+innovation)&hl=en-US&gl=US&ceid=US:en",
-  "https://news.google.com/rss/search?q=South+Korea+(food+OR+travel+OR+trend)+(viral+OR+famous)&hl=en-US&gl=US&ceid=US:en"
+  { tag: "#K-Culture", feeds: ["https://en.yna.co.kr/RSS/culture.xml", "https://www.koreaherald.com/rss/newsAll"] },
+  { tag: "#Lifestyle", feeds: ["https://www.koreaherald.com/rss/newsAll", "https://en.yna.co.kr/RSS/culture.xml"] },
+  { tag: "#Korea Now", feeds: ["https://en.yna.co.kr/RSS/news.xml", "https://www.koreaherald.com/rss/newsAll"] }
 ];
+const NEWS_MAX_AGE = 30 * 24 * 3600 * 1000;   // 최근 한 달 이내 소식만
+const NEWS_COUNT = 3;
 let currentTopicIndex = 0;
 
 function initNewsUpdater() { fetchRealNews(); }
 function refreshNews() { fetchRealNews(); }
 
+/** rss2json 시각은 UTC (시간대 표시 없음) */
+function newsDate(pub) { pub = String(pub || ""); return new Date(/^\d{4}-\d\d-\d\d \d\d:\d\d:\d\d$/.test(pub) ? pub.replace(" ", "T") + "Z" : pub); }
+/** "&amp;apos;" 같은 두 번 감싼 글자 표시까지 풀어서 글자만 */
+function newsText(html) {
+  let t = String(html || "");
+  for (let i = 0; i < 2 && /&[#a-z0-9]+;|<[a-z/]/i.test(t); i++) t = new DOMParser().parseFromString(t, "text/html").documentElement.textContent || "";
+  return t.replace(/\s+/g, " ").trim();
+}
+async function fetchNewsFeed(url) {
+  const controller = (typeof AbortController !== 'undefined') ? new AbortController() : null;
+  const timer = controller ? setTimeout(() => controller.abort(), 8000) : null;   // 응답 없이 멈추면 8초 뒤 다음 소식지로
+  try {
+    const res = await fetch(`https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent(url)}`, controller ? { signal: controller.signal } : undefined);
+    if (!res.ok) throw new Error("HTTP " + res.status);
+    const data = await res.json();
+    if (data.status !== 'ok' || !Array.isArray(data.items)) throw new Error("API Error");
+    return data.items;
+  } finally { if (timer) clearTimeout(timer); }
+}
+
 async function fetchRealNews() {
   const container = document.getElementById('news-card-list');
   if (!container) return;
-  
-  container.innerHTML = `<div style="padding:30px; text-align:center; color:#94a3b8; font-size:0.9rem; width:100%;">🔄 Mixing fresh stories...<br><span style="font-size:0.8rem; opacity:0.7">Topic ${currentTopicIndex + 1} Loading</span></div>`;
-  
-  const currentRssUrl = NEWS_TOPICS[currentTopicIndex];
-  const apiUrl = `https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent(currentRssUrl)}`;
+  const topic = NEWS_TOPICS[currentTopicIndex];
+  currentTopicIndex = (currentTopicIndex + 1) % NEWS_TOPICS.length;
+  container.innerHTML = `<div style="padding:30px; text-align:center; color:#94a3b8; font-size:0.9rem; width:100%;">🔄 Mixing fresh stories...<br><span style="font-size:0.8rem; opacity:0.7">${topic.tag} Loading</span></div>`;
 
-  // 네트워크가 응답 없이 멈추면 '로딩 중' 문구가 계속 남으므로 8초 후 중단하고 백업 뉴스 표시
-  const controller = (typeof AbortController !== 'undefined') ? new AbortController() : null;
-  const abortTimer = controller ? setTimeout(() => controller.abort(), 8000) : null;
-  try {
-    const response = await fetch(apiUrl, controller ? { signal: controller.signal } : undefined);
-    if (!response.ok) throw new Error("HTTP " + response.status);
-    const data = await response.json();
-
-    if (data.status === 'ok' && Array.isArray(data.items) && data.items.length) {
-      container.innerHTML = "";
-      const allArticles = data.items.slice(0, 15);
-      const selectedArticles = shuffleArray(allArticles).slice(0, 3);
-      
-      selectedArticles.forEach(item => {
-        const title = String(item.title || ""), cut = title.lastIndexOf(" - ");
-        const cleanTitle = cut > 0 ? title.slice(0, cut) : title;
-        const sourceName = cut > 0 ? title.slice(cut + 3) : "News";
-        const pub = String(item.pubDate || "");
-        const timeAgo = getTimeAgo(new Date(/^\d{4}-\d\d-\d\d \d\d:\d\d:\d\d$/.test(pub) ? pub.replace(" ", "T") + "Z" : pub));   // rss2json 시각은 UTC (시간대 표시 없음)
-
-        const card = document.createElement('div');
-        card.className = 'news-card';
-        card.onclick = () => { if (/^https?:\/\//i.test(item.link || "")) window.open(item.link, '_blank', 'noopener,noreferrer'); };
-
-        let topicTag = "#Trending";
-        if (currentTopicIndex === 0) topicTag = "#K-Culture";
-        else if (currentTopicIndex === 1) topicTag = "#Tech&Biz";
-        else if (currentTopicIndex === 2) topicTag = "#Lifestyle";
-
-        // 외부 RSS 응답을 textContent로 안전하게 주입 (XSS 방지)
-        const inner = document.createElement('div');
-        const tagSpan = document.createElement('span');
-        tagSpan.className = 'news-tag';
-        tagSpan.textContent = topicTag;
-        const titleDiv = document.createElement('div');
-        titleDiv.className = 'news-title';
-        titleDiv.textContent = cleanTitle;
-        const summaryDiv = document.createElement('div');
-        summaryDiv.className = 'news-summary';
-        summaryDiv.style.cssText = 'font-size:0.8rem; color:#94a3b8;';
-        const stripped = item.description ? item.description.replace(/<[^>]*>?/gm, '') : '';
-        summaryDiv.textContent = stripped ? stripped.substring(0, 70) + '...' : 'Click to read more.';
-        inner.appendChild(tagSpan);
-        inner.appendChild(titleDiv);
-        inner.appendChild(summaryDiv);
-
-        const footer = document.createElement('div');
-        footer.className = 'news-footer';
-        const sourceSpan = document.createElement('span');
-        sourceSpan.textContent = sourceName;
-        const timeSpan = document.createElement('span');
-        timeSpan.textContent = timeAgo;
-        footer.appendChild(sourceSpan);
-        footer.appendChild(document.createTextNode(' • '));
-        footer.appendChild(timeSpan);
-
-        card.appendChild(inner);
-        card.appendChild(footer);
-        container.appendChild(card);
-      });
-      currentTopicIndex = (currentTopicIndex + 1) % NEWS_TOPICS.length;
-    } else { throw new Error("API Error"); }
-  } catch (error) { loadBackupNews(); }
-  finally { if (abortTimer) clearTimeout(abortTimer); }
+  const picked = [], seen = new Set(), now = Date.now();
+  for (const feed of topic.feeds) {
+    if (picked.length >= NEWS_COUNT) break;
+    let items = [];
+    try { items = await fetchNewsFeed(feed); } catch (e) { continue; }
+    const fresh = items.map(item => {
+      const title = newsText(item.title), d = newsDate(item.pubDate);
+      return { item, title, date: d };
+    }).filter(x => x.title && !isNaN(x.date.getTime()) && now - x.date.getTime() <= NEWS_MAX_AGE && now - x.date.getTime() > -3600000
+      && !/^Today in Korean history$/i.test(x.title) && /^https?:\/\//i.test(x.item.link || ""));
+    for (const x of shuffleArray(fresh)) {
+      const key = x.title.toLowerCase().replace(/^\((lead|2nd lead|update)\)\s*/i, "").slice(0, 40);   // 같은 소식의 고친 판(LEAD)은 하나만
+      if (seen.has(key)) continue;
+      seen.add(key); picked.push(x);
+      if (picked.length >= NEWS_COUNT) break;
+    }
+  }
+  if (!picked.length) { loadBackupNews(); return; }
+  container.innerHTML = "";
+  picked.forEach(({ item, title, date }) => {
+    const cut = title.lastIndexOf(" - ");                      // "제목 - 언론사" 꼴이면 나눈다
+    const cleanTitle = cut > 0 ? title.slice(0, cut) : title;
+    const sourceName = cut > 0 ? title.slice(cut + 3) : /yna\.co\.kr/.test(item.link) ? "Yonhap" : /koreaherald/.test(item.link) ? "The Korea Herald" : "News";
+    const card = document.createElement('div');
+    card.className = 'news-card';
+    card.onclick = () => window.open(item.link, '_blank', 'noopener,noreferrer');
+    // 외부 RSS 응답을 textContent로 안전하게 주입 (XSS 방지)
+    const inner = document.createElement('div');
+    const tagSpan = document.createElement('span');
+    tagSpan.className = 'news-tag';
+    tagSpan.textContent = topic.tag;
+    const titleDiv = document.createElement('div');
+    titleDiv.className = 'news-title';
+    titleDiv.textContent = cleanTitle;
+    const summaryDiv = document.createElement('div');
+    summaryDiv.className = 'news-summary';
+    summaryDiv.style.cssText = 'font-size:0.8rem; color:#94a3b8;';
+    const stripped = newsText(item.description).replace(/^[A-Z][A-Za-z0-9 ,.]*\(Yonhap\)\s*--\s*/, "");   // "SEOUL, Oct. 10 (Yonhap) --" 머리말은 뺀다
+    summaryDiv.textContent = stripped ? stripped.substring(0, 70).replace(/[.…\s]+$/, '') + '...' : 'Click to read more.';
+    inner.appendChild(tagSpan);
+    inner.appendChild(titleDiv);
+    inner.appendChild(summaryDiv);
+    const footer = document.createElement('div');
+    footer.className = 'news-footer';
+    const sourceSpan = document.createElement('span');
+    sourceSpan.textContent = sourceName;
+    const timeSpan = document.createElement('span');
+    timeSpan.textContent = getTimeAgo(date);
+    footer.appendChild(sourceSpan);
+    footer.appendChild(document.createTextNode(' • '));
+    footer.appendChild(timeSpan);
+    card.appendChild(inner);
+    card.appendChild(footer);
+    container.appendChild(card);
+  });
 }
 
+// 소식을 하나도 못 받았을 때: 오래된 소식 대신 다시 시도 안내 (한 달 넘은 소식은 보여 주지 않는다)
 function loadBackupNews() {
   const container = document.getElementById('news-card-list');
   if (!container) return;
   container.innerHTML = "";
-  const newsData = [{ tag: "K-Culture", title: "Han Kang wins Nobel Prize", summary: "South Korean author Han Kang brings home the Nobel Prize.", source: "CNN", url: "https://edition.cnn.com/" }];
-  newsData.forEach(news => {
-    const card = document.createElement('div');
-    card.className = 'news-card';
-    card.onclick = () => window.open(news.url, '_blank', 'noopener,noreferrer');
-    card.innerHTML = `<div><span class="news-tag">#${news.tag}</span><div class="news-title">${news.title}</div><div class="news-summary">${news.summary}</div></div><div class="news-footer">Source: ${news.source}</div>`;
-    container.appendChild(card);
-  });
+  const box = document.createElement('div');
+  box.style.cssText = 'padding:30px; text-align:center; color:#94a3b8; font-size:0.9rem; width:100%;';
+  box.textContent = '뉴스를 불러오지 못했어요. 잠시 뒤 새로고침을 눌러 주세요.';
+  container.appendChild(box);
 }
 
 function getTimeAgo(date) {
