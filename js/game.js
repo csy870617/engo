@@ -4,6 +4,14 @@
 
 let puzzleList = []; let currentPuzzleIndex = 0; let currentPuzzleAnswer = ""; let puzzleTargetTokens = []; let puzzleShuffledTokens = [];
 
+// '완료'한 문장은 다시 내지 않는다: 문장마다 짧은 이름(문장 글자로 만든 번호)으로 기억한다 (동기화로 다른 기기와도 합쳐진다)
+function puzzleKey(en) {
+  let h = 0x811c9dc5;
+  const t = String(en || "").trim().replace(/\s+/g, " ");
+  for (let i = 0; i < t.length; i++) { h ^= t.charCodeAt(i); h = Math.imul(h, 0x01000193) >>> 0; }
+  return "pz" + h.toString(36);
+}
+
 function setPuzzleLevel(lvl) {
   selectedPuzzleLevel = parseInt(lvl);
   localStorage.setItem("selectedPuzzleLevel", selectedPuzzleLevel);
@@ -33,6 +41,7 @@ function initPuzzle() {
 
       if (seen.has(cleanEn)) return; // 여러 데이터에 같은 문장이 있으면 한 번만
       seen.add(cleanEn);
+      if (donePuzzles.has(puzzleKey(cleanEn))) return; // 완료한 문장은 다시 내지 않는다
       pool.push({ en: cleanEn, kr: kr });
     };
 
@@ -48,12 +57,51 @@ function initPuzzle() {
       if (i < examplePool.length) pool.push(examplePool[i]);
     }
     if (pool.length === 0) {
-       pool.push({ en: "Welcome to the English puzzle game.", kr: "영어 퍼즐 게임에 오신 것을 환영합니다." });
+      if (seen.size) { puzzleAllDone(); return; }   // 이 단계 문장을 모두 완료했다
+      pool.push({ en: "Welcome to the English puzzle game.", kr: "영어 퍼즐 게임에 오신 것을 환영합니다." });
     }
     puzzleList = pool;
     currentPuzzleIndex = 0;
   }
+  updatePuzzleDoneNote();
   if (!currentPuzzleAnswer) nextPuzzle(); else renderPuzzle();
+}
+/** 완료해서 숨긴 문장 수와 '모두 다시 보기' */
+function updatePuzzleDoneNote() {
+  const box = document.getElementById("puzzle-done-note"), cnt = document.getElementById("puzzle-done-count");
+  if (!box || !cnt) return;
+  box.classList.toggle("hidden", !donePuzzles.size);
+  cnt.textContent = `완료해서 숨긴 문장 ${donePuzzles.size}개 ·`;
+}
+/** 이 단계의 문장을 모두 완료했을 때 */
+function puzzleAllDone() {
+  puzzleList = []; currentPuzzleIndex = 0; currentPuzzleAnswer = ""; puzzleTargetTokens = []; puzzleShuffledTokens = [];
+  document.getElementById("puzzle-counter").textContent = "0 / 0";
+  document.getElementById("puzzle-question").textContent = "🎉 이 단계의 문장을 모두 완료했어요! 다른 단계를 고르거나 '모두 다시 보기'를 눌러 주세요.";
+  const fb = document.getElementById("puzzle-feedback"); fb.textContent = ""; fb.className = "feedback-msg"; fb.style.color = "";
+  renderPuzzle();
+  updatePuzzleDoneNote();
+}
+/** ✅ 완료: 지금 문장은 다시 내지 않고 다음 문제로 */
+function markPuzzleDone() {
+  const i = currentPuzzleIndex - 1, item = puzzleList[i];
+  if (!item || !currentPuzzleAnswer) return;
+  markMemorized('puzzle', puzzleKey(item.en), true);
+  puzzleList.splice(i, 1);
+  currentPuzzleIndex = i;
+  currentPuzzleAnswer = "";
+  showToast("✅ 완료! 이 문장은 다시 나오지 않아요");
+  if (!puzzleList.length) { puzzleAllDone(); return; }
+  nextPuzzle();
+}
+/** 완료해서 숨긴 문장을 모두 다시 낸다 */
+function restorePuzzles() {
+  const n = donePuzzles.size;
+  if (!n || !confirm(`완료해서 숨긴 문장 ${n}개를 다시 문제로 낼까요?`)) return;
+  markMemorizedMany('puzzle', [...donePuzzles], false);
+  puzzleList = []; currentPuzzleAnswer = "";
+  initPuzzle();
+  showToast("숨긴 문장을 다시 문제로 내요");
 }
 
 function nextPuzzle() {
@@ -113,6 +161,7 @@ function isPuzzleCorrect(user) {
   return a.length > 1 && a.length === u.length && [...a].sort().join("\n") === [...u].sort().join("\n");
 }
 function checkPuzzle() {
+  if (!currentPuzzleAnswer) return;
   const user = puzzleTargetTokens.map(t => t.text).join(" ");
   const fb = document.getElementById("puzzle-feedback");
   fb.style.color = "";
@@ -120,8 +169,9 @@ function checkPuzzle() {
   else { fb.textContent = "오답입니다."; fb.className = "feedback-msg error"; }
 }
 function resetPuzzle() { puzzleTargetTokens = []; const fb = document.getElementById("puzzle-feedback"); fb.textContent = ""; fb.style.color = ""; renderPuzzle(); }
-function showPuzzleAnswer() { const fb = document.getElementById("puzzle-feedback"); fb.textContent = `정답: ${currentPuzzleAnswer}`; fb.className = "feedback-msg"; fb.style.color = "#38bdf8"; }
+function showPuzzleAnswer() { if (!currentPuzzleAnswer) return; const fb = document.getElementById("puzzle-feedback"); fb.textContent = `정답: ${currentPuzzleAnswer}`; fb.className = "feedback-msg"; fb.style.color = "#38bdf8"; }
 function movePuzzle(offset) {
+  if (!puzzleList.length) return;   // 모두 완료한 단계
   if (offset === 1) { nextPuzzle(); return; }
   if (currentPuzzleIndex <= 1) { showToast("첫 문제예요"); return; }
   currentPuzzleIndex -= 2;   // 지금 문제는 currentPuzzleIndex-1번째: 그 앞 문제를 다시 낸다

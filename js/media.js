@@ -140,9 +140,10 @@ function speakText(text, speaker = null) {
   speakBrowser(text, speaker);
 }
 
-function speakWithPromise(text, speaker) {
-  if (usingNeural()) return speakNeural(text, speaker);
-  return speakBrowserWithPromise(text, speaker);
+/** rateMul: 이번 문장만 빠르기를 곱한다 (쉐도잉 '천천히' 0.8 등) */
+function speakWithPromise(text, speaker, rateMul) {
+  if (usingNeural()) return speakNeural(text, speaker, undefined, rateMul);
+  return speakBrowserWithPromise(text, speaker, rateMul);
 }
 
 function speakBrowser(text, speaker = null) {
@@ -172,14 +173,14 @@ function speakBrowser(text, speaker = null) {
   window.speechSynthesis.speak(u);
 }
 
-function speakBrowserWithPromise(text, speaker) {
+function speakBrowserWithPromise(text, speaker, rateMul) {
   return new Promise(resolve => {
     // TTS 미지원 브라우저에서 자동재생 루프가 예외로 죽지 않도록 가드
     if (!("speechSynthesis" in window)) { resolve(); return; }
 
     const u = new SpeechSynthesisUtterance(cleanForSpeech(text));
     u.lang = "en-US";
-    u.rate = userRate || 1.0;
+    u.rate = (userRate || 1.0) * (rateMul || 1);
 
     if (userVoiceIndex !== null && ttsVoices[userVoiceIndex]) {
       u.voice = ttsVoices[userVoiceIndex];
@@ -204,7 +205,7 @@ function speakBrowserWithPromise(text, speaker) {
       if (safetyTimer) clearTimeout(safetyTimer);
       resolve();
     };
-    const rate = userRate || 1.0;
+    const rate = (userRate || 1.0) * (rateMul || 1);
     safetyTimer = setTimeout(finish, Math.max(5000, (text.length * 150) / rate));
 
     u.onend = finish;
@@ -304,12 +305,13 @@ function cleanForSpeech(text) {
 }
 const cleanForNeural = cleanForSpeech;
 
-function requestNeuralClip(text, style) {
-  const key = `${style}|${userRate}|${text}`;
+function requestNeuralClip(text, style, rateMul) {
+  const rate = userRate * (rateMul || 1);
+  const key = `${style}|${rate}|${text}`;
   let p = neuralClipCache.get(key);
   // 다 만든 것이나 지금 세대에서 만드는 중인 것만 다시 쓴다 (멈추기 전 세대의 요청은 빈 결과로 끝나 그 문장이 소리 없이 건너뛰어진다)
   if (p && (p.ready || p.gen === neuralGen)) { neuralClipCache.delete(key); neuralClipCache.set(key, p); return p; }
-  p = NeuralTTS.synthesize(cleanForSpeech(text), style, userRate, neuralGen);
+  p = NeuralTTS.synthesize(cleanForSpeech(text), style, rate, neuralGen);
   p.gen = neuralGen;
   neuralClipCache.set(key, p);
   // 버려진(null) 요청이나 실패한 요청은 다시 만들 수 있게 지운다 (그사이 새 요청으로 바뀌었으면 건드리지 않는다)
@@ -320,18 +322,18 @@ function requestNeuralClip(text, style) {
 }
 
 /** 지금 문장을 읽는 동안 다음 문장을 미리 만들어 문장 사이 끊김을 줄인다 */
-function prefetchSpeech(text, speaker) {
+function prefetchSpeech(text, speaker, rateMul) {
   if (!text || !usingNeural()) return;
-  requestNeuralClip(text, neuralStyleFor(speaker)).catch(() => {});
+  requestNeuralClip(text, neuralStyleFor(speaker), rateMul).catch(() => {});
 }
 
 /**
- * 다음 문장 여러 개를 미리 만든다. items: [[text, speaker], ...]
+ * 다음 문장 여러 개를 미리 만든다. items: [[text, speaker, rateMul?], ...]
  * 작업자가 쉬지 않고 앞서 만들어 두므로, 느린 기기나 빠른 말하기 속도(문장이 짧게 끝남)에서도
  * 문장 사이가 끊기지 않는다. (이미 만든·만드는 중인 문장은 다시 요청하지 않음)
  */
 function prefetchAhead(items) {
-  (items || []).forEach(([text, speaker]) => prefetchSpeech(text, speaker));
+  (items || []).forEach(([text, speaker, rateMul]) => prefetchSpeech(text, speaker, rateMul));
 }
 
 function showNeuralLoading(show) {
@@ -340,8 +342,8 @@ function showNeuralLoading(show) {
 }
 
 /** 자연스러운 음성으로 읽고, 끝나거나 멈추면 resolve */
-async function speakNeural(text, speaker, styleOverride) {
-  if (typeof NeuralTTS === 'undefined') return speakBrowserWithPromise(text, speaker);
+async function speakNeural(text, speaker, styleOverride, rateMul) {
+  if (typeof NeuralTTS === 'undefined') return speakBrowserWithPromise(text, speaker, rateMul);
   NeuralTTS.unlockAudio();               // 누른 순간에 소리 장치를 깨워 둔다 (아이폰)
   if ("speechSynthesis" in window) window.speechSynthesis.cancel();
   NeuralTTS.stopAudio();
@@ -350,12 +352,12 @@ async function speakNeural(text, speaker, styleOverride) {
   if (!NeuralTTS.isLoaded()) showNeuralLoading(true);
   try {
     let late = null;
-    const clip = await Promise.race([requestNeuralClip(text, neuralStyleFor(speaker, styleOverride)),
+    const clip = await Promise.race([requestNeuralClip(text, neuralStyleFor(speaker, styleOverride), rateMul),
       new Promise(resolve => { late = setTimeout(() => resolve('late'), NeuralTTS.isLoaded() ? 15000 : 25000); })]);
     clearTimeout(late);
     if (token !== neuralSpeakToken) return;
     showNeuralLoading(false);
-    if (clip === 'late') { if (myGen === neuralGen) await speakBrowserWithPromise(text, speaker); return; }   // 너무 늦으면 이번 문장은 기본 음성으로
+    if (clip === 'late') { if (myGen === neuralGen) await speakBrowserWithPromise(text, speaker, rateMul); return; }   // 너무 늦으면 이번 문장은 기본 음성으로
     if (!clip || myGen !== neuralGen) return;
     // 재생 끝 신호가 오지 않는 경우(아이폰에서 앱을 내렸다 돌아올 때 등) 연속 재생이 멈추지 않도록
     // 문장 길이 + 3초가 지나면 다음으로 넘어간다
@@ -374,7 +376,7 @@ async function speakNeural(text, speaker, styleOverride) {
       neuralBroken = true;
       alert("자연스러운 음성을 열지 못해 기본 음성으로 읽습니다.\n(" + (e && e.message || e) + ")");
     }
-    if (token === neuralSpeakToken && myGen === neuralGen) await speakBrowserWithPromise(text, speaker);
+    if (token === neuralSpeakToken && myGen === neuralGen) await speakBrowserWithPromise(text, speaker, rateMul);
   }
 }
 

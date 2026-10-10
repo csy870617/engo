@@ -387,10 +387,13 @@ function setConvCategory(cat) { convCategory = cat; renderConversationList(); }
 function renderConversationList() {
   const container = document.getElementById("conv-list");
   if (!container || typeof conversationData === "undefined") return;
+  const filterBtn = document.getElementById("conv-studying-btn");
+  if (filterBtn) filterBtn.classList.toggle("active", convStudyingOnly);
   const keyword = (document.getElementById("conv-search")?.value || "").toLowerCase();
   renderConvCategoryChips("conv-cats", convCategory, setConvCategory);
   container.innerHTML = "";
   const matched = conversationData.filter(c => (!convCategory || convCategoryOf(c) === convCategory) &&
+    (!convStudyingOnly || !doneConvs.has(c.id)) &&
     (convCategoryOf(c) + c.title + c.lines.map(l => l.en).join(" ") + c.lines.map(l => l.kr).join(" ")).toLowerCase().includes(keyword));
   // 화면에 보이는 순서(상황별) 그대로 전체 듣기·이전/다음 대화가 진행되도록
   currentConvList = convCategories().flatMap(cat => matched.filter(c => convCategoryOf(c) === cat));
@@ -402,19 +405,54 @@ function renderConversationList() {
       const div = document.createElement("div");
       div.className = "list-item";
       div.dataset.id = c.id;
+      if (doneConvs.has(c.id)) div.classList.add("memorized");
       div.onclick = () => openConversation(c.id);
-      div.innerHTML = `<div><div class="list-item-title">${c.title}</div><div class="list-item-sub">${c.lines[0]?.en || ""}</div></div><div>▶</div>`;
+      div.innerHTML = `<div><div class="list-item-title">${c.title}</div><div class="list-item-sub">${c.lines[0]?.en || ""}</div></div>`;
+      // 완료 체크: 다 익힌 대화는 '미완료만 보기'에서 빠진다
+      const check = document.createElement("input");
+      check.type = "checkbox";
+      check.className = "conv-check";
+      check.checked = doneConvs.has(c.id);
+      check.setAttribute("aria-label", `${c.title} 완료`);
+      check.onclick = (e) => {
+        e.stopPropagation();
+        markMemorized('conv', c.id, check.checked);
+        div.classList.toggle("memorized", check.checked);
+        if (convStudyingOnly && check.checked) { showToast("✅ 완료! 목록에서 숨겼어요"); renderConversationList(); }
+        else updateConvProgress();
+      };
+      div.appendChild(check);
       container.appendChild(div);
     });
   });
-  if (currentConvList.length === 0) container.innerHTML = '<div class="list-item"><div>검색 결과가 없습니다.</div></div>';
+  if (currentConvList.length === 0) container.innerHTML = keyword || !convStudyingOnly || !doneConvs.size ? '<div class="list-item"><div>검색 결과가 없습니다.</div></div>'
+    : '<div class="list-item"><div>🎉 모두 완료했어요! \'미완료만 보기\'를 끄면 전체 목록이 보여요.</div></div>';
   afterListRender('conv');
+  updateConvProgress();
+}
+function updateConvProgress() {
+  if (typeof conversationData === "undefined") return;
+  const el = document.getElementById("conv-progress"), bar = document.getElementById("conv-progress-bar");
+  if (!el || !bar) return;
+  const done = conversationData.filter(c => doneConvs.has(c.id)).length, total = conversationData.length;
+  const percent = total === 0 ? 0 : Math.round((done / total) * 100);
+  el.textContent = `대화 완료 ${done} / ${total}개 (${percent}%)`;
+  bar.style.width = `${percent}%`;
+}
+function toggleConvStudying() { convStudyingOnly = !convStudyingOnly; localStorage.setItem("convStudyingOnly", convStudyingOnly); if (typeof touchSettings === "function") touchSettings(); renderConversationList(); }
+function toggleConvDoneDetail() {
+  const chk = document.getElementById("conv-done-checkbox");
+  markMemorized('conv', currentConvId, chk.checked);
+  if (chk.checked) showToast(convStudyingOnly ? "✅ 완료! 대화 목록에서 숨겨요" : "✅ 완료로 표시했어요");
+  updateConvProgress();
 }
 function openConversation(id) { currentConvId = id; localStorage.setItem("currentConvId", id); goTo("conv-detail"); if (autoPlayEnabled) playConversationAll(); }
 function renderConversationDetail() {
   const conv = conversationData.find(c => c.id === currentConvId);
   if (!conv) return;
   document.getElementById("conv-title").textContent = conv.title;
+  const doneChk = document.getElementById("conv-done-checkbox");
+  if (doneChk) doneChk.checked = doneConvs.has(conv.id);
   // 해석 보기는 사용자가 고른 대로 둔다 (이전/다음 대화로 넘어가도 유지)
   renderConversationLines();
 }
@@ -572,18 +610,51 @@ function afterListRender(type) {
 }
 
 // --- 5. Shadowing ---
+// 세 가지 연습
+//  🎤 따라 말하기: 문장을 듣고 따라 말하면(마이크) 낱말마다 맞았는지 색으로 보여 준다. 잘 말하면 저절로 다음 문장,
+//     아니면 다시 들려주고 한 번 더 (최대 3번). 음성 인식이 없는 브라우저·마이크를 끈 경우는 따라 말할 시간을 주고 한 번 더 들려준 뒤 다음 문장
+//  🎧 동시에 말하기: 원어민 목소리와 동시에(살짝 뒤따라) 소리 내어 말한다 · 문장마다 3번씩 저절로 끝까지
+//  🎭 역할극(내가 A): 상대(B) 말을 듣고, 내 차례엔 한국어를 보고 영어로 말한다 → 정답과 비교해 보여 주고 들려준 뒤 한 번 따라 말한다
+const SHADOW_MODES = {
+  repeat: "문장을 듣고 따라 말하면, 맞게 말한 낱말을 색으로 보여 줘요",
+  shadow: "원어민 목소리와 동시에(살짝 뒤따라) 소리 내어 말해요 · 문장마다 3번",
+  roleplay: "상대(B) 말을 듣고, 내 차례(A)엔 한국어를 보고 영어로 말해요"
+};
+const SHADOW_PASS = 85;          // 이 점수 넘게 말하면 잘 말한 것 (다음 문장으로)
+const SHADOW_SLOW = 0.8;         // 🐢 천천히
+const SHADOW_REPS = 3;           // 동시에 말하기: 문장마다 몇 번
+let shadowMode = (() => {
+  try { const m = localStorage.getItem("shadowingMode"); if (SHADOW_MODES[m]) return m; return localStorage.getItem("shadowingRolePlay") === "true" ? "roleplay" : "repeat"; }
+  catch (e) { return "repeat"; }
+})();
+const shadowPref = (k, d) => { try { const v = localStorage.getItem(k); return v === null ? d : v === "1"; } catch (e) { return d; } };
+let shadowSlow = shadowPref("shadowingSlow", false);
+let shadowUseMic = shadowPref("shadowingMic", true);
 let isBlindMode = false; let isHideKr = false;
-// 역할극: 상대(B) 대사는 자동으로 들려주고, 내 차례(A)엔 한국어만 보고 먼저 말해 본 뒤 정답 확인
-let isRolePlay = false; try { isRolePlay = localStorage.getItem("shadowingRolePlay") === "true"; } catch (e) {}
-let rolePlayToken = 0; let rolePlayRevealedKey = "";
-// 쉐도잉 목록: 실제 상황(category)별로 묶어 보여 주고, 위쪽 칩으로 한 상황만 골라 볼 수 있다
+let shadowRun = 0;               // 지금 흐름 (멈추거나 옮기면 늘려서 앞 흐름이 저절로 끝나게)
+let shadowState = "idle";        // idle | playing | listening | wait
+let shadowScores = {};           // 이번 대화에서 문장별 점수 { 문장 번호: 0~100 }
+let shadowResult = null;         // 지금 문장의 결과 { idx, marks, score }
+let shadowMic = null;            // 듣는 중 { stop, abort }
+let shadowReveal = -1;           // 역할극 내 차례: 정답을 보여 준 문장
+let shadowNoMic = "";            // 마이크·음성 인식을 쓸 수 없는 까닭 (있으면 시간으로 기다리는 방식)
+let shadowDone = false;          // 동시에 말하기로 끝까지 했는지 (결과 화면용)
+const SHADOW_SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+const shadowCanListen = () => !!SHADOW_SR && shadowUseMic && !shadowNoMic;
+const shadowConv = () => (typeof conversationData !== "undefined" ? conversationData.find(c => c.id === currentShadowingId) : null);
+const shadowRate = () => (shadowSlow ? SHADOW_SLOW : 1);
+const shadowSleep = ms => new Promise(r => setTimeout(r, ms));
+const shadowEl = id => document.getElementById(id);
+
+// 쉐도잉 목록: 실제 상황(category)별로 묶어 보여 주고, 위쪽 칩으로 한 상황만 골라 볼 수 있다 (끝까지 연습한 대화는 가장 좋은 점수)
 let shadowingCategory = "";
+function shadowBestLoad() { try { const d = JSON.parse(localStorage.getItem("shadowingBest") || "{}"); return d && typeof d === "object" && !Array.isArray(d) ? d : {}; } catch (e) { return {}; } }
 function setShadowingCategory(cat) { shadowingCategory = cat; renderShadowingList(); }
 function renderShadowingList() {
   const container = document.getElementById("shadowing-list-container");
   if (!container || typeof conversationData === "undefined") return;
   const keyword = (document.getElementById("shadowing-search")?.value || "").toLowerCase();
-  const cats = convCategories();
+  const cats = convCategories(), best = shadowBestLoad();
   renderConvCategoryChips("shadowing-cats", shadowingCategory, setShadowingCategory);
   container.innerHTML = "";
   const filtered = conversationData.filter(c => (!shadowingCategory || convCategoryOf(c) === shadowingCategory) &&
@@ -596,141 +667,507 @@ function renderShadowingList() {
       const div = document.createElement("div");
       div.className = "list-item";
       div.onclick = () => startShadowingFromConv(c.id);
-      div.innerHTML = `<div><div class="list-item-title">🗣️ ${c.title}</div><div class="list-item-sub">${c.lines[0]?.en || ""}</div></div><div style="color:var(--accent); font-size:0.9rem; white-space:nowrap; margin-left:10px;">Start ▶</div>`;
+      const b = best[c.id];
+      const badge = typeof b === "number" ? `<span class="shadow-best">✓ ${b}점</span>` : b ? `<span class="shadow-best">✓ 완료</span>` : "Start ▶";
+      div.innerHTML = `<div><div class="list-item-title">🗣️ ${c.title}</div><div class="list-item-sub">${c.lines[0]?.en || ""}</div></div><div style="color:var(--accent); font-size:0.9rem; white-space:nowrap; margin-left:10px;">${badge}</div>`;
       container.appendChild(div);
     });
   });
   if (filtered.length === 0) container.innerHTML = '<div class="list-item"><div>검색 결과가 없습니다.</div></div>';
 }
+
 function startShadowingFromConv(id) {
+  shadowStop();
   currentShadowingId = id;
-  shadowingLineIndex = 0; rolePlayRevealedKey = "";
+  shadowingLineIndex = 0; shadowScores = {}; shadowResult = null; shadowReveal = -1; shadowDone = false;
+  if (shadowNoMic === "network") shadowNoMic = "";   // 연결 문제는 다시 들어오면 다시 해 본다
   goTo("shadowing");
-  isBlindMode = true; isHideKr = false; updateShadowingOptionsUI();
-  setTimeout(() => { updateShadowingUI(); if (isRolePlay) autoPlayShadowingLine(); else if (autoPlayEnabled) playShadowingCurrent(); }, 100);
+  isBlindMode = shadowMode === "repeat"; isHideKr = false;
+  updateShadowingOptionsUI(); updateShadowingUI(); shadowShowScore(null); shadowShowHeard("");
+  shadowSetState("idle", "");
+  if (autoPlayEnabled || shadowMode === "roleplay") setTimeout(() => { if (currentShadowingId === id && currentPageName === "shadowing") shadowStart(); }, 150);
 }
-function setShadowingMode(rolePlay) {
-  isRolePlay = rolePlay;
-  try { localStorage.setItem("shadowingRolePlay", String(rolePlay)); } catch (e) {}
-  rolePlayToken++; stopAudio();
-  updateShadowingOptionsUI(); updateShadowingUI();
+function setShadowingMode(m) {
+  if (!SHADOW_MODES[m]) m = m === true ? "roleplay" : "repeat";
+  shadowStop();
+  shadowMode = m;
+  try { localStorage.setItem("shadowingMode", m); } catch (e) {}
+  isBlindMode = m === "repeat";
+  shadowResult = null; shadowReveal = -1; shadowScores = {}; shadowDone = false;
+  shadowEl("shadowing-summary").classList.add("hidden");
+  updateShadowingOptionsUI(); updateShadowingUI(); shadowShowScore(null); shadowShowHeard("");
+  shadowSetState("idle", "▶를 누르면 시작해요");
 }
 function toggleShadowingOption(type) {
   if (type === 'blind') isBlindMode = !isBlindMode;
   if (type === 'hideKr') isHideKr = !isHideKr;
+  if (type === 'slow') { shadowSlow = !shadowSlow; try { localStorage.setItem("shadowingSlow", shadowSlow ? "1" : "0"); } catch (e) {} }
+  if (type === 'mic') {
+    shadowUseMic = !shadowUseMic; shadowNoMic = "";
+    try { localStorage.setItem("shadowingMic", shadowUseMic ? "1" : "0"); } catch (e) {}
+    if (shadowState !== "idle") { shadowStop(); shadowSetState("idle", "▶를 누르면 이어서 해요"); }
+  }
   updateShadowingOptionsUI(); updateShadowingUI();
 }
 function updateShadowingOptionsUI() {
-  const btnBlind = document.getElementById("btn-blind-mode");
-  const btnHideKr = document.getElementById("btn-hide-kr");
-  if(btnBlind) btnBlind.classList.toggle("active", isBlindMode);
-  if(btnHideKr) btnHideKr.classList.toggle("active", isHideKr);
-  document.querySelectorAll("[data-shadow-mode]").forEach(b => b.classList.toggle("active", (b.dataset.shadowMode === "roleplay") === isRolePlay));
+  const set = (id, on) => { const b = shadowEl(id); if (b) { b.classList.toggle("active", on); b.setAttribute("aria-pressed", String(on)); } };
+  set("btn-blind-mode", isBlindMode); set("btn-hide-kr", isHideKr); set("btn-shadow-slow", shadowSlow); set("btn-shadow-mic", shadowCanListen());
+  const mic = shadowEl("btn-shadow-mic");
+  if (mic) mic.classList.toggle("hidden", !SHADOW_SR || shadowMode === "shadow");
+  document.querySelectorAll("[data-shadow-mode]").forEach(b => { const on = b.dataset.shadowMode === shadowMode; b.classList.toggle("active", on); b.setAttribute("aria-pressed", String(on)); });
+  const tip = shadowEl("shadowing-mode-tip");
+  if (tip) {
+    let t = SHADOW_MODES[shadowMode];
+    if (shadowMode !== "shadow" && !shadowCanListen()) {
+      const why = shadowNoMic === "denied" ? "마이크가 막혀 있어서 " : shadowNoMic ? "음성 인식을 쓸 수 없어서 " : !SHADOW_SR ? "이 브라우저는 음성 인식이 안 돼서 " : "";
+      t = shadowMode === "roleplay" ? `${why}내 차례엔 영어로 말해 본 뒤 터치해서 정답을 확인해요` : `${why}문장을 듣고, 쉬는 동안 따라 말해요`;
+    }
+    tip.textContent = t;
+  }
 }
-function isMyTurn(line) { return isRolePlay && line && line.speaker === "A"; }
 function updateShadowingUI() {
-  const conv = conversationData.find(c => c.id === currentShadowingId);
+  const conv = shadowConv();
   if (!conv) return;
-  const line = conv.lines[shadowingLineIndex];
-  document.getElementById("shadowing-counter").textContent = `${shadowingLineIndex + 1} / ${conv.lines.length}`;
-  const enText = document.getElementById("shadowing-text");
-  const krText = document.getElementById("shadowing-kr");
-  const hint = document.getElementById("shadowing-hint");
-  const playLabel = document.getElementById("shadowing-play-label");
-  if (isMyTurn(line)) {
-    // 내 차례: 한국어를 보고 먼저 영어로 말해 본다. 터치하거나 ▶를 누르면 정답 문장과 음성
-    const revealed = rolePlayRevealedKey === `${currentShadowingId}:${shadowingLineIndex}`;
-    document.getElementById("shadowing-speaker").textContent = "🙋 내 차례 (A)";
-    enText.textContent = revealed ? line.en : "🎤 영어로 말해 보세요";
-    enText.classList.remove("blind-text"); enText.classList.toggle("revealed", revealed);
-    enText.classList.toggle("roleplay-prompt", !revealed);
-    krText.textContent = line.kr; krText.style.visibility = "visible";
-    hint.textContent = revealed ? "(다음 문장 ❯ 으로 상대 대답 듣기)" : "(말해 본 뒤 터치하면 정답 확인)";
+  const idx = shadowingLineIndex, line = conv.lines[idx];
+  shadowEl("shadowing-counter").textContent = `${idx + 1} / ${conv.lines.length}`;
+  const bar = shadowEl("shadowing-progress-bar"); if (bar) bar.style.width = `${Math.round(((idx + 1) / conv.lines.length) * 100)}%`;
+  const enText = shadowEl("shadowing-text"), krText = shadowEl("shadowing-kr"), hint = shadowEl("shadowing-hint");
+  const res = shadowResult && shadowResult.idx === idx ? shadowResult : null;
+  const myTurn = shadowMode === "roleplay" && line.speaker === "A";
+  shadowEl("shadowing-speaker").textContent = shadowMode === "roleplay" ? (myTurn ? "🙋 내 차례 (A)" : "💬 상대 (B)") : `Speaker ${line.speaker}`;
+  enText.classList.remove("roleplay-prompt", "blind-text", "revealed");
+  hint.classList.add("hidden");
+  if (res) shadowRenderMarks(enText, res.marks);                  // 말한 결과: 맞힌 낱말은 초록, 빠뜨린 낱말은 빨강
+  else if (myTurn && shadowReveal !== idx) {
+    enText.textContent = "🎤 영어로 말해 보세요";
+    enText.classList.add("roleplay-prompt");
+    hint.textContent = shadowCanListen() ? "(말하면 정답과 비교해 줘요 · 터치하면 정답 보기)" : "(말해 본 뒤 터치하면 정답 확인)";
     hint.classList.remove("hidden");
-    if (playLabel) playLabel.textContent = revealed ? "다시 듣기 (반복)" : "정답 듣기";
+  } else {
+    enText.textContent = line.en;
+    if (isBlindMode && !myTurn) { enText.classList.add("blind-text"); hint.textContent = "(문장을 터치하면 잠시 보입니다)"; hint.classList.remove("hidden"); }
+  }
+  krText.textContent = line.kr;
+  krText.style.visibility = isHideKr && !myTurn ? "hidden" : "visible";
+  if (shadowState === "idle") shadowSetState("idle");
+}
+function shadowRenderMarks(el, marks) {
+  el.textContent = "";
+  marks.forEach((m, i) => {
+    const s = document.createElement("span");
+    s.className = "sw " + (m.ok ? "ok" : "miss");
+    s.textContent = m.text;
+    el.appendChild(s);
+    if (i < marks.length - 1) el.appendChild(document.createTextNode(" "));
+  });
+}
+/** 상태 줄과 큰 버튼 (▶ 시작 · ■ 멈추기 · 🎤 다 말했어요) */
+function shadowSetState(state, status) {
+  shadowState = state;
+  const st = shadowEl("shadowing-status"); if (st && status != null) st.textContent = status;
+  const btn = shadowEl("shadowing-play-btn"), icon = shadowEl("shadowing-play-icon"), label = shadowEl("shadowing-play-label");
+  if (!btn || !icon || !label) return;
+  btn.classList.toggle("listening", state === "listening");
+  btn.classList.toggle("busy", state === "playing" || state === "wait");
+  const again = shadowResult && shadowResult.idx === shadowingLineIndex;
+  const L = { idle: ["▶", again ? "다시 하기" : "시작"], playing: ["■", "멈추기"], wait: ["■", "멈추기"], listening: ["🎤", "다 말했으면 누르세요"] }[state] || ["▶", "시작"];
+  icon.textContent = L[0]; label.textContent = L[1]; btn.setAttribute("aria-label", L[1]);
+  if (state !== "wait") shadowGapBar(0);
+}
+function shadowShowHeard(text, done) {
+  const el = shadowEl("shadowing-heard"); if (!el) return;
+  el.textContent = text ? (done ? "들린 말: " : "🎤 ") + text : "";
+}
+function shadowShowScore(res) {
+  const el = shadowEl("shadowing-score"); if (!el) return;
+  if (!res) { el.classList.add("hidden"); el.textContent = ""; return; }
+  const sc = res.score, role = shadowMode === "roleplay" && !res.repeat;
+  el.className = "shadow-score " + (sc >= SHADOW_PASS ? "good" : sc >= 60 ? "ok" : "low");
+  el.textContent = `${sc}점 · ` + (role
+    ? (sc >= SHADOW_PASS ? "정답과 거의 같아요! 🎉" : sc >= 60 ? "좋아요! 정답과 비교해 보세요" : "정답을 듣고 따라 해 봐요")
+    : (sc >= 95 ? "완벽해요! 🎉" : sc >= SHADOW_PASS ? "아주 좋아요! 👍" : sc >= 60 ? "거의 다 왔어요 · 빨간 낱말을 다시" : "다시 들어 보고 따라 해 봐요"));
+}
+/** 마이크 없이 따라 말할 시간 (남은 시간 막대) */
+function shadowGapBar(ms) {
+  const box = shadowEl("shadowing-gap"); if (!box || !box.firstElementChild) return;
+  const bar = box.firstElementChild;
+  bar.style.transition = "none";
+  if (!ms) { box.classList.add("hidden"); bar.style.width = "0%"; return; }
+  box.classList.remove("hidden");
+  bar.style.width = "100%";
+  void bar.offsetWidth;
+  bar.style.transition = `width ${ms}ms linear`;
+  bar.style.width = "0%";
+}
+const shadowGapMs = text => Math.round(Math.min(9000, Math.max(2200, (900 + text.trim().split(/\s+/).length * 420) / shadowRate())));
+function shadowSpeak(line) { return Promise.resolve(speakWithPromise(line.en, line.speaker, shadowRate())); }
+function shadowPrefetch(conv, from) { prefetchAhead(conv.lines.slice(from, from + 2).map(l => [l.en, l.speaker, shadowRate()])); }
+/** 아이폰: 마이크를 쓰는 동안에도 소리가 작아지거나 무음 스위치에 막히지 않게 (iOS 17+) */
+function shadowAudioSession(on) { try { if (navigator.audioSession) navigator.audioSession.type = on ? "play-and-record" : "auto"; } catch (e) {} }
+
+// ---------- 말한 문장 확인 (음성 인식) ----------
+const SHADOW_CONTRACT = { "i'm": "i am", "you're": "you are", "it's": "it is", "that's": "that is", "what's": "what is", "let's": "let us", "can't": "can not", "cannot": "can not",
+  "won't": "will not", "don't": "do not", "doesn't": "does not", "didn't": "did not", "isn't": "is not", "wasn't": "was not", "aren't": "are not", "weren't": "were not",
+  "haven't": "have not", "hasn't": "has not", "hadn't": "had not", "wouldn't": "would not", "couldn't": "could not", "shouldn't": "should not",
+  "gonna": "going to", "wanna": "want to", "gotta": "got to", "ok": "okay", "alright": "all right", "its": "it is", "im": "i am", "dont": "do not", "cant": "can not" };
+const SHADOW_S_IS = new Set(["he", "she", "it", "that", "there", "here", "what", "who", "where", "how", "when", "why"]);
+// 소리가 같은 낱말은 맞게 말한 것으로 (음성 인식이 철자를 고르는 것이지 발음 실수가 아니다)
+const SHADOW_SAME = {};
+[["to", "too", "two"], ["for", "four"], ["there", "their"], ["right", "write"], ["here", "hear"], ["know", "no"], ["buy", "by", "bye"], ["new", "knew"],
+ ["see", "sea"], ["one", "won"], ["hour", "our"], ["weather", "whether"], ["wear", "where"], ["ate", "eight"], ["meet", "meat"], ["week", "weak"],
+ ["whole", "hole"], ["peace", "piece"], ["son", "sun"], ["wait", "weight"], ["way", "weigh"], ["wood", "would"], ["be", "bee"], ["i", "eye"],
+ ["mr", "mister"], ["mrs", "missus"], ["dr", "doctor"], ["till", "until"], ["cause", "because"], ["yeah", "yes", "yep"], ["bucks", "dollars"]].forEach(g => g.forEach(w => { SHADOW_SAME[w] = g[0]; }));
+const SHADOW_FILLERS = new Set(["um", "uh", "umm", "uhh", "hmm", "er", "erm", "ah", "eh", "mm"]);
+const SHADOW_ONES = ["zero", "one", "two", "three", "four", "five", "six", "seven", "eight", "nine", "ten", "eleven", "twelve", "thirteen", "fourteen", "fifteen", "sixteen", "seventeen", "eighteen", "nineteen"];
+const SHADOW_TENS = ["", "", "twenty", "thirty", "forty", "fifty", "sixty", "seventy", "eighty", "ninety"];
+const SHADOW_ORD = { first: 1, second: 2, third: 3, fourth: 4, fifth: 5, sixth: 6, seventh: 7, eighth: 8, ninth: 9, tenth: 10 };
+function shadowNumWords(n) {
+  if (n < 20) return SHADOW_ONES[n];
+  if (n < 100) return SHADOW_TENS[Math.floor(n / 10)] + (n % 10 ? " " + SHADOW_ONES[n % 10] : "");
+  if (n < 1000) return SHADOW_ONES[Math.floor(n / 100)] + " hundred" + (n % 100 ? " " + shadowNumWords(n % 100) : "");
+  if (n < 10000) return shadowNumWords(Math.floor(n / 1000)) + " thousand" + (n % 1000 ? " " + shadowNumWords(n % 1000) : "");
+  return String(n);
+}
+/** 화면의 낱말 하나 → 비교용 낱말들 ("I'm" → i am, "$6.25" → six twenty five, "7:30" → seven thirty) */
+function shadowTokenWords(tok) {
+  let w = String(tok).toLowerCase().replace(/[’‘`]/g, "'").replace(/[“”"]/g, "");
+  w = w.replace(/\$/g, "").replace(/(\d)[.:](\d)/g, "$1 $2").replace(/(\d),(\d{3})/g, "$1$2").replace(/%/g, " percent");
+  return w.split(/[\s\-–—\/]+/).flatMap(x => {
+    x = x.replace(/^[^a-z0-9]+|[^a-z0-9]+$/g, "");
+    if (!x) return [];
+    let m;
+    if (/^\d+$/.test(x)) return shadowNumWords(+x).split(" ");
+    if ((m = x.match(/^(\d+)(st|nd|rd|th)$/))) { const n = +m[1], o = Object.keys(SHADOW_ORD).find(k => SHADOW_ORD[k] === n); return o ? [o] : shadowNumWords(n).split(" "); }
+    if (SHADOW_CONTRACT[x]) return SHADOW_CONTRACT[x].split(" ");
+    if ((m = x.match(/^(\w+)n't$/))) return [m[1], "not"];
+    if ((m = x.match(/^(\w+)'(re|ve|ll|m|d)$/))) return [m[1], { re: "are", ve: "have", ll: "will", m: "am", d: "would" }[m[2]]];
+    if ((m = x.match(/^(\w+)'s$/)) && SHADOW_S_IS.has(m[1])) return [m[1], "is"];
+    return [x.replace(/'/g, "")];
+  }).map(x => SHADOW_SAME[x] || x);
+}
+const shadowWordsOf = text => String(text || "").split(/\s+/).filter(Boolean).flatMap(shadowTokenWords);
+/** 철자가 한 글자만 다른 긴 낱말 (realize·realise, color·colour 등)도 맞은 것으로 */
+function shadowNear(a, b) {
+  if (a === b) return true;
+  if (a.length < 5 || b.length < 5 || Math.abs(a.length - b.length) > 1) return false;
+  let i = 0, j = 0, diff = 0;
+  while (i < a.length && j < b.length) {
+    if (a[i] === b[j]) { i++; j++; continue; }
+    if (++diff > 1) return false;
+    if (a.length > b.length) i++; else if (b.length > a.length) j++; else { i++; j++; }
+  }
+  return diff + (a.length - i) + (b.length - j) <= 1;
+}
+/** 목표 문장(target)을 들린 말(heard)과 견준다: 같은 순서로 맞힌 낱말 → 점수(0~100)와 화면 낱말마다 맞았는지 */
+function shadowScore(target, heard) {
+  const toks = String(target || "").split(/\s+/).filter(Boolean);
+  const T = [], owner = [];
+  toks.forEach((tok, i) => shadowTokenWords(tok).forEach(w => { T.push(w); owner.push(i); }));
+  const H = shadowWordsOf(heard).filter(w => !SHADOW_FILLERS.has(w));
+  const n = T.length, m = H.length;
+  const dp = Array.from({ length: n + 1 }, () => new Array(m + 1).fill(0));
+  for (let i = 1; i <= n; i++) for (let j = 1; j <= m; j++)
+    dp[i][j] = shadowNear(T[i - 1], H[j - 1]) ? dp[i - 1][j - 1] + 1 : Math.max(dp[i - 1][j], dp[i][j - 1]);
+  const hit = new Set();
+  for (let i = n, j = m; i > 0 && j > 0;) {
+    if (shadowNear(T[i - 1], H[j - 1]) && dp[i][j] === dp[i - 1][j - 1] + 1) { hit.add(i - 1); i--; j--; }
+    else if (dp[i - 1][j] >= dp[i][j - 1]) i--; else j--;
+  }
+  const marks = toks.map((text, k) => {
+    const mine = owner.map((o, idx) => (o === k ? idx : -1)).filter(x => x >= 0);
+    return { text, ok: mine.every(x => hit.has(x)) };
+  });
+  return { score: n ? Math.round((100 * hit.size) / n) : 0, marks, lastHit: n > 0 && hit.has(n - 1) };
+}
+/** 안드로이드처럼 누적 문장을 여러 번 보내도 한 번만 */
+function shadowJoinResults(results) {
+  let acc = "";
+  for (let i = 0; i < results.length; i++) {
+    const t = ((results[i][0] && results[i][0].transcript) || "").trim();
+    if (!t) continue;
+    const a = acc.toLowerCase(), b = t.toLowerCase();
+    if (b.startsWith(a)) acc = t;
+    else if (!a.startsWith(b) && !a.endsWith(b)) acc = (acc + " " + t).trim();
+  }
+  return acc.replace(/\s+/g, " ").trim();
+}
+function shadowMicProblem(err) {
+  shadowNoMic = err === "not-allowed" || err === "service-not-allowed" ? "denied" : err === "audio-capture" ? "nomic" : "network";
+  showToast(shadowNoMic === "denied" ? "마이크가 막혀 있어요 · 따라 말할 시간만 드릴게요" : "음성 인식을 쓸 수 없어요 · 따라 말할 시간만 드릴게요");
+  updateShadowingOptionsUI();
+}
+/** 한 문장 듣기: 말이 끝나면(잠깐 조용하면) 들은 말을 돌려준다. 목표 문장을 끝까지 말했으면 더 빨리 끝낸다 */
+function shadowListen(target, onWords) {
+  return new Promise(resolve => {
+    let rec;
+    try { rec = new SHADOW_SR(); } catch (e) { shadowMicProblem("unsupported"); resolve({ text: "", error: "unsupported" }); return; }
+    rec.lang = "en-US"; rec.interimResults = true; rec.continuous = true; rec.maxAlternatives = 1;
+    // 안드로이드: 재생 장치가 켜져 있으면 음성 인식이 소리를 못 받는 기기가 있어 잠시 쉬게 한다 (다음 재생 때 다시 깨운다)
+    if (/Android/i.test(navigator.userAgent) && typeof NeuralTTS !== "undefined" && NeuralTTS.suspendAudio) NeuralTTS.suspendAudio();
+    let heard = "", committed = "", done = false, spoke = false, restarts = 0, silence = null;
+    const timers = [];
+    const finish = error => {
+      if (done) return;
+      done = true;
+      clearTimeout(silence); timers.forEach(clearTimeout);
+      rec.onresult = rec.onerror = rec.onend = null;
+      try { rec.abort(); } catch (e) {}
+      if (shadowMic === h) shadowMic = null;
+      resolve({ text: heard.trim(), error: error || "" });
+    };
+    const h = { stop: () => finish(), abort: () => { heard = ""; finish("aborted"); } };
+    shadowMic = h;
+    timers.push(setTimeout(() => finish(), 15000));                                 // 길어도 15초
+    timers.push(setTimeout(() => { if (!spoke) finish("no-speech"); }, 8000));     // 8초 동안 아무 말이 없으면
+    rec.onresult = e => {
+      const t = (committed + " " + shadowJoinResults(e.results)).replace(/\s+/g, " ").trim();
+      if (!t) return;
+      spoke = true;
+      const changed = shadowWordsOf(t).join(" ") !== shadowWordsOf(heard).join(" ");   // 대문자·문장부호만 바뀐 최종 결과는 새 말이 아니다
+      heard = t;
+      if (onWords) onWords(heard);
+      if (!changed) return;
+      clearTimeout(silence);
+      const r = shadowScore(target, heard);
+      silence = setTimeout(() => finish(), r.score >= 95 && r.lastHit ? 500 : 1400);   // 다 말했으면 바로, 말하다 멈춘 건 넉넉히
+    };
+    rec.onerror = e => {
+      if (e.error === "no-speech" || e.error === "aborted") return;                  // 끝 처리는 onend에서
+      if (["not-allowed", "service-not-allowed", "audio-capture", "network", "language-not-supported"].includes(e.error)) { shadowMicProblem(e.error); finish(e.error); }
+    };
+    rec.onend = () => {
+      if (done) return;
+      // 브라우저가 먼저 듣기를 끝냈다 (안드로이드는 잠깐 멈추면 끝내기도 한다): 이어서 다시 듣는다 (기다리는 시간은 계속 흐른다)
+      if (restarts < 4) { restarts++; committed = heard; try { rec.start(); return; } catch (e) {} }
+      finish();
+    };
+    try { rec.start(); } catch (e) { finish("start"); }
+  });
+}
+
+// ---------- 흐름 ----------
+function shadowStart(fromIdx) {
+  const conv = shadowConv();
+  if (!conv) return;
+  shadowStop(true);
+  if (typeof fromIdx === "number") shadowingLineIndex = Math.max(0, Math.min(conv.lines.length - 1, fromIdx));
+  shadowEl("shadowing-summary").classList.add("hidden");
+  const run = ++shadowRun, idx = shadowingLineIndex;
+  if (shadowResult && shadowResult.idx === idx) shadowResult = null;                // 다시 하기: 지난 결과는 지운다
+  if (shadowMode === "roleplay" && shadowReveal === idx) shadowReveal = -1;
+  updateShadowingUI(); shadowShowScore(null); shadowShowHeard("");
+  if (shadowMode !== "shadow" && shadowCanListen()) shadowAudioSession(true);
+  const flow = shadowMode === "shadow" ? shadowFlowShadow : shadowMode === "roleplay" ? shadowFlowRole : shadowFlowRepeat;
+  flow(run, idx).catch(e => { console.warn("쉐도잉 흐름 오류", e); if (run === shadowRun) shadowSetState("idle", ""); });
+}
+function shadowStop(keepState) {
+  shadowRun++;
+  if (shadowMic) shadowMic.abort();
+  stopAudio();
+  shadowGapBar(0);
+  if (!keepState) shadowSetState("idle", "");
+}
+/** 한 문장을 마쳤다: 다음 문장으로 (마지막이면 결과) */
+function shadowAdvance(run, idx) {
+  if (run !== shadowRun) return;
+  const conv = shadowConv();
+  if (!conv) return;
+  if (idx >= conv.lines.length - 1) { shadowSetState("idle", ""); shadowShowSummary(); return; }
+  shadowingLineIndex = idx + 1;
+  shadowResult = null;
+  shadowStart();
+}
+function shadowSaveResult(idx, res, heard, keepScore) {
+  if (!keepScore) shadowScores[idx] = Math.max(shadowScores[idx] || 0, res.score);
+  shadowResult = { idx, marks: res.marks, score: res.score };
+  updateShadowingUI();
+  shadowShowScore(Object.assign({ repeat: !!keepScore }, res));
+  shadowShowHeard(heard, true);
+}
+async function shadowFlowRepeat(run, idx) {
+  const conv = shadowConv(), line = conv.lines[idx];
+  const alive = () => run === shadowRun;
+  for (let attempt = 0; attempt < 3; attempt++) {
+    shadowSetState("playing", attempt ? "🔊 한 번 더 들어 보세요" : "🔊 잘 들어 보세요");
+    shadowPrefetch(conv, idx + 1);
+    await shadowSpeak(line);
+    if (!alive()) return;
+    if (!shadowCanListen()) {
+      // 마이크 없이: 따라 말할 시간을 주고 한 번 더 들려준 뒤 다음 문장
+      const ms = shadowGapMs(line.en);
+      shadowSetState("wait", attempt ? "🗣️ 한 번 더 따라 말해 보세요" : "🗣️ 이제 따라 말해 보세요");
+      shadowGapBar(ms);
+      await shadowSleep(ms);
+      if (!alive()) return;
+      if (attempt === 0) continue;
+      return shadowAdvance(run, idx);
+    }
+    shadowSetState("listening", "🎤 따라 말해 보세요");
+    const r = await shadowListen(line.en, w => shadowShowHeard(w));
+    if (!alive()) return;
+    if (!shadowCanListen()) { attempt--; continue; }    // 마이크를 못 쓰게 됐다: 시간으로 기다리는 방식으로 이어 간다
+    if (!r.text) { shadowShowHeard(""); shadowSetState("idle", "소리가 들리지 않았어요 · ▶를 눌러 다시 해 보세요"); return; }
+    const res = shadowScore(line.en, r.text);
+    shadowSaveResult(idx, res, r.text);
+    shadowSetState("wait", "");
+    if (res.score >= SHADOW_PASS) { await shadowSleep(1500); if (!alive()) return; return shadowAdvance(run, idx); }
+    if (attempt < 2) { await shadowSleep(1800); if (!alive()) return; }
+  }
+  shadowSetState("idle", "괜찮아요! ▶로 한 번 더 하거나 다음 문장으로 넘어가요");
+}
+async function shadowFlowShadow(run, idx) {
+  const conv = shadowConv(), line = conv.lines[idx];
+  for (let rep = 1; rep <= SHADOW_REPS; rep++) {
+    shadowSetState("playing", `🎧 함께 소리 내어 말해요 · ${rep} / ${SHADOW_REPS}`);
+    shadowPrefetch(conv, idx + 1);
+    await shadowSpeak(line);
+    if (run !== shadowRun) return;
+    shadowSetState("wait", null);
+    await shadowSleep(rep < SHADOW_REPS ? 600 : 900);
+    if (run !== shadowRun) return;
+  }
+  if (idx >= conv.lines.length - 1) shadowDone = true;
+  shadowAdvance(run, idx);
+}
+async function shadowFlowRole(run, idx) {
+  const conv = shadowConv(), line = conv.lines[idx];
+  const alive = () => run === shadowRun;
+  if (line.speaker !== "A") {                       // 상대(B): 들려주고 내 차례로
+    shadowSetState("playing", "💬 상대의 말을 들어 보세요");
+    shadowPrefetch(conv, idx + 1);
+    await shadowSpeak(line);
+    if (!alive()) return;
+    shadowSetState("wait", null);
+    await shadowSleep(600);
+    if (!alive()) return;
+    return shadowAdvance(run, idx);
+  }
+  shadowPrefetch(conv, idx);                        // 정답 목소리와 다음 상대 말도 미리
+  if (!shadowCanListen()) { shadowSetState("idle", "영어로 말해 본 뒤 문장을 터치하면 정답을 보여 줘요"); return; }
+  shadowSetState("listening", "🎤 한국어를 보고 영어로 말해 보세요");
+  const r = await shadowListen(line.en, w => shadowShowHeard(w));
+  if (!alive()) return;
+  if (!shadowCanListen()) { shadowSetState("idle", "영어로 말해 본 뒤 문장을 터치하면 정답을 보여 줘요"); updateShadowingUI(); return; }
+  if (!r.text) { shadowShowHeard(""); shadowSetState("idle", "소리가 들리지 않았어요 · ▶로 다시 말하거나 문장을 터치해 정답 보기"); return; }
+  const res = shadowScore(line.en, r.text);
+  shadowSaveResult(idx, res, r.text);
+  shadowSetState("playing", "🔊 정답 문장을 들어 보세요");
+  await shadowSpeak(line);
+  if (!alive()) return;
+  if (res.score < SHADOW_PASS) {                    // 정답을 들은 뒤 한 번 따라 말해 본다
+    shadowSetState("listening", "🎤 이번엔 정답을 따라 말해 보세요");
+    const r2 = await shadowListen(line.en, w => shadowShowHeard(w));
+    if (!alive()) return;
+    if (r2.text) shadowSaveResult(idx, shadowScore(line.en, r2.text), r2.text, true);
+  }
+  shadowSetState("wait", "");
+  await shadowSleep(1200);
+  if (!alive()) return;
+  shadowAdvance(run, idx);
+}
+/** 대화를 끝까지 하면: 평균 점수 · 다시 연습하면 좋은 문장 */
+function shadowShowSummary() {
+  const conv = shadowConv(), box = shadowEl("shadowing-summary");
+  if (!conv || !box) return;
+  const scored = Object.keys(shadowScores).map(Number).filter(i => typeof shadowScores[i] === "number").sort((a, b) => a - b);
+  box.innerHTML = "";
+  const add = (tag, cls, text) => { const e = document.createElement(tag); if (cls) e.className = cls; if (text != null) e.textContent = text; box.appendChild(e); return e; };
+  add("div", "shadow-sum-title", "🎉 대화를 끝까지 연습했어요!");
+  const best = shadowBestLoad();
+  if (scored.length) {
+    const avg = Math.round(scored.reduce((a, i) => a + shadowScores[i], 0) / scored.length);
+    const good = scored.filter(i => shadowScores[i] >= SHADOW_PASS).length;
+    add("div", "shadow-sum-score", `평균 ${avg}점 · 잘 말한 문장 ${good} / ${scored.length}`);
+    best[conv.id] = Math.max(typeof best[conv.id] === "number" ? best[conv.id] : 0, avg);
+    const weak = scored.filter(i => shadowScores[i] < SHADOW_PASS);
+    if (weak.length) {
+      add("div", "shadow-sum-sub", "다시 연습하면 좋은 문장 (누르면 그 문장부터)");
+      weak.forEach(i => {
+        const b = add("button", "shadow-sum-line");
+        b.type = "button";
+        const sc = document.createElement("span"); sc.className = "shadow-sum-pt"; sc.textContent = `${shadowScores[i]}점`;
+        b.appendChild(document.createTextNode(`${i + 1}. ${conv.lines[i].en} `)); b.appendChild(sc);
+        b.onclick = () => shadowStart(i);
+      });
+    }
+  } else {
+    add("div", "shadow-sum-score", shadowMode === "shadow" ? `문장마다 ${SHADOW_REPS}번씩 함께 말했어요` : "다음 주제도 이어서 해 볼까요?");
+    if (shadowMode === "shadow" && shadowDone && typeof best[conv.id] !== "number") best[conv.id] = "done";
+  }
+  try { localStorage.setItem("shadowingBest", JSON.stringify(best)); } catch (e) {}
+  const row = add("div", "shadow-sum-actions");
+  const again = document.createElement("button"); again.className = "btn-sub"; again.textContent = "🔁 처음부터";
+  again.onclick = () => { shadowScores = {}; shadowDone = false; shadowStart(0); };
+  const next = document.createElement("button"); next.className = "btn-main"; next.textContent = "🎲 새 주제";
+  next.onclick = () => nextRandomShadowingTopic();
+  row.appendChild(again); row.appendChild(next);
+  box.classList.remove("hidden");
+  shadowSetState("idle", "");
+  shadowShowHeard("");
+  try { box.scrollIntoView({ behavior: "smooth", block: "center" }); } catch (e) {}
+}
+// 큰 버튼: 멈춰 있으면 시작 · 듣는 중이면 '다 말했어요' · 재생·대기 중이면 멈추기
+function shadowMainButton() {
+  if (shadowState === "listening" && shadowMic) { shadowMic.stop(); return; }
+  if (shadowState === "playing" || shadowState === "wait") { shadowStop(); shadowSetState("idle", "멈췄어요 · ▶를 누르면 이어서 해요"); return; }
+  shadowStart();
+}
+// (예전 이름: 다른 곳에서 부르던 '다시 듣기')
+function playShadowingCurrent() { shadowStart(); }
+/** 문장 터치: 가린 영어를 잠깐 보여 준다 · 역할극 내 차례면 정답을 보여 주고 들려준다 */
+function revealTextTemp() {
+  const conv = shadowConv();
+  if (!conv) return;
+  const idx = shadowingLineIndex, line = conv.lines[idx];
+  if (shadowMode === "roleplay" && line.speaker === "A" && !(shadowResult && shadowResult.idx === idx)) {
+    shadowStop(); shadowReveal = idx; updateShadowingUI(); shadowShowHeard("");
+    const run = ++shadowRun;
+    shadowSetState("playing", "🔊 정답 문장");
+    shadowSpeak(line).then(() => { if (run === shadowRun) shadowSetState("idle", "다음 문장 ❯ 으로 이어 가요"); });
     return;
   }
-  if (playLabel) playLabel.textContent = "다시 듣기 (반복)";
-  enText.classList.remove("roleplay-prompt");
-  hint.textContent = "(문장을 터치하면 잠시 보입니다)";
-  document.getElementById("shadowing-speaker").textContent = isRolePlay ? "💬 상대 (B)" : `Speaker ${line.speaker}`;
-  enText.textContent = line.en;
-  if (isBlindMode) { enText.classList.add("blind-text"); enText.classList.remove("revealed"); document.getElementById("shadowing-hint").classList.remove("hidden"); }
-  else { enText.classList.remove("blind-text"); enText.classList.add("revealed"); document.getElementById("shadowing-hint").classList.add("hidden"); }
-  krText.textContent = line.kr;
-  krText.style.visibility = isHideKr ? "hidden" : "visible";
+  const enText = shadowEl("shadowing-text");
+  if (enText.classList.contains("blind-text")) { enText.classList.add("revealed"); setTimeout(() => enText.classList.remove("revealed"), 2000); }
 }
-function currentShadowingLine() {
-  const conv = conversationData.find(c => c.id === currentShadowingId);
-  return conv ? conv.lines[shadowingLineIndex] : null;
-}
-function revealTextTemp() {
-  if (isMyTurn(currentShadowingLine())) { playShadowingCurrent(); return; }
-  const enText = document.getElementById("shadowing-text");
-  if (isBlindMode) { enText.classList.add("revealed"); setTimeout(() => { enText.classList.remove("revealed"); }, 2000); }
-}
-function playShadowingCurrent() {
-  const btn = document.getElementById("shadowing-play-btn");
-  if(btn) { btn.style.transform = "scale(0.95)"; setTimeout(() => btn.style.transform = "scale(1)", 100); }
-  const conv = conversationData.find(c => c.id === currentShadowingId);
+function shadowGo(idx) {
+  const conv = shadowConv();
   if (!conv) return;
-  rolePlayToken++;   // 앞서 걸어 둔 '내 차례로 넘기기'는 취소한다
-  if (isRolePlay && !isMyTurn(conv.lines[shadowingLineIndex])) { stopAudio(); autoPlayShadowingLine(); return; }   // 상대 대사: 다시 들은 뒤에 내 차례로
-  if (isMyTurn(conv.lines[shadowingLineIndex])) { rolePlayRevealedKey = `${currentShadowingId}:${shadowingLineIndex}`; updateShadowingUI(); }
-  speakText(conv.lines[shadowingLineIndex].en, conv.lines[shadowingLineIndex].speaker);
-  // 자연스러운 음성: 다음 문장 2개를 미리 만들기
-  prefetchAhead(conv.lines.slice(shadowingLineIndex + 1, shadowingLineIndex + 3).map(l => [l.en, l.speaker]));
-}
-// 줄을 옮길 때: 역할극이면 상대 대사만 자동으로 들려주고, 끝나면 내 차례로 넘어간다
-function autoPlayShadowingLine() {
-  rolePlayToken++;
-  if (!isRolePlay) { if (autoPlayEnabled) playShadowingCurrent(); return; }
-  const conv = conversationData.find(c => c.id === currentShadowingId);
-  const line = conv && conv.lines[shadowingLineIndex];
-  if (!line || isMyTurn(line)) return;
-  const token = rolePlayToken, idx = shadowingLineIndex;
-  const done = speakWithPromise(line.en, line.speaker);
-  prefetchAhead(conv.lines.slice(idx + 1, idx + 3).map(l => [l.en, l.speaker]));
-  Promise.resolve(done).then(() => setTimeout(() => {
-    if (token !== rolePlayToken || !isRolePlay || currentShadowingId !== conv.id || shadowingLineIndex !== idx) return;
-    if (document.getElementById("page-shadowing").classList.contains("hidden")) return;
-    if (idx < conv.lines.length - 1) { shadowingLineIndex++; updateShadowingUI(); }
-  }, 700));
+  shadowStop();
+  shadowingLineIndex = idx; shadowResult = null; shadowReveal = -1;
+  shadowEl("shadowing-summary").classList.add("hidden");
+  updateShadowingUI(); shadowShowScore(null); shadowShowHeard("");
+  if (autoPlayEnabled || shadowMode === "roleplay") shadowStart();
 }
 function nextShadowing() {
-  const conv = conversationData.find(c => c.id === currentShadowingId);
+  const conv = shadowConv();
   if (!conv) return;
-  if (shadowingLineIndex < conv.lines.length - 1) {
-    rolePlayToken++; stopAudio();
-    shadowingLineIndex++; updateShadowingUI();
-    autoPlayShadowingLine();
-  } else {
-    if(confirm("대화가 끝났습니다. 목록으로 돌아갈까요?")) goTo("shadowing-list");
-    else { shadowingLineIndex = 0; rolePlayRevealedKey = ""; updateShadowingUI(); autoPlayShadowingLine(); }
-  }
+  if (shadowingLineIndex >= conv.lines.length - 1) { shadowStop(); shadowShowSummary(); return; }
+  shadowGo(shadowingLineIndex + 1);
 }
 function prevShadowing() {
-  if (shadowingLineIndex > 0) {
-    rolePlayToken++; stopAudio();
-    shadowingLineIndex--; updateShadowingUI();
-    autoPlayShadowingLine();
-  }
+  if (shadowingLineIndex <= 0) { showToast("첫 문장이에요"); return; }
+  shadowGo(shadowingLineIndex - 1);
 }
 function nextRandomShadowingTopic() {
-  if ("speechSynthesis" in window) window.speechSynthesis.cancel();
-  if (typeof stopNeuralSpeech === 'function') stopNeuralSpeech();
-  if (!conversationData || conversationData.length === 0) return;
+  if (typeof conversationData === "undefined" || conversationData.length === 0) return;
   // 목록에서 상황을 골라 두었으면 같은 상황 안에서 다음 주제를 고른다
   const inCat = conversationData.filter(c => shadowingCategory && convCategoryOf(c) === shadowingCategory);
   const pool = inCat.length > 1 ? inCat : conversationData;
   let nextConv;
-  if (pool.length > 1) {
-    do { const randomIndex = Math.floor(Math.random() * pool.length); nextConv = pool[randomIndex]; } while (nextConv.id === currentShadowingId);
-  } else { nextConv = pool[0]; }
-  currentShadowingId = nextConv.id; shadowingLineIndex = 0; rolePlayRevealedKey = ""; rolePlayToken++;
-  updateShadowingUI();
-  setTimeout(() => autoPlayShadowingLine(), 100);
+  if (pool.length > 1) { do { nextConv = pool[Math.floor(Math.random() * pool.length)]; } while (nextConv.id === currentShadowingId); }
+  else nextConv = pool[0];
+  shadowStop();
+  currentShadowingId = nextConv.id; shadowingLineIndex = 0; shadowScores = {}; shadowResult = null; shadowReveal = -1; shadowDone = false;
+  shadowEl("shadowing-summary").classList.add("hidden");
+  updateShadowingUI(); shadowShowScore(null); shadowShowHeard("");
+  if (autoPlayEnabled || shadowMode === "roleplay") setTimeout(() => shadowStart(), 100);
 }
+/** 쉐도잉 화면을 떠날 때 (core.js goTo): 듣기·재생을 멈추고 소리 설정을 되돌린다 */
+function leaveShadowing() { shadowStop(); shadowAudioSession(false); }
+// 앱을 내리면(다른 앱·잠금) 마이크와 연습을 멈춘다
+document.addEventListener("visibilitychange", () => {
+  if (document.hidden && shadowState !== "idle") { shadowStop(); shadowSetState("idle", "멈췄어요 · ▶를 누르면 이어서 해요"); }
+});
 
 // --- 6. Blog (Print View) ---
 let currentBlogType = 'pattern'; let currentBlogIndex = 0;
