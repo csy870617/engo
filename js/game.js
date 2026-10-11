@@ -166,7 +166,7 @@ function renderPuzzle() {
   const msg = {
     solving: puzzleTargetTokens.length ? `${puzzleTargetTokens.length} / ${words.length}` : "",
     wrong: "빨간 낱말을 눌러 빼 보세요",
-    solved: "🎉 정답이에요!" + (puzzleStreak >= 2 ? ` 🔥 ${puzzleStreak}연속` : ""),
+    solved: "🎉 정답!" + (puzzleStreak >= 2 ? ` 🔥 ${puzzleStreak}연속` : "") + " · 곧 다음 문제",
     revealed: "정답을 확인했어요 · 다음엔 맞혀 봐요",
     empty: "다른 길이를 고르거나, 완료한 문장에서 체크를 풀면 다시 나와요"
   }[puzzleState] || "";
@@ -217,13 +217,22 @@ function pzCheckIfComplete() {
     puzzleState = "solved";
     puzzleStreak++; pzSaveStreak();
     renderPuzzle();
-    speakText(currentPuzzleAnswer);
+    pzAutoNext();
   } else {
     puzzleState = "wrong";
     renderPuzzle();
     const wrap = document.querySelector(".pz-answer-wrap");
     wrap.classList.remove("shake"); void wrap.offsetWidth; wrap.classList.add("shake");
   }
+}
+/** 맞히면 문장을 끝까지 읽어 준 뒤 저절로 다음 문제로 (그사이 [다음 문제]를 누르거나 화면을 떠나면 그대로) */
+function pzAutoNext() {
+  const ans = currentPuzzleAnswer;
+  stopAudio();
+  const spoken = Promise.resolve(speakWithPromise(ans)).catch(() => {});
+  Promise.race([spoken, new Promise(r => setTimeout(r, 8000))]).then(() => setTimeout(() => {
+    if (puzzleState === "solved" && currentPuzzleAnswer === ans && currentPageName === "puzzle" && !document.querySelector(".modal:not(.hidden)")) nextPuzzle();
+  }, 700));
 }
 /** 정답 순서대로 놓인 낱말들 (같은 낱말이 여럿이어도 하나씩 짝지어) */
 function pzOrderedTokens() {
