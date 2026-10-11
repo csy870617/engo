@@ -35,7 +35,7 @@
   <meta property="og:image" content="https://csy870617.github.io/engo/logo.png">
   <meta property="og:site_name" content="ENGO">
 
-  <link rel="stylesheet" href="style.css?v=195" />
+  <link rel="stylesheet" href="style.css?v=196" />
 
   <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2078760660134095"
      crossorigin="anonymous"></script>
@@ -578,48 +578,49 @@
     </section>
 
 <section id="page-puzzle" class="hidden">
-      <div class="nav-header"><span class="back-btn" onclick="goBack('home')">❮ 나가기</span></div>
-      
-      <div class="game-card">
-        <div class="game-header" style="justify-content:center; position:relative;">
-          <h2>🧩 문장 퍼즐</h2>
-        </div>
-        
-        <div class="filter-area puzzle-levels" style="justify-content: center; margin-bottom: 15px;">
-          <button class="chip-btn active" data-puzzle-level-btn="0" onclick="setPuzzleLevel(0)">전체</button>
-          <button class="chip-btn" data-puzzle-level-btn="1" onclick="setPuzzleLevel(1)">Lv.1 (5-6단어)</button>
-          <button class="chip-btn" data-puzzle-level-btn="2" onclick="setPuzzleLevel(2)">Lv.2 (7-8단어)</button>
-          <button class="chip-btn" data-puzzle-level-btn="3" onclick="setPuzzleLevel(3)">Lv.3 (9단어+)</button>
-        </div>
-        
-        <div style="text-align:center; margin-bottom:15px; color:var(--text-sub); font-size:0.9rem;">
-          <span id="puzzle-counter">1 / 100</span>
+      <div class="nav-header"><span class="back-btn" onclick="goBack('home')">❮ 나가기</span><h2>문장 퍼즐</h2></div>
+
+      <div id="pz-card" class="pz-card" data-state="solving">
+        <div class="pz-levels" role="group" aria-label="문장 길이">
+          <button type="button" data-puzzle-level-btn="0" onclick="setPuzzleLevel(0)">전체</button>
+          <button type="button" data-puzzle-level-btn="1" onclick="setPuzzleLevel(1)">5-6단어</button>
+          <button type="button" data-puzzle-level-btn="2" onclick="setPuzzleLevel(2)">7-8단어</button>
+          <button type="button" data-puzzle-level-btn="3" onclick="setPuzzleLevel(3)">9단어+</button>
         </div>
 
-        <p class="puzzle-kr" id="puzzle-question" style="min-height:3rem;">문제가 나옵니다...</p>
-        
-        <div id="puzzle-target" class="puzzle-slot"></div>
-        <div id="puzzle-bank" class="puzzle-pieces"></div>
-        
-        <div id="puzzle-feedback" class="feedback-msg"></div>
-
-        <label class="puzzle-done-row"><input type="checkbox" id="puzzle-done-check" onchange="togglePuzzleDoneCheck()" /> 완료 (체크하면 다음부터 안 나와요)</label>
-        
-        <div class="game-bottom btn-row" style="margin-top:20px; display:flex; gap:8px;">
-          <button class="btn-sub" onclick="resetPuzzle()" style="flex:1;">🔄 다시</button>
-          <button class="btn-sub" onclick="showPuzzleAnswer()" style="flex:1;">👁️ 정답</button>
-          <button class="btn-main" onclick="checkPuzzle()" style="flex:1.6;">확인</button>
+        <div class="pz-question-box">
+          <div class="pz-qtop">
+            <span id="pz-streak" class="pz-streak hidden" title="연속으로 맞힌 문제">🔥 0</span>
+            <label class="pz-done"><input type="checkbox" id="puzzle-done-check" onchange="togglePuzzleDoneCheck()" /> 완료</label>
+          </div>
+          <p id="puzzle-question" class="pz-question">문제가 나옵니다...</p>
         </div>
+
+        <div class="pz-answer-wrap">
+          <div id="puzzle-target" class="pz-answer" aria-label="내가 만든 문장"></div>
+          <div class="pz-answer-bar">
+            <span id="puzzle-feedback" class="pz-feedback" aria-live="polite"></span>
+            <span id="pz-tools" class="pz-tools hidden">
+              <button type="button" onclick="pzUndo()" aria-label="마지막 낱말 빼기" title="하나 빼기"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 5H9l-6 7 6 7h12a1 1 0 0 0 1-1V6a1 1 0 0 0-1-1z"/><path d="M17 9l-6 6M11 9l6 6"/></svg></button>
+              <button type="button" onclick="resetPuzzle()" aria-label="처음부터 다시" title="처음부터"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 12a9 9 0 1 0 3-6.7L3 8"/><path d="M3 3v5h5"/></svg></button>
+            </span>
+          </div>
+        </div>
+
+        <div id="puzzle-bank" class="pz-bank" aria-label="낱말"></div>
+
+        <div id="pz-actions" class="pz-actions"></div>
+        <button type="button" id="pz-done-chip" class="pz-done-link hidden" onclick="openPuzzleDoneSheet()">✅ 완료한 문장 0개 보기</button>
       </div>
 
-      <div class="nav-buttons">
-        <button onclick="movePuzzle(-1)">이전 문제</button>
-        <button onclick="movePuzzle(1)">다음 문제</button>
-      </div>
-
-      <div class="puzzle-done-box">
-        <button type="button" id="puzzle-done-toggle" class="chip-btn" onclick="togglePuzzleDoneList()" aria-expanded="false">✅ 완료한 문장 0개</button>
-        <div id="puzzle-done-list" class="puzzle-done-list hidden"></div>
+      <!-- 완료한 문장: 체크를 푼 문장만 다시 문제로 -->
+      <div id="puzzle-done-sheet" class="modal hidden" onclick="if (event.target === this) closePuzzleDoneSheet()">
+        <div class="modal-box pz-sheet">
+          <h3 id="pz-sheet-title">✅ 완료한 문장</h3>
+          <p class="pz-sheet-note">체크를 풀면 그 문장이 다시 문제로 나와요</p>
+          <div id="puzzle-done-list" class="puzzle-done-list"></div>
+          <div class="modal-btns"><button class="btn-main" onclick="closePuzzleDoneSheet()">닫기</button></div>
+        </div>
       </div>
     </section>
         
@@ -702,15 +703,15 @@
 
   <div id="neural-loading" class="neural-loading hidden">🎙 자연스러운 음성 준비 중…</div>
 
-  <script src="pattern.js?v=195"></script>
-  <script src="conversation.js?v=195"></script>
-  <script src="idiom.js?v=195"></script>
-  <script src="word.js?v=195"></script>
+  <script src="pattern.js?v=196"></script>
+  <script src="conversation.js?v=196"></script>
+  <script src="idiom.js?v=196"></script>
+  <script src="word.js?v=196"></script>
 
   <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
   <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
   <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
-  <script src="js/core.js?v=195"></script>    <script src="js/storage.js?v=195"></script> <script src="js/neural-tts.js?v=195"></script> <script src="js/kokoro-tts.js?v=195"></script> <script src="js/media.js?v=195"></script>   <script src="js/study.js?v=195"></script>   <script src="js/game.js?v=195"></script>    <script src="js/talk-plan.js?v=195"></script> <script src="js/tutor.js?v=195"></script>    </body>
+  <script src="js/core.js?v=196"></script>    <script src="js/storage.js?v=196"></script> <script src="js/neural-tts.js?v=196"></script> <script src="js/kokoro-tts.js?v=196"></script> <script src="js/media.js?v=196"></script>   <script src="js/study.js?v=196"></script>   <script src="js/game.js?v=196"></script>    <script src="js/talk-plan.js?v=196"></script> <script src="js/tutor.js?v=196"></script>    </body>
 
 
 </html>
