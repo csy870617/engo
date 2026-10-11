@@ -164,7 +164,7 @@ function renderPuzzle() {
   // 안내
   const fb = document.getElementById("puzzle-feedback");
   const msg = {
-    solving: puzzleTargetTokens.length ? `${puzzleTargetTokens.length} / ${words.length}` : "아래 낱말을 순서대로 눌러 보세요",
+    solving: puzzleTargetTokens.length ? `${puzzleTargetTokens.length} / ${words.length}` : "",
     wrong: "빨간 낱말을 눌러 빼 보세요",
     solved: "🎉 정답이에요!" + (puzzleStreak >= 2 ? ` 🔥 ${puzzleStreak}연속` : ""),
     revealed: "정답을 확인했어요 · 다음엔 맞혀 봐요",
