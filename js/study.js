@@ -365,6 +365,13 @@ function convCategories() { return categoriesOf(conversationData); }
 function renderCategoryChips(boxId, items, current, onPick) {
   const box = document.getElementById(boxId);
   if (!box) return;
+  const keep = box.scrollLeft;   // 다시 그려도 밀어 둔 자리는 그대로
+  if (!box.dataset.wired) {
+    box.dataset.wired = "1";
+    box.addEventListener("scroll", () => chipsFade(box), { passive: true });
+    // 컴퓨터: 마우스 휠로도 옆으로 밀리게
+    box.addEventListener("wheel", e => { if (Math.abs(e.deltaY) > Math.abs(e.deltaX) && box.scrollWidth > box.clientWidth) { box.scrollLeft += e.deltaY; e.preventDefault(); } }, { passive: false });
+  }
   box.innerHTML = "";
   ["", ...categoriesOf(items)].forEach(cat => {
     const b = document.createElement("button");
@@ -374,7 +381,16 @@ function renderCategoryChips(boxId, items, current, onPick) {
     b.onclick = () => onPick(cat);
     box.appendChild(b);
   });
+  box.scrollLeft = keep;
+  const act = box.querySelector(".chip-btn.active");   // 고른 칩이 가려져 있으면 보이게
+  if (act && box.clientWidth) {
+    if (act.offsetLeft - box.offsetLeft < box.scrollLeft) box.scrollLeft = act.offsetLeft - box.offsetLeft - 8;
+    else if (act.offsetLeft - box.offsetLeft + act.offsetWidth > box.scrollLeft + box.clientWidth - 24) box.scrollLeft = act.offsetLeft - box.offsetLeft + act.offsetWidth - box.clientWidth + 32;
+  }
+  chipsFade(box);
 }
+/** 오른쪽에 칩이 더 있으면 끝을 흐리게 */
+function chipsFade(box) { box.classList.toggle("more", box.scrollLeft + box.clientWidth < box.scrollWidth - 4); }
 function renderConvCategoryChips(boxId, current, onPick) { renderCategoryChips(boxId, conversationData, current, onPick); }
 function appendGroupTitle(container, cat, n) {
   const head = document.createElement("div");

@@ -290,10 +290,13 @@ main {
 .blind-text.revealed { filter: blur(0); }
 @media (hover: hover) { .blind-text:hover { filter: blur(0); } }   /* 터치 기기는 누른 뒤 :hover가 남아 계속 보였다 */
 /* 쉐도잉 목록: 상황별 칩(줄바꿈) + 상황 머리글 */
-.cat-chips { flex-wrap: wrap; gap: 6px; margin-top: 12px; }
+/* 주제 칩: 한 줄로 두고 옆으로 밀어서 본다 (여러 줄로 쌓이지 않게) · 오른쪽에 더 있으면 끝을 흐리게 */
+.cat-chips { flex-wrap: nowrap; overflow-x: auto; gap: 6px; margin-top: 12px; padding-bottom: 2px; scrollbar-width: none; -webkit-overflow-scrolling: touch; scroll-padding: 0 24px; }
+.cat-chips::-webkit-scrollbar { display: none; }
+.cat-chips.more { -webkit-mask-image: linear-gradient(to right, #000 82%, transparent); mask-image: linear-gradient(to right, #000 82%, transparent); }
 .list-tools + .cat-chips { margin-top: -4px; }
-.cat-chips .chip-btn { padding: 6px 11px; font-size: 0.8rem; }
-.cat-chips .chip-btn .cnt { opacity: 0.6; margin-left: 3px; font-size: 0.75rem; }
+.cat-chips .chip-btn { flex-shrink: 0; white-space: nowrap; padding: 6px 12px; font-size: 0.82rem; }
+.cat-chips .chip-btn .cnt { display: none; }
 .list-group-title { display: flex; align-items: baseline; gap: 6px; margin: 10px 4px -2px; color: var(--accent); font-size: 0.95rem; font-weight: 700; }
 .list-group-title:first-child { margin-top: 0; }
 .list-group-title .cnt { color: var(--text-sub); font-size: 0.8rem; font-weight: 500; }
