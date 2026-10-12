@@ -135,7 +135,9 @@ function renderPuzzle() {
     b.textContent = t.text;
     b.disabled = done;
     b.setAttribute("aria-label", `${t.text} 빼기`);
-    b.onclick = () => pzRemove(i);
+    b.dataset.i = i;
+    b.onclick = () => { if (!pzDrag.justEnded) pzRemove(i); };
+    if (!done) b.addEventListener("pointerdown", pzDragStart);
     target.appendChild(b);
   });
   for (let i = puzzleTargetTokens.length; i < words.length; i++) {   // 남은 낱말 수만큼 밑줄
@@ -165,7 +167,7 @@ function renderPuzzle() {
   const fb = document.getElementById("puzzle-feedback");
   const msg = {
     solving: puzzleTargetTokens.length ? `${puzzleTargetTokens.length} / ${words.length}` : "",
-    wrong: "빨간 낱말을 눌러 빼 보세요",
+    wrong: "빨간 낱말을 빼거나 끌어서 옮겨 보세요",
     solved: "🎉 정답!" + (puzzleStreak >= 2 ? ` 🔥 ${puzzleStreak}연속` : "") + " · 곧 다음 문제",
     revealed: "정답을 확인했어요 · 다음엔 맞혀 봐요",
     empty: "다른 길이를 고르거나, 완료한 문장에서 체크를 풀면 다시 나와요"
@@ -207,6 +209,73 @@ function resetPuzzle() {
   if (puzzleState !== "solving" && puzzleState !== "wrong") return;
   puzzleTargetTokens = []; puzzleState = "solving"; renderPuzzle();
 }
+/** 놓은 낱말 옮기기: 마우스는 끌어서, 휴대폰은 길게 눌러서 (짧게 누르면 지금처럼 빼기) */
+const pzDrag = { el: null, ghost: null, id: null, x0: 0, y0: 0, dx: 0, dy: 0, on: false, timer: 0, justEnded: false };
+function pzDragStart(e) {
+  if (pzDrag.el || (e.pointerType === "mouse" && e.button !== 0)) return;
+  if (puzzleState !== "solving" && puzzleState !== "wrong") return;
+  const el = e.currentTarget, r = el.getBoundingClientRect();
+  Object.assign(pzDrag, { el, id: e.pointerId, x0: e.clientX, y0: e.clientY, dx: e.clientX - r.left, dy: e.clientY - r.top, on: false });
+  if (e.pointerType !== "mouse") pzDrag.timer = setTimeout(() => pzDragBegin(pzDrag.x0, pzDrag.y0), 350);   // 길게 누르기
+  window.addEventListener("pointermove", pzDragMove);
+  window.addEventListener("pointerup", pzDragEnd);
+  window.addEventListener("pointercancel", pzDragEnd);
+}
+function pzDragBegin(x, y) {
+  const el = pzDrag.el; if (!el || pzDrag.on) return;
+  pzDrag.on = true;
+  const g = el.cloneNode(true);
+  g.classList.remove("pop"); g.classList.add("pz-ghost");
+  const r = el.getBoundingClientRect();
+  g.style.width = r.width + "px"; g.style.height = r.height + "px";
+  document.body.appendChild(g); pzDrag.ghost = g;
+  el.classList.remove("pop"); el.classList.add("drag-src");
+  try { navigator.vibrate && navigator.vibrate(15); } catch (err) {}
+  pzDragMoveTo(x, y);
+}
+function pzDragMove(e) {
+  if (e.pointerId !== pzDrag.id) return;
+  if (!pzDrag.on) {
+    const far = Math.hypot(e.clientX - pzDrag.x0, e.clientY - pzDrag.y0) > 8;
+    if (!far) return;
+    if (e.pointerType === "mouse") pzDragBegin(e.clientX, e.clientY);
+    else { pzDragEnd(e); return; }   // 길게 누르기 전에 움직이면 화면 넘기기로 본다
+  }
+  e.preventDefault();
+  pzDragMoveTo(e.clientX, e.clientY);
+}
+function pzDragMoveTo(x, y) {
+  const { el, ghost } = pzDrag;
+  ghost.style.transform = `translate(${x - pzDrag.dx}px, ${y - pzDrag.dy}px) scale(1.08)`;
+  // 손가락에서 가장 가까운 낱말 앞(왼쪽 절반) 또는 뒤(오른쪽 절반)로 자리를 옮긴다
+  const others = [...el.parentNode.querySelectorAll(".pz-token.placed")].filter(b => b !== el);
+  let best = null, bd = Infinity;
+  others.forEach(b => { const r = b.getBoundingClientRect(); const d = Math.hypot(x - (r.left + r.width / 2), (y - (r.top + r.height / 2)) * 1.6); if (d < bd) { bd = d; best = b; } });
+  if (!best) return;
+  const r = best.getBoundingClientRect();
+  const ref = x < r.left + r.width / 2 ? best : best.nextSibling;
+  if (ref !== el && ref !== el.nextSibling) el.parentNode.insertBefore(el, ref);
+}
+function pzDragEnd(e) {
+  if (e && e.pointerId !== pzDrag.id) return;
+  clearTimeout(pzDrag.timer);
+  window.removeEventListener("pointermove", pzDragMove);
+  window.removeEventListener("pointerup", pzDragEnd);
+  window.removeEventListener("pointercancel", pzDragEnd);
+  const { el, ghost, on } = pzDrag;
+  pzDrag.el = null; pzDrag.on = false;
+  if (ghost) ghost.remove(); pzDrag.ghost = null;
+  if (!on || !el) return;
+  pzDrag.justEnded = true; setTimeout(() => { pzDrag.justEnded = false; }, 0);   // 끌기 뒤 눌림(빼기)으로 치지 않는다
+  const order = [...el.parentNode.querySelectorAll(".pz-token.placed")].map(b => puzzleTargetTokens[+b.dataset.i]);
+  if (order.some(t => !t) || (puzzleState !== "solving" && puzzleState !== "wrong")) { renderPuzzle(); return; }
+  const moved = order.some((t, k) => t !== puzzleTargetTokens[k]);
+  puzzleTargetTokens = order;
+  if (moved) { puzzleState = "solving"; pzCheckIfComplete(); } else renderPuzzle();
+}
+// 끄는 동안 화면이 같이 넘어가지 않게 · 길게 누를 때 뜨는 메뉴 막기
+document.addEventListener("touchmove", e => { if (pzDrag.on) e.preventDefault(); }, { passive: false });
+document.addEventListener("contextmenu", e => { if (pzDrag.el && e.target.closest && e.target.closest(".pz-token.placed")) e.preventDefault(); });
 /** 다 놓았으면 저절로 확인: 맞으면 🎉 + 읽어 주기, 틀리면 틀린 자리를 빨갛게 */
 function pzCheckIfComplete() {
   if (puzzleTargetTokens.length < puzzleWords().length) { renderPuzzle(); return; }
