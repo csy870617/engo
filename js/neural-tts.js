@@ -21,13 +21,9 @@ const NeuralTTS = (() => {
   ];
   const K = () => (typeof KokoroVoice !== 'undefined' ? KokoroVoice : null);
 
-  // 예전 음성(Supertonic, 약 440MB)을 받아 두었으면 지워서 저장 공간을 돌려준다
-  try {
-    if (localStorage.getItem('faith_voice_ready') || localStorage.getItem('faith_voice_ready_manifest')) {
-      localStorage.removeItem('faith_voice_ready'); localStorage.removeItem('faith_voice_ready_manifest');
-      if (typeof caches !== 'undefined') caches.delete('faith-voice-v1').catch(() => {});
-    }
-  } catch (e) {}
+  // 예전 음성(Supertonic, 약 440MB)의 저장소 이름(faith-voice-v1·faith_voice_ready)은 같은 주소의
+  // 신앙일지(diary)와 같아, 여기서 지우면 일기장에서 받아 둔 음성까지 사라졌다. 그래서 여기서는 지우지 않는다.
+  // (신앙일지가 열릴 때 남아 있는 사본을 자기 저장소로 옮긴 뒤 지운다)
 
   const isSupported = () => !!K() && K().supported();
   /** 받아 두었고 파일도 남아 있는가 */
