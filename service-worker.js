@@ -56,9 +56,11 @@ self.addEventListener('activate', (event) => {
   event.waitUntil(
     caches.keys().then((keyList) => {
       return Promise.all(keyList.map((key) => {
+        // 같은 주소(csy870617.github.io)의 다른 앱(FAITHS·신앙일지 등)과 저장소를 함께 쓰므로
+        // 이 앱이 만든 옛 캐시(engo-cache-…)와 예전 기기 안 AI 튜터 모델 캐시(webllm·tvmjs)만 지운다.
         // 받아 둔 음성 모델 캐시는 지우지 않는다 (지우면 수백 MB를 다시 받아야 함)
-        // (예전 기기 안 AI 튜터 모델 캐시 webllm·tvmjs도 여기서 함께 지워진다. 튜터 음성 모델 캐시는 남긴다)
-        if (key !== CACHE_NAME && !key.startsWith(VOICE_CACHE_PREFIX) && !KEEP_CACHES.includes(key)) {
+        const ownOld = (key.startsWith('engo-cache-') && key !== CACHE_NAME) || /^(webllm|tvmjs)/.test(key);
+        if (ownOld && !key.startsWith(VOICE_CACHE_PREFIX) && !KEEP_CACHES.includes(key)) {
           console.log('[Service Worker] Removing old cache', key);
           return caches.delete(key);
         }
