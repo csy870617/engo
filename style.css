@@ -368,6 +368,9 @@ main {
 .pz-token:active { transform: translateY(2px); }
 .pz-token:disabled { opacity: 1; cursor: default; }
 .pz-token.placed { background: rgba(56,189,248,0.14); border-color: rgba(56,189,248,0.55); color: #e0f2fe; }
+.pz-token.placed { -webkit-touch-callout: none; }
+.pz-token.drag-src { opacity: 0.3; }
+.pz-ghost { position: fixed; left: 0; top: 0; margin: 0; z-index: 9999; pointer-events: none; box-shadow: 0 10px 24px rgba(0,0,0,0.45); transition: none; }
 .pz-token.pop { animation: pzPop 0.16s ease-out; }
 .pz-token.used { background: transparent; border: 2px dashed rgba(255,255,255,0.1); color: transparent; }
 .pz-token.bad { background: rgba(239,68,68,0.2); border-color: rgba(239,68,68,0.8); color: #fecaca; }
