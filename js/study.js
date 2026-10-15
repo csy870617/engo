@@ -1077,6 +1077,7 @@ function getBlogTitle(type) { if (type === 'pattern') return "필수 영어 패�
 function openBlogPost(type, index) { currentBlogType = type; currentBlogIndex = index; goTo('blog-detail'); }
 function renderBlogDetail() {
   const contentBox = document.getElementById('paper-content'); contentBox.innerHTML = "";
+  contentBox.className = 'paper-' + currentBlogType;   // 인쇄할 때 패턴은 1단, 단어·숙어는 2단
   const chunkSize = 50; const startIndex = currentBlogIndex * chunkSize;
   let targetData = []; let titlePrefix = "";
   // renderBlogList과 동일하게 데이터 미정의(로드 실패 등) 상황을 방어
