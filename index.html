@@ -35,7 +35,7 @@
   <meta property="og:image" content="https://csy870617.github.io/engo/logo.png">
   <meta property="og:site_name" content="ENGO">
 
-  <link rel="stylesheet" href="style.css?v=203" />
+  <link rel="stylesheet" href="style.css?v=204" />
 
   <script>
     // 광고: AI 튜터 키를 연결한 기기에서는 광고 스크립트를 싣지 않는다 (바깥 스크립트가 같은 페이지에서 키에 닿지 않게)
@@ -489,6 +489,7 @@
           <p class="tutor-setup-title">구글 Gemini로 대화하는 AI 영어 회화 튜터</p>
           <ul class="tutor-setup-list">
             <li>오늘 하루·음식·취미·여행 같은 일상 이야기를 영어로 자유롭게 나눠요</li>
+            <li>전화하듯 <b>실시간 음성</b>으로 대화해요: 말을 멈추면 튜터가 바로 대답해요</li>
             <li>구글 계정으로 <b>무료 키</b>를 만들어 한 번만 연결하면 돼요</li>
             <li>키는 이 기기에만 암호화해서 저장되고, 대화는 구글 Gemini로 바로 가요</li>
           </ul>
@@ -506,6 +507,7 @@
             <p class="tutor-note-title">사용량과 요금 안내</p>
             <p><b>🆓 무료 키</b> 요금은 나가지 않아요. 구글이 정한 사용 한도 안에서 쓸 수 있고, 한도를 다 쓰면 잠시 뒤나 다음 날 다시 쓸 수 있어요.</p>
             <p><b>💳 결제를 연결한 계정</b> 그 계정의 키를 넣으면 대화한 만큼 요금이 나가요.</p>
+            <p><b>📶 데이터</b> 실시간 음성은 대화 1분에 약 3~5MB의 데이터를 써요. 와이파이에서 쓰는 걸 권해요.</p>
             <p>무료로 쓰는 동안에는 대화 내용이 구글 서비스 개선에 쓰일 수 있으니 이름·연락처 같은 개인 정보는 말하지 마세요.</p>
           </div>
         </div>
@@ -543,8 +545,8 @@
             <div id="tutor-chars-lobby" class="lobby-chars" role="group" aria-label="튜터 고르기"></div>
             <div class="call-set-row"><span>내 영어 수준</span><div id="tutor-levels-lobby" class="tutor-levels" role="group" aria-label="내 영어 수준"></div></div>
             <div class="call-set-row"><span>🔊 목소리</span><div class="lobby-voice"><select id="tutor-voice-lobby" class="tutor-select" onchange="changeTutorVoice(this)" aria-label="튜터 목소리"></select><button class="chip-btn play-chip tutor-voice-try" onclick="tutorPreviewVoice()" aria-label="목소리 들어 보기">▶ 듣기</button></div></div>
-            <p class="tutor-voice-note hidden"></p><div class="tutor-voice-dl hidden"><div class="tutor-voice-dl-text"></div><button class="chip-btn play-chip" onclick="tutorDownloadVoice()">받기</button></div>
-            <p class="lobby-tip">말하는 방법·기다리는 시간은 대화 중 ⚙️ 설정에서 바꿀 수 있어요</p>
+            <p class="tutor-voice-note hidden"></p>
+            <p class="lobby-tip">🎧 실시간 음성 대화예요 (와이파이 권장) · 말하는 방법은 대화 중 ⚙️ 설정에서</p>
             <div class="lobby-foot">
               <button id="tutor-start-btn" class="btn-main lobby-start" onclick="tutorStartFromLobby(false)">▶ 시작하기</button>
               <button id="tutor-new-btn" class="chip-btn lobby-new hidden" onclick="tutorStartFromLobby(true)">🔄 새 대화 시작</button>
@@ -560,7 +562,7 @@
             <p class="tutor-send-tip hidden">말을 다 한 뒤 <b>➤</b>(또는 튜터)를 눌러야 보내져요. 중간에 생각하느라 멈춰도 넘어가지 않아요.</p>
             <div class="call-set-row tutor-endwait-row"><span>⏱ 말 끝 기다리기</span><div id="tutor-endwait-set" class="tutor-levels" role="group" aria-label="말이 멈춘 뒤 기다리는 시간"></div></div>
             <div class="call-set-row"><span>🔊 목소리</span><div class="lobby-voice"><select id="tutor-voice" class="tutor-select" onchange="changeTutorVoice(this)" aria-label="튜터 목소리"></select><button class="chip-btn play-chip tutor-voice-try" onclick="tutorPreviewVoice()" aria-label="목소리 들어 보기">▶ 듣기</button></div></div>
-            <p class="tutor-voice-note hidden"></p><div class="tutor-voice-dl hidden"><div class="tutor-voice-dl-text"></div><button class="chip-btn play-chip" onclick="tutorDownloadVoice()">받기</button></div>
+            <p class="tutor-voice-note hidden"></p>
             <div class="call-sheet-actions">
               <button class="chip-btn" onclick="newTutorConversation()">🔄 새 대화 시작</button>
               <button class="chip-btn" onclick="manageTutorKey()">🔑 키 연결 끊기</button>
@@ -706,15 +708,15 @@
 
   <div id="neural-loading" class="neural-loading hidden">🎙 자연스러운 음성 준비 중…</div>
 
-  <script src="pattern.js?v=203"></script>
-  <script src="conversation.js?v=203"></script>
-  <script src="idiom.js?v=203"></script>
-  <script src="word.js?v=203"></script>
+  <script src="pattern.js?v=204"></script>
+  <script src="conversation.js?v=204"></script>
+  <script src="idiom.js?v=204"></script>
+  <script src="word.js?v=204"></script>
 
   <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
   <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
   <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
-  <script src="js/core.js?v=203"></script>    <script src="js/storage.js?v=203"></script> <script src="js/neural-tts.js?v=203"></script> <script src="js/kokoro-tts.js?v=203"></script> <script src="js/media.js?v=203"></script>   <script src="js/study.js?v=203"></script>   <script src="js/game.js?v=203"></script>    <script src="js/talk-plan.js?v=203"></script> <script src="js/tutor.js?v=203"></script>    </body>
+  <script src="js/core.js?v=204"></script>    <script src="js/storage.js?v=204"></script> <script src="js/neural-tts.js?v=204"></script> <script src="js/kokoro-tts.js?v=204"></script> <script src="js/media.js?v=204"></script>   <script src="js/study.js?v=204"></script>   <script src="js/game.js?v=204"></script>    <script src="js/talk-plan.js?v=204"></script> <script src="js/tutor.js?v=204"></script>    </body>
 
 
 </html>

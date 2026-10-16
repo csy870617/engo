@@ -1023,6 +1023,10 @@ body.list-playing .neural-loading { bottom: calc(86px + env(safe-area-inset-bott
 /* 대화 기록에 넣지 않는 짧은 튜터 말 ("Take your time." · "So, where were we?") */
 .tutor-msg.tutor.tutor-nudge { background: transparent; border-style: dashed; opacity: 0.85; font-size: 0.88rem; }
 .tutor-msg.me { align-self: flex-end; background: var(--primary); color: #fff; border-bottom-right-radius: 6px; }
+/* 말하는 중에 받아쓰는 내 말 (끝나면 보통 말풍선으로) · 따라 말하기로 한 말 */
+.tutor-msg.me.live { opacity: 0.72; }
+.tutor-msg.me.live .tutor-text::after { content: " …"; }
+.tutor-msg.me.practice { background: rgba(139,92,246,0.55); }
 .tutor-tip { align-self: flex-end; max-width: 85%; margin-top: -2px; padding: 8px 12px; border-radius: 12px; font-size: 0.82rem; line-height: 1.5; color: #fde68a; background: rgba(251,191,36,0.1); border: 1px solid rgba(251,191,36,0.3); }
 .tutor-tip b { color: #fff; font-weight: 600; }
 .tutor-tip mark { background: rgba(251,191,36,0.32); color: #fff; border-radius: 3px; padding: 0 2px; }
@@ -1230,12 +1234,8 @@ html.tutor-lock body { position: fixed; inset: 0; width: 100%; }
 @keyframes sendReady { 0% { box-shadow: 0 0 0 0 rgba(139,92,246,0.7); } 100% { box-shadow: 0 0 0 12px rgba(139,92,246,0); } }
 .tutor-voice-note { margin: 2px 0 6px; font-size: 0.75rem; color: #fbbf24; line-height: 1.4; }
 .tutor-voice-note.hidden { display: none; }
-.tutor-voice-dl { display: flex; align-items: center; gap: 10px; margin: 4px 0 8px; padding: 10px 12px; border-radius: 12px; background: rgba(56,189,248,0.08); border: 1px solid rgba(56,189,248,0.25); }
-.tutor-voice-dl.hidden { display: none; }
 .tutor-send-tip { margin: 0 0 6px; font-size: 0.75rem; color: var(--text-sub); line-height: 1.45; }
 .tutor-send-tip.hidden, .tutor-endwait-row.hidden { display: none; }
 /* 직접 보내기: 들은 말이 있으면 보내기 버튼이 계속 은은하게 빛난다 */
 .talk-input .send.waiting { animation: sendReady 1.2s ease-out infinite; }
-.tutor-voice-dl-text { flex: 1; min-width: 0; font-size: 0.78rem; color: var(--text-main); line-height: 1.45; }
-.tutor-voice-dl button { flex-shrink: 0; }
 .tutor-hint-retry { margin-top: 6px; }
