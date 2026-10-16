@@ -14,7 +14,7 @@ const TUTOR_GEMINI_CHAINS = {
   chat: ["gemini-3.5-flash-lite", "gemini-3.6-flash", "gemini-3.5-flash", "gemini-3.1-flash-lite", "gemini-3.8-flash"],
   aux: ["gemini-3.1-flash-lite", "gemini-3.5-flash-lite", "gemini-3.6-flash"],
   fix: ["gemini-3.6-flash", "gemini-3.5-flash", "gemini-3.1-flash-lite", "gemini-3.5-flash-lite"],   // 첨삭: 정확해야 해서 Flash부터 (막히면 Lite로)
-  hint: ["gemini-3.5-flash", "gemini-3.1-flash-lite", "gemini-3.6-flash", "gemini-3.5-flash-lite"]   // 힌트: 자연스러운 표현이 중요해서 Flash부터 (대화·첨삭과 다른 모델로 무료 사용량도 나눈다. 튜터가 말하는 동안 미리 만든다)
+  hint: ["gemini-3.1-flash-lite", "gemini-3.5-flash-lite", "gemini-3.5-flash", "gemini-3.6-flash"]   // 힌트: 💡를 누르면 바로 나와야 해서 빠른 Flash-Lite부터 (대화와 다른 모델로 무료 사용량도 나눈다. 튜터가 말하는 동안 미리 만든다)
 };
 const GEMINI_KEY_STORE = "geminiApiKey";
 const GEMINI_KEY_PAGE = "https://aistudio.google.com/apikey";
@@ -25,10 +25,11 @@ const TUTOR_AVATAR_FRAMES = null;
 // about: 튜터마다 정해 둔 자기 얘기 ("너는?"에 매번 다른 말을 지어내지 않고, 자기 얘기를 조금씩 나누게.
 //        떡볶이·라면은 영어 읽기로 적는다: 목소리 엔진이 한국어 낱말을 이상하게 읽어서)
 const TUTORS = {
-  emma: { name: "Emma", label: "Emma", gender: "f", voice: "af_bella", media: "images/tutor/emma/web/",
+  // face: 영상(세로 960)에서 얼굴 가운데(눈과 입 사이)의 높이 비율 — 영상 칸 크기가 바뀌어도 얼굴이 가운데쯤 오게 맞춘다
+  emma: { name: "Emma", label: "Emma", gender: "f", voice: "af_bella", media: "images/tutor/emma/web/", face: 0.42,
     style: "a sweet, bright K-pop idol girl in her early 20s chatting with her fans on a live stream: cheerful, warm and cute, with a light, youthful voice",
     about: "You're in your early 20s. You grew up in Los Angeles, moved to Seoul two years ago, and teach English online. You love iced lattes, spicy rice cakes, K-dramas and dance practice, and you have a lazy cat named Mochi. You're cheerful, a little clumsy, and you laugh easily." },
-  jay: { name: "Jay", label: "Jay", gender: "m", voice: "am_puck", media: "images/tutor/jay/web/",
+  jay: { name: "Jay", label: "Jay", gender: "m", voice: "am_puck", media: "images/tutor/jay/web/", face: 0.45,
     style: "a gentle, charming K-pop idol boy in his early 20s chatting with his fans on a live stream: soft, warm and sweet, calm and friendly, with a youthful voice",
     about: "You're in your early 20s. You grew up in Seattle, moved to Seoul last year, and teach English online. You love basketball, playing guitar, hiking and late-night ramen, and you have a small dog named Bori. You're calm, kind and a bit shy, with a quiet sense of humor." }
 };
@@ -421,11 +422,11 @@ function renderTutorCredit() {
 }
 
 // 대화 기록: 맨 아래를 보고 있으면 말풍선에 버튼·해석·팁·연습 결과가 붙어도 계속 맨 아래가 보이게 (위로 올려 읽는 중이면 그대로 둔다)
-let tutorLogPinned = true;
+let tutorLogPinned = true, tutorLogQGap = 0;   // tutorLogQGap: 힌트를 펴서 튜터 질문이 보이게 맞춘 만큼 (그만큼 위로 올라가 있어도 '맨 아래를 보는 중')
 function tutorLogFollow() {
   const log = tutorEl("tutor-log"); if (!log || log.dataset.follow) return;
   log.dataset.follow = "1";
-  log.addEventListener("scroll", () => { tutorLogPinned = log.scrollHeight - log.scrollTop - log.clientHeight < 60; }, { passive: true });
+  log.addEventListener("scroll", () => { const d = log.scrollHeight - log.scrollTop - log.clientHeight; tutorLogPinned = d < 60 || (tutorHintShown && d <= tutorLogQGap + 4); }, { passive: true });
   new MutationObserver(() => { if (tutorLogPinned) log.scrollTop = log.scrollHeight; })
     .observe(log, { childList: true, subtree: true, characterData: true, attributes: true, attributeFilter: ["class"] });
 }
@@ -452,6 +453,8 @@ function renderTutorPage() {
   tutorLockScroll(true);
   showTutorLobby();             // 바로 시작하지 않고 시작 화면부터 (튜터·수준·목소리를 고르고 '시작하기')
   tutorWarmVoice();
+  tutorFitViewport();
+  tutorRelayout();
 }
 
 // 아이폰: 무음 스위치를 켜 둬도 튜터 목소리가 들리게 (iOS 17+ 오디오 세션), 나가면 원래대로
@@ -471,6 +474,7 @@ function showTutorLobby() {
   tutorCancelListening();
   const room = tutorEl("tutor-chat-area"); if (room) room.classList.add("lobby");
   tutorEl("tutor-lobby").classList.remove("hidden");
+  tutorRelayout();
   const going = tutorLearnerLines.length > 0;   // 하던 대화가 있으면 '이어서 대화하기'가 먼저
   tutorEl("tutor-start-btn").textContent = going ? "▶ 이어서 대화하기" : "▶ 시작하기";
   tutorEl("tutor-new-btn").classList.toggle("hidden", !going);
@@ -485,9 +489,12 @@ function tutorPrepGreeting(delay) {
     if (!tutorLobbyOpen() || !tutorReady()) return;
     const ng = tutorNextGreeting;
     if (!ng || ng.char !== tutorCharId() || ng.level !== tutorLevelId()) tutorNextGreeting = { ...tutorPickGreeting(), char: tutorCharId(), level: tutorLevelId() };
-    if (tutorUseNatural()) tutorTtsFetch(tutorNextGreeting.text, false);
+    if (tutorUseNatural()) tutorSpeakPrep(tutorNextGreeting.text);
   }, delay);
 }
+/** 여러 문장을 말하기 전에 목소리를 미리 만들어 둔다 (말할 때와 똑같이 문장·조각으로 나눠서 — 그래야 만들어 둔 걸 그대로 쓴다) */
+const tutorSpeechPieces = text => tutorSplitSentences(text).flatMap((x, i, arr) => tutorVoicePieces(x, i === 0 || (i === 1 && TUTOR_REACTIONS.includes(arr[0]))));
+function tutorSpeakPrep(text, slow) { tutorSpeechPieces(text).forEach(p => tutorTtsFetch(p, !!slow)); }
 let tutorGreetPrep = null;
 /** 시작하기 (누른 순간에 소리 장치를 깨워 둔다: 아이폰은 사용자가 누른 순간에만 소리를 켤 수 있다) */
 function tutorStartFromLobby(fresh) {
@@ -498,6 +505,7 @@ function tutorStartFromLobby(fresh) {
   toggleTutorSheet();
   tutorEl("tutor-lobby").classList.add("hidden");
   const room = tutorEl("tutor-chat-area"); if (room) room.classList.remove("lobby");
+  tutorLayout();
   const row = tutorEl("tutor-type-row"); if (row) { row.style.pointerEvents = "none"; setTimeout(() => { row.style.pointerEvents = ""; }, 450); }   // 시작하기를 두 번 눌러도 그 자리에 나타난 입력칸이 눌리지 않게
   tutorCallActive = true;
   if (!fresh && tutorLearnerLines.length) { setTutorStatus(tutorIdleMsg(), ""); tutorResume("lobby"); }
@@ -881,7 +889,7 @@ function tutorQuietRephrase(token) {
 /** 대화를 잠시 멈출 때 (피드백·설정 판을 열거나 화면을 떠날 때): 돌아왔을 때 할 말을 미리 */
 function tutorMarkPause(prefetch) {
   if (!tutorPausedAt) { tutorPausedAt = Date.now(); tutorBridgeLine = tutorTurnPick(TUTOR_BRIDGES.back); }
-  if (prefetch && tutorUseNatural()) { tutorTtsFetch(tutorBridgeLine, false); const q = tutorPendingQuestion(); if (q) tutorTtsFetch(q, false); }   // 판을 보는 동안 목소리 엔진은 쉬고 있다
+  if (prefetch && tutorUseNatural()) { tutorTtsFetch(tutorBridgeLine, false); const q = tutorPendingQuestion(); if (q) tutorVoicePieces(q, false).forEach(p => tutorTtsFetch(p, false)); }   // 판을 보는 동안 목소리 엔진은 쉬고 있다 (말할 때와 같은 조각으로)
 }
 /** 쉬었다 돌아오면 친구처럼 이어 간다: 못 받은 답은 새로 받고, 하던 질문은 한 번 더 (kind: sheet 판을 닫음 · lobby 시작 화면에서 이어서) */
 function tutorResume(kind) {
@@ -939,6 +947,7 @@ function tutorTapTutor(e) {
 function tutorInputFocus(on) {
   const room = tutorEl("tutor-chat-area");
   if (room) room.classList.toggle("typing", on);
+  tutorLayout();
   tutorRefit();
   setTimeout(() => { const log = tutorEl("tutor-log"); log.scrollTop = log.scrollHeight; }, 300);   // 그림 크기가 바뀐 뒤 최근 대화가 보이게
   if (on) {
@@ -961,12 +970,16 @@ function tutorLockScroll(on) {
 function tutorFitViewport() {
   const call = tutorEl("tutor-call"), vv = window.visualViewport;
   if (!call || !vv) return;
+  // 다른 화면에서 키보드를 열었을 때는 손대지 않는다 (튜터 화면에 들어왔을 때 줄어든 크기가 남지 않게)
+  if (!tutorPageVisible()) { if (call.style.height) call.style.top = call.style.height = call.style.bottom = ""; tutorKbOpen = false; tutorBaseH = 0; return; }
   const inp0 = tutorEl("tutor-input");
   if (!inp0 || document.activeElement !== inp0 || !tutorBaseH) tutorBaseH = window.innerHeight;   // 키보드가 없을 때의 높이 (화면 전체를 줄이는 인앱 브라우저도 알아채게)
   const open = Math.max(window.innerHeight, tutorBaseH) - vv.height > 80;
   const log = tutorEl("tutor-log");
   const pinned = log && log.scrollHeight - log.scrollTop - log.clientHeight < 40;   // 맨 아래를 보고 있었으면 크기가 바뀐 뒤에도 맨 아래로
   if (pinned) requestAnimationFrame(() => { log.scrollTop = log.scrollHeight; });
+  // 아이폰은 입력칸을 보여 주려고 넘침을 숨긴 칸까지 밀어 올리기도 한다 → 제자리로 (위쪽 튜터가 잘려 보이지 않게)
+  [call, tutorEl("tutor-chat-area")].forEach(el => { if (el && el.scrollTop) el.scrollTop = 0; });
   if (open) { call.style.top = vv.offsetTop + "px"; call.style.height = vv.height + "px"; call.style.bottom = "auto"; }
   else {
     call.style.top = call.style.height = call.style.bottom = "";
@@ -979,6 +992,65 @@ function tutorFitViewport() {
 }
 if (window.visualViewport) { visualViewport.addEventListener("resize", tutorFitViewport); visualViewport.addEventListener("scroll", tutorFitViewport); window.addEventListener("resize", tutorFitViewport); }
 window.addEventListener("orientationchange", () => { tutorBaseH = 0; });
+
+// ---------- 화면 배치: 튜터 영상 ↔ 대화 ----------
+// 상황(보통·힌트·글쓰기·시작 화면)과 지금 보이는 화면 크기(키보드가 올라오면 작아진다)에 맞춰 튜터 영상 칸의 높이를 정하고,
+// 칸이 작아져도 얼굴이 칸 가운데쯤 오게 맞춘다. 넓은 화면(컴퓨터·가로로 돌린 화면)은 튜터를 왼쪽, 대화를 오른쪽에 둔다
+const TUTOR_VIDEO = { w: 720, h: 960 };     // 튜터 영상 크기 (세로 영상)
+let tutorLayoutRaf = 0;
+function tutorRelayout() { if (!tutorLayoutRaf) tutorLayoutRaf = requestAnimationFrame(() => { tutorLayoutRaf = 0; tutorLayout(); }); }
+function tutorLayout() {
+  const call = tutorEl("tutor-call"), room = tutorEl("tutor-chat-area");
+  if (!call || !room || room.classList.contains("hidden") || !tutorPageVisible()) return;
+  const CW = call.clientWidth, CH = call.clientHeight;
+  if (!CW || !CH) return;
+  const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
+  const lobby = room.classList.contains("lobby");
+  const hint = room.classList.contains("hinting") && !lobby;
+  const wide = CW >= 600 && CW > CH * 1.15;
+  room.classList.toggle("wide", wide);
+  const W = room.clientWidth, H = room.clientHeight;
+  // 작게: 키보드가 올라왔거나(휴대폰은 입력칸을 누르는 순간부터 — 키보드가 곧 올라온다) 낮은 화면
+  const touch = !!(window.matchMedia && matchMedia("(pointer: coarse)").matches);
+  const compact = !wide && ((touch && room.classList.contains("typing")) || tutorKbOpen || H < 520);
+  room.classList.toggle("compact", compact);
+  const hero = room.querySelector(".talk-hero");
+  let h, anchor;                                   // anchor: 얼굴 가운데가 놓일 칸 안의 높이 비율
+  if (wide) { h = H; anchor = 0.42; }
+  else if (lobby) {
+    const sheet = tutorEl("tutor-lobby"), sh = sheet ? sheet.offsetHeight : H * 0.6;
+    h = clamp(H - sh + 30, Math.min(H, 200), H);   // 시작 화면 판 위로 보이는 만큼 (얼굴이 그 안에 오게)
+    anchor = 0.5;
+  } else if (compact) { h = hint ? clamp(H * 0.24, 92, 170) : clamp(H * 0.34, 116, 240); anchor = 0.52; }
+  else { h = hint ? clamp(H * 0.34, 160, 330) : clamp(H * 0.46, 180, Math.max(260, W * 1.25)); anchor = 0.44; }
+  h = Math.round(h);
+  room.style.setProperty("--hero-h", h + "px");
+  // 영상은 칸을 꽉 채운다 (넘치는 쪽은 잘림): 세로로 넘치면 얼굴이 anchor 높이에 오도록 잘라 낼 위치를 정한다
+  const hw = (hero && hero.clientWidth) || W, hh = wide ? ((hero && hero.clientHeight) || H) : h;
+  const sc = Math.max(hw / TUTOR_VIDEO.w, hh / TUTOR_VIDEO.h), vh = TUTOR_VIDEO.h * sc;
+  let y = 50;
+  if (vh > hh + 1) y = clamp(((tutorChar().face || 0.42) * vh - hh * anchor) / (vh - hh), 0, 1) * 100;
+  room.style.setProperty("--face-y", y.toFixed(1) + "%");
+  if (hint) requestAnimationFrame(tutorLogShowQuestion);
+}
+/** 힌트를 펴서 대화 칸이 좁아졌을 때: 힌트가 답하는 튜터의 마지막 말(보통 끝에 질문)이 보이게,
+ *  말풍선이 칸보다 크면 버튼 줄 대신 글의 끝부분이 칸 아래쪽에 오게 맞춘다 */
+function tutorLogShowQuestion() {
+  const log = tutorEl("tutor-log"), last = log && log.lastElementChild;
+  if (!log || !tutorHintShown || !tutorLogPinned) return;
+  log.scrollTop = log.scrollHeight;
+  tutorLogQGap = 0;
+  const t = last && last.classList.contains("tutor") && last.querySelector(".tutor-text");
+  if (!t) return;
+  const lr = log.getBoundingClientRect(), tr = t.getBoundingClientRect();
+  if (tr.top >= lr.top + 14) return;              // 다 보인다
+  log.scrollTop = Math.max(0, log.scrollTop + (tr.bottom - lr.bottom) + 6);
+  tutorLogQGap = log.scrollHeight - log.scrollTop - log.clientHeight;
+}
+if (typeof ResizeObserver !== "undefined") {
+  const ro = new ResizeObserver(() => tutorRelayout());
+  ["tutor-call", "tutor-lobby"].forEach(id => { const el = tutorEl(id); if (el) ro.observe(el); });
+} else window.addEventListener("resize", tutorRelayout);
 // Esc: 열린 판 → 힌트 순서로 닫는다 (알림 창은 창이 직접 닫는다)
 document.addEventListener("keydown", e => {
   if (e.key !== "Escape" || tutorDialogOpen || !tutorPageVisible()) return;
@@ -1034,6 +1106,7 @@ async function changeTutorChar(id) {
   stopTutorSpeech();
   renderTutorChars(); fillTutorVoices();
   TutorAvatar.remount();
+  tutorRelayout();
   if (inLobby) { tutorResetConversation(); showTutorLobby(); return; }   // 시작 화면에서는 고르기만 (시작하기를 눌러야 시작)
   toggleTutorSheet();
   if (typeof NeuralTTS !== "undefined") NeuralTTS.unlockAudio();
@@ -1076,6 +1149,7 @@ function tutorStyle() {
     "- If the student writes in Korean or says they don't know how to say something, give a simple English way to say it, starting with \"You can say:\", and encourage them to try it.",
     "- If the student asks what a word means, explain it simply in English with a short example.",
     ...tutorLevel().style.map(x => "- " + x),
+    "- Keep every sentence short and easy to say out loud (about 12 words or fewer). If a thought is long, say it as two short sentences.",
     "- Don't repeat yourself, and don't start two replies the same way. Speak naturally like a real person talking out loud. No lists, no emojis, no markdown, no notes in brackets, no Korean."
   ].join("\n");
 }
@@ -1353,13 +1427,9 @@ function startTutorSession() {
 }
 /** 예전 방식 첫 인사 (기기 목소리) */
 function tutorClassicGreet(token, greet) {
+  // 문장(조각)마다 목소리를 만들어 차례로 튼다 (시작 화면에서 미리 만들어 둔 걸 그대로 쓴다).
+  // 인사의 질문도 문장 하나로 만들어지니, 조용할 때 다시 묻는 말("So, where were we? + 질문")도 바로 나온다
   speakTutor(greet, token).then(ok => { if (ok) tutorHeardAll = true; tutorAfterSpeak(token); });
-  // 인사를 들려주는 동안 조용할 때 할 말과 인사의 질문만 따로 목소리를 미리 만들어 둔다 (말이 막히면 바로 건네게)
-  if (tutorUseNatural()) tutorTtsFetch(greet, false).ready.then(() => {
-    if (token !== tutorSessionToken) return;
-    const gq = tutorSplitSentences(greet).filter(tutorIsQuestion).pop();
-    if (gq) tutorTtsFetch(gq, false);
-  });
 }
 
 /** 학습자 문장 보내기 (음성 인식 결과 / 입력창) */
@@ -1482,8 +1552,9 @@ function tutorSpeculate(text) {
     if (rested || s.dead || s.token !== tutorSessionToken || !tutorUseNatural()) return;
     rested = true;
     tutorSplitSentences(tutorPolish(cleanTutorSay(raw), text, prevSays)).slice(0, 2).forEach((x, i, arr) => {
-      if (i === 1 && !(((KokoroVoice.rtf() || 1) <= 0.5 || TUTOR_REACTIONS.includes(arr[0])) && tutorWords(x).length <= 12)) return;
-      (i === 0 || TUTOR_REACTIONS.includes(arr[0]) ? tutorVoicePieces(x) : [x]).forEach(pre);   // 목소리 줄(tutorSpeechQueue)과 같은 기준으로 나눈다
+      const lead = i === 0 || TUTOR_REACTIONS.includes(arr[0]);
+      if (i === 1 && !lead && !((KokoroVoice.rtf() || 1) <= 0.5 && tutorWords(x).length <= 12)) return;
+      tutorVoicePieces(x, lead).forEach(pre);   // 목소리 줄(tutorSpeechQueue)과 같은 기준으로 나눈다
     });
   };
   const msgs = tutorMessages.concat([{ role: "user", content: text }], note ? [{ role: "user", content: note }] : []);
@@ -1665,8 +1736,9 @@ function tutorFinishedSentences(clean, raw) {
   return end < 0 ? "" : tutorRestoreDots(t.slice(0, end));
 }
 
-/** 튜터 목소리 줄: 문장이 끝나는 대로 받아 차례로 읽는다 (중간에 끊거나 새 대화가 시작되면 남은 문장은 읽지 않음) */
-function tutorSpeechQueue(token, prepMsg = "생각 중…") {
+/** 튜터 목소리 줄: 문장이 끝나는 대로 받아 차례로 읽는다 (중간에 끊거나 새 대화가 시작되면 남은 문장은 읽지 않음).
+ *  slow: 천천히 읽기 (다시 듣기의 🐢) */
+function tutorSpeechQueue(token, prepMsg = "생각 중…", slow = false) {
   const my = ++tutorSpeechToken;
   let chain = Promise.resolve(), dead = false;
   const spoken = [], spokenN = new Set();           // 이미 줄에 넣은 문장 (비교는 대소문자·문장부호를 빼고: 따옴표 하나 차이로 두 번 읽지 않게)
@@ -1692,13 +1764,13 @@ function tutorSpeechQueue(token, prepMsg = "생각 중…") {
         tutorSpeaking = true; tutorSayDevice = !nat;
         if (!tutorAudioPlaying()) tutorMarkPreparing(prepMsg);
         if (nat) {
-          // 지금 만들기 시작해 두고, 차례가 오면 (다 되는 대로) 튼다
-          for (const piece of lead ? tutorVoicePieces(part) : [part]) {
-            const clip = tutorTtsFetch(piece, false);
-            chain = chain.then(() => alive() && tutorPlayClip(clip, piece, alive));
+          // 지금 만들기 시작해 두고, 차례가 오면 (다 되는 대로) 튼다. 긴 문장은 조각으로 (첫 문장은 더 짧게)
+          for (const piece of tutorVoicePieces(part, lead)) {
+            const clip = tutorTtsFetch(piece, slow);
+            chain = chain.then(() => alive() && tutorPlayClip(clip, piece, alive)).catch(e => console.warn("튜터 목소리 재생 실패", e));   // 한 조각이 잘못돼도 다음 조각은 이어서
           }
         } else {
-          chain = chain.then(async () => { if (alive()) { try { await tutorDeviceSpeak(part); } catch (e) {} } });
+          chain = chain.then(async () => { if (alive()) { try { await tutorDeviceSpeak(part, slow); } catch (e) {} } });
         }
       }
     },
@@ -2178,7 +2250,8 @@ const TUTOR_GREET_CACHE = "faith-voice-tutor-greet";   // faith-voice로 시작�
 const tutorGreetUrl = (text) => location.origin + "/__tutor-greet/k-" + tutorVoiceId() + "/" + encodeURIComponent(text);
 const tutorPreviewText = () => `Hi, I'm ${tutorName()}! I'm so happy to talk with you today.`;
 // 기기에 저장해 두는 음성: 첫 인사(지금 것·시작 화면에서 미리 고른 것), 목소리 들어 보기 문장, 정해 둔 짧은 말
-const tutorPersistable = text => !!text && (text === tutorGreeting || (tutorNextGreeting && text === tutorNextGreeting.text) || text === tutorPreviewText() || tutorFixedLine(text));
+const tutorPersistable = text => !!text && (text === tutorPreviewText() || tutorFixedLine(text) ||
+  [tutorGreeting, tutorNextGreeting && tutorNextGreeting.text].some(g => g && (text === g || tutorSpeechPieces(g).includes(text))));   // 첫 인사는 문장(조각)마다
 async function tutorGreetLoad(text) {
   try {
     if (!tutorPersistable(text) || !("caches" in window)) return null;
@@ -2265,7 +2338,8 @@ function tutorTtsFetch(text, slow) {
   if (tutorTtsCache.has(key)) return tutorTtsCache.get(key);
   const clip = { key, chunks: [], sampleRate: 24000, done: false, error: null, listeners: new Set(), skip: false, reqId: 0 };
   const emit = () => clip.listeners.forEach(f => f());
-  const push = (wav, rate) => { clip.sampleRate = rate; clip.chunks.push(tutorTrimSilence(wav, rate)); clip.done = true; emit(); };   // 문장 하나가 통째로 온다 → 받자마자 '다 됨' (입 움직임을 미리 짜려면 재생 전에 알아야 한다)
+  const tail = /[.!?]["”']?$/.test(text.trim()) ? 0.2 : 0.1;   // 문장 중간에서 나눈 조각은 뒤 쉼을 짧게 (쉼표 쉼만큼)
+  const push = (wav, rate) => { clip.sampleRate = rate; clip.chunks.push(tutorTrimSilence(wav, rate, tail)); clip.done = true; emit(); };   // 문장 하나가 통째로 온다 → 받자마자 '다 됨' (입 움직임을 미리 짜려면 재생 전에 알아야 한다)
   const voice = tutorVoiceId();
   clip.ready = (async () => {
     const packed = slow ? null : await tutorPackDecode(text, voice);   // 미리 만들어 둔 묶음에 있으면 바로
@@ -2316,28 +2390,66 @@ function tutorTtsDrop(clip) {
   if (clip.reqId && KokoroVoice.skip) KokoroVoice.skip(clip.reqId);
   if (tutorTtsCache.get(clip.key) === clip) tutorTtsCache.delete(clip.key);
 }
-/** 답의 첫 문장이 길면 쉼표에서 둘로 나눠 앞부분 목소리부터 만든다 (목소리는 소리 길이에 비례해 오래 걸려서, 짧은 앞부분이 빨리 나온다).
- *  뒷부분은 앞부분을 들려주는 동안(쉼표 쉼 포함) 다 만들어질 때만 나눈다 — 이 기기의 목소리 만드는 속도로 따진다 (낱말당 약 0.3초, 앞뒤 빈 소리 약 1초) */
-function tutorVoicePieces(sen) {
+/** 긴 문장은 자연스럽게 끊기는 곳(쉼표 뒤, and·but·because 같은 말 앞)에서 나눠 앞 조각 목소리부터 만든다.
+ *  목소리는 소리 길이에 비례해 오래 걸려서(이 기기의 속도 rtf: 1초 소리를 만드는 데 걸리는 초), 통째로 만들면 느린 기기에서는
+ *  "That's great!" 뒤에 몇 초씩 조용해진다. 조각으로 나누면 앞 조각을 들려주는 동안 다음 조각을 만든다.
+ *  lead: 답의 첫 문장(반응 바로 뒤) — 반응을 들려주는 1초 남짓 안에 만들 수 있게 더 짧게 나눈다. 빠른 기기는 거의 나누지 않는다 */
+const TUTOR_CUT_CLAUSE = /^(because|when|while|if|which|who|where|whether|especially|though|although|since|until|unless)$/;
+const TUTOR_CUT_JOIN = /^(and|but|or|so)$/;      // 뒤에 주어 같은 말이 올 때만 ("and I…"는 나누고 "salt and pepper"·"so fun"은 나누지 않는다)
+const TUTOR_CUT_SUBJ = /^(i|i'm|i've|i'd|i'll|you|you're|you've|we|we're|they|they're|he|he's|she|she's|it|it's|that|that's|this|there|there's|my|your|then|now|maybe|also|still|sometimes|what|how)$/;
+const TUTOR_CUT_PREP = /^(to|for|with|about|in|on|at|from|after|before|during)$/;   // 끊을 데가 마땅치 않을 때만 (전치사 앞)
+// 한 번 나눈 문장은 기억해 두고 늘 똑같이 나눈다: 미리 만들 때(시작 화면·미리 받기·판을 열 때)와 실제로 말할 때(답·다시 묻기·다시 듣기),
+// 그리고 그사이 이 기기의 속도 값이 조금 바뀌어도 조각이 같아야 만들어 둔 목소리를 그대로 쓴다 (같은 말을 두 번 만들지 않게)
+const tutorPiecesMemo = new Map();
+function tutorVoicePieces(sen, lead = true) {
   if (!sen || tutorFixedLine(sen)) return [sen];            // 정해 둔 짧은 말은 저장해 둔 그대로
-  const w = sen.trim().split(/\s+/);
-  if (w.length < 6) return [sen];
-  const r = Math.max(0.15, (typeof KokoroVoice !== "undefined" && KokoroVoice.rtf()) || 1);
-  for (let i = 2; i <= w.length - 3; i++) {
-    if (!/,$/.test(w[i - 1])) continue;
-    if (r * (0.3 * (w.length - i) + 1) <= 0.3 * i + 0.55) return [w.slice(0, i).join(" "), w.slice(i).join(" ")];
+  if (!tutorPiecesMemo.has(sen)) {
+    tutorPiecesMemo.set(sen, tutorSplitPieces(sen, lead));
+    while (tutorPiecesMemo.size > 400) tutorPiecesMemo.delete(tutorPiecesMemo.keys().next().value);
   }
-  return [sen];
+  return tutorPiecesMemo.get(sen).slice();
 }
-/** Kokoro는 문장 앞뒤에 0.4~0.6초씩 아무 소리 없는 부분을 붙여 만든다 → 앞은 0.05초, 뒤는 0.2초만 남긴다
+function tutorSplitPieces(sen, lead) {
+  const w = sen.trim().split(/\s+/);
+  const r = Math.max(0.15, (typeof KokoroVoice !== "undefined" && KokoroVoice.rtf()) || 1);
+  const fit = sec => Math.floor((sec / r - 0.6) / 0.31);   // sec초 안에 만들 수 있는 낱말 수 (낱말당 약 0.31초 + 조각마다 앞뒤 빈 소리 약 0.6초)
+  let max = Math.max(3, Math.min(14, fit(lead ? 1.2 : 2.4)));
+  if (w.length <= max + 1) return [sen];
+  // 나눌 수 있는 자리 i (i번째 낱말부터 다음 조각): 2 = 쉼표·세미콜론·대시 뒤, 이어 주는 말 앞 · 1 = 전치사 앞 (마땅한 데가 없을 때만)
+  const lw = w.map(x => x.toLowerCase().replace(/[^a-z']/g, ""));
+  const cuts = [];
+  for (let i = 2; i <= w.length - 2; i++) {
+    let k = 0;
+    if (/[,;:–—]$/.test(w[i - 1]) || (i >= 3 && TUTOR_CUT_CLAUSE.test(lw[i])) || (i >= 3 && TUTOR_CUT_JOIN.test(lw[i]) && TUTOR_CUT_SUBJ.test(lw[i + 1] || ""))) k = 2;
+    else if (w.length - i >= 3 && TUTOR_CUT_PREP.test(lw[i]) && !/[,.;:!?]$/.test(w[i])) k = 1;   // ("tried that | before,"처럼 문장 끝 쪽 낱말 앞은 아님)
+    if (k) cuts.push({ i, k });
+  }
+  const out = [];
+  let s = 0;
+  while (w.length - s > max + 1) {
+    const ok = (c, lim) => c.i > s + 1 && c.i - s <= lim && (c.k === 2 || c.i - s >= 4);   // 전치사 앞은 앞 조각이 네 낱말 이상일 때만 (너무 잘게 끊기지 않게)
+    // 알맞은 길이 안의 가장 뒤쪽 자리 (쉼표·이어 주는 말이 먼저 — 조금 넘쳐도 전치사 앞보다 낫다).
+    // 없으면 조금 길어도 처음 나오는 자리 (통째로 만드는 것보다는 빠르다)
+    let c = cuts.filter(x => ok(x, max) && x.k === 2).pop() || cuts.find(x => ok(x, max + 2) && x.k === 2) || cuts.filter(x => ok(x, max)).pop() ||
+      cuts.find(x => ok(x, 99) && x.k === 2) || cuts.find(x => ok(x, Math.max(8, max * 2)));
+    c = c && c.i;
+    if (c == null) break;
+    out.push(w.slice(s, c).join(" "));
+    max = Math.max(max, 5, Math.min(20, fit(0.45 + 0.31 * (c - s))));   // 다음 조각은 이 조각을 들려주는 동안(쉼 포함) 만들 수 있는 만큼
+    s = c;
+  }
+  out.push(w.slice(s).join(" "));
+  return out;
+}
+/** Kokoro는 문장 앞뒤에 0.4~0.6초씩 아무 소리 없는 부분을 붙여 만든다 → 앞은 0.05초, 뒤는 tail초(문장 끝 0.2초)만 남긴다
  *  (첫 소리가 바로 나고, 문장 사이가 1초씩 늘어지지 않게) */
-function tutorTrimSilence(wav, sr) {
+function tutorTrimSilence(wav, sr, tail = 0.2) {
   const th = 0.003;
   let a = 0, b = wav.length - 1;
   while (a < wav.length && Math.abs(wav[a]) < th) a++;
   while (b > a && Math.abs(wav[b]) < th) b--;
   if (a >= b) return wav;
-  const s = Math.max(0, a - Math.round(sr * 0.05)), e = Math.min(wav.length, b + 1 + Math.round(sr * 0.2));
+  const s = Math.max(0, a - Math.round(sr * 0.05)), e = Math.min(wav.length, b + 1 + Math.round(sr * tail));
   return s === 0 && e === wav.length ? wav : wav.slice(s, e);
 }
 /** 만든(또는 만드는 중인) 음성을 튼다. 못 만들었으면 기기 음성으로 읽는다 */
@@ -2421,6 +2533,18 @@ async function speakTutor(text, token, slow, opts) {
   if (token !== tutorSessionToken) return false;
   tutorCancelListening();                // 듣는 중이면 멈춘다 (튜터 목소리를 내 말로 알아듣지 않게)
   if (tutorSpeaking || tutorDeviceTalking) tutorSilenceAll();   // 앞 말이 아직 나거나 만들어지는 중이면 끊는다 (겹치지 않게)
+  // 여러 문장·긴 문장은 문장(조각)마다 나눠 만들어 차례로 튼다: 첫 소리가 빨리 나고, 대화 중에 만들어 둔 문장 목소리를 그대로 다시 쓴다
+  // (통째로 만들어 둔 목소리가 있거나 정해 둔 말·목소리 들어 보기 문장이면 그대로)
+  const sents = tutorSplitSentences(text);
+  if (tutorUseNatural() && typeof NeuralTTS !== "undefined" && !tutorTtsCache.has(tutorTtsKey(text, slow)) && !tutorFixedLine(text) && text !== tutorPreviewText() &&
+      (sents.length > 1 || tutorVoicePieces(text).length > 1)) {
+    NeuralTTS.unlockAudio();
+    const v = tutorSpeechQueue(token, TUTOR_PREP_MSG, slow);
+    v.say(sents, true);
+    if (!(await v.finish())) return false;
+    if (opts && opts.then) opts.then(); else tutorAfterSpeak(token);
+    return true;
+  }
   const my = ++tutorSpeechToken;
   tutorSpeaking = true;
   tutorMarkPreparing();
@@ -2987,7 +3111,7 @@ async function loadTutorAiHints(key) {
 /** 힌트를 미리 만들어 둔다: 튜터 말이 정해지면 바로 (💡를 누를 때는 이미 준비돼 있게). 실패했던 건 다시 시도 */
 function tutorPrepareHints() {
   if (!tutorReady() || !tutorCallActive) return;
-  const key = tutorSessionToken + ":" + tutorSaidLines.length + ":" + tutorLevelId();
+  const key = tutorConvId + ":" + tutorSaidLines.length + ":" + tutorLevelId();   // 같은 대화·같은 튜터 말이면 판을 열고 닫아도 받아 둔 힌트를 그대로
   if (tutorHintCache.key === key && !tutorHintCache.error) return;
   const entry = { key, list: null, error: null, loading: null };
   tutorHintCache = entry;                                  // 먼저 바꿔 둬야 한 줄씩 온 힌트가 이 칸에 들어간다
@@ -3018,22 +3142,34 @@ function renderTutorHint(noRetry) {
   if (!box) return;
   box.classList.toggle("hidden", !tutorHintShown);
   const hb = tutorEl("tutor-hint-btn"); if (hb) { hb.classList.toggle("on", tutorHintShown); hb.setAttribute("aria-expanded", String(tutorHintShown)); }
-  const room = tutorEl("tutor-chat-area"); if (room) room.classList.toggle("hinting", tutorHintShown);
-  requestAnimationFrame(() => { const log = tutorEl("tutor-log"); if (log && tutorLogPinned) log.scrollTop = log.scrollHeight; });   // 힌트가 답하는 튜터 말이 보이게 (위로 올려 읽는 중이면 그대로)
+  const room = tutorEl("tutor-chat-area"); if (room && room.classList.contains("hinting") !== tutorHintShown) { room.classList.toggle("hinting", tutorHintShown); tutorLayout(); }
+  requestAnimationFrame(() => { const log = tutorEl("tutor-log"); if (!log || !tutorLogPinned) return; if (tutorHintShown) tutorLogShowQuestion(); else log.scrollTop = log.scrollHeight; });   // 힌트가 답하는 튜터 말이 보이게 (위로 올려 읽는 중이면 그대로)
   if (!tutorHintShown) return;
   if (!tutorReady()) return;
-  if (tutorBusy) { box.innerHTML = `<div class="tutor-hint-label">힌트 만드는 중…</div>`; return; }   // Emma 답이 정해지면 그 답에 맞춰 만든다
+  // 머리줄: 무엇을 하는 칸인지 + 닫기 (💡를 다시 눌러도 닫힌다)
+  const head = sub => {
+    box.innerHTML = `<div class="tutor-hint-head"><span class="tutor-hint-title"><span aria-hidden="true">💡</span> 이렇게 말해 볼까요?<small></small></span>` +
+      `<button type="button" class="tutor-hint-x" aria-label="힌트 닫기">✕</button></div>`;
+    box.querySelector("small").textContent = sub || "";
+    box.querySelector(".tutor-hint-x").onclick = e => { e.stopPropagation(); if (tutorHintShown) toggleTutorHint(); };
+  };
+  const wait = () => { head(""); const d = document.createElement("div"); d.className = "tutor-hint-label tutor-hint-wait"; d.textContent = "힌트 만드는 중…"; box.appendChild(d); };
+  if (tutorBusy) { wait(); return; }   // Emma 답이 정해지면 그 답에 맞춰 만든다
   if (!noRetry) tutorPrepareHints();
   const hc = tutorHintCache;
   if (!hc.list || !hc.list.length) {
     if (tutorHintCache.error) {
-      box.innerHTML = `<div class="tutor-hint-label"></div><button class="tutor-slow-btn tutor-hint-retry"><span aria-hidden="true">🔄</span> 다시 시도</button>`;
-      box.firstChild.textContent = "힌트를 만들지 못했어요. " + geminiErrorText(tutorHintCache.error);
-      box.querySelector("button").onclick = e => { e.stopPropagation(); renderTutorHint(); };
-    } else box.innerHTML = `<div class="tutor-hint-label">힌트 만드는 중…</div>`;
+      head("");
+      const msg = document.createElement("div"); msg.className = "tutor-hint-label";
+      msg.textContent = "힌트를 만들지 못했어요. " + geminiErrorText(tutorHintCache.error);
+      const again = document.createElement("button"); again.className = "tutor-slow-btn tutor-hint-retry";
+      again.innerHTML = `<span aria-hidden="true">🔄</span> 다시 시도`;
+      again.onclick = e => { e.stopPropagation(); renderTutorHint(); };
+      box.append(msg, again);
+    } else wait();
     return;
   }
-  box.innerHTML = `<div class="tutor-hint-label tutor-hint-head">이렇게 말해 볼까요? 누르면 입력칸에 넣어요</div>`;
+  head("누르면 입력칸에 넣어요");
   tutorHintCache.list.forEach(h => {
     const row = document.createElement("button"); row.type = "button"; row.className = "tutor-hint-item";
     row.innerHTML = `<span class="tutor-hint-en" lang="en"></span><span class="tutor-hint-kr"></span>`;
