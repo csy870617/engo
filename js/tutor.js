@@ -440,6 +440,7 @@ function renderTutorPage() {
   }
   showTutorSection("chat");
   toggleTutorSheet();
+  tutorVirtualKeyboard(true);
   tutorAudioSession(true);
   tutorLockScroll(true);
   showTutorLobby();             // 바로 시작하지 않고 시작 화면부터 (튜터·수준·목소리를 고르고 '시작하기')
@@ -644,6 +645,7 @@ function leaveTutorPage() {
   tutorCallActive = false;
   toggleTutorSheet(undefined, false, "leave");
   tutorAudioSession(false);
+  tutorVirtualKeyboard(false);
   tutorLockScroll(false);
   const call = tutorEl("tutor-call"); if (call) call.style.top = call.style.height = call.style.bottom = "";   // 키보드용으로 줄였던 크기를 풀어 둔다
   tutorKbOpen = false;
@@ -835,13 +837,15 @@ function tutorFitViewport() {
   if (!tutorPageVisible()) { if (call.style.height) call.style.top = call.style.height = call.style.bottom = ""; tutorKbOpen = false; tutorBaseH = 0; return; }
   const inp0 = tutorEl("tutor-input");
   if (!inp0 || document.activeElement !== inp0 || !tutorBaseH) tutorBaseH = window.innerHeight;   // 키보드가 없을 때의 높이 (화면 전체를 줄이는 인앱 브라우저도 알아채게)
-  const open = Math.max(window.innerHeight, tutorBaseH) - vv.height > 80;
+  // 안드로이드 크롬: 키보드가 화면 위에 덮이고 그 높이를 알려 준다 (tutorVirtualKeyboard) → 키보드 위만큼으로 줄인다. 그 밖(아이폰 등)은 보이는 영역(visualViewport)에 맞춘다
+  const open = tutorVkOn ? tutorVkH > 80 : Math.max(window.innerHeight, tutorBaseH) - vv.height > 80;
+  const top = tutorVkOn ? 0 : vv.offsetTop, height = tutorVkOn ? window.innerHeight - tutorVkH : vv.height;
   const log = tutorEl("tutor-log");
   const pinned = log && log.scrollHeight - log.scrollTop - log.clientHeight < 40;   // 맨 아래를 보고 있었으면 크기가 바뀐 뒤에도 맨 아래로
   if (pinned) requestAnimationFrame(() => { log.scrollTop = log.scrollHeight; });
   // 아이폰은 입력칸을 보여 주려고 넘침을 숨긴 칸까지 밀어 올리기도 한다 → 제자리로 (위쪽 튜터가 잘려 보이지 않게)
   [call, tutorEl("tutor-chat-area")].forEach(el => { if (el && el.scrollTop) el.scrollTop = 0; });
-  if (open) { call.style.top = vv.offsetTop + "px"; call.style.height = vv.height + "px"; call.style.bottom = "auto"; }
+  if (open) { call.style.top = top + "px"; call.style.height = height + "px"; call.style.bottom = "auto"; }
   else {
     call.style.top = call.style.height = call.style.bottom = "";
     // 아이폰은 키보드가 뜰 때 페이지를 위로 밀어 올리고, 닫혀도 그대로 두는 일이 있다 → 제자리로
@@ -853,6 +857,24 @@ function tutorFitViewport() {
 }
 if (window.visualViewport) { visualViewport.addEventListener("resize", tutorFitViewport); visualViewport.addEventListener("scroll", tutorFitViewport); window.addEventListener("resize", tutorFitViewport); }
 window.addEventListener("orientationchange", () => { tutorBaseH = 0; });
+// 안드로이드 크롬(홈 화면 앱 포함)은 키보드가 뜨면 화면을 밀어 올려 위쪽 튜터가 화면 밖으로 나가 버린다.
+// 튜터 화면에서는 키보드가 화면 위에 덮이게 하고(VirtualKeyboard API), 알려 준 키보드 높이만큼 대화 화면을 직접 줄인다
+let tutorVkOn = false, tutorVkH = 0;
+function tutorVirtualKeyboard(on) {
+  const vk = navigator.virtualKeyboard;
+  if (!vk || !("overlaysContent" in vk)) return;
+  try { vk.overlaysContent = !!on; tutorVkOn = !!on; } catch (e) { tutorVkOn = false; }
+  if (!on) tutorVkH = 0;
+}
+if (navigator.virtualKeyboard && navigator.virtualKeyboard.addEventListener) {
+  navigator.virtualKeyboard.addEventListener("geometrychange", e => {
+    const r = (e && e.target && e.target.boundingRect) || navigator.virtualKeyboard.boundingRect;
+    tutorVkH = Math.round((r && r.height) || 0);
+    if (tutorVkOn) { tutorFitViewport(); tutorRefit(); }
+  });
+}
+// 튜터 화면에서는 페이지 자체도 스크롤되지 않게 (키보드가 입력칸을 보여 주려고 밀어 올려도 제자리로)
+window.addEventListener("scroll", () => { if (tutorVkOn && tutorPageVisible() && (window.scrollY || document.documentElement.scrollTop)) window.scrollTo(0, 0); }, { passive: true });
 
 // ---------- 화면 배치: 튜터 영상 ↔ 대화 ----------
 // 상황(보통·힌트·글쓰기·시작 화면)과 지금 보이는 화면 크기(키보드가 올라오면 작아진다)에 맞춰 튜터 영상 칸의 높이를 정하고,
@@ -1852,7 +1874,6 @@ function tutorLiveConnect(opts = {}) {
   tutorLiveStale = false;
   const p = (async () => {
     if (!tutorGetKey()) throw new GeminiError("Gemini 키가 연결되어 있지 않아요", 0, "NO_KEY");
-    if (navigator.onLine === false) throw new GeminiError("인터넷에 연결되어 있지 않아요", 0, "OFFLINE");
     let start = 0;
     try { start = Math.max(0, TUTOR_LIVE_MODELS.indexOf(localStorage.getItem("tutorLiveModel"))); } catch (e) {}
     let best = null, keyOk = null;
@@ -2580,6 +2601,7 @@ async function tutorLiveResume(kind) {
     return;
   }
   if (conv !== tutorConvId || !tutorCallActive) return;
+  document.querySelectorAll("#tutor-log .tutor-live-err").forEach(x => x.remove());   // 연결됐으면 앞의 연결 실패 알림은 치운다
   if (!tutorSaidLines.length) { tutorLiveSay(TUTOR_KICKOFF(tutorGreeting || tutorPickGreeting().text), { kind: "greet" }); return; }   // 첫 인사도 못 했다
   if (tutorLiveNext()) return;
   if (tutorLiveRetry) { const r = tutorLiveRetry; tutorLiveRetry = null; tutorLiveSay(r.text, { kind: r.kind, typed: r.typed }); return; }
