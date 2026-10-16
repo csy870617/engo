@@ -35,10 +35,18 @@
   <meta property="og:image" content="https://csy870617.github.io/engo/logo.png">
   <meta property="og:site_name" content="ENGO">
 
-  <link rel="stylesheet" href="style.css?v=201" />
+  <link rel="stylesheet" href="style.css?v=202" />
 
-  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2078760660134095"
-     crossorigin="anonymous"></script>
+  <script>
+    // 광고: AI 튜터 키를 연결한 기기에서는 광고 스크립트를 싣지 않는다 (바깥 스크립트가 같은 페이지에서 키에 닿지 않게)
+    (function () {
+      try { if (localStorage.getItem("geminiApiKeyEnc") || localStorage.getItem("geminiApiKey")) return; } catch (e) {}
+      var s = document.createElement("script");
+      s.async = true; s.crossOrigin = "anonymous";
+      s.src = "https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2078760660134095";
+      document.head.appendChild(s);
+    })();
+  </script>
   
 
   <script>
@@ -700,15 +708,15 @@
 
   <div id="neural-loading" class="neural-loading hidden">🎙 자연스러운 음성 준비 중…</div>
 
-  <script src="pattern.js?v=201"></script>
-  <script src="conversation.js?v=201"></script>
-  <script src="idiom.js?v=201"></script>
-  <script src="word.js?v=201"></script>
+  <script src="pattern.js?v=202"></script>
+  <script src="conversation.js?v=202"></script>
+  <script src="idiom.js?v=202"></script>
+  <script src="word.js?v=202"></script>
 
   <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
   <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
   <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
-  <script src="js/core.js?v=201"></script>    <script src="js/storage.js?v=201"></script> <script src="js/neural-tts.js?v=201"></script> <script src="js/kokoro-tts.js?v=201"></script> <script src="js/media.js?v=201"></script>   <script src="js/study.js?v=201"></script>   <script src="js/game.js?v=201"></script>    <script src="js/talk-plan.js?v=201"></script> <script src="js/tutor.js?v=201"></script>    </body>
+  <script src="js/core.js?v=202"></script>    <script src="js/storage.js?v=202"></script> <script src="js/neural-tts.js?v=202"></script> <script src="js/kokoro-tts.js?v=202"></script> <script src="js/media.js?v=202"></script>   <script src="js/study.js?v=202"></script>   <script src="js/game.js?v=202"></script>    <script src="js/talk-plan.js?v=202"></script> <script src="js/tutor.js?v=202"></script>    </body>
 
 
 </html>

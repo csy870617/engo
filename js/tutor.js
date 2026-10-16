@@ -51,10 +51,85 @@ let tutorHintShown = false;
 let tutorSpeechToken = 0;
 let tutorAbort = null;        // 진행 중인 답 요청 (화면을 떠나거나 새로 시작하면 멈춘다)
 
-// ---------- Gemini 키 ----------
-function tutorGetKey() { try { return (localStorage.getItem(GEMINI_KEY_STORE) || "").trim(); } catch (e) { return ""; } }
-function tutorSetKey(k) { try { if (k) localStorage.setItem(GEMINI_KEY_STORE, k); else localStorage.removeItem(GEMINI_KEY_STORE); } catch (e) {} }
+// ---------- Gemini 키 (이 기기에만 · 암호화해서 저장) ----------
+// 웹 앱은 Keychain 같은 기기 암호화 저장소를 쓸 수 없다. 대신 브라우저 밖으로 꺼낼 수 없는 암호 열쇠(Web Crypto, extractable=false)를
+// IndexedDB에 두고, 키는 그 열쇠로 암호화한 글자만 저장한다 (저장 파일을 복사하거나 들여다봐도 키가 보이지 않게).
+// 쓰는 동안에는 메모리에만 풀어 둔다. 암호화를 못 쓰는 브라우저(일부 사생활 보호 창)면 예전처럼 그대로 저장한다
+const GEMINI_KEY_ENC = "geminiApiKeyEnc";
+let tutorKeyMem = "";          // 풀어 둔 키 (메모리에만)
+let tutorKeyLoading = null;    // 저장된 키 풀기 (한 번)
+let tutorKeyDone = false;
+let tutorKeyQueue = Promise.resolve();   // 저장·지우기를 차례대로 (빠르게 연결·끊기를 해도 순서가 꼬이지 않게)
+const tutorCanEncrypt = () => !!(window.crypto && crypto.subtle && window.indexedDB);
+function tutorKeyDb() {
+  return new Promise((res, rej) => {
+    const r = indexedDB.open("engo-secure", 1);
+    r.onupgradeneeded = () => r.result.createObjectStore("keys");
+    r.onsuccess = () => res(r.result); r.onerror = () => rej(r.error);
+  });
+}
+/** 암호 열쇠 (create면 없을 때 새로 만든다. 밖으로 꺼낼 수 없는 열쇠라 저장소를 복사해도 쓸 수 없다) */
+async function tutorCryptoKey(create) {
+  const db = await tutorKeyDb();
+  try {
+    let k = await new Promise((res, rej) => { const q = db.transaction("keys").objectStore("keys").get("gemini"); q.onsuccess = () => res(q.result || null); q.onerror = () => rej(q.error); });
+    if (!k && create) {
+      k = await crypto.subtle.generateKey({ name: "AES-GCM", length: 256 }, false, ["encrypt", "decrypt"]);
+      await new Promise((res, rej) => { const tx = db.transaction("keys", "readwrite"); tx.objectStore("keys").put(k, "gemini"); tx.oncomplete = res; tx.onerror = () => rej(tx.error); });
+    }
+    return k;
+  } finally { db.close(); }
+}
+async function tutorKeyEncrypt(plain) {
+  const ck = await tutorCryptoKey(true);
+  const iv = crypto.getRandomValues(new Uint8Array(12));
+  const ct = new Uint8Array(await crypto.subtle.encrypt({ name: "AES-GCM", iv }, ck, new TextEncoder().encode(plain)));
+  const all = new Uint8Array(iv.length + ct.length); all.set(iv); all.set(ct, iv.length);
+  let bin = ""; all.forEach(b => { bin += String.fromCharCode(b); });
+  return btoa(bin);
+}
+async function tutorKeyDecrypt(text) {
+  const all = Uint8Array.from(atob(text), c => c.charCodeAt(0));
+  const ck = await tutorCryptoKey(false);
+  if (!ck) throw new Error("암호 열쇠가 없어요");
+  return new TextDecoder().decode(await crypto.subtle.decrypt({ name: "AES-GCM", iv: all.slice(0, 12) }, ck, all.slice(12)));
+}
+/** 기기에 저장: 암호화해서 (못 하면 그대로) */
+async function tutorKeyPersist(k) {
+  if (!k) { try { localStorage.removeItem(GEMINI_KEY_ENC); localStorage.removeItem(GEMINI_KEY_STORE); } catch (e) {} return; }
+  try {
+    if (!tutorCanEncrypt()) throw new Error("암호화를 쓸 수 없는 브라우저");
+    const enc = await tutorKeyEncrypt(k);
+    localStorage.setItem(GEMINI_KEY_ENC, enc); localStorage.removeItem(GEMINI_KEY_STORE);
+  } catch (e) {
+    console.warn("키를 암호화하지 못해 그대로 저장해요", e);
+    try { localStorage.setItem(GEMINI_KEY_STORE, k); localStorage.removeItem(GEMINI_KEY_ENC); } catch (e2) {}
+  }
+}
+/** 앱을 열 때 한 번: 저장된 키를 풀어 메모리에 둔다 (예전에 그대로 저장된 키는 암호화해서 다시 저장) */
+function tutorKeyLoad() {
+  if (!tutorKeyLoading) tutorKeyLoading = (async () => {
+    let plain = "", enc = "";
+    try { plain = (localStorage.getItem(GEMINI_KEY_STORE) || "").trim(); enc = localStorage.getItem(GEMINI_KEY_ENC) || ""; } catch (e) {}
+    if (enc) {
+      try { tutorKeyMem = (await tutorKeyDecrypt(enc)).trim(); }
+      catch (e) { console.warn("저장된 키를 풀지 못했어요 (다시 연결해 주세요)", e); try { localStorage.removeItem(GEMINI_KEY_ENC); } catch (e2) {} }
+    }
+    if (!tutorKeyMem && plain) tutorKeyMem = plain;
+    if (plain && tutorCanEncrypt()) await tutorKeyPersist(tutorKeyMem);
+  })().catch(e => console.warn(e)).finally(() => { tutorKeyDone = true; });
+  return tutorKeyLoading;
+}
+tutorKeyLoad();
+function tutorGetKey() { return tutorKeyMem; }
+/** 키 바꾸기. persist=false면 메모리에만 (연결하기에서 확인이 끝나기 전) */
+function tutorSetKey(k, persist = true) {
+  tutorKeyMem = (k || "").trim();
+  if (persist) { const v = tutorKeyMem; tutorKeyQueue = tutorKeyQueue.then(() => tutorKeyPersist(v)); }
+}
 const tutorReady = () => !!tutorGetKey();
+/** 화면에 보여 줄 키 (끝 4자리만) */
+const tutorKeyMasked = () => { const k = tutorGetKey(); return k ? "…" + k.slice(-4) : ""; };
 
 // ---------- Gemini 요청 ----------
 class GeminiError extends Error {
@@ -111,14 +186,23 @@ async function geminiFetch(model, method, body, signal) {
 /** 키 문제(잘못된 키·권한 없음)인지 */
 const geminiKeyProblem = e => e && (e.reason === "API_KEY_INVALID" || e.reason === "NO_KEY" || e.status === 401 ||
   /ACCESS_TOKEN|API_KEY/.test(e.reason || "") || /api key|credential/i.test(e.message || "") && (e.status === 400 || e.status === 403));
+/** 키는 맞지만 키 쪽 설정 문제(결제·지역 제한·API 꺼짐·정지)인지: 모델을 바꿔도 같으니 바로 알린다 */
+const geminiSetupKind = e => {
+  if (!e || geminiKeyProblem(e) || e.status === 429) return "";
+  const m = (e.message || "") + " " + (e.reason || "");
+  if (/location is not supported|not (available|supported) in your (country|region)|unsupported_location/i.test(m)) return "region";
+  if (/BILLING|billing|payment|prepay/i.test(m)) return "billing";
+  if (/SERVICE_DISABLED|CONSUMER_SUSPENDED|has not been used in project|is disabled|been suspended|PROJECT_DENIED/i.test(m)) return "disabled";
+  return "";
+};
 /** 모델을 바꿔 다시 해 볼 만한 오류인지 (사용량 초과·모델 없음/권한 없음·서버 혼잡) */
-const geminiTryNext = e => e && !geminiKeyProblem(e) && (e.status === 429 || e.status === 404 || e.status === 403 || e.status === 400 || e.status >= 500 || e instanceof TypeError);
+const geminiTryNext = e => e && !geminiKeyProblem(e) && !geminiSetupKind(e) && (e.status === 429 || e.status === 404 || e.status === 403 || e.status === 400 || e.status >= 500 || e instanceof TypeError);
 /** 여러 모델이 다 실패했을 때 보여 줄 오류: 키 문제 > 사용량 초과 > 늦음·혼잡 > 기타 > 모델 없음 */
-const geminiErrRank = e => !e ? 0 : geminiKeyProblem(e) ? 6 : e.reason === "OFFLINE" ? 5 : e.status === 429 ? 4 : (e.status >= 500 || e instanceof TypeError) ? 3 : (e.status === 404 || e.status === 403) ? 1 : 2;
+const geminiErrRank = e => !e ? 0 : geminiKeyProblem(e) ? 7 : geminiSetupKind(e) ? 6 : e.reason === "OFFLINE" ? 5 : e.status === 429 ? 4 : (e.status >= 500 || e instanceof TypeError) ? 3 : (e.status === 404 || e.status === 403) ? 1 : 2;
 // 구글 서버가 잠깐 바쁘거나(5xx) 연결이 순간 끊긴 건 같은 모델로 한 번 더 해 보면 되는 경우가 많다
 const geminiBlip = e => e && e.reason !== "TIMEOUT" && (e.status >= 500 || e instanceof TypeError);   // 시간 초과는 같은 모델로 다시 기다리지 않고 바로 다음 모델로
 /** 잠깐의 문제인지 (늦음·서버 혼잡·연결 끊김): 다시 말하거나 조금 뒤면 된다 */
-const geminiTransient = e => !!e && !geminiKeyProblem(e) && e.status !== 429 && e.reason !== "EMPTY" && (e.reason === "TIMEOUT" || e.reason === "OFFLINE" || e.status >= 500 || e instanceof TypeError);
+const geminiTransient = e => !!e && !geminiKeyProblem(e) && !geminiSetupKind(e) && e.status !== 429 && e.reason !== "EMPTY" && (e.reason === "TIMEOUT" || e.reason === "OFFLINE" || e.status >= 500 || e instanceof TypeError);
 /** 응답이 멈췄을 때 끝없이 기다리지 않게: 바깥 signal(사용자가 멈춤)과 시간 제한을 함께 쓰는 AbortController.
  *  시간이 다 되면 timedOut()이 true → '서버가 늦음(504)'으로 보고 다음 시도로 넘어간다 */
 function geminiTimer(outer, firstMs) {
@@ -240,13 +324,23 @@ async function geminiJSON(messages, opts, signal) {
 /** 사용자에게 보여 줄 오류 설명 */
 function geminiErrorText(e) {
   if (!e) return "문제가 생겼어요. 잠시 뒤 다시 해 주세요.";
-  if (geminiKeyProblem(e)) return "Gemini 키가 맞지 않거나 사용할 수 없어요. 키를 다시 확인해 주세요.";
-  if (e.status === 429) return "지금은 사용량이 다 찼어요. 잠시 뒤나 내일 다시 해 주세요.";
+  // 키 쪽 문제는 '앱 오류가 아니라 내 키의 한도·설정 문제'임을 분명히 알린다
+  if (geminiKeyProblem(e)) return "연결한 Gemini 키가 맞지 않거나 만료됐어요 (앱 오류가 아니에요). 구글 AI Studio에서 키를 확인하고 다시 연결해 주세요.";
+  const setup = geminiSetupKind(e);
+  if (setup === "region") return "지금 있는 나라·지역에서는 구글이 이 Gemini 키를 막고 있어요 (앱 오류가 아니라 구글 쪽 지역 제한이에요).";
+  if (setup === "billing") return "내 Gemini 키의 결제 설정에 문제가 있어요 (앱 오류가 아니에요). 구글 AI Studio에서 결제·요금제를 확인해 주세요.";
+  if (setup === "disabled") return "내 Gemini 키의 프로젝트에서 Gemini API가 꺼져 있거나 정지됐어요 (앱 오류가 아니에요). 구글 AI Studio에서 새 키를 만들어 다시 연결해 주세요.";
+  if (e.status === 429) {
+    const m = e.message || "";
+    if (/prepay|credits are depleted/i.test(m)) return "내 Gemini 키의 결제 크레딧을 다 썼어요 (앱 오류가 아니에요). 구글 AI Studio에서 결제 상태를 확인해 주세요.";
+    if (/per ?day|PerDay|daily/i.test(m)) return "내 Gemini 키의 오늘 무료 사용 한도를 다 썼어요 (앱 오류가 아니에요). 내일 다시 쓸 수 있어요.";
+    return "내 Gemini 키의 사용 한도가 잠시 찼어요 (앱 오류가 아니에요). 1분쯤 뒤에 다시 해 주세요.";
+  }
   if (e.reason === "OFFLINE") return "인터넷에 연결되어 있지 않아요. 연결을 확인해 주세요.";
   if (e.reason === "TIMEOUT") return "구글 서버 응답이 너무 늦어요. 인터넷 연결을 확인하고 다시 해 주세요.";
   if (e.reason === "EMPTY") return "AI가 답을 만들지 못했어요. 한 번 더 해 주세요.";
   if (e.status === 404) return "지금은 이 키로 대화할 수 없어요. 잠시 뒤 다시 해 주세요.";
-  if (e.status === 403) return "이 키로는 Gemini를 쓸 수 없어요. AI Studio에서 새 키를 만들어 다시 연결해 주세요.";
+  if (e.status === 403) return "이 Gemini 키에 사용 권한이 없어요 (앱 오류가 아니에요). 구글 AI Studio에서 새 키를 만들어 다시 연결해 주세요.";
   if (e.status >= 500) return "구글 서버가 잠시 바빠요. 조금 뒤에 다시 해 주세요.";
   if (e instanceof TypeError) return "인터넷 연결을 확인해 주세요.";
   return e.message && /[가-힣]/.test(e.message) ? e.message : "문제가 생겼어요. 잠시 뒤 다시 해 주세요.";   // 영어 원문 오류는 보여 주지 않는다
@@ -322,7 +416,7 @@ function showTutorSection(which) {
 function renderTutorCredit() {
   const el = tutorEl("tutor-model-name");
   if (!el) return;
-  el.textContent = tutorReady() ? "AI: Google Gemini · 내 키로 연결돼 있어요" : "AI: Google Gemini";
+  el.textContent = tutorReady() ? `AI: Google Gemini · 내 키(${tutorKeyMasked()})로 연결돼 있어요` : "AI: Google Gemini";
   el.title = tutorReady() ? tutorModelName("chat") : "";
 }
 
@@ -337,6 +431,7 @@ function tutorLogFollow() {
 }
 /** 튜터 페이지에 들어올 때 (core.js goTo) */
 function renderTutorPage() {
+  if (!tutorKeyDone) { tutorKeyLoad().then(() => { if (currentPageName === "tutor") renderTutorPage(); }); return; }   // 저장된 키를 푸는 중 (잠깐)
   tutorLogFollow();
   const hd = document.querySelector("header"); if (hd) hd.inert = true;   // 튜터 화면에 가려진 위쪽 메뉴는 키보드로도 닿지 않게
   tutorCheckMicPermission();
@@ -533,17 +628,19 @@ async function connectTutorKey() {
   if (!/^[A-Za-z0-9._\-]{20,}$/.test(key)) { showTutorKeyMsg("키 모양이 이상해요. AI Studio에서 복사 버튼으로 키 전체를 복사해 그대로 붙여 넣어 주세요.", true); return; }
   btn.disabled = true; btn.textContent = "확인 중…"; showTutorKeyMsg("", false);
   const prev = tutorGetKey();
-  tutorSetKey(key);
+  tutorSetKey(key, false);   // 확인이 끝날 때까지는 메모리에만
   try {
     await geminiGenerate([{ role: "user", content: "Reply with just: OK" }], { temperature: 0, maxTokens: 20, chain: "aux" }).catch(e => { if (e.reason !== "EMPTY") throw e; });   // 빈 답이어도 키는 맞다
+    tutorSetKey(key);
     inp.value = "";
     showTutorKeyMsg("", false);
     renderTutorPage();
   } catch (e) {
     console.warn("키 확인 실패", e);
     // 사용량 초과·서버 혼잡은 키 자체는 맞으니 저장해 둔다
-    if (geminiKeyProblem(e) || !(e.status === 429 || e.status >= 500)) { tutorSetKey(prev); showTutorKeyMsg(geminiErrorText(e), true); }
-    else {   // 키는 맞는데 구글이 바쁘거나 사용량이 찼다 → 키는 저장하고 시작 화면으로 (설명은 창으로, 숨겨진 칸에 쓰지 않게)
+    if (geminiKeyProblem(e) || !(e.status === 429 || e.status >= 500)) { tutorSetKey(prev, false); showTutorKeyMsg(geminiErrorText(e), true); }
+    else {
+      tutorSetKey(key);   // 키는 맞는데 구글이 바쁘거나 사용량이 찼다 → 키는 저장하고 시작 화면으로 (설명은 창으로, 숨겨진 칸에 쓰지 않게)
       inp.value = ""; showTutorKeyMsg("", false);
       renderTutorPage();
       tutorAlert("키는 연결됐어요.\n" + geminiErrorText(e));
