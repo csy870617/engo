@@ -912,6 +912,12 @@ if (typeof ResizeObserver !== "undefined") {
   const ro = new ResizeObserver(() => tutorRelayout());
   ["tutor-call", "tutor-lobby"].forEach(id => { const el = tutorEl(id); if (el) ro.observe(el); });
 } else window.addEventListener("resize", tutorRelayout);
+// 입력칸을 누르면 브라우저가 입력칸을 보여 주려고 넘침을 숨긴 칸(대화 화면)까지 밀어 올린다 → 튜터가 화면 밖으로 사라진다.
+// 이 칸들은 스크롤되면 안 되므로 바로 제자리로 (대화 기록 칸만 스크롤된다. 키보드 위 크기는 tutorFitViewport가 맞춘다)
+["tutor-call", "tutor-chat-area"].forEach(id => {
+  const el = tutorEl(id);
+  if (el) el.addEventListener("scroll", () => { if (el.scrollTop || el.scrollLeft) { el.scrollTop = 0; el.scrollLeft = 0; } }, { passive: true });
+});
 // Esc: 열린 판 → 힌트 순서로 닫는다 (알림 창은 창이 직접 닫는다)
 document.addEventListener("keydown", e => {
   if (e.key !== "Escape" || tutorDialogOpen || !tutorPageVisible()) return;
