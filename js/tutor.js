@@ -814,6 +814,10 @@ function tutorTapTutor(e) {
 function tutorInputFocus(on) {
   const room = tutorEl("tutor-chat-area");
   if (room) room.classList.toggle("typing", on);
+  // 앱 안 브라우저(안드로이드 WebView)는 키보드가 떠도 화면 크기를 알려 주지 않고 창 전체를 밀어 올린다 →
+  // 누르는 순간 키보드가 올라올 자리만큼 미리 줄여 둔다 (입력칸이 키보드 위에 있으면 밀어 올리지 않는다). 실제 크기를 알게 되면 그걸로
+  tutorKbGuess = !!on && tutorEnv().android && !!(window.matchMedia && matchMedia("(pointer: coarse)").matches);
+  tutorFitViewport();
   tutorLayout();
   tutorRefit();
   setTimeout(() => { const log = tutorEl("tutor-log"); log.scrollTop = log.scrollHeight; }, 300);   // 그림 크기가 바뀐 뒤 최근 대화가 보이게
@@ -839,22 +843,29 @@ function tutorFitViewport() {
   if (!inp0 || document.activeElement !== inp0 || !tutorBaseH) tutorBaseH = window.innerHeight;   // 키보드가 없을 때의 높이 (화면 전체를 줄이는 인앱 브라우저도 알아채게)
   // 안드로이드 크롬: 키보드가 화면 위에 덮이고 그 높이를 알려 준다 (tutorVirtualKeyboard) → 키보드 위만큼으로 줄인다. 그 밖(아이폰 등)은 보이는 영역(visualViewport)에 맞춘다
   const open = tutorVkOn ? tutorVkH > 80 : Math.max(window.innerHeight, tutorBaseH) - vv.height > 80;
-  const top = tutorVkOn ? 0 : vv.offsetTop, height = tutorVkOn ? window.innerHeight - tutorVkH : vv.height;
+  let top = tutorVkOn ? 0 : vv.offsetTop, height = tutorVkOn ? window.innerHeight - tutorVkH : vv.height;
+  const guess = !open && tutorKbGuess && document.activeElement === inp0;   // 키보드 크기를 모른다: 어림한 만큼 줄여 둔다
+  if (guess) { top = 0; height = window.innerHeight - tutorKbEstimate(); }
   const log = tutorEl("tutor-log");
   const pinned = log && log.scrollHeight - log.scrollTop - log.clientHeight < 40;   // 맨 아래를 보고 있었으면 크기가 바뀐 뒤에도 맨 아래로
   if (pinned) requestAnimationFrame(() => { log.scrollTop = log.scrollHeight; });
   // 아이폰은 입력칸을 보여 주려고 넘침을 숨긴 칸까지 밀어 올리기도 한다 → 제자리로 (위쪽 튜터가 잘려 보이지 않게)
   [call, tutorEl("tutor-chat-area")].forEach(el => { if (el && el.scrollTop) el.scrollTop = 0; });
-  if (open) { call.style.top = top + "px"; call.style.height = height + "px"; call.style.bottom = "auto"; }
+  if (open || guess) { call.style.top = top + "px"; call.style.height = height + "px"; call.style.bottom = "auto"; }
   else {
     call.style.top = call.style.height = call.style.bottom = "";
     // 아이폰은 키보드가 뜰 때 페이지를 위로 밀어 올리고, 닫혀도 그대로 두는 일이 있다 → 제자리로
     if (tutorPageVisible() && (window.scrollY || document.documentElement.scrollTop)) window.scrollTo(0, 0);
   }
   // 안드로이드 뒤로 가기로 키보드만 닫으면 입력칸에 초점이 남아 '글 쓰는 중'으로 멈춰 있게 된다 → 초점을 풀어 다시 듣게
-  if (tutorKbOpen && !open) { const inp = tutorEl("tutor-input"); if (inp && document.activeElement === inp) inp.blur(); }
-  tutorKbOpen = open;
+  if (tutorKbReal && !open) { const inp = tutorEl("tutor-input"); if (inp && document.activeElement === inp) inp.blur(); }
+  tutorKbReal = open;
+  if (open) tutorKbGuess = false;                    // 실제 키보드 크기를 알려 주는 화면이다 (어림은 그만)
+  tutorKbOpen = open || guess;
 }
+let tutorKbGuess = false, tutorKbReal = false;   // 키보드가 뜰 텐데 크기를 알려 주지 않는 화면 (앱 안 브라우저)
+/** 휴대폰 키보드 높이 어림 (보통 화면의 40% 안팎 · 위쪽 도구 줄 포함) */
+const tutorKbEstimate = () => Math.round(Math.max(260, Math.min(430, window.innerHeight * 0.43)));
 if (window.visualViewport) { visualViewport.addEventListener("resize", tutorFitViewport); visualViewport.addEventListener("scroll", tutorFitViewport); window.addEventListener("resize", tutorFitViewport); }
 window.addEventListener("orientationchange", () => { tutorBaseH = 0; });
 // 안드로이드 크롬(홈 화면 앱 포함)은 키보드가 뜨면 화면을 밀어 올려 위쪽 튜터가 화면 밖으로 나가 버린다.
