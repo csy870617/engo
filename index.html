@@ -35,7 +35,7 @@
   <meta property="og:image" content="https://csy870617.github.io/engo/logo.png">
   <meta property="og:site_name" content="ENGO">
 
-  <link rel="stylesheet" href="style.css?v=204" />
+  <link rel="stylesheet" href="style.css?v=205" />
 
   <script>
     // 광고: AI 튜터 키를 연결한 기기에서는 광고 스크립트를 싣지 않는다 (바깥 스크립트가 같은 페이지에서 키에 닿지 않게)
@@ -542,11 +542,14 @@
           <!-- 시작 화면: 들어오면 먼저 튜터·수준·목소리를 고르고 '시작하기' -->
           <div id="tutor-lobby" class="call-sheet tutor-lobby hidden">
             <div class="lobby-title">오늘의 영어 대화</div>
+            <p class="lobby-tip">🎧 실시간 음성 대화예요 · 데이터를 써서 와이파이를 권해요</p>
             <div id="tutor-chars-lobby" class="lobby-chars" role="group" aria-label="튜터 고르기"></div>
             <div class="call-set-row"><span>내 영어 수준</span><div id="tutor-levels-lobby" class="tutor-levels" role="group" aria-label="내 영어 수준"></div></div>
             <div class="call-set-row"><span>🔊 목소리</span><div class="lobby-voice"><select id="tutor-voice-lobby" class="tutor-select" onchange="changeTutorVoice(this)" aria-label="튜터 목소리"></select><button class="chip-btn play-chip tutor-voice-try" onclick="tutorPreviewVoice()" aria-label="목소리 들어 보기">▶ 듣기</button></div></div>
             <p class="tutor-voice-note hidden"></p>
-            <p class="lobby-tip">🎧 실시간 음성 대화예요 (와이파이 권장) · 말하는 방법은 대화 중 ⚙️ 설정에서</p>
+            <div class="call-set-row"><span>📨 보내는 방법</span><div id="tutor-send-lobby" class="tutor-levels" role="group" aria-label="말을 보내는 방법"></div></div>
+            <p class="tutor-send-tip hidden">말을 다 한 뒤 <b>➤</b>(또는 튜터)를 눌러야 보내져요. 중간에 생각하느라 멈춰도 넘어가지 않아요.</p>
+            <div class="call-set-row tutor-endwait-row"><span>⏱ 말 끝 기다리기</span><div id="tutor-endwait-lobby" class="tutor-levels" role="group" aria-label="말이 멈춘 뒤 기다리는 시간"></div></div>
             <div class="lobby-foot">
               <button id="tutor-start-btn" class="btn-main lobby-start" onclick="tutorStartFromLobby(false)">▶ 시작하기</button>
               <button id="tutor-new-btn" class="chip-btn lobby-new hidden" onclick="tutorStartFromLobby(true)">🔄 새 대화 시작</button>
@@ -708,15 +711,15 @@
 
   <div id="neural-loading" class="neural-loading hidden">🎙 자연스러운 음성 준비 중…</div>
 
-  <script src="pattern.js?v=204"></script>
-  <script src="conversation.js?v=204"></script>
-  <script src="idiom.js?v=204"></script>
-  <script src="word.js?v=204"></script>
+  <script src="pattern.js?v=205"></script>
+  <script src="conversation.js?v=205"></script>
+  <script src="idiom.js?v=205"></script>
+  <script src="word.js?v=205"></script>
 
   <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
   <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
   <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
-  <script src="js/core.js?v=204"></script>    <script src="js/storage.js?v=204"></script> <script src="js/neural-tts.js?v=204"></script> <script src="js/kokoro-tts.js?v=204"></script> <script src="js/media.js?v=204"></script>   <script src="js/study.js?v=204"></script>   <script src="js/game.js?v=204"></script>    <script src="js/talk-plan.js?v=204"></script> <script src="js/tutor.js?v=204"></script>    </body>
+  <script src="js/core.js?v=205"></script>    <script src="js/storage.js?v=205"></script> <script src="js/neural-tts.js?v=205"></script> <script src="js/kokoro-tts.js?v=205"></script> <script src="js/media.js?v=205"></script>   <script src="js/study.js?v=205"></script>   <script src="js/game.js?v=205"></script>    <script src="js/talk-plan.js?v=205"></script> <script src="js/tutor.js?v=205"></script>    </body>
 
 
 </html>

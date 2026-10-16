@@ -1205,11 +1205,11 @@ html.tutor-lock body { position: fixed; inset: 0; width: 100%; }
 .talk-room[data-mode="listening"][data-hearing] .talk-hero::before { height: 4px; animation: none; opacity: 1; }
 
 /* AI 튜터 시작 화면: 튜터·수준·목소리 고르고 시작하기 */
-.tutor-lobby { max-height: 64%; z-index: 5; }   /* 설정·피드백 판(6)은 시작 화면 위에 열린다 */
+.tutor-lobby { max-height: 72%; z-index: 5; }   /* 설정·피드백 판(6)은 시작 화면 위에 열린다 */
 .talk-room.lobby .talk-input, .talk-room.lobby .talk-hint, .talk-room.lobby .talk-gear { display: none; }
 .talk-room.lobby .talk-hero { cursor: default; }
 .talk-room.lobby .talk-name { display: none; }   /* 시작 화면은 판에 제목이 있다 (판 위로 이름표 끝이 비치지 않게) */
-.lobby-title { color: #fff; font-weight: 700; font-size: 1.05rem; margin-bottom: 10px; }
+.lobby-title { color: #fff; font-weight: 700; font-size: 1.05rem; margin-bottom: 2px; }
 .lobby-chars { display: flex; gap: 10px; margin-bottom: 4px; }
 .lobby-char { flex: 1; display: flex; align-items: center; gap: 10px; padding: 8px; border-radius: 14px; border: 2px solid rgba(255,255,255,0.08); background: rgba(255,255,255,0.04); color: var(--text-sub); font-family: inherit; font-size: 0.95rem; font-weight: 700; cursor: pointer; }
 .lobby-char img { width: 44px; height: 44px; border-radius: 50%; object-fit: cover; object-position: center 20%; }
@@ -1218,12 +1218,11 @@ html.tutor-lock body { position: fixed; inset: 0; width: 100%; }
 .lobby-start { width: 100%; margin-top: 12px; font-size: 1.05rem; }
 @media (max-height: 700px) {                  /* 낮은 화면: 시작 화면을 촘촘하게 */
   .tutor-lobby .call-set-row { padding: 8px 0; }
-  .tutor-lobby .lobby-tip { display: none; }
   .lobby-char img { width: 36px; height: 36px; }
 }
 .lobby-new { display: block; margin: 10px auto 0; }
 .lobby-new.hidden { display: none; }
-.lobby-tip { margin: 10px 0 0; font-size: 0.75rem; color: var(--text-sub); text-align: center; line-height: 1.5; }
+.lobby-tip { margin: 0 0 10px; font-size: 0.75rem; color: var(--text-sub); line-height: 1.5; }
 .lobby-voice { display: flex; gap: 6px; align-items: center; flex: 0 1 280px; min-width: 0; }
 .lobby-voice .tutor-select { flex: 1; min-width: 0; }
 .tutor-voice-try { flex: 0 0 auto; width: 76px; padding: 7px 4px; font-size: 0.8rem; text-align: center; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }   /* ▶ 듣기 · 준비 중… · ■ 그만 (폭이 같아 버튼이 흔들리지 않게) */
