@@ -743,7 +743,8 @@ function tutorAfterSpeak() {
 /** 튜터 말이 끝난 뒤 내 말을 보내기 시작하기까지: 스피커에서 아직 나는 끝소리가 마이크로 들어가지 않게 (블루투스처럼 늦게 들리면 그만큼 기다린다) */
 function tutorHandoffMs() {
   if (typeof NeuralTTS === "undefined") return 250;
-  return Math.max(150, Math.min(450, Math.round(NeuralTTS.outputLatencyMs() + 80)));
+  const extra = tutorEnv().android ? 200 : 0;   // 안드로이드는 에코 제거를 꺼서 스피커 끝소리가 다 사라지기를 조금 더 기다린다
+  return Math.max(150, Math.min(650, Math.round(NeuralTTS.outputLatencyMs() + 80 + extra)));
 }
 let tutorPausedAt = 0;   // 대화를 잠시 멈춘 때 (판을 열거나 화면을 떠날 때 — 돌아오면 튜터가 하던 얘기로 데려간다)
 /** 학습자가 대답할 차례인 튜터의 마지막 질문 (없으면 "") */
@@ -836,11 +837,16 @@ function tutorFitViewport() {
   if (!tutorPageVisible()) { if (call.style.height) call.style.top = call.style.height = call.style.bottom = ""; tutorKbOpen = false; tutorBaseH = 0; return; }
   const inp0 = tutorEl("tutor-input");
   if (!inp0 || document.activeElement !== inp0 || !tutorBaseH) tutorBaseH = window.innerHeight;   // 키보드가 없을 때의 높이 (화면 전체를 줄이는 인앱 브라우저도 알아채게)
-  // 안드로이드 크롬: 키보드가 화면 위에 덮이고 그 높이를 알려 준다 (tutorVirtualKeyboard) → 키보드 위만큼으로 줄인다. 그 밖(아이폰 등)은 보이는 영역(visualViewport)에 맞춘다
-  const open = tutorVkOn ? tutorVkH > 80 : Math.max(window.innerHeight, tutorBaseH) - vv.height > 80;
-  let top = tutorVkOn ? 0 : vv.offsetTop, height = tutorVkOn ? window.innerHeight - tutorVkH : vv.height;
-  const guess = !open && tutorKbGuess && document.activeElement === inp0;   // 키보드 크기를 모른다: 어림한 만큼 줄여 둔다
-  if (guess) { top = 0; height = window.innerHeight - tutorKbEstimate(); }
+  // 키보드 크기 알아내기 (먼저 맞는 것으로):
+  // ① 보이는 영역(visualViewport)이 줄었다 — 아이폰·크롬·앱 안 브라우저 대부분 (밀려 올라간 만큼 offsetTop도 따라간다)
+  // ② 키보드가 높이를 알려 준다 (VirtualKeyboard API, 안드로이드 크롬)
+  // ③ 아무것도 알려 주지 않는다 — 어림한 만큼 줄여 둔다 (그래도 밀려 올라가면 offsetTop을 따라간다)
+  const vvOpen = Math.max(window.innerHeight, tutorBaseH) - vv.height > 80, vkOpen = tutorVkOn && tutorVkH > 80;
+  const open = vvOpen || vkOpen;
+  let top = vv.offsetTop, height = vv.height;
+  if (!vvOpen && vkOpen) { height = window.innerHeight - tutorVkH - vv.offsetTop; }
+  const guess = !open && tutorKbGuess && document.activeElement === inp0;
+  if (guess) height = window.innerHeight - tutorKbEstimate();
   const log = tutorEl("tutor-log");
   const pinned = log && log.scrollHeight - log.scrollTop - log.clientHeight < 40;   // 맨 아래를 보고 있었으면 크기가 바뀐 뒤에도 맨 아래로
   if (pinned) requestAnimationFrame(() => { log.scrollTop = log.scrollHeight; });
@@ -2443,7 +2449,10 @@ function tutorMicStart() {
   m.ready = (async () => {
     try {
       if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia || !m.ctx) { const e = new Error("no getUserMedia"); e.name = "NotSupportedError"; throw e; }
-      m.stream = await navigator.mediaDevices.getUserMedia({ audio: { echoCancellation: true, noiseSuppression: true, autoGainControl: true, channelCount: 1 } });
+      // 안드로이드는 에코 제거를 켜면 '통화' 소리로 바뀌어 음량 버튼이 통화 음량만 바꾸고 미디어 음량이 안 바뀐다 → 끈다
+      // (튜터가 말하는 동안에는 내 소리를 보내지 않아서 에코 제거가 없어도 튜터 목소리가 다시 들어가지 않는다)
+      const android = tutorEnv().android;
+      m.stream = await navigator.mediaDevices.getUserMedia({ audio: { echoCancellation: !android, noiseSuppression: !android, autoGainControl: true, channelCount: 1 } });
       if (m.closed) { drop(); return false; }
       tutorMicDenied = false; tutorNoMic = false;
       const ctx = m.ctx;
