@@ -439,6 +439,10 @@ function tutorMarkRecent() {
     last.els.forEach(el => show.add(el));
     for (let i = turns.length - 2; i >= 0; i--) if (turns[i].me !== last.me) { turns[i].els.forEach(el => show.add(el)); break; }
   }
+  // 고친 문장은 확인이 늦게 와서 내가 벌써 다음 말을 시작했을 때 붙기도 한다 → 내 최근 두 마디 것이면 그 말과 함께 계속 보여 준다
+  const meTurns = turns.filter(tn => tn.me && tn.els[0].matches(".tutor-msg.me"));
+  const tipTurn = meTurns.slice(-2).reverse().find(tn => tn.els.some(el => el.matches(".tutor-tip")));
+  if (tipTurn) tipTurn.els.forEach(el => show.add(el));
   kids.forEach(el => el.classList.toggle("cur", show.has(el)));
 }
 /** 튜터 페이지에 들어올 때 (core.js goTo) */
