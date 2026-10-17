@@ -422,28 +422,6 @@ function tutorLogFollow() {
   log.addEventListener("scroll", () => { const d = log.scrollHeight - log.scrollTop - log.clientHeight; tutorLogPinned = d < 60; }, { passive: true });
   new MutationObserver(() => { if (tutorLogPinned) log.scrollTop = log.scrollHeight; })
     .observe(log, { childList: true, subtree: true, characterData: true, attributes: true, attributeFilter: ["class"] });
-  new MutationObserver(tutorMarkRecent).observe(log, { childList: true });
-  tutorMarkRecent();
-}
-/** 휴대폰 세로 화면은 대화를 영상 위 자막처럼 가장 최근에 주고받은 말만 보여 준다: 마지막 말 + 그 앞의 상대 말 (한 마디씩).
- *  말(튜터 말·내 말·한국어 도움 카드)마다 바로 뒤에 붙은 고친 문장·칭찬은 그 말과 함께 보이고, 나머지는 숨긴다 (.cur) */
-function tutorMarkRecent() {
-  const log = tutorEl("tutor-log"); if (!log) return;
-  const kids = Array.from(log.children), turns = [];
-  kids.forEach(el => {
-    if (turns.length && !el.matches(".tutor-msg, .tutor-ko-card")) { turns[turns.length - 1].els.push(el); return; }
-    turns.push({ me: el.matches(".tutor-msg.me, .tutor-ko-card"), els: [el] });
-  });
-  const last = turns[turns.length - 1], show = new Set();
-  if (last) {
-    last.els.forEach(el => show.add(el));
-    for (let i = turns.length - 2; i >= 0; i--) if (turns[i].me !== last.me) { turns[i].els.forEach(el => show.add(el)); break; }
-  }
-  // 고친 문장은 확인이 늦게 와서 내가 벌써 다음 말을 시작했을 때 붙기도 한다 → 내 최근 두 마디 것이면 그 말과 함께 계속 보여 준다
-  const meTurns = turns.filter(tn => tn.me && tn.els[0].matches(".tutor-msg.me"));
-  const tipTurn = meTurns.slice(-2).reverse().find(tn => tn.els.some(el => el.matches(".tutor-tip")));
-  if (tipTurn) tipTurn.els.forEach(el => show.add(el));
-  kids.forEach(el => el.classList.toggle("cur", show.has(el)));
 }
 /** 튜터 페이지에 들어올 때 (core.js goTo) */
 function renderTutorPage() {
@@ -491,7 +469,7 @@ function showTutorLobby() {
   tutorEl("tutor-lobby").classList.remove("hidden");
   tutorRelayout();
   const going = tutorLearnerLines.length > 0;   // 하던 대화가 있으면 '이어서 대화하기'가 먼저
-  tutorEl("tutor-start-btn").textContent = going ? "▶ 이어서 대화하기" : "▶ 시작하기";
+  tutorEl("tutor-start-btn").textContent = going ? "이어서 대화하기" : "대화 시작하기";
   tutorEl("tutor-new-btn").classList.toggle("hidden", !going);
   setTutorStatus(`${tutorName()}와 대화할 준비가 됐어요`, "");
 }
@@ -761,7 +739,7 @@ function tutorAfterSpeak() {
   if (!tutorCallActive || !tutorPageVisible()) return;
   if (tutorTypingNow()) {                          // 글로 쓰는 중이면 듣지 않는다
     const inp = tutorEl("tutor-input");
-    if (inp.value.trim() && document.activeElement !== inp) setTutorStatus("입력칸의 문장을 ➤로 보내 보세요", "");
+    if (inp.value.trim() && document.activeElement !== inp) setTutorStatus("입력칸의 문장을 보내기 단추로 보내 보세요", "");
     return;
   }
   if (!tutorCanListen()) { if (!tutorSpeaking && !tutorTurn && !tutorExpect.length && !tutorOutbox.length) setTutorStatus(tutorNoMic || tutorMicDenied ? "아래 입력칸에 적어서 말해 보세요" : tutorIdleMsg(), ""); return; }
@@ -1080,24 +1058,15 @@ function tutorLayout() {
   room.classList.toggle("wide", wide);
   room.classList.toggle("stage", stage);
   const W = room.clientWidth, H = room.clientHeight;
-  if (stage) {
-    // 휴대폰 세로 화면: 영상이 화면 전체. 얼굴이 위에서 28% 높이에 오게 영상을 조금 크게 띄운다
-    // (키보드가 올라와도 영상은 그대로 — 아래쪽 자막·입력줄과 키보드에 얼굴이 가리지 않게)
-    room.classList.remove("compact");
-    const f = tutorChar().face || 0.42, T = 0.28;
-    const A = Math.max(H, W * TUTOR_VIDEO.h / TUTOR_VIDEO.w, H * (1 - T) / (1 - f));   // 영상 높이 (화면을 덮으면서 얼굴이 T에 오는 가장 작은 크기)
-    room.style.setProperty("--av-h", Math.round(A) + "px");
-    room.style.setProperty("--av-top", Math.round(T * H - f * A) + "px");
-    room.style.setProperty("--face-y", "50%");
-    return;
-  }
-  // 작게: 키보드가 올라왔거나(휴대폰은 입력칸을 누르는 순간부터 — 키보드가 곧 올라온다) 낮은 화면
+  // 작게: (휴대폰 세로 화면이 아닌) 시작 화면에서 키보드가 올라왔거나 낮은 화면
   const touch = !!(window.matchMedia && matchMedia("(pointer: coarse)").matches);
-  const compact = !wide && ((touch && room.classList.contains("typing")) || tutorKbOpen || H < 520);
+  const compact = !wide && !stage && ((touch && room.classList.contains("typing")) || tutorKbOpen || H < 520);
   room.classList.toggle("compact", compact);
   const hero = room.querySelector(".talk-hero");
   let h, anchor;                                   // anchor: 얼굴 가운데가 놓일 칸 안의 높이 비율
   if (wide) { h = H; anchor = 0.42; }
+  // 휴대폰 세로 화면: 위에 영상 통화 화면 (키보드가 없을 때 높이의 34% — 키보드가 올라와도 그대로), 아래로 대화
+  else if (stage) { h = clamp(H * 0.34, 200, Math.min(440, W * 1.1)); anchor = 0.52; }
   else if (lobby) {
     const sheet = tutorEl("tutor-lobby"), sh = sheet ? sheet.offsetHeight : H * 0.6;
     h = clamp(H - sh + 30, Math.min(H, 200), H);   // 시작 화면 판 위로 보이는 만큼 (얼굴이 그 안에 오게)
@@ -1405,7 +1374,7 @@ function startTutorSession() {
   tutorSaidLines = [];
   tutorEl("tutor-log").innerHTML = "";
   tutorEl("tutor-feedback").classList.add("hidden");
-  tutorEl("tutor-input").value = "";
+  tutorEl("tutor-input").value = ""; tutorActUpdate();
   tutorPausedAt = 0; tutorKoTarget = null; tutorReconnects = 0; tutorLiveRetry = null;
   setTutorStatus("연결하는 중…", "thinking");
   tutorNoMic = false;
@@ -1422,7 +1391,7 @@ function sendTutorText(text) {
   text = (text || "").trim();
   if (!text || !tutorReady()) return false;
   if (!tutorLive || !tutorLive.ready) {                // 연결이 끊겼으면 다시 연결한 뒤 보낸다
-    const inp = tutorEl("tutor-input"); if (inp && !inp.value.trim()) inp.value = text;
+    const inp = tutorEl("tutor-input"); if (inp && !inp.value.trim()) { inp.value = text; tutorActUpdate(); }
     tutorLiveResume("quiet");
     return false;
   }
@@ -1455,13 +1424,27 @@ function tutorRecordLearner(text, myBubble, beforeMsg, before) {
 }
 // 한국어 도움으로 알려 준 표현 { en, card } (학습자가 바로 그 말을 하면 튜터가 알아보고 반가워한다)
 let tutorKoTarget = null;
+/** 아래 둥근 단추: 글이 있으면 보내기, 없으면 말하기 (튜터를 누른 것과 같다: 듣기 시작·보내기·끊고 말하기) */
+function tutorActTap() {
+  const inp = tutorEl("tutor-input");
+  if (inp && inp.value.trim()) { sendTutorTyped(); return; }
+  tutorTapTutor(null);
+}
+/** 입력칸에 글이 있으면 둥근 단추가 보내기(↑)로 바뀐다 */
+function tutorActUpdate() {
+  const inp = tutorEl("tutor-input"), row = tutorEl("tutor-type-row");
+  if (!inp || !row) return;
+  const has = !!inp.value.trim();
+  row.classList.toggle("has-text", has);
+  const btn = row.querySelector(".tutor-act"); if (btn) btn.setAttribute("aria-label", has ? "보내기" : "말하기");
+}
 function sendTutorTyped() {
   const inp = tutorEl("tutor-input");
   const t = inp.value;
   // 말하는 중에 ➤: (직접 보내기·자동 모두) 기다리지 않고 지금까지 한 말을 바로 보낸다
   if (!t.trim() && tutorListening && tutorHeardSomething()) { tutorManualSend(); return; }
   if (!t.trim() || !tutorReady()) return;
-  inp.value = "";
+  inp.value = ""; tutorActUpdate();
   if (/[가-힣]/.test(t)) inp.blur();
   tutorSendTyped(t);
 }
@@ -1502,11 +1485,21 @@ function tutorCheckItem(item, before, token) {
     .finally(() => { item.check = null; });
   return item.check;
 }
+// 작은 선 아이콘 (글자 그림 대신: 기기마다 모양이 달라지지 않고 깔끔하게)
+const TUTOR_ICONS = {
+  slow: '<path d="M3.34 19a10 10 0 1 1 17.32 0"/><path d="m12 14-4-4"/>',
+  trans: '<path d="m5 8 6 6"/><path d="m4 14 6-6 2-3"/><path d="M2 5h12"/><path d="M7 2h1"/><path d="m22 22-5-10-5 10"/><path d="M14 18h6"/>',
+  play: '<polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/>',
+  mic: '<path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><path d="M12 19v3"/>',
+  retry: '<path d="M21 12a9 9 0 1 1-9-9c2.52 0 4.93 1 6.74 2.74L21 8"/><path d="M21 3v5h-5"/>',
+  spark: '<path d="M12 3.5l1.9 4.6 4.6 1.9-4.6 1.9-1.9 4.6-1.9-4.6L5.5 10l4.6-1.9z"/>'
+};
+const tutorIcon = name => `<svg class="ti" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${TUTOR_ICONS[name] || ""}</svg>`;
 // 천천히 듣기: 초보자가 못 알아들었을 때 튜터가 같은 말을 천천히 한 번 더
 function addSlowButton(bubble, text) {
   const btn = document.createElement("button");
   btn.className = "tutor-slow-btn";
-  btn.innerHTML = `<span aria-hidden="true">🐢</span> 천천히`;
+  btn.innerHTML = `${tutorIcon("slow")}천천히`;
   btn.onclick = e => { e.stopPropagation(); tutorSpeakTap(text, true); };
   bubble.appendChild(btn);
 }
@@ -1524,7 +1517,7 @@ async function tutorTranslate(text) {
 function addTranslateButton(bubble, text) {
   const btn = document.createElement("button");
   btn.className = "tutor-slow-btn tutor-trans-btn";
-  btn.innerHTML = `<span aria-hidden="true">🇰🇷</span> 해석`;
+  btn.innerHTML = `${tutorIcon("trans")}해석`;
   btn.onclick = async e => {
     e.stopPropagation();
     tutorArmQuiet();                                     // 해석을 읽는 동안 튜터가 끼어들지 않게 (조용할 때 다시 묻기를 처음부터 잰다)
@@ -1563,11 +1556,12 @@ function addTutorBubble(who, text) {
 function addTutorTip(bubble, tip, why, said) {
   const t = document.createElement("div");
   t.className = "tutor-tip";
-  t.innerHTML = `✏️ 이렇게 말하면 더 자연스러워요<br><b></b><span class="tutor-tip-why"></span>`;
+  t.innerHTML = `<div class="tutor-tip-label">${tutorIcon("spark")}이렇게 말하면 더 자연스러워요</div><b></b><span class="tutor-tip-why"></span>`;
   t.querySelector("b").lang = "en";
   tutorMarkChanges(t.querySelector("b"), said, tip);   // 바뀐 낱말에 표시
   if (why) t.querySelector(".tutor-tip-why").textContent = " · " + why;
   addPracticeButtons(t, tip);                       // 고친 문장을 직접 다시 말해 보게
+  tutorMarkMine(bubble, said, tip);                 // 내 말에서 틀린 낱말에 표시
   bubble.after(t);
   tutorNoteAdd({ en: tip, said, why, src: "fix" });   // (맨 아래를 보고 있으면 tutorLogFollow가 따라간다)
   return t;
@@ -1595,6 +1589,27 @@ function tutorMarkChanges(el, said, better) {
     else el.appendChild(document.createTextNode(x));
   });
   if (onlyDrops && tail.length) { el.appendChild(document.createTextNode(" ")); strike(tail); }
+}
+/** 내 말에서 고친 문장에 없는 낱말에 빨간 표시를 한다 (무엇이 틀렸는지 내 말 위에서 바로 보이게) */
+function tutorMarkMine(bubble, said, better) {
+  const el = bubble && bubble.querySelector(".tutor-text");
+  if (!el || el.textContent !== said) return;
+  const toks = said.split(/(\s+)/), b = tutorNorm(better).split(" ").filter(Boolean), A = [];
+  toks.forEach((x, i) => tutorNorm(x).split(" ").filter(Boolean).forEach(w => A.push({ i, w })));
+  const n = A.length, m = b.length, dp = Array.from({ length: n + 1 }, () => new Array(m + 1).fill(0));
+  for (let i = n - 1; i >= 0; i--) for (let j = m - 1; j >= 0; j--) dp[i][j] = A[i].w === b[j] ? dp[i + 1][j + 1] + 1 : Math.max(dp[i + 1][j], dp[i][j + 1]);
+  const hit = new Array(n).fill(false);
+  for (let i = 0, j = 0; i < n && j < m;) {
+    if (A[i].w === b[j]) { hit[i] = true; i++; j++; }
+    else if (dp[i + 1][j] >= dp[i][j + 1]) i++; else j++;
+  }
+  const miss = new Set(A.filter((x, k) => !hit[k]).map(x => x.i));
+  if (!miss.size) return;                           // 빠진 낱말만 있었다 (내 말에는 표시할 게 없다)
+  el.textContent = "";
+  toks.forEach((x, i) => {
+    if (miss.has(i)) { const mk = document.createElement("mark"); mk.className = "tutor-miss"; mk.textContent = x; el.appendChild(mk); }
+    else el.appendChild(document.createTextNode(x));
+  });
 }
 // ---------- 다시 말해 보기 · 한국어 도움 · 내 표현 노트 ----------
 // 회화가 느는 순서: 말하기 → 고쳐 받기 → 고친 문장을 직접 다시 말하기 → 다음 대화에서 써먹기
@@ -1673,7 +1688,7 @@ function tutorStartPractice(target, box) {
   if (tutorPractice) tutorPracticeEnd("");
   tutorSetListening(false); clearTimeout(tutorQuietTimer);
   tutorPractice = { target, box, tries: 0 };
-  tutorPracticeShow(box, "🎤 따라 말해 보세요", "", "listening");
+  tutorPracticeShow(box, "따라 말해 보세요", "", "listening");
   tutorLiveSay(`(Note: The student wants to practice saying this sentence out loud: "${target}". Right now, say only "Okay, go ahead!" and wait. ` +
     "When they try it: if it's right or very close, praise them in a few words, then ask your last question again. If not, say the sentence once more, slowly and clearly, and say \"Try again!\". " +
     "After a second try, praise the effort warmly and ask your last question again.)", { kind: "practice" });
@@ -1691,7 +1706,7 @@ function tutorPracticeJudge(text) {
 /** 고친 문장·배운 표현 아래에 [🔊 듣기] [🎤 다시 말해 보기] */
 function addPracticeButtons(box, target) {
   const acts = document.createElement("div"); acts.className = "tutor-practice";
-  acts.innerHTML = `<button class="tutor-slow-btn"><span aria-hidden="true">🔊</span> 듣기</button><button class="tutor-slow-btn tutor-practice-btn"><span aria-hidden="true">🎤</span> 다시 말해 보기</button><div class="tutor-practice-result hidden"></div>`;
+  acts.innerHTML = `<button class="tutor-slow-btn">${tutorIcon("play")}듣기</button><button class="tutor-slow-btn tutor-practice-btn">${tutorIcon("mic")}다시 말해 보기</button><div class="tutor-practice-result hidden"></div>`;
   const [listen, say] = acts.querySelectorAll("button");
   listen.onclick = e => { e.stopPropagation(); if (tutorWaitBusy(acts)) return; speakTutor(target, tutorSessionToken); };   // 튜터가 그 문장을 읽어 준다
   say.onclick = e => { e.stopPropagation(); if (tutorWaitBusy(acts)) return; tutorStartPractice(target, acts); };
@@ -1709,7 +1724,7 @@ async function tutorKoreanHelp(ko) {
   const token = tutorSessionToken, conv = tutorConvId, log = tutorEl("tutor-log");
   const card = document.createElement("div"); card.className = "tutor-ko-card";
   card.innerHTML = `<div class="tutor-ko-q"></div><div class="tutor-ko-a">영어로 바꾸는 중…</div>`;
-  card.querySelector(".tutor-ko-q").textContent = "🇰🇷 " + ko;
+  card.querySelector(".tutor-ko-q").textContent = ko;
   log.appendChild(card); log.scrollTop = log.scrollHeight;
   setTutorStatus("영어 표현을 찾는 중…", "thinking");
   try {
@@ -1723,9 +1738,9 @@ async function tutorKoreanHelp(ko) {
     if (!en) throw new Error("다시 말하거나 적어 주세요.");
     const stale = token !== tutorSessionToken;            // 그사이 피드백을 열었거나 화면을 떠났다: 보여 주고 노트에는 넣되 말하지는 않는다
     const a = card.querySelector(".tutor-ko-a");
-    a.innerHTML = `<div class="tutor-ko-label">✨ 영어로는 이렇게 말해요</div><b></b><div class="tutor-ko-next"></div>`;
+    a.innerHTML = `<div class="tutor-ko-label">${tutorIcon("spark")}영어로는 이렇게 말해요</div><b></b><div class="tutor-ko-next"></div>`;
     a.querySelector("b").textContent = en; a.querySelector("b").lang = "en";
-    a.querySelector(".tutor-ko-next").textContent = `🎤 이제 ${tutorName()}에게 영어로 말해 보세요`;
+    a.querySelector(".tutor-ko-next").textContent = `이제 ${tutorName()}에게 영어로 말해 보세요`;
     addPracticeButtons(a, en);
     a.querySelector(".tutor-practice-btn").remove();      // 여기서는 바로 튜터에게 말하는 게 연습이다
     log.scrollTop = log.scrollHeight;
@@ -1784,7 +1799,7 @@ function renderTutorNotes() {
   const box = tutorEl("tutor-notes");
   if (!box) return;
   const list = tutorNotes();
-  box.innerHTML = `<div class="tutor-report-title">📒 내 표현 노트 <small>${list.length}개${list.length > 30 ? " · 최근 30개" : ""}</small></div>`;
+  box.innerHTML = `<div class="tutor-report-title">내 표현 노트 <small>${list.length}개${list.length > 30 ? " · 최근 30개" : ""}</small></div>`;
   if (!list.length) {
     const d = document.createElement("div"); d.className = "tutor-fb-note";
     d.textContent = `고친 문장과 배운 표현이 여기에 모여요. 다음 대화에서 이 표현을 써 볼 수 있게 ${tutorName()}가 도와줘요.`;
@@ -1974,7 +1989,7 @@ function tutorHearPulse() {
   tutorHearTimer = setTimeout(() => { delete room.dataset.hearing; }, 450);
 }
 // 말 보내기: auto(말이 멈추면 자동) · manual(다 말한 뒤 ➤나 튜터를 눌러 보내기)
-const TUTOR_SEND = { auto: "멈추면 자동", manual: '<span class="tutor-send-ico">➤</span> 눌러서' };
+const TUTOR_SEND = { auto: "멈추면 자동", manual: "직접 보내기" };
 function tutorSendManual() { try { return localStorage.getItem("tutorSendMode") === "manual"; } catch (e) { return false; } }
 function changeTutorSendMode(id) {
   if (!TUTOR_SEND[id]) return;
@@ -2257,7 +2272,7 @@ function tutorLiveErrBubble(line, why, label, retry) {
   b.removeAttribute("title");
   const w = document.createElement("div"); w.className = "tutor-err"; w.textContent = why; b.appendChild(w);
   const again = document.createElement("button"); again.className = "tutor-slow-btn";
-  again.innerHTML = `<span aria-hidden="true">🔄</span> ${label}`;
+  again.innerHTML = `${tutorIcon("retry")}${label}`;
   again.onclick = ev => { ev.stopPropagation(); b.remove(); if (typeof NeuralTTS !== "undefined") NeuralTTS.unlockAudio(); retry(); };
   b.appendChild(again);
   return b;
@@ -2296,7 +2311,7 @@ function tutorUserSpeaking() {
   if (tutorUttHinted || tutorPractice) return;
   tutorUttHinted = true;
   const manual = tutorLive ? tutorLive.manual : tutorSendManual();
-  setTutorStatus(manual ? "다 말했으면 ➤를 누르세요" : `${tutorName()}를 누르면 바로 보내요`, "listening");
+  setTutorStatus(manual ? "다 말했으면 보내기 단추를 누르세요" : `${tutorName()}를 누르면 바로 보내요`, "listening");
   const send = document.querySelector(".talk-input .send"); if (send && manual) send.classList.add("waiting");   // 직접 보내기: 보내기 버튼이 은은하게 빛난다
 }
 /** 이번에 듣는 동안 내가 뭔가 말했는지 (마이크 소리나 받아쓰기로) */
@@ -2546,7 +2561,7 @@ function tutorReplayTurn(bubble) {
 
 // ----- 듣기 (마이크) -----
 const tutorListenMsg = () => tutorPractice ? "듣고 있어요… 따라 말해 보세요"
-  : (tutorLive ? tutorLive.manual : tutorSendManual()) ? "듣고 있어요… 다 말하면 ➤를 누르세요" : "듣고 있어요… 영어로 말해 보세요";
+  : (tutorLive ? tutorLive.manual : tutorSendManual()) ? "듣고 있어요… 다 말하면 보내기 단추를 누르세요" : "듣고 있어요… 영어로 말해 보세요";
 /** 내 말을 듣기 시작한다 (마이크가 아직이면 켠다) */
 function tutorLiveListen() {
   tutorHold = false;
@@ -2795,7 +2810,7 @@ function tutorLiveFailed(e) {
   if (!tutorCallActive) return;
   const why = e && e.status === 404 ? "이 키로는 아직 실시간 음성 대화를 쓸 수 없어요 (앱 오류가 아니에요). 잠시 뒤 다시 해 보거나 구글 AI Studio에서 새 키를 만들어 연결해 주세요." : geminiErrorText(e);
   tutorLiveErrBubble("(연결하지 못했어요)", why, "다시 연결", () => tutorLiveResume("back"));
-  setTutorStatus(e && e.status === 429 ? "사용량이 다 찼어요 · 잠시 뒤 🔄 다시 연결을 눌러 주세요" : "연결하지 못했어요 · 🔄 다시 연결을 눌러 주세요", "");
+  setTutorStatus(e && e.status === 429 ? "사용량이 다 찼어요 · 잠시 뒤 다시 연결을 눌러 주세요" : "연결하지 못했어요 · 다시 연결을 눌러 주세요", "");
 }
 /** 대화 중에 연결이 끊겼다: 잠깐의 끊김이면 저절로 다시 잇는다 (이어 가기 표로 · 키 문제처럼 보여도 다시 이으면서 확인한다) */
 function tutorLiveDropped(conn, ev) {
@@ -2901,8 +2916,8 @@ async function tutorFeedback() {
   box.innerHTML = `<div class="tutor-feedback-body">
     <div class="tutor-fb-summary">영어로 ${n}번 말했어요</div>
     <div class="tutor-fb-card"><div class="tutor-fb-overall tutor-fb-wait">${tutorName()}가 오늘 대화를 정리하고 있어요…</div><div class="tutor-fb-focus hidden"></div></div>
-    <div class="tutor-report-sec tutor-fb-fixes"><div class="tutor-report-title">✏️ 이렇게 고쳐 말해요</div><div class="tutor-fb-list tutor-fb-wait">내가 말한 문장을 확인하고 있어요…</div></div>
-    <div class="tutor-report-sec tutor-fb-expr hidden"><div class="tutor-report-title">✨ 써 볼 표현</div></div>
+    <div class="tutor-report-sec tutor-fb-fixes"><div class="tutor-report-title">이렇게 고쳐 말해요</div><div class="tutor-fb-list tutor-fb-wait">내가 말한 문장을 확인하고 있어요…</div></div>
+    <div class="tutor-report-sec tutor-fb-expr hidden"><div class="tutor-report-title">써 볼 표현</div></div>
     <div class="tutor-fb-note">문장을 누르면 들을 수 있어요 · AI 평가는 참고용이에요</div>
   </div>`;
   const q = sel => box.querySelector(sel);
@@ -2918,7 +2933,7 @@ async function tutorFeedback() {
       if (token !== tutorSessionToken) return;
       if (!r || !r.overall) throw new Error("피드백을 닫았다가 다시 열어 주세요.");
       const ov = q(".tutor-fb-overall"); ov.classList.remove("tutor-fb-wait"); ov.textContent = r.overall;
-      if (r.focus) { const f = q(".tutor-fb-focus"); f.innerHTML = `<b>🎯 오늘의 핵심</b><span></span>`; f.querySelector("span").textContent = r.focus; f.classList.remove("hidden"); }
+      if (r.focus) { const f = q(".tutor-fb-focus"); f.innerHTML = `<b>오늘의 핵심</b><span></span>`; f.querySelector("span").textContent = r.focus; f.classList.remove("hidden"); }
       const ex = (r.expressions || []).filter(x => x && x.en).slice(0, 2);
       if (ex.length) {
         const sec = q(".tutor-fb-expr");

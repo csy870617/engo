@@ -35,7 +35,7 @@
   <meta property="og:image" content="https://csy870617.github.io/engo/logo.png">
   <meta property="og:site_name" content="ENGO">
 
-  <link rel="stylesheet" href="style.css?v=214" />
+  <link rel="stylesheet" href="style.css?v=215" />
 
   <script>
     // 광고: AI 튜터 키를 연결한 기기에서는 광고 스크립트를 싣지 않는다 (바깥 스크립트가 같은 페이지에서 키에 닿지 않게)
@@ -485,7 +485,7 @@
       <div class="call" id="tutor-call">
         <!-- 처음: 내 Gemini 키 연결 -->
         <div id="tutor-setup" class="tutor-setup call-setup-card hidden">
-          <div class="call-setup-top"><button class="call-icon" onclick="goTo('home')" aria-label="나가기">✕</button><span>AI 튜터</span></div>
+          <div class="call-setup-top"><button class="call-icon" onclick="goTo('home')" aria-label="나가기"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 6 6 18M6 6l12 12"/></svg></button><span>AI 튜터</span></div>
           <p class="tutor-setup-title">구글 Gemini로 대화하는 AI 영어 회화 튜터</p>
           <ul class="tutor-setup-list">
             <li>오늘 하루·음식·취미·여행 같은 일상 이야기를 영어로 자유롭게 나눠요</li>
@@ -494,7 +494,7 @@
             <li>키는 이 기기에만 암호화해서 저장되고, 대화는 구글 Gemini로 바로 가요</li>
           </ul>
           <div class="tutor-key-steps">
-            <div class="tutor-key-step"><span class="num">1</span><div>구글 AI Studio를 열고 구글 계정으로 로그인해요.<a class="btn-main tutor-key-open" href="https://aistudio.google.com/apikey" target="_blank" rel="noopener">🔑 구글 AI Studio 열기</a></div></div>
+            <div class="tutor-key-step"><span class="num">1</span><div>구글 AI Studio를 열고 구글 계정으로 로그인해요.<a class="btn-main tutor-key-open" href="https://aistudio.google.com/apikey" target="_blank" rel="noopener">구글 AI Studio 열기</a></div></div>
             <div class="tutor-key-step"><span class="num">2</span><div><b>API 키 만들기</b>(Create API key)를 누르고, 키 옆의 <b>복사 버튼(□)</b>을 눌러 키 전체를 복사해요.</div></div>
             <div class="tutor-key-step"><span class="num">3</span><div>이 화면으로 돌아와 아래 칸에 붙여 넣고 <b>연결하기</b>를 눌러요.</div></div>
             <div class="tutor-key-row">
@@ -505,9 +505,9 @@
           </div>
           <div class="tutor-note">
             <p class="tutor-note-title">사용량과 요금 안내</p>
-            <p><b>🆓 무료 키</b> 요금은 나가지 않아요. 구글이 정한 사용 한도 안에서 쓸 수 있고, 한도를 다 쓰면 잠시 뒤나 다음 날 다시 쓸 수 있어요.</p>
-            <p><b>💳 결제를 연결한 계정</b> 그 계정의 키를 넣으면 대화한 만큼 요금이 나가요.</p>
-            <p><b>📶 데이터</b> 실시간 음성은 대화 1분에 약 3~5MB의 데이터를 써요. 와이파이에서 쓰는 걸 권해요.</p>
+            <p><b>무료 키</b> 요금은 나가지 않아요. 구글이 정한 사용 한도 안에서 쓸 수 있고, 한도를 다 쓰면 잠시 뒤나 다음 날 다시 쓸 수 있어요.</p>
+            <p><b>결제를 연결한 계정</b> 그 계정의 키를 넣으면 대화한 만큼 요금이 나가요.</p>
+            <p><b>데이터</b> 실시간 음성은 대화 1분에 약 3~5MB의 데이터를 써요. 와이파이에서 쓰는 걸 권해요.</p>
             <p>무료로 쓰는 동안에는 대화 내용이 구글 서비스 개선에 쓰일 수 있으니 이름·연락처 같은 개인 정보는 말하지 마세요.</p>
           </div>
         </div>
@@ -517,10 +517,10 @@
           <div class="talk-hero" onclick="tutorTapTutor(event)">
             <div id="tutor-avatar" class="talk-avatar" role="button" tabindex="0" aria-label="Emma" aria-describedby="tutor-status" onkeydown="if (event.key === 'Enter' || event.key === ' ') { event.preventDefault(); tutorTapTutor(event); }"></div>
             <div class="talk-top">
-              <button class="call-icon" onclick="goTo('home')" aria-label="나가기">❮</button>
+              <button class="call-icon" onclick="goTo('home')" aria-label="나가기"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m15 18-6-6 6-6"/></svg></button>
               <div class="talk-top-right">
-                <button class="call-icon" onclick="openTutorFeedback()" aria-label="오늘 대화 피드백">📝</button>
-                <button class="call-icon talk-gear" onclick="toggleTutorSheet('settings')" aria-label="튜터 설정">⚙️</button>
+                <button class="call-icon" onclick="openTutorFeedback()" aria-label="오늘 대화 피드백"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5"/><path d="M9 13h6M9 17h4"/></svg></button>
+                <button class="call-icon talk-gear" onclick="toggleTutorSheet('settings')" aria-label="튜터 설정"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 7h10M18 7h2M4 17h2M10 17h10"/><circle cx="16" cy="7" r="2"/><circle cx="8" cy="17" r="2"/></svg></button>
               </div>
             </div>
             <div class="talk-name">
@@ -533,50 +533,50 @@
 
           <!-- 말은 자동으로 듣는다 (Emma를 누르면 듣기 시작·끝내기). 글로 쓰고 싶을 때는 아래 칸에 -->
           <div id="tutor-type-row" class="call-type talk-input">
-            <input id="tutor-input" type="text" class="search-input" placeholder="말하거나 입력 · 한글도 OK" aria-label="튜터에게 보낼 말" enterkeyhint="send" autocapitalize="sentences" autocomplete="off" onkeydown="if (event.key === 'Enter' && !event.isComposing && event.keyCode !== 229) { event.preventDefault(); sendTutorTyped(); }" onfocus="tutorInputFocus(true)" onblur="tutorInputFocus(false)" />
-            <button class="tutor-round-btn send" onmousedown="event.preventDefault()" onclick="sendTutorTyped()" aria-label="보내기">➤</button>
+            <input id="tutor-input" type="text" class="search-input" placeholder="메시지 입력 · 한글도 OK" aria-label="튜터에게 보낼 말" enterkeyhint="send" autocapitalize="sentences" autocomplete="off" onkeydown="if (event.key === 'Enter' && !event.isComposing && event.keyCode !== 229) { event.preventDefault(); sendTutorTyped(); }" oninput="tutorActUpdate()" onfocus="tutorInputFocus(true)" onblur="tutorInputFocus(false)" />
+            <button class="tutor-round-btn send tutor-act" onmousedown="event.preventDefault()" onclick="tutorActTap()" aria-label="말하기"><svg class="ico-mic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><path d="M12 19v3"/></svg><svg class="ico-send" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 19V5"/><path d="m5 12 7-7 7 7"/></svg></button>
           </div>
 
           <!-- 시작 화면: 들어오면 먼저 튜터·수준·목소리를 고르고 '시작하기' -->
           <div id="tutor-lobby" class="call-sheet tutor-lobby hidden">
             <div class="lobby-title">오늘의 영어 대화</div>
-            <p class="lobby-tip">🎧 실시간 음성 대화예요 · 데이터를 써서 와이파이를 권해요</p>
+            <p class="lobby-tip">실시간 음성으로 대화해요 · 데이터를 써서 와이파이를 권해요</p>
             <div id="tutor-chars-lobby" class="lobby-chars" role="group" aria-label="튜터 고르기"></div>
             <div class="call-set-row"><span>내 영어 수준</span><div id="tutor-levels-lobby" class="tutor-levels" role="group" aria-label="내 영어 수준"></div></div>
-            <div class="call-set-row"><span>🔊 목소리</span><div class="lobby-voice"><select id="tutor-voice-lobby" class="tutor-select" onchange="changeTutorVoice(this)" aria-label="튜터 목소리"></select><button class="chip-btn play-chip tutor-voice-try" onclick="tutorPreviewVoice()" aria-label="목소리 들어 보기">▶ 듣기</button></div></div>
+            <div class="call-set-row"><span>목소리</span><div class="lobby-voice"><select id="tutor-voice-lobby" class="tutor-select" onchange="changeTutorVoice(this)" aria-label="튜터 목소리"></select><button class="chip-btn play-chip tutor-voice-try" onclick="tutorPreviewVoice()" aria-label="목소리 들어 보기">▶ 듣기</button></div></div>
             <p class="tutor-voice-note hidden"></p>
-            <div class="call-set-row"><span>📨 보내는 방법</span><div id="tutor-send-lobby" class="tutor-levels" role="group" aria-label="말을 보내는 방법"></div></div>
-            <p class="tutor-send-tip hidden">말을 다 한 뒤 <b>➤</b>(또는 튜터)를 눌러야 보내져요. 중간에 생각하느라 멈춰도 넘어가지 않아요.</p>
-            <div class="call-set-row tutor-endwait-row"><span>⏱ 말 끝 기다리기</span><div id="tutor-endwait-lobby" class="tutor-levels" role="group" aria-label="말이 멈춘 뒤 기다리는 시간"></div></div>
+            <div class="call-set-row"><span>보내는 방법</span><div id="tutor-send-lobby" class="tutor-levels" role="group" aria-label="말을 보내는 방법"></div></div>
+            <p class="tutor-send-tip hidden">말을 다 한 뒤 아래 둥근 단추(또는 튜터)를 눌러야 보내져요. 중간에 생각하느라 멈춰도 넘어가지 않아요.</p>
+            <div class="call-set-row tutor-endwait-row"><span>말 끝 기다리기</span><div id="tutor-endwait-lobby" class="tutor-levels" role="group" aria-label="말이 멈춘 뒤 기다리는 시간"></div></div>
             <div class="lobby-foot">
-              <button id="tutor-start-btn" class="btn-main lobby-start" onclick="tutorStartFromLobby(false)">▶ 시작하기</button>
-              <button id="tutor-new-btn" class="chip-btn lobby-new hidden" onclick="tutorStartFromLobby(true)">🔄 새 대화 시작</button>
+              <button id="tutor-start-btn" class="btn-main lobby-start" onclick="tutorStartFromLobby(false)">대화 시작하기</button>
+              <button id="tutor-new-btn" class="chip-btn lobby-new hidden" onclick="tutorStartFromLobby(true)">새 대화로 시작</button>
             </div>
           </div>
 
           <!-- 아래에서 올라오는 판 -->
           <div id="tutor-sheet-settings" class="call-sheet hidden" role="dialog" aria-modal="true" aria-labelledby="tutor-settings-title" tabindex="-1">
-            <div class="call-sheet-head"><b id="tutor-settings-title">설정</b><button class="call-icon" onclick="tutorCloseSheets()" aria-label="닫기">✕</button></div>
-            <div class="call-set-row"><span>👩‍🏫 튜터</span><div id="tutor-chars-set" class="tutor-levels" role="group" aria-label="튜터 고르기"></div></div>
+            <div class="call-sheet-head"><b id="tutor-settings-title">설정</b><button class="call-icon" onclick="tutorCloseSheets()" aria-label="닫기"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 6 6 18M6 6l12 12"/></svg></button></div>
+            <div class="call-set-row"><span>튜터</span><div id="tutor-chars-set" class="tutor-levels" role="group" aria-label="튜터 고르기"></div></div>
             <div class="call-set-row"><span>내 영어 수준</span><div id="tutor-levels-set" class="tutor-levels" role="group" aria-label="내 영어 수준"></div></div>
-            <div class="call-set-row"><span>📨 보내는 방법</span><div id="tutor-send-set" class="tutor-levels" role="group" aria-label="말을 보내는 방법"></div></div>
-            <p class="tutor-send-tip hidden">말을 다 한 뒤 <b>➤</b>(또는 튜터)를 눌러야 보내져요. 중간에 생각하느라 멈춰도 넘어가지 않아요.</p>
-            <div class="call-set-row tutor-endwait-row"><span>⏱ 말 끝 기다리기</span><div id="tutor-endwait-set" class="tutor-levels" role="group" aria-label="말이 멈춘 뒤 기다리는 시간"></div></div>
-            <div class="call-set-row"><span>🔊 목소리</span><div class="lobby-voice"><select id="tutor-voice" class="tutor-select" onchange="changeTutorVoice(this)" aria-label="튜터 목소리"></select><button class="chip-btn play-chip tutor-voice-try" onclick="tutorPreviewVoice()" aria-label="목소리 들어 보기">▶ 듣기</button></div></div>
+            <div class="call-set-row"><span>보내는 방법</span><div id="tutor-send-set" class="tutor-levels" role="group" aria-label="말을 보내는 방법"></div></div>
+            <p class="tutor-send-tip hidden">말을 다 한 뒤 아래 둥근 단추(또는 튜터)를 눌러야 보내져요. 중간에 생각하느라 멈춰도 넘어가지 않아요.</p>
+            <div class="call-set-row tutor-endwait-row"><span>말 끝 기다리기</span><div id="tutor-endwait-set" class="tutor-levels" role="group" aria-label="말이 멈춘 뒤 기다리는 시간"></div></div>
+            <div class="call-set-row"><span>목소리</span><div class="lobby-voice"><select id="tutor-voice" class="tutor-select" onchange="changeTutorVoice(this)" aria-label="튜터 목소리"></select><button class="chip-btn play-chip tutor-voice-try" onclick="tutorPreviewVoice()" aria-label="목소리 들어 보기">▶ 듣기</button></div></div>
             <p class="tutor-voice-note hidden"></p>
             <div class="call-sheet-actions">
-              <button class="chip-btn" onclick="newTutorConversation()">🔄 새 대화 시작</button>
-              <button class="chip-btn" onclick="manageTutorKey()">🔑 키 연결 끊기</button>
+              <button class="chip-btn" onclick="newTutorConversation()">새 대화 시작</button>
+              <button class="chip-btn" onclick="manageTutorKey()">키 연결 끊기</button>
             </div>
             <p class="tutor-credit"><span id="tutor-model-name">AI: Google Gemini</span></p>
           </div>
           <div id="tutor-sheet-feedback" class="call-sheet call-sheet-tall hidden" role="dialog" aria-modal="true" aria-labelledby="tutor-feedback-title" tabindex="-1">
-            <div class="call-sheet-head"><b id="tutor-feedback-title">📝 오늘 대화 피드백</b><button class="call-icon" onclick="tutorCloseSheets()" aria-label="닫기">✕</button></div>
+            <div class="call-sheet-head"><b id="tutor-feedback-title">오늘 대화 피드백</b><button class="call-icon" onclick="tutorCloseSheets()" aria-label="닫기"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 6 6 18M6 6l12 12"/></svg></button></div>
             <div id="tutor-feedback" class="tutor-feedback"></div>
             <div id="tutor-notes" class="tutor-notes"></div>
             <div class="call-sheet-actions">
               <button class="chip-btn" onclick="tutorCloseSheets()">이어서 대화하기</button>
-              <button class="chip-btn" onclick="newTutorConversation()">🔄 새 대화 시작</button>
+              <button class="chip-btn" onclick="newTutorConversation()">새 대화 시작</button>
             </div>
           </div>
         </div>
@@ -709,15 +709,15 @@
 
   <div id="neural-loading" class="neural-loading hidden">🎙 자연스러운 음성 준비 중…</div>
 
-  <script src="pattern.js?v=214"></script>
-  <script src="conversation.js?v=214"></script>
-  <script src="idiom.js?v=214"></script>
-  <script src="word.js?v=214"></script>
+  <script src="pattern.js?v=215"></script>
+  <script src="conversation.js?v=215"></script>
+  <script src="idiom.js?v=215"></script>
+  <script src="word.js?v=215"></script>
 
   <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
   <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
   <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
-  <script src="js/core.js?v=214"></script>    <script src="js/storage.js?v=214"></script> <script src="js/neural-tts.js?v=214"></script> <script src="js/kokoro-tts.js?v=214"></script> <script src="js/media.js?v=214"></script>   <script src="js/study.js?v=214"></script>   <script src="js/game.js?v=214"></script>    <script src="js/talk-plan.js?v=214"></script> <script src="js/tutor.js?v=214"></script>    </body>
+  <script src="js/core.js?v=215"></script>    <script src="js/storage.js?v=215"></script> <script src="js/neural-tts.js?v=215"></script> <script src="js/kokoro-tts.js?v=215"></script> <script src="js/media.js?v=215"></script>   <script src="js/study.js?v=215"></script>   <script src="js/game.js?v=215"></script>    <script src="js/talk-plan.js?v=215"></script> <script src="js/tutor.js?v=215"></script>    </body>
 
 
 </html>
