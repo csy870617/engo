@@ -999,10 +999,7 @@ body.list-playing .neural-loading { bottom: calc(86px + env(safe-area-inset-bott
 .tutor-note b { color: var(--text-main, inherit); margin-right: 4px; }
 .tutor-note-title { font-weight: 700; font-size: 0.8rem; }
 .tutor-trans { margin-top: 6px; padding-top: 6px; border-top: 1px dashed rgba(255,255,255,0.12); font-size: 0.85rem; color: var(--text-sub); }
-.tutor-hint-item { display: block; width: 100%; padding: 8px 4px; border: 0; border-top: 1px solid rgba(255,255,255,0.07); background: none; color: inherit; font: inherit; text-align: left; cursor: pointer; border-radius: 8px; }
-.tutor-hint-en, .tutor-hint-kr { display: block; }
 .call-sheet:focus, .call .call-sheet:focus-visible { outline: none; }   /* 판 자체에 초점이 가도 테두리는 그리지 않는다 (안의 버튼은 그대로) */
-.tutor-hint-item:first-of-type { border-top: none; }
 .tutor-report { margin: 6px 0 10px; display: flex; flex-direction: column; gap: 10px; color: var(--text-main); }
 .tutor-report-err { color: var(--text-sub); font-size: 0.82rem; }
 .tutor-report-title { font-weight: 700; color: #fff; margin-bottom: 2px; font-size: 0.88rem; }
@@ -1051,7 +1048,6 @@ body.list-playing .neural-loading { bottom: calc(86px + env(safe-area-inset-bott
 .talk-hero, .call .call-icon, .tutor-round-btn, .tutor-slow-btn, .tutor-level-btn, .lobby-char, .call .chip-btn { -webkit-user-select: none; user-select: none; -webkit-touch-callout: none; }
 .call .call-icon, .tutor-round-btn, .tutor-level-btn, .lobby-char { transition: transform 0.08s; }
 .call .call-icon:active, .tutor-round-btn:active, .tutor-slow-btn:active, .tutor-level-btn:active, .lobby-char:active, .call .chip-btn:active, .tutor-note-del:active { transform: scale(0.94); }
-.tutor-hint-item:active, .tutor-note-row:active, .tutor-fb-row:active { background-color: rgba(255,255,255,0.06); }
 .tutor-msg.tutor:active { filter: brightness(1.15); }
 .call :focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
 .call input:focus-visible { outline: none; }
@@ -1081,17 +1077,7 @@ body.list-playing .neural-loading { bottom: calc(86px + env(safe-area-inset-bott
 .tutor-note-used { color: #6ee7b7; font-size: 0.75rem; flex-shrink: 0; }
 .tutor-note-del { flex-shrink: 0; width: 34px; height: 34px; border-radius: 50%; border: none; background: rgba(255,255,255,0.06); color: var(--text-sub); cursor: pointer; font-size: 0.8rem; }
 
-.tutor-hint { margin: 4px 0 10px; padding: 0 12px 6px; border-radius: 16px; background: #1b1a3d; border: 1px solid rgba(139,92,246,0.35); box-shadow: 0 -8px 22px rgba(0,0,0,0.3); }
 /* 머리줄은 힌트를 아래로 넘겨 봐도 위에 붙어 있다 (닫기 버튼이 늘 보이게) */
-.tutor-hint-head { position: sticky; top: 0; z-index: 1; display: flex; align-items: center; gap: 8px; margin: 0 -12px; padding: 7px 6px 5px 12px; background: #1b1a3d; }
-.tutor-hint-title { flex: 1; min-width: 0; font-size: 0.8rem; font-weight: 700; color: #ddd6fe; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.tutor-hint-title small { margin-left: 6px; font-size: 0.72rem; font-weight: 400; color: var(--text-sub); }
-.tutor-hint-x { position: relative; flex-shrink: 0; width: 28px; height: 28px; border-radius: 50%; border: none; background: rgba(255,255,255,0.08); color: #cbd5e1; font-size: 0.78rem; cursor: pointer; font-family: inherit; }
-.tutor-hint-x::after { content: ""; position: absolute; inset: -8px; }   /* 손가락으로 누르기 쉽게 */
-.tutor-hint-label { font-size: 0.75rem; color: var(--text-sub); margin-bottom: 4px; }
-.tutor-hint-wait { padding: 6px 0 4px; animation: tutorTextPulse 1.4s ease-in-out infinite; }
-.tutor-hint-en { color: #fff; font-weight: 600; line-height: 1.35; }
-.tutor-hint-kr { font-size: 0.8rem; color: var(--text-sub); margin-top: 2px; }
 
 @keyframes tutorMic { 0%, 100% { box-shadow: 0 0 0 0 rgba(16,185,129,0.45); } 50% { box-shadow: 0 0 0 8px rgba(16,185,129,0); } }
 .tutor-round-btn { flex-shrink: 0; width: 44px; height: 44px; border-radius: 50%; border: var(--glass-border); background: rgba(255,255,255,0.06); color: var(--text-main); font-size: 1.05rem; cursor: pointer; }
@@ -1174,12 +1160,10 @@ html.tutor-lock body { position: fixed; inset: 0; width: 100%; }
 .talk-log { flex: 1 1 0; min-height: 56px; max-height: none; overflow-y: auto; overscroll-behavior: contain; padding: 12px 14px 8px;
   -webkit-mask-image: linear-gradient(to bottom, transparent 0, #000 16px); mask-image: linear-gradient(to bottom, transparent 0, #000 16px); }
 /* 힌트: 입력줄 바로 위 (대화를 밀어 올린다. 영상 칸도 그만큼 줄어든다) */
-.talk-hint { flex: 0 1 auto; min-height: 0; margin: 2px 12px 4px; max-height: min(46%, 300px); overflow-y: auto; overscroll-behavior: contain; }
 /* 아래 입력줄: 입력칸 + 💡 힌트 + 보내기 */
 .talk-input { margin: 6px 12px calc(10px + env(safe-area-inset-bottom)); }
 .talk-input .search-input { height: 44px; border-radius: 22px; padding: 0 16px; font-size: max(16px, 1rem); }   /* 16px보다 작으면 아이폰이 눌렀을 때 확대한 채로 남는다 */
 .talk-input .tutor-round-btn { width: 42px; height: 42px; }
-#tutor-hint-btn.on { background: rgba(139,92,246,0.35); border-color: rgba(139,92,246,0.6); }
 /* 키보드가 올라왔거나 낮은 화면: 영상은 얼굴 위주로 작게, 대화가 잘 보이게 */
 .talk-room.compact .talk-hero::after { height: min(30%, 60px); }
 .talk-room.compact .talk-top { top: calc(6px + env(safe-area-inset-top)); left: 8px; right: 8px; }
@@ -1188,13 +1172,11 @@ html.tutor-lock body { position: fixed; inset: 0; width: 100%; }
 .talk-room.compact .talk-name b { font-size: 1rem; }
 .talk-room.compact .talk-status { font-size: 0.72rem; padding: 3px 9px; -webkit-line-clamp: 1; }
 .talk-room.compact .talk-log { padding-top: 8px; }
-.talk-room.compact .talk-hint { max-height: 48%; }
 .talk-room.typing .talk-input { margin-bottom: 8px; }   /* 키보드 바로 위 (아이폰 홈 막대 자리만큼 띄우지 않는다) */
 /* 넓은 화면 (컴퓨터·가로로 돌린 화면): 튜터는 왼쪽에 크게, 대화는 오른쪽 */
 .talk-room.wide { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); grid-template-rows: minmax(0, 1fr) auto auto; max-width: 1100px; }
 .talk-room.wide .talk-hero { grid-column: 1; grid-row: 1 / 4; }
 .talk-room.wide .talk-log { grid-column: 2; grid-row: 1; padding-top: calc(16px + env(safe-area-inset-top)); }
-.talk-room.wide .talk-hint { grid-column: 2; grid-row: 2; max-height: 42vh; }
 .talk-room.wide .talk-input { grid-column: 2; grid-row: 3; }
 .talk-room.wide .call-sheet { left: 50%; top: 0; max-height: none; border-radius: 0; border-top: none; border-left: 1px solid rgba(255,255,255,0.08); }
 .talk-room.wide .talk-hero::after { height: 90px; }
@@ -1206,7 +1188,7 @@ html.tutor-lock body { position: fixed; inset: 0; width: 100%; }
 
 /* AI 튜터 시작 화면: 튜터·수준·목소리 고르고 시작하기 */
 .tutor-lobby { max-height: 72%; z-index: 5; }   /* 설정·피드백 판(6)은 시작 화면 위에 열린다 */
-.talk-room.lobby .talk-input, .talk-room.lobby .talk-hint, .talk-room.lobby .talk-gear { display: none; }
+.talk-room.lobby .talk-input, .talk-room.lobby .talk-gear { display: none; }
 .talk-room.lobby .talk-hero { cursor: default; }
 .talk-room.lobby .talk-name { display: none; }   /* 시작 화면은 판에 제목이 있다 (판 위로 이름표 끝이 비치지 않게) */
 .lobby-title { color: #fff; font-weight: 700; font-size: 1.05rem; margin-bottom: 2px; }
@@ -1237,4 +1219,3 @@ html.tutor-lock body { position: fixed; inset: 0; width: 100%; }
 .tutor-send-tip.hidden, .tutor-endwait-row.hidden { display: none; }
 /* 직접 보내기: 들은 말이 있으면 보내기 버튼이 계속 은은하게 빛난다 */
 .talk-input .send.waiting { animation: sendReady 1.2s ease-out infinite; }
-.tutor-hint-retry { margin-top: 6px; }
