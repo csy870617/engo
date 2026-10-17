@@ -1174,35 +1174,6 @@ html.tutor-lock header { visibility: hidden; }   /* 튜터 화면에 가려진 �
 .talk-room.compact .talk-status { font-size: 0.72rem; padding: 3px 9px; -webkit-line-clamp: 1; }
 .talk-room.compact .talk-log { padding-top: 8px; }
 .talk-room.typing .talk-input { margin-bottom: 8px; }   /* 키보드 바로 위 (아이폰 홈 막대 자리만큼 띄우지 않는다) */
-/* 휴대폰 세로 화면(stage): 튜터 영상이 화면 전체 · 대화는 영상 위에 자막처럼 글자만 (가장 최근에 주고받은 말만)
-   키보드가 올라오면 영상은 그대로 두고 대화·입력줄만 키보드 위로 올라간다 (--kb: 키보드가 덮는 높이, tutorFitViewport가 정한다) */
-.talk-room.stage { justify-content: flex-end; padding-bottom: var(--kb, 0px); }
-.talk-room.stage .talk-hero { position: absolute; inset: 0; flex: none; z-index: 0; }
-.talk-room.stage .talk-hero::after { display: none; }
-.talk-room.stage .talk-avatar.has-clips { top: var(--av-top, 0px); bottom: auto; height: var(--av-h, 100%); }   /* 얼굴이 위쪽에 오게 조금 크게 (tutorLayout) */
-.talk-room.stage .talk-name { top: calc(10px + env(safe-area-inset-top)); bottom: auto; left: 60px; right: 106px; min-height: 40px; }
-.talk-room.stage .talk-name b { font-size: 1.1rem; }
-.talk-room.stage[data-mode="listening"] .talk-hero::before { top: 0; bottom: auto; }
-.talk-room.stage .talk-log { position: relative; z-index: 1; flex: 0 1 auto; min-height: 0; max-height: 46%; padding: 36px 16px 4px; pointer-events: none;
-  background: linear-gradient(to bottom, rgba(3,6,15,0), rgba(3,6,15,0.5) 36px, rgba(3,6,15,0.68)); -webkit-mask-image: none; mask-image: none; }
-.talk-room.stage .talk-log > * { pointer-events: auto; }
-.talk-room.stage .talk-log > :not(.cur) { display: none; }   /* 지난 대화는 숨긴다 (tutorMarkRecent) */
-.talk-room.stage .talk-input { position: relative; z-index: 1; margin: 0; padding: 6px 12px calc(10px + env(safe-area-inset-bottom)); background: rgba(3,6,15,0.68); }
-.talk-room.stage.typing .talk-input { padding-bottom: 8px; }
-/* 글 쓰는 중: 키보드 위 좁은 자리에서 튜터 얼굴을 덜 가리게 자막을 줄인다 (말로 연습하는 단추는 숨기고, 넘치면 최근 말이 보이게 스크롤) */
-.talk-room.stage.typing .talk-log { max-height: 36%; padding-top: 28px; }
-.talk-room.stage.typing .tutor-tip .tutor-practice { display: none; }
-/* 자막: 말풍선 없이 글자만 (밝은 영상 위에서도 읽히게 그림자) */
-.talk-room.stage .tutor-msg, .talk-room.stage .tutor-tip, .talk-room.stage .tutor-ko-card { max-width: 94%; padding: 2px; background: none; border: none; border-radius: 0; text-shadow: 0 1px 2px rgba(0,0,0,0.95), 0 0 10px rgba(0,0,0,0.6); }
-.talk-room.stage .tutor-msg.tutor { color: #fff; font-size: 1.06rem; font-weight: 600; }
-.talk-room.stage .tutor-msg.tutor.tutor-nudge { font-size: 0.95rem; font-weight: 500; }
-.talk-room.stage .tutor-msg.me { color: #ddd6fe; font-size: 0.98rem; text-align: right; }
-.talk-room.stage .tutor-msg.me.practice { background: none; }
-.talk-room.stage .tutor-tip, .talk-room.stage .tutor-ko-card { text-align: right; }
-.talk-room.stage .tutor-tip .tutor-practice, .talk-room.stage .tutor-ko-card .tutor-practice { justify-content: flex-end; }
-.talk-room.stage .tutor-trans { color: #e2e8f0; font-size: 0.9rem; font-weight: 400; border-top-color: rgba(255,255,255,0.22); }
-.talk-room.stage .tutor-err { color: #cbd5e1; }
-.talk-room.stage .tutor-slow-btn { text-shadow: none; font-weight: 400; background: rgba(0,0,0,0.38); border-color: rgba(255,255,255,0.24); color: #e0f2fe; }
 /* 넓은 화면 (컴퓨터·가로로 돌린 화면): 튜터는 왼쪽에 크게, 대화는 오른쪽 */
 .talk-room.wide { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); grid-template-rows: minmax(0, 1fr) auto auto; max-width: 1100px; }
 .talk-room.wide .talk-hero { grid-column: 1; grid-row: 1 / 4; }
@@ -1249,3 +1220,149 @@ html.tutor-lock header { visibility: hidden; }   /* 튜터 화면에 가려진 �
 .tutor-send-tip.hidden, .tutor-endwait-row.hidden { display: none; }
 /* 직접 보내기: 들은 말이 있으면 보내기 버튼이 계속 은은하게 빛난다 */
 .talk-input .send.waiting { animation: sendReady 1.2s ease-out infinite; }
+/* =========================================================================
+   AI 튜터 화면 디자인: 밝은 화면 (위에 영상 통화 화면, 아래로 대화가 이어진다)
+   - 색은 이 안에서만 바꾼다 (앱의 다른 화면은 어두운 그대로)
+   ========================================================================= */
+.call {
+  --t-blue: #2f5bff; --t-blue-press: #2448e0; --t-blue-soft: #edf2ff; --t-blue-line: #d6e0ff;
+  --t-bg: #f3f5fa; --t-surface: #fff; --t-text: #101828; --t-sub: #667085; --t-faint: #98a2b3; --t-line: #e7eaf0;
+  --t-red-soft: #ffe4e1; --t-red: #d92d20; --t-green: #12b76a; --t-green-soft: #dcfae6; --t-green-text: #067647; --t-amber: #b54708;
+  --primary: var(--t-blue); --primary-glow: rgba(47,91,255,0.35); --accent: var(--t-blue);
+  --text-main: var(--t-text); --text-sub: var(--t-sub); --glass-border: 1px solid var(--t-line);
+  background: var(--t-bg); color: var(--t-text); letter-spacing: -0.01em;
+}
+.call .ti { width: 14px; height: 14px; flex: none; }
+
+/* ---- 영상 통화 화면 ---- */
+.call .talk-hero { background: #0b1020; }
+.call .talk-hero::after { height: 42%; background: linear-gradient(to bottom, rgba(16,24,40,0), rgba(16,24,40,0.6)); }
+.call .talk-top .call-icon { width: 38px; height: 38px; background: rgba(16,24,40,0.34); color: #fff; }
+.call .call-icon svg { width: 20px; height: 20px; }
+.call .talk-name b { color: #fff; font-size: 1.15rem; font-weight: 800; text-shadow: 0 1px 8px rgba(0,0,0,0.35); }
+.call .talk-status { background: rgba(16,24,40,0.45); color: #fff; font-weight: 500; border-radius: 999px; padding: 4px 11px; }
+.talk-room[data-mode="speaking"] .talk-status::before { color: #8fb0ff; }
+
+/* 휴대폰 세로 화면: 위 영상(높이 고정 · 키보드가 올라와도 그대로) + 대화(스크롤) + 입력줄. 키보드가 올라오면 대화 아래쪽과 입력줄만 올라간다 (--kb) */
+.talk-room.stage { padding-bottom: var(--kb, 0px); }
+.talk-room.stage .talk-hero { flex: 0 0 var(--hero-h, 34%); border-radius: 0 0 26px 26px; box-shadow: 0 10px 28px rgba(16,24,40,0.16); z-index: 1; }
+
+/* ---- 대화 ---- */
+.call .talk-log { padding: 18px 14px 12px; gap: 10px; -webkit-mask-image: none; mask-image: none; }
+.call .tutor-msg { max-width: 84%; padding: 11px 15px; border-radius: 20px; font-size: 1rem; line-height: 1.5; }
+.call .tutor-msg.tutor { background: var(--t-blue); border: none; color: #fff; border-bottom-left-radius: 6px; box-shadow: 0 6px 18px rgba(47,91,255,0.22); }
+.call .tutor-msg.tutor:active { filter: brightness(1.06); }
+.call .tutor-msg.me { background: var(--t-surface); color: var(--t-text); border: 1px solid #edf0f5; border-bottom-right-radius: 6px; box-shadow: 0 2px 10px rgba(16,24,40,0.06); }
+.call .tutor-msg.me.live { opacity: 1; color: var(--t-sub); }
+.call .tutor-msg.me.practice { background: var(--t-blue-soft); border-color: var(--t-blue-line); }
+.call .tutor-msg.tutor.tutor-nudge { background: var(--t-blue-soft); color: #1f3aa3; box-shadow: none; opacity: 1; font-size: 0.93rem; }
+.call .tutor-msg.tutor.tutor-live-err { background: #fff7ed; color: #9a3412; border: 1px solid #fed7aa; }
+.call .tutor-msg.tutor.tutor-live-err .tutor-err { color: #b45309; }
+.call .tutor-msg.me mark.tutor-miss { background: var(--t-red-soft); color: #b42318; border-radius: 5px; padding: 0 3px; }   /* 내 말에서 틀린 낱말 */
+/* 튜터 말 아래 작은 단추 (천천히 · 해석 · 다시 연결) */
+.call .tutor-slow-btn { display: inline-flex; align-items: center; gap: 5px; font-weight: 600; }
+.call .tutor-msg.tutor > .tutor-slow-btn { margin: 9px 6px 0 0; padding: 5px 11px; border: none; border-radius: 999px; background: rgba(255,255,255,0.18); color: #fff; font-size: 0.76rem; }
+.call .tutor-msg.tutor.tutor-nudge > .tutor-slow-btn { background: rgba(47,91,255,0.12); color: var(--t-blue); }
+.call .tutor-msg.tutor.tutor-live-err > .tutor-slow-btn { background: var(--t-blue); color: #fff; }
+.call .tutor-msg.tutor .tutor-trans { color: rgba(255,255,255,0.94); border-top: 1px solid rgba(255,255,255,0.3); font-size: 0.92rem; }
+/* 더 자연스러운 표현 (내 말 바로 아래) */
+.call .tutor-tip { max-width: 86%; margin-top: -4px; padding: 11px 14px; border-radius: 18px; background: var(--t-surface); border: 1px solid var(--t-blue-line); box-shadow: 0 2px 12px rgba(47,91,255,0.08); color: var(--t-text); font-size: 0.86rem; }
+.call .tutor-tip-label { display: flex; align-items: center; gap: 5px; margin-bottom: 4px; color: var(--t-blue); font-size: 0.76rem; font-weight: 700; }
+.call .tutor-tip b { color: var(--t-text); font-size: 0.98rem; font-weight: 700; }
+.call .tutor-tip mark { background: var(--t-green-soft); color: var(--t-green-text); border-radius: 5px; padding: 0 3px; }
+.call .tutor-tip del { color: var(--t-red); }
+.call .tutor-tip-why { color: var(--t-sub); }
+.call .tutor-practice { margin-top: 9px; }
+.call .tutor-practice .tutor-slow-btn { margin: 0; padding: 6px 12px; border: none; border-radius: 999px; background: var(--t-blue-soft); color: var(--t-blue); font-size: 0.78rem; }
+.call .tutor-practice-result { color: var(--t-text); }
+.call .tutor-practice-result.good { color: var(--t-green-text); }
+.call .tutor-practice-result.listening { color: var(--t-green); }
+/* 한국어로 물어본 표현 */
+.call .tutor-ko-card { max-width: 86%; padding: 12px 15px; border-radius: 20px; border-bottom-right-radius: 6px; background: var(--t-surface); border: 1px solid #edf0f5; box-shadow: 0 2px 10px rgba(16,24,40,0.06); font-size: 0.88rem; }
+.call .tutor-ko-q { color: var(--t-sub); }
+.call .tutor-ko-q::before { content: "한국어"; display: inline-block; margin-right: 6px; padding: 1px 7px; border-radius: 999px; background: #f2f4f8; color: var(--t-sub); font-size: 0.7rem; font-weight: 700; vertical-align: 1px; }
+.call .tutor-ko-label { display: flex; align-items: center; gap: 5px; color: var(--t-blue); font-size: 0.76rem; font-weight: 700; }
+.call .tutor-ko-a { color: var(--t-sub); }
+.call .tutor-ko-a b { color: var(--t-text); font-size: 1.02rem; font-weight: 700; }
+.call .tutor-ko-next { color: var(--t-green-text); font-weight: 600; }
+.call .tutor-used { color: var(--t-green-text); font-weight: 600; }
+
+/* ---- 아래 입력줄: 입력칸 + 둥근 단추 (비어 있으면 말하기, 글이 있으면 보내기) ---- */
+.call .talk-input { margin: 0; padding: 10px 12px calc(10px + env(safe-area-inset-bottom)); gap: 10px; background: var(--t-surface); border-top: 1px solid var(--t-line); }
+.call .talk-room.typing .talk-input { margin: 0; padding-bottom: 8px; }
+.call .talk-input .search-input { height: 48px; padding: 0 18px; border-radius: 24px; background: #f2f4f8; border: 1px solid transparent; color: var(--t-text); }
+.call .talk-input .search-input::placeholder { color: var(--t-faint); }
+.call .talk-input .search-input:focus { background: var(--t-surface); border-color: var(--t-blue); box-shadow: 0 0 0 3px rgba(47,91,255,0.12); }
+.call .tutor-act { width: 50px; height: 50px; display: flex; align-items: center; justify-content: center; border: 1px solid var(--t-line); background: var(--t-surface); color: var(--t-blue); box-shadow: 0 6px 18px rgba(47,91,255,0.2); transition: background 0.15s, color 0.15s, transform 0.08s; }
+.call .tutor-act svg { width: 23px; height: 23px; }
+.call .tutor-act .ico-send { display: none; }
+.call .talk-input.has-text .tutor-act, .call .talk-input .tutor-act.waiting, .talk-room[data-mode="listening"] .tutor-act { background: var(--t-blue); border-color: var(--t-blue); color: #fff; }
+.call .talk-input.has-text .tutor-act .ico-send, .call .talk-input .tutor-act.waiting .ico-send { display: block; }
+.call .talk-input.has-text .tutor-act .ico-mic, .call .talk-input .tutor-act.waiting .ico-mic { display: none; }
+.talk-room[data-mode="listening"] .talk-input:not(.has-text) .tutor-act:not(.waiting) { animation: tutorActPulse 1.8s ease-out infinite; }
+.talk-room[data-mode="listening"][data-hearing] .talk-input:not(.has-text) .tutor-act:not(.waiting) { animation-duration: 0.9s; }
+@keyframes tutorActPulse { 0% { box-shadow: 0 0 0 0 rgba(47,91,255,0.45); } 100% { box-shadow: 0 0 0 14px rgba(47,91,255,0); } }
+
+/* ---- 아래에서 올라오는 판 (시작 화면·설정·피드백) ---- */
+.call .call-sheet { padding: 20px 18px calc(18px + env(safe-area-inset-bottom)); border-radius: 28px 28px 0 0; background: var(--t-surface); border-top: none; box-shadow: 0 -16px 44px rgba(16,24,40,0.16); color: var(--t-text); }
+.call .call-sheet-head { color: var(--t-text); font-size: 1.15rem; font-weight: 800; }
+.call .call-sheet .call-icon, .call .call-setup-top .call-icon { width: 36px; height: 36px; background: #f2f4f8; color: var(--t-text); -webkit-backdrop-filter: none; backdrop-filter: none; }
+.call .call-set-row { padding: 13px 0; border-bottom: 1px solid #f0f2f6; color: var(--t-text); font-size: 0.9rem; font-weight: 600; }
+.call .call-set-row small { color: var(--t-sub); }
+.call .tutor-levels { background: #eef1f6; border: none; }
+.call .tutor-level-btn { color: var(--t-sub); font-weight: 600; }
+.call .tutor-level-btn.active { background: var(--t-surface); color: var(--t-text); font-weight: 700; box-shadow: 0 1px 4px rgba(16,24,40,0.14); }
+.call .tutor-select { background: var(--t-surface); color: var(--t-text); border: 1px solid var(--t-line); }
+.call .tutor-select option { background: var(--t-surface); color: var(--t-text); }
+.call .chip-btn { background: var(--t-surface); border: 1px solid var(--t-line); color: #344054; font-weight: 600; }
+.call .chip-btn:active { background: #f2f4f8; }
+.call .tutor-voice-try { background: var(--t-blue-soft); border-color: var(--t-blue-line); color: var(--t-blue); }
+.call .tutor-voice-try[data-state="playing"] { background: var(--t-blue); border-color: var(--t-blue); color: #fff; }
+.call .btn-main { background: var(--t-blue); border-radius: 16px; box-shadow: 0 10px 24px rgba(47,91,255,0.28); }
+.call .btn-main:active { background: var(--t-blue-press); }
+.call .tutor-credit { color: var(--t-faint); }
+.call .tutor-voice-note, .call .tutor-warn { color: var(--t-amber); }
+.call .tutor-send-tip { color: var(--t-sub); }
+/* 시작 화면 */
+.call .lobby-title { color: var(--t-text); font-size: 1.35rem; font-weight: 800; letter-spacing: -0.02em; margin-bottom: 4px; }
+.call .lobby-tip { margin-bottom: 14px; color: var(--t-sub); font-size: 0.8rem; }
+.call .lobby-chars { gap: 10px; margin-bottom: 6px; }
+.call .lobby-char { padding: 10px; border-radius: 18px; border: 2px solid var(--t-line); background: var(--t-surface); color: var(--t-sub); font-size: 1rem; }
+.call .lobby-char img { width: 48px; height: 48px; }
+.call .lobby-char.active { border-color: var(--t-blue); background: var(--t-blue-soft); color: var(--t-text); }
+.call .lobby-foot { background: var(--t-surface); box-shadow: 0 -12px 12px -4px var(--t-surface); }
+.call .lobby-start { height: 54px; margin-top: 14px; font-size: 1.05rem; }
+.call .lobby-new { border: none; background: none; color: var(--t-blue); }
+/* 피드백 판 */
+.call .tutor-feedback, .call .tutor-notes { background: #f7f8fb; border: 1px solid #eef0f4; }
+.call .tutor-feedback-title, .call .tutor-report-title, .call .tutor-fb-overall, .call .tutor-fb-row .to, .call .tutor-report-expr b, .call .tutor-note-main b { color: var(--t-text); }
+.call .tutor-fb-card { background: linear-gradient(135deg, #edf2ff, #f4f0ff); border: 1px solid var(--t-blue-line); }
+.call .tutor-fb-focus { border-top: 1px solid var(--t-blue-line); }
+.call .tutor-fb-focus b { color: var(--t-blue); }
+.call .tutor-fb-row, .call .tutor-note-row { border-top: 1px solid #e9ecf2; }
+.call .tutor-fb-row .arrow { color: var(--t-blue); }
+.call .tutor-note-used { color: var(--t-green-text); }
+.call .tutor-note-del { background: #eef0f4; color: var(--t-sub); }
+/* 알림 창 */
+.call .tutor-dialog-wrap { background: rgba(16,24,40,0.45); }
+.call .tutor-dialog { background: var(--t-surface); border: none; box-shadow: 0 24px 60px rgba(16,24,40,0.25); }
+.call .tutor-dialog-msg { color: var(--t-text); }
+.call .tutor-dialog .btn-sub { background: #f2f4f8; border: none; color: var(--t-text); }
+/* 처음 키 연결 */
+.call .call-setup-top, .call .tutor-setup-title { color: var(--t-text); }
+.call .tutor-setup-title { font-size: 1.15rem; font-weight: 800; }
+.call .tutor-setup-list { color: var(--t-sub); }
+.call .tutor-key-steps { padding: 16px; border-radius: 20px; background: var(--t-surface); border: 1px solid var(--t-line); box-shadow: 0 4px 16px rgba(16,24,40,0.05); }
+.call .tutor-key-step, .call .tutor-key-step b, .call .tutor-note b { color: var(--t-text); }
+.call .search-input { background: var(--t-surface); border: 1px solid var(--t-line); color: var(--t-text); }
+.call .search-input:focus { border-color: var(--t-blue); box-shadow: 0 0 0 3px rgba(47,91,255,0.12); }
+.call .tutor-note { padding: 14px 16px; border-radius: 18px; background: #eceff5; color: var(--t-sub); }
+
+/* 넓은 화면 (컴퓨터·가로 화면): 왼쪽 영상 카드 + 오른쪽 대화 */
+.talk-room.wide { padding: 16px; column-gap: 18px; }
+.talk-room.wide .talk-hero { border-radius: 24px; box-shadow: 0 12px 32px rgba(16,24,40,0.16); }
+.talk-room.wide .talk-log { padding-top: 6px; }
+.call .talk-room.wide .talk-input { padding: 10px 0 0; background: transparent; border-top: none; }
+.call .talk-room.wide .call-sheet { border-radius: 0; border-left: 1px solid var(--t-line); box-shadow: none; }
+.call .talk-input .tutor-act.waiting { animation: tutorActPulse 1.2s ease-out infinite; }
+.call .talk-room.wide .talk-input .search-input { background: var(--t-surface); border-color: var(--t-line); }
