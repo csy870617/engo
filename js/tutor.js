@@ -7,13 +7,12 @@
 // ==========================================
 
 const GEMINI_API = "https://generativelanguage.googleapis.com/v1beta/models/";
-// 글로 묻는 보조 일(교정·힌트·해석·한국어 도움·피드백)에 쓰는 모델. 일마다 다른 모델부터 써서 무료 사용량을 나눈다.
+// 글로 묻는 보조 일(교정·해석·한국어 도움·피드백)에 쓰는 모델. 일마다 다른 모델부터 써서 무료 사용량을 나눈다.
 // 앞 모델의 무료 사용량을 다 쓰거나 잠시 막히면 다음 모델로 넘어간다 (말로 하는 대화는 아래 Gemini Live로)
 const TUTOR_GEMINI_CHAINS = {
   chat: ["gemini-3.5-flash-lite", "gemini-3.6-flash", "gemini-3.5-flash", "gemini-3.1-flash-lite", "gemini-3.8-flash"],   // 피드백 정리
   aux: ["gemini-3.1-flash-lite", "gemini-3.5-flash-lite", "gemini-3.6-flash"],
-  fix: ["gemini-3.6-flash", "gemini-3.5-flash", "gemini-3.1-flash-lite", "gemini-3.5-flash-lite"],   // 첨삭: 정확해야 해서 Flash부터 (막히면 Lite로)
-  hint: ["gemini-3.1-flash-lite", "gemini-3.5-flash-lite", "gemini-3.5-flash", "gemini-3.6-flash"]   // 힌트: 💡를 누르면 바로 나와야 해서 빠른 Flash-Lite부터 (튜터가 말하는 동안 미리 만든다)
+  fix: ["gemini-3.6-flash", "gemini-3.5-flash", "gemini-3.1-flash-lite", "gemini-3.5-flash-lite"]   // 첨삭: 정확해야 해서 Flash부터 (막히면 Lite로)
 };
 const GEMINI_KEY_STORE = "geminiApiKey";
 const GEMINI_KEY_PAGE = "https://aistudio.google.com/apikey";
@@ -44,7 +43,6 @@ let tutorBusy = false;
 let tutorSessionToken = 0;
 let tutorConvId = 0;          // 대화마다 하나 (피드백 판을 열어도 바뀌지 않는다 — 늦게 온 교정도 대화에 붙인다)
 let tutorSpeaking = false;
-let tutorHintShown = false;
 
 // ---------- Gemini 키 (이 기기에만 · 암호화해서 저장) ----------
 // 웹 앱은 Keychain 같은 기기 암호화 저장소를 쓸 수 없다. 대신 브라우저 밖으로 꺼낼 수 없는 암호 열쇠(Web Crypto, extractable=false)를
@@ -130,8 +128,8 @@ const tutorKeyMasked = () => { const k = tutorGetKey(); return k ? "…" + k.sli
 class GeminiError extends Error {
   constructor(message, status, reason) { super(message); this.status = status || 0; this.reason = reason || ""; }
 }
-const tutorModelIdx = { chat: 0, aux: 0, hint: 0, fix: 0 };   // 일마다 지금 쓰는 모델 (목록 안의 위치)
-const tutorModelSince = { chat: 0, aux: 0, hint: 0, fix: 0 }; // 다음 모델로 넘어간 시각 (5분 지나면 가장 빠른 첫 모델부터 다시 시도)
+const tutorModelIdx = { chat: 0, aux: 0, fix: 0 };   // 일마다 지금 쓰는 모델 (목록 안의 위치)
+const tutorModelSince = { chat: 0, aux: 0, fix: 0 }; // 다음 모델로 넘어간 시각 (5분 지나면 가장 빠른 첫 모델부터 다시 시도)
 // 모델별 생각 수준: 기본은 MINIMAL(가장 빠름). 못 쓰는 모델은 LOW로 (알아낸 것은 기기에 기억해서 헛요청을 줄인다)
 const tutorThinking = (() => {
   let t = {};
@@ -408,16 +406,17 @@ function renderTutorCredit() {
   const el = tutorEl("tutor-model-name");
   if (!el) return;
   let live = ""; try { live = localStorage.getItem("tutorLiveModel") || ""; } catch (e) {}
-  el.textContent = tutorReady() ? `AI: Google Gemini 실시간 대화 · 내 키(${tutorKeyMasked()})로 연결돼 있어요` : "AI: Google Gemini";
+  const ver = ((document.querySelector('script[src*="js/tutor.js"]') || {}).src || "").match(/v=(\d+)/);   // 앱 버전 (새 버전이 적용됐는지 확인용)
+  el.textContent = (tutorReady() ? `AI: Google Gemini 실시간 대화 · 내 키(${tutorKeyMasked()})로 연결돼 있어요` : "AI: Google Gemini") + (ver ? ` · v${ver[1]}` : "");
   el.title = tutorReady() ? (live || TUTOR_LIVE_MODELS[0]) : "";
 }
 
 // 대화 기록: 맨 아래를 보고 있으면 말풍선에 버튼·해석·팁·연습 결과가 붙어도 계속 맨 아래가 보이게 (위로 올려 읽는 중이면 그대로 둔다)
-let tutorLogPinned = true, tutorLogQGap = 0;   // tutorLogQGap: 힌트를 펴서 튜터 질문이 보이게 맞춘 만큼 (그만큼 위로 올라가 있어도 '맨 아래를 보는 중')
+let tutorLogPinned = true;
 function tutorLogFollow() {
   const log = tutorEl("tutor-log"); if (!log || log.dataset.follow) return;
   log.dataset.follow = "1";
-  log.addEventListener("scroll", () => { const d = log.scrollHeight - log.scrollTop - log.clientHeight; tutorLogPinned = d < 60 || (tutorHintShown && d <= tutorLogQGap + 4); }, { passive: true });
+  log.addEventListener("scroll", () => { const d = log.scrollHeight - log.scrollTop - log.clientHeight; tutorLogPinned = d < 60; }, { passive: true });
   new MutationObserver(() => { if (tutorLogPinned) log.scrollTop = log.scrollHeight; })
     .observe(log, { childList: true, subtree: true, characterData: true, attributes: true, attributeFilter: ["class"] });
 }
@@ -636,7 +635,6 @@ function stopTutorActivity() {
 }
 function leaveTutorPage() {
   if (tutorDialogOpen) tutorDialogOpen(false);
-  if (tutorHintShown) { tutorHintShown = false; renderTutorHint(); }
   const hd = document.querySelector("header"); if (hd) hd.inert = false;
   tutorMarkPause();
   stopTutorActivity();
@@ -680,7 +678,6 @@ function tutorHandleBack() {
   const keep = () => { try { history.pushState({ page: "tutor" }, "", "#tutor"); } catch (e) {} return true; };   // 뒤로 가기로 빠진 기록을 되돌려 둔다
   if (tutorDialogOpen) { tutorDialogOpen(false); if (!tutorSheetHistory) return keep(); }
   if (tutorSheetHistory) { tutorSheetHistory = false; toggleTutorSheet(undefined, true); return true; }
-  if (tutorHintShown && tutorPageVisible()) { tutorHintShown = false; renderTutorHint(); return keep(); }
   return false;
 }
 /** 사용자가 판을 닫을 때 (✕·계속 대화하기·바깥 누르기): 누른 순간에 소리 장치를 깨워 둔다 (돌아와서 바로 말할 수 있게, 아이폰) */
@@ -713,15 +710,13 @@ function toggleTutorSheet(name, viaHistory, mode) {
     if (r && r.isConnected && mode !== "leave") try { r.focus({ preventScroll: true }); } catch (e) {}
   }
   // 판을 여는 동안은 듣지 않고, 닫으면 하던 대화로 돌아간다
-  if (opened) { tutorMarkPause(true); tutorCancelListening(); if (tutorHintShown) { tutorHintShown = false; renderTutorHint(); } }
+  if (opened) { tutorMarkPause(true); tutorCancelListening(); }
   else if (closed && mode !== "leave") { tutorStopPreview(); tutorResume("sheet"); }   // 미리 듣던 목소리는 멈춘다 (안 그러면 다시 듣기가 켜지지 않는다)
 }
-// 힌트로 넣은 문장은 '글 쓰는 중'으로 보지 않는다 (들려준 뒤 그대로 따라 말하면 받게). 고쳐 쓰면 그때부터 글쓰기
-let tutorHintTarget = "";
 function tutorTypingNow() {
   const inp = tutorEl("tutor-input"); if (!inp) return false;
   const v = inp.value.trim();
-  return document.activeElement === inp || (!!v && v !== tutorHintTarget);
+  return document.activeElement === inp || !!v;
 }
 let tutorNoMic = false;   // 마이크를 찾지 못했다: 저절로 켜지 않는다 (튜터를 누르면 다시 해 본다)
 /** 설정·피드백 판이 열려 있는지 */
@@ -900,7 +895,6 @@ function tutorLayout() {
   if (!CW || !CH) return;
   const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
   const lobby = room.classList.contains("lobby");
-  const hint = room.classList.contains("hinting") && !lobby;
   const wide = CW >= 600 && CW > CH * 1.15;
   room.classList.toggle("wide", wide);
   const W = room.clientWidth, H = room.clientHeight;
@@ -915,8 +909,8 @@ function tutorLayout() {
     const sheet = tutorEl("tutor-lobby"), sh = sheet ? sheet.offsetHeight : H * 0.6;
     h = clamp(H - sh + 30, Math.min(H, 200), H);   // 시작 화면 판 위로 보이는 만큼 (얼굴이 그 안에 오게)
     anchor = 0.5;
-  } else if (compact) { h = hint ? clamp(H * 0.24, 92, 170) : clamp(H * 0.34, 116, 240); anchor = 0.52; }
-  else { h = hint ? clamp(H * 0.34, 160, 330) : clamp(H * 0.46, 180, Math.max(260, W * 1.25)); anchor = 0.44; }
+  } else if (compact) { h = clamp(H * 0.34, 116, 240); anchor = 0.52; }
+  else { h = clamp(H * 0.46, 180, Math.max(260, W * 1.25)); anchor = 0.44; }
   h = Math.round(h);
   room.style.setProperty("--hero-h", h + "px");
   // 영상은 칸을 꽉 채운다 (넘치는 쪽은 잘림): 세로로 넘치면 얼굴이 anchor 높이에 오도록 잘라 낼 위치를 정한다
@@ -925,21 +919,6 @@ function tutorLayout() {
   let y = 50;
   if (vh > hh + 1) y = clamp(((tutorChar().face || 0.42) * vh - hh * anchor) / (vh - hh), 0, 1) * 100;
   room.style.setProperty("--face-y", y.toFixed(1) + "%");
-  if (hint) requestAnimationFrame(tutorLogShowQuestion);
-}
-/** 힌트를 펴서 대화 칸이 좁아졌을 때: 힌트가 답하는 튜터의 마지막 말(보통 끝에 질문)이 보이게,
- *  말풍선이 칸보다 크면 버튼 줄 대신 글의 끝부분이 칸 아래쪽에 오게 맞춘다 */
-function tutorLogShowQuestion() {
-  const log = tutorEl("tutor-log"), last = log && log.lastElementChild;
-  if (!log || !tutorHintShown || !tutorLogPinned) return;
-  log.scrollTop = log.scrollHeight;
-  tutorLogQGap = 0;
-  const t = last && last.classList.contains("tutor") && last.querySelector(".tutor-text");
-  if (!t) return;
-  const lr = log.getBoundingClientRect(), tr = t.getBoundingClientRect();
-  if (tr.top >= lr.top + 14) return;              // 다 보인다
-  log.scrollTop = Math.max(0, log.scrollTop + (tr.bottom - lr.bottom) + 6);
-  tutorLogQGap = log.scrollHeight - log.scrollTop - log.clientHeight;
 }
 if (typeof ResizeObserver !== "undefined") {
   const ro = new ResizeObserver(() => tutorRelayout());
@@ -951,11 +930,10 @@ if (typeof ResizeObserver !== "undefined") {
   const el = tutorEl(id);
   if (el) el.addEventListener("scroll", () => { if (el.scrollTop || el.scrollLeft) { el.scrollTop = 0; el.scrollLeft = 0; } }, { passive: true });
 });
-// Esc: 열린 판 → 힌트 순서로 닫는다 (알림 창은 창이 직접 닫는다)
+// Esc: 열린 판을 닫는다 (알림 창은 창이 직접 닫는다)
 document.addEventListener("keydown", e => {
   if (e.key !== "Escape" || tutorDialogOpen || !tutorPageVisible()) return;
   if (["settings", "feedback"].some(n => { const el = tutorEl("tutor-sheet-" + n); return el && !el.classList.contains("hidden"); })) tutorCloseSheets();
-  else if (tutorHintShown && !tutorLobbyOpen()) toggleTutorHint();
   else return;
   e.preventDefault();
 });
@@ -1011,7 +989,6 @@ function changeTutorLevel(id) {
   if (tutorMessages.length) tutorMessages[0] = { role: "system", content: tutorSystemPrompt() };
   if (tutorLive || tutorLiveHandle) tutorLiveStale = true;   // 이어 갈 때 새 수준으로 다시 연결한다
   setTutorStatus(`이제 ${tutorLevel().label} 수준으로 말할게요`, "");
-  if (tutorHintShown) renderTutorHint();
 }
 
 // ---------- 프롬프트 ----------
@@ -1235,8 +1212,7 @@ function startTutorSession() {
   tutorSaidLines = [];
   tutorEl("tutor-log").innerHTML = "";
   tutorEl("tutor-feedback").classList.add("hidden");
-  tutorHintShown = false; renderTutorHint();
-  tutorHintTarget = ""; tutorEl("tutor-input").value = "";
+  tutorEl("tutor-input").value = "";
   tutorPausedAt = 0; tutorKoTarget = null; tutorReconnects = 0; tutorLiveRetry = null;
   setTutorStatus("연결하는 중…", "thinking");
   tutorNoMic = false;
@@ -1271,20 +1247,17 @@ function sendTutorText(text) {
  *  기록한 항목을 돌려준다 */
 function tutorRecordLearner(text, myBubble, beforeMsg, before) {
   const token = tutorSessionToken;
-  const fromHint = !!tutorHintTarget && tutorSimilarity(text, tutorHintTarget) >= 0.85;   // 힌트 문장을 그대로 말했다
-  if (tutorHintTarget) { const inp = tutorEl("tutor-input"); if (inp && inp.value.trim() === tutorHintTarget) inp.value = ""; tutorHintTarget = ""; }   // 말로 보냈어도 지난 힌트는 치운다
   tutorLearnerLines.push(text);
   if (before === undefined) before = tutorSaidLines[tutorSaidLines.length - 1];
   const item = { text, bubble: myBubble, fix: undefined, why: "", check: null, before };
   tutorLearnerItems.push(item);
   // 답과 동시에 교정 확인 (고칠 게 있으면 내 말풍선 아래에 팁 · 힌트 문장은 앱이 준 것이라 고치지 않는다 · 한국어로 한 말은 고치지 않는다)
-  if (fromHint || (text.match(/[가-힣]/g) || []).length > (text.match(/[a-z]/gi) || []).length) { item.fix = ""; item.fixLocked = true; } else tutorCheckItem(item, before, token);
+  if ((text.match(/[가-힣]/g) || []).length > (text.match(/[a-z]/gi) || []).length) { item.fix = ""; item.fixLocked = true; } else tutorCheckItem(item, before, token);
   tutorCheckNoteUse(text, myBubble);
   // 한국어로 물어본 표현을 바로 써 봤으면 카드에 표시한다
   if (tutorKoTarget && tutorCovers(text, tutorKoTarget.en) >= 0.8) { const nx = tutorKoTarget.card.querySelector(".tutor-ko-next"); if (nx) nx.textContent = "✅ 잘 말했어요!"; tutorNoteMark(tutorKoTarget.en, "used"); }
   tutorKoTarget = null;
   item.msg = tutorMsgInsert({ role: "user", content: text }, beforeMsg);
-  tutorHintShown = false; renderTutorHint();
   return item;
 }
 // 한국어 도움으로 알려 준 표현 { en, card } (학습자가 바로 그 말을 하면 튜터가 알아보고 반가워한다)
@@ -1552,7 +1525,7 @@ async function tutorKoreanHelp(ko) {
       { role: "system", content: `You help a Korean adult at the ${tutorLevel().desc} level say things in English during a casual conversation. ` +
         "Turn what the student wants to say into the most natural spoken English a friendly native speaker would use, at the student's level (beginner: short and simple). Keep the meaning. Put only the English in 'en'." },
       { role: "user", content: (said ? `The tutor just said: "${said}"\n` : "") + `What the student wants to say (Korean): ${ko}` }
-    ], { temperature: 0.3, maxTokens: 150, schema: TUTOR_KO_SCHEMA, chain: "hint" });
+    ], { temperature: 0.3, maxTokens: 150, schema: TUTOR_KO_SCHEMA, chain: "aux" });
     const en = ((j && j.en) || "").trim();
     if (!en) throw new Error("다시 말하거나 적어 주세요.");
     const stale = token !== tutorSessionToken;            // 그사이 피드백을 열었거나 화면을 떠났다: 보여 주고 노트에는 넣되 말하지는 않는다
@@ -1873,7 +1846,6 @@ const tutorAudioKept = [];       // 다시 듣기용 목소리를 둔 말풍선 
 /** 튜터가 답을 만드는 중인지 (힌트는 기다리게 하고, 끝나면 다시 그린다) */
 function tutorSetBusy(v) {
   const was = tutorBusy; tutorBusy = !!v;
-  if (was && !tutorBusy && tutorHintShown) renderTutorHint();
 }
 
 /** 연결을 연다: 모델을 차례로 시도한다. opts.resume: 이어 가기 표로 (표가 없으면 지금까지 대화를 붙여) · opts.history: 대화를 안내에 붙여 새로 */
@@ -2313,9 +2285,7 @@ function tutorTurnGenDone(t) {
       } else if (!t.pcm.length) b.remove();
       else { b.querySelector(".tutor-text").textContent = "🔊"; b.onclick = () => tutorSpeakTap("", false, b); }   // 소리만 왔다 (누르면 다시 듣기)
     }
-    if (said && tutorHintsUsed()) tutorPrepareHints();     // 다음에 할 말 힌트를 미리 만들어 둔다
   }
-  if (tutorHintShown) renderTutorHint();
   tutorTurnSettle(t);
 }
 /** 튜터 차례를 끝낸다 (다 만들었고 소리도 끝났거나 끊었을 때): 다시 듣기용 목소리를 두고, 다음으로 */
@@ -2383,7 +2353,6 @@ function tutorReplayTurn(bubble) {
 
 // ----- 듣기 (마이크) -----
 const tutorListenMsg = () => tutorPractice ? "듣고 있어요… 따라 말해 보세요"
-  : tutorHintTarget && tutorEl("tutor-input").value.trim() === tutorHintTarget ? "문장을 따라 말하거나 ➤를 누르세요"
   : (tutorLive ? tutorLive.manual : tutorSendManual()) ? "듣고 있어요… 다 말하면 ➤를 누르세요" : "듣고 있어요… 영어로 말해 보세요";
 /** 내 말을 듣기 시작한다 (마이크가 아직이면 켠다) */
 function tutorLiveListen() {
@@ -2700,130 +2669,11 @@ window.addEventListener("online", () => {
   if (tutorCallActive && !tutorLive && !tutorLiveConnecting && tutorPageVisible() && !document.hidden && !tutorSheetOpen() && tutorReady()) tutorLiveResume("back");
 });
 
-// ---------- 힌트 · 피드백 ----------
-function toggleTutorHint() {
-  tutorHintShown = !tutorHintShown;
-  if (tutorHintShown) { try { localStorage.setItem("tutorHintsUsed", "1"); } catch (e) {} }
-  renderTutorHint();
-}
-/** 힌트를 써 본 사람에게만 미리 만들어 둔다 (안 쓰는 사람의 무료 사용량을 아낀다) */
-function tutorHintsUsed() { try { return localStorage.getItem("tutorHintsUsed") === "1"; } catch (e) { return false; } }
-// AI 힌트: 지금 대화의 마지막 말에 이어서 내가 할 수 있는 말 3가지 (영어 + 한국어 뜻)
-let tutorHintCache = { key: "", list: null, loading: null };
-const TUTOR_HINT_SCHEMA = { type: "OBJECT", properties: { suggestions: { type: "ARRAY", items: { type: "OBJECT",
-  properties: { en: { type: "STRING" }, kr: { type: "STRING" } }, required: ["en", "kr"] } } }, required: ["suggestions"] };
+// ---------- 피드백 ----------
+/** 지금까지 대화 (피드백·다시 연결할 때 튜터에게 주는 안내에 쓴다) */
 function tutorTranscript(maxMsgs) {
   return tutorMessages.slice(1).filter(m => m.content).slice(-(maxMsgs || 12)).map(m => (m.role === "user" ? "Student: " : "Teacher: ") + m.content).join("\n");
 }
-/** 힌트 한 줄씩 받기: "영어 ||| 한국어" 줄이 다 오는 대로 바로 보여 준다 (셋을 다 기다리지 않게) */
-function tutorParseHints(text, final) {
-  const lines = text.split("\n");
-  if (!final) lines.pop();                                 // 아직 쓰는 중인 마지막 줄은 다음에
-  return lines.map(l => l.replace(/^\s*(?:[-*•]|\d+[.)])\s*/, "").trim()).filter(l => l.includes("|||"))
-    .map(l => { const [en, kr] = l.split("|||").map(x => x.trim().replace(/^["“]|["”]$/g, "")); return { en, kr: kr || "" }; })
-    .filter(h => h.en && /[a-z]/i.test(h.en)).slice(0, 3);
-}
-// 힌트 길이·낱말 수준 (수준별)
-const TUTOR_HINT_LEVEL = {
-  beginner: "4 to 10 words each, very common everyday words and simple grammar.",
-  intermediate: "up to about 14 words each, everyday expressions and common phrasal verbs.",
-  advanced: "up to about 18 words each, natural idioms and phrasal verbs a native speaker would use."
-};
-async function loadTutorAiHints(key) {
-  const said = tutorSaidLines[tutorSaidLines.length - 1] || "";
-  const entry = tutorHintCache;
-  const show = list => { if (tutorHintCache === entry && tutorHintCache.key === key && list.length > (entry.list || []).length) { entry.list = list; if (tutorHintShown) renderTutorHint(true); } };
-  const text = await geminiStream([
-    { role: "system", content: [
-      `You help a Korean adult at the ${tutorLevel().desc} level reply in a casual English conversation. Suggest 3 different things the student could naturally say next, in reply to the teacher's last message.`,
-      "- Each must be what a native speaker would actually say in everyday conversation: natural and fully grammatical, with contractions (I'm, it's, didn't). Not stiff textbook English (never \"I am fine, thank you. And you?\").",
-      "- Directly answer or respond to the teacher's last message, using the conversation so far, and sound like the student's own real answer (concrete, with a small personal detail).",
-      "- Make the 3 different: 1) a short, easy answer 2) an answer with one detail or reason 3) an answer that also asks something back or keeps the chat going.",
-      `- Length and words: ${TUTOR_HINT_LEVEL[tutorLevelId()] || TUTOR_HINT_LEVEL.beginner}`,
-      "- The Korean is the natural spoken meaning (해요체), not a word-for-word translation.",
-      "Write exactly 3 lines and nothing else. Each line: the English, then ' ||| ', then the Korean.",
-      "Example (teacher: \"What did you do last weekend?\"):",
-      "I just stayed home and relaxed. ||| 그냥 집에서 쉬었어요.",
-      "I went hiking with my friends. It was really nice. ||| 친구들이랑 등산 갔어요. 정말 좋았어요.",
-      `Not much, honestly. How about you? ||| 솔직히 별거 안 했어요. ${tutorName()}는요?`
-    ].join("\n") },
-    { role: "user", content: `Conversation so far:\n${tutorTranscript(6) || "(none)"}\n` +
-      (tutorMessages.length <= 1 && said ? `Teacher: ${said}\n` : "") + "Suggest what the student can say next." }
-  ], { temperature: 0.7, maxTokens: 220, chain: "hint", budget: 15000 }, partial => show(tutorParseHints(partial, false)));
-  const list = tutorParseHints(text || "", true);
-  show(list);
-  return list;
-}
-/** 힌트를 미리 만들어 둔다: 튜터 말이 정해지면 바로 (💡를 누를 때는 이미 준비돼 있게). 실패했던 건 다시 시도 */
-function tutorPrepareHints() {
-  if (!tutorReady() || !tutorCallActive) return;
-  const key = tutorConvId + ":" + tutorSaidLines.length + ":" + tutorLevelId();   // 같은 대화·같은 튜터 말이면 판을 열고 닫아도 받아 둔 힌트를 그대로
-  if (tutorHintCache.key === key && !tutorHintCache.error) return;
-  const entry = { key, list: null, error: null, loading: null };
-  tutorHintCache = entry;                                  // 먼저 바꿔 둬야 한 줄씩 온 힌트가 이 칸에 들어간다
-  entry.loading = loadTutorAiHints(key)
-    .then(list => { if (!list.length) entry.error = new Error("잠시 뒤 다시 눌러 주세요."); })
-    .catch(e => { entry.error = e; })
-    .finally(() => { entry.loading = null; if (tutorHintCache === entry && tutorHintShown) renderTutorHint(true); });   // 실패해도 여기서 다시 요청하지 않는다 (끝없이 되풀이 방지)
-  tutorHintCache = entry;
-}
-/** 힌트 고르기: 입력칸에 넣는다 (그대로 따라 말하거나, ➤로 바로 보내거나, 고쳐 쓸 수 있게). 힌트 창은 닫는다 */
-function tutorUseHint(en) {
-  if (tutorTurn || tutorSpeaking) tutorCutTutor();     // 튜터가 아직 말하는 중이면 끊는다 (소리가 겹치지 않게)
-  const inp = tutorEl("tutor-input");
-  inp.value = en; tutorHintTarget = en.trim();
-  tutorHintShown = false; renderTutorHint();
-  const send = document.querySelector(".talk-input .send");
-  if (send) { send.classList.remove("ready"); void send.offsetWidth; send.classList.add("ready"); }   // 보내기 버튼을 반짝여 알려 준다
-  // 튜터가 읽어 주지 않는다 (내가 할 말이라서). 그대로 따라 말하면 튜터에게 가고, ➤를 눌러 글로 보내도 된다
-  if (tutorListening) { setTutorStatus(tutorListenMsg(), "listening"); return; }
-  setTutorStatus(document.activeElement === inp ? "➤를 눌러 보내 보세요" : "➤로 보내거나 그대로 따라 말해 보세요", "");
-  setTimeout(() => tutorAfterSpeak(), 300);
-}
-function renderTutorHint(noRetry) {
-  const box = tutorEl("tutor-hint");
-  if (!box) return;
-  box.classList.toggle("hidden", !tutorHintShown);
-  const hb = tutorEl("tutor-hint-btn"); if (hb) { hb.classList.toggle("on", tutorHintShown); hb.setAttribute("aria-expanded", String(tutorHintShown)); }
-  const room = tutorEl("tutor-chat-area"); if (room && room.classList.contains("hinting") !== tutorHintShown) { room.classList.toggle("hinting", tutorHintShown); tutorLayout(); }
-  requestAnimationFrame(() => { const log = tutorEl("tutor-log"); if (!log || !tutorLogPinned) return; if (tutorHintShown) tutorLogShowQuestion(); else log.scrollTop = log.scrollHeight; });   // 힌트가 답하는 튜터 말이 보이게 (위로 올려 읽는 중이면 그대로)
-  if (!tutorHintShown) return;
-  if (!tutorReady()) return;
-  // 머리줄: 무엇을 하는 칸인지 + 닫기 (💡를 다시 눌러도 닫힌다)
-  const head = sub => {
-    box.innerHTML = `<div class="tutor-hint-head"><span class="tutor-hint-title"><span aria-hidden="true">💡</span> 이렇게 말해 볼까요?<small></small></span>` +
-      `<button type="button" class="tutor-hint-x" aria-label="힌트 닫기">✕</button></div>`;
-    box.querySelector("small").textContent = sub || "";
-    box.querySelector(".tutor-hint-x").onclick = e => { e.stopPropagation(); if (tutorHintShown) toggleTutorHint(); };
-  };
-  const wait = () => { head(""); const d = document.createElement("div"); d.className = "tutor-hint-label tutor-hint-wait"; d.textContent = "힌트 만드는 중…"; box.appendChild(d); };
-  if (tutorBusy) { wait(); return; }   // Emma 답이 정해지면 그 답에 맞춰 만든다
-  if (!noRetry) tutorPrepareHints();
-  const hc = tutorHintCache;
-  if (!hc.list || !hc.list.length) {
-    if (tutorHintCache.error) {
-      head("");
-      const msg = document.createElement("div"); msg.className = "tutor-hint-label";
-      msg.textContent = "힌트를 만들지 못했어요. " + geminiErrorText(tutorHintCache.error);
-      const again = document.createElement("button"); again.className = "tutor-slow-btn tutor-hint-retry";
-      again.innerHTML = `<span aria-hidden="true">🔄</span> 다시 시도`;
-      again.onclick = e => { e.stopPropagation(); renderTutorHint(); };
-      box.append(msg, again);
-    } else wait();
-    return;
-  }
-  head("누르면 입력칸에 넣어요");
-  tutorHintCache.list.forEach(h => {
-    const row = document.createElement("button"); row.type = "button"; row.className = "tutor-hint-item";
-    row.innerHTML = `<span class="tutor-hint-en" lang="en"></span><span class="tutor-hint-kr"></span>`;
-    row.querySelector(".tutor-hint-en").textContent = h.en;
-    row.querySelector(".tutor-hint-kr").textContent = h.kr;
-    row.onclick = () => tutorUseHint(h.en);
-    box.appendChild(row);
-  });
-  if (hc.loading && hc.list.length < 3) { const more = document.createElement("div"); more.className = "tutor-hint-label"; more.textContent = "더 만드는 중…"; box.appendChild(more); }
-}
-
 /** 오늘 대화 피드백: 한 줄 총평 · 오늘의 핵심 하나 · 고쳐 말하기 · 써 볼 표현 2개 (짧고 깔끔하게).
  *  선생님 정리(AI)와 문장 확인을 동시에 시작해서, 먼저 끝나는 것부터 보여 준다. 대화가 그대로면 다시 열 때 바로 */
 let tutorFeedbackCache = { key: "", p: null };
