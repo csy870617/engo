@@ -409,6 +409,9 @@ function renderTutorCredit() {
   const ver = ((document.querySelector('script[src*="js/tutor.js"]') || {}).src || "").match(/v=(\d+)/);   // 앱 버전 (새 버전이 적용됐는지 확인용)
   el.textContent = (tutorReady() ? `AI: Google Gemini 실시간 대화 · 내 키(${tutorKeyMasked()})로 연결돼 있어요` : "AI: Google Gemini") + (ver ? ` · v${ver[1]}` : "");
   el.title = tutorReady() ? (live || TUTOR_LIVE_MODELS[0]) : "";
+  if (!el.dataset.diag) { el.dataset.diag = "1"; let taps = [];   // 5번 빠르게 누르면 키보드 진단 표시 켜기·끄기
+    el.addEventListener("click", () => { const now = Date.now(); taps = taps.filter(t => now - t < 3000); taps.push(now); if (taps.length >= 5) { taps = []; tutorKbDiag(!tutorKbDiagOn); } });
+  }
 }
 
 // 대화 기록: 맨 아래를 보고 있으면 말풍선에 버튼·해석·팁·연습 결과가 붙어도 계속 맨 아래가 보이게 (위로 올려 읽는 중이면 그대로 둔다)
@@ -846,7 +849,14 @@ function tutorFitViewport() {
   let top = vv.offsetTop, height = vv.height;
   if (!vvOpen && vkOpen) { height = window.innerHeight - tutorVkH - vv.offsetTop; }
   const guess = !open && tutorKbGuess && document.activeElement === inp0;
-  if (guess) height = window.innerHeight - tutorKbEstimate();
+  if (guess) {
+    const k = tutorKbEstimate();
+    // 앱 안 브라우저(안드로이드 WebView)는 키보드가 떠도 화면 크기를 알려 주지 않고, 앱 쪽에서 화면 전체를 키보드만큼 밀어 올린다
+    // (입력칸이 어디 있든). 그래서 줄여 두면 줄인 만큼 + 밀린 만큼 두 번 올라가 튜터가 사라진다 →
+    // 크기를 줄이지 않고 키보드 높이만큼 아래로 내려 둔다: 밀려 올라가면 튜터가 보이는 영역 맨 위에 온다
+    if (tutorInWebView()) top = vv.offsetTop + k;
+    height = window.innerHeight - k;
+  }
   const log = tutorEl("tutor-log");
   const pinned = log && log.scrollHeight - log.scrollTop - log.clientHeight < 40;   // 맨 아래를 보고 있었으면 크기가 바뀐 뒤에도 맨 아래로
   if (pinned) requestAnimationFrame(() => { log.scrollTop = log.scrollHeight; });
@@ -866,7 +876,9 @@ function tutorFitViewport() {
 }
 let tutorKbGuess = false, tutorKbReal = false;   // 키보드가 뜰 텐데 크기를 알려 주지 않는 화면 (앱 안 브라우저)
 /** 휴대폰 키보드 높이 어림 (보통 화면의 40% 안팎 · 위쪽 도구 줄 포함) */
-const tutorKbEstimate = () => Math.round(Math.max(260, Math.min(430, window.innerHeight * 0.43)));
+const tutorKbEstimate = () => Math.round(Math.max(250, Math.min(420, window.innerHeight * 0.40)));
+/** 안드로이드 앱 안 브라우저(WebView)인지 */
+const tutorInWebView = () => /Android/i.test(navigator.userAgent || "") && /; wv\)/.test(navigator.userAgent || "");
 if (window.visualViewport) { visualViewport.addEventListener("resize", tutorFitViewport); visualViewport.addEventListener("scroll", tutorFitViewport); window.addEventListener("resize", tutorFitViewport); }
 window.addEventListener("orientationchange", () => { tutorBaseH = 0; });
 // 안드로이드 크롬(홈 화면 앱 포함)은 키보드가 뜨면 화면을 밀어 올려 위쪽 튜터가 화면 밖으로 나가 버린다.
@@ -874,7 +886,7 @@ window.addEventListener("orientationchange", () => { tutorBaseH = 0; });
 let tutorVkOn = false, tutorVkH = 0;
 function tutorVirtualKeyboard(on) {
   const vk = navigator.virtualKeyboard;
-  if (!vk || !("overlaysContent" in vk)) return;
+  if (!vk || !("overlaysContent" in vk) || tutorInWebView()) return;
   try { vk.overlaysContent = !!on; tutorVkOn = !!on; } catch (e) { tutorVkOn = false; }
   if (!on) tutorVkH = 0;
 }
@@ -882,9 +894,59 @@ if (navigator.virtualKeyboard && navigator.virtualKeyboard.addEventListener) {
   navigator.virtualKeyboard.addEventListener("geometrychange", e => {
     const r = (e && e.target && e.target.boundingRect) || navigator.virtualKeyboard.boundingRect;
     tutorVkH = Math.round((r && r.height) || 0);
+    tutorKbNote("vk " + tutorVkH);
     if (tutorVkOn) { tutorFitViewport(); tutorRefit(); }
   });
 }
+// ---------- 키보드 진단 (설정 맨 아래 버전 글자를 5번 누르면 켜고 끈다) ----------
+// 실제 기기에서 키보드가 뜰 때 화면 크기·위치 값이 어떻게 바뀌는지 보여 준다 (원인을 확인하는 용도)
+let tutorKbDiagOn = false, tutorKbDiagTimer = 0;
+const tutorKbLog = [];
+function tutorKbNote(what) {
+  if (!tutorKbDiagOn) return;
+  const vv = window.visualViewport || {};
+  tutorKbLog.push(`${(performance.now() / 1000).toFixed(1)} ${what} ih${window.innerHeight} vv${Math.round(vv.height || 0)}/${Math.round(vv.offsetTop || 0)}`);
+  while (tutorKbLog.length > 7) tutorKbLog.shift();
+}
+function tutorKbDiag(on) {
+  tutorKbDiagOn = !!on;
+  try { if (on) localStorage.setItem("tutorKbDiag", "1"); else localStorage.removeItem("tutorKbDiag"); } catch (e) {}
+  clearInterval(tutorKbDiagTimer);
+  let box = tutorEl("tutor-kb-diag");
+  if (!on) { if (box) box.remove(); return; }
+  if (!box) {
+    box = document.createElement("pre"); box.id = "tutor-kb-diag";
+    box.style.cssText = "position:absolute;left:4px;right:4px;bottom:64px;z-index:50;margin:0;padding:6px 8px;max-height:45%;overflow:hidden;font:10px/1.35 monospace;white-space:pre-wrap;word-break:break-all;color:#0f0;background:rgba(0,0,0,0.78);border-radius:8px;pointer-events:none";
+    const room = tutorEl("tutor-chat-area"); if (room) room.appendChild(box);
+  }
+  const r = el => { if (!el) return "-"; const b = el.getBoundingClientRect(); return `${Math.round(b.top)}~${Math.round(b.bottom)}`; };
+  const upd = () => {
+    const vv = window.visualViewport || {}, vk = navigator.virtualKeyboard, call = tutorEl("tutor-call"), main = document.querySelector("main");
+    const ua = navigator.userAgent || "";
+    box.textContent = [
+      `v${(((document.querySelector('script[src*="js/tutor.js"]') || {}).src || "").match(/v=(\d+)/) || [])[1]} wv:${tutorInWebView()} dpr:${window.devicePixelRatio} scr:${screen.width}x${screen.height} out:${window.outerWidth}x${window.outerHeight}`,
+      `inner:${window.innerWidth}x${window.innerHeight} client:${document.documentElement.clientHeight} vv:${Math.round(vv.width || 0)}x${Math.round(vv.height || 0)} off:${Math.round(vv.offsetTop || 0)} pageTop:${Math.round(vv.pageTop || 0)} scale:${(vv.scale || 1).toFixed(2)}`,
+      `scrollY:${Math.round(window.scrollY)} html:${document.documentElement.scrollTop} body:${document.body.scrollTop} main:${main ? main.scrollTop : "-"} call:${call ? call.scrollTop : "-"} room:${(tutorEl("tutor-chat-area") || {}).scrollTop}`,
+      `vk:${!!vk}${vk ? ` overlay:${vk.overlaysContent} rect:${Math.round((vk.boundingRect || {}).height || 0)}` : ""} vkOn:${tutorVkOn} vkH:${tutorVkH} guess:${tutorKbGuess} real:${tutorKbReal} open:${tutorKbOpen} est:${tutorKbEstimate()}`,
+      `call top:${call ? call.style.top || "-" : "-"} h:${call ? call.style.height || "-" : "-"} rect:${r(call)} hero:${r(document.querySelector(".talk-hero"))} input:${r(tutorEl("tutor-input"))} focus:${document.activeElement && document.activeElement.id}`,
+      `ua:${ua.replace(/^Mozilla\/5\.0 /, "").slice(0, 110)}`,
+      ...tutorKbLog
+    ].join("\n");
+  };
+  upd(); tutorKbDiagTimer = setInterval(upd, 300);
+}
+["resize"].forEach(t => window.addEventListener(t, () => tutorKbNote("win-" + t)));
+if (window.visualViewport) { visualViewport.addEventListener("resize", () => tutorKbNote("vv-resize")); visualViewport.addEventListener("scroll", () => tutorKbNote("vv-scroll")); }
+document.addEventListener("focusin", e => { if (e.target && e.target.id === "tutor-input") tutorKbNote("focus"); });
+document.addEventListener("focusout", e => { if (e.target && e.target.id === "tutor-input") tutorKbNote("blur"); });
+window.addEventListener("scroll", () => tutorKbNote("win-scroll " + Math.round(window.scrollY)), { passive: true });
+// 앱 안 브라우저에서 뒤로 가기로 키보드만 닫으면 아래로 내려 둔 화면이 그대로 남는다 → 튜터 화면 바깥(위쪽 빈 곳)을 누르면 입력을 끝낸다
+document.addEventListener("pointerdown", e => {
+  const inp = tutorEl("tutor-input"), call = tutorEl("tutor-call");
+  if (!tutorKbGuess || !inp || document.activeElement !== inp || !call) return;
+  if (!call.contains(e.target) || e.target === call) inp.blur();
+}, true);
+try { if (localStorage.getItem("tutorKbDiag") === "1") setTimeout(() => tutorKbDiag(true), 1500); } catch (e) {}
 // 튜터 화면에서는 페이지 자체도 스크롤되지 않게 (키보드가 입력칸을 보여 주려고 밀어 올려도 제자리로)
 window.addEventListener("scroll", () => { if (tutorVkOn && tutorPageVisible() && (window.scrollY || document.documentElement.scrollTop)) window.scrollTo(0, 0); }, { passive: true });
 
