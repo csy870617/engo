@@ -899,6 +899,13 @@ function tutorFitViewport() {
     if (!open && (window.scrollY || document.documentElement.scrollTop)) window.scrollTo(0, 0);
   }
   setKb(kb);
+  // 키보드 위 자리가 좁으면 대화를 영상 아래쪽에 겹쳐 올린다 (영상 크기는 그대로, 얼굴은 위쪽이라 가리지 않는다)
+  let pull = 0;
+  if (room && kb && tutorStageMode()) {
+    const vis = (tutorBaseH || window.innerHeight) - kb, hh = parseFloat(room.style.getPropertyValue("--hero-h")) || 0, row = tutorEl("tutor-type-row");
+    pull = Math.max(0, Math.round(vis * 0.38) - (vis - hh - (row ? row.offsetHeight : 0)));
+  }
+  if (room) { room.style.setProperty("--log-pull", pull + "px"); room.classList.toggle("pulled", pull > 0); }
   // 안드로이드 뒤로 가기로 키보드만 닫으면 입력칸에 초점이 남아 '글 쓰는 중'으로 멈춰 있게 된다 → 초점을 풀어 다시 듣게
   if (tutorKbReal && !open && typing) inp0.blur();
   tutorKbReal = open;
@@ -1065,8 +1072,8 @@ function tutorLayout() {
   const hero = room.querySelector(".talk-hero");
   let h, anchor;                                   // anchor: 얼굴 가운데가 놓일 칸 안의 높이 비율
   if (wide) { h = H; anchor = 0.42; }
-  // 휴대폰 세로 화면: 위에 영상 통화 화면 (키보드가 없을 때 높이의 34% — 키보드가 올라와도 그대로), 아래로 대화
-  else if (stage) { h = clamp(H * 0.34, 200, Math.min(440, W * 1.1)); anchor = 0.52; }
+  // 휴대폰 세로 화면: 위에 영상 통화 화면 (시작 화면과 같은 크기: 키보드가 없을 때 높이의 53% — 키보드가 올라와도 그대로), 아래로 대화
+  else if (stage) { h = clamp(H * 0.53, 220, Math.min(640, W * 1.3)); anchor = 0.5; }
   else if (lobby) {
     const sheet = tutorEl("tutor-lobby"), sh = sheet ? sheet.offsetHeight : H * 0.6;
     h = clamp(H - sh + 30, Math.min(H, 200), H);   // 시작 화면 판 위로 보이는 만큼 (얼굴이 그 안에 오게)
