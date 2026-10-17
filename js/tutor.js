@@ -422,6 +422,24 @@ function tutorLogFollow() {
   log.addEventListener("scroll", () => { const d = log.scrollHeight - log.scrollTop - log.clientHeight; tutorLogPinned = d < 60; }, { passive: true });
   new MutationObserver(() => { if (tutorLogPinned) log.scrollTop = log.scrollHeight; })
     .observe(log, { childList: true, subtree: true, characterData: true, attributes: true, attributeFilter: ["class"] });
+  new MutationObserver(tutorMarkRecent).observe(log, { childList: true });
+  tutorMarkRecent();
+}
+/** 휴대폰 세로 화면은 대화를 영상 위 자막처럼 가장 최근에 주고받은 말만 보여 준다: 마지막 말 + 그 앞의 상대 말 (한 마디씩).
+ *  말(튜터 말·내 말·한국어 도움 카드)마다 바로 뒤에 붙은 고친 문장·칭찬은 그 말과 함께 보이고, 나머지는 숨긴다 (.cur) */
+function tutorMarkRecent() {
+  const log = tutorEl("tutor-log"); if (!log) return;
+  const kids = Array.from(log.children), turns = [];
+  kids.forEach(el => {
+    if (turns.length && !el.matches(".tutor-msg, .tutor-ko-card")) { turns[turns.length - 1].els.push(el); return; }
+    turns.push({ me: el.matches(".tutor-msg.me, .tutor-ko-card"), els: [el] });
+  });
+  const last = turns[turns.length - 1], show = new Set();
+  if (last) {
+    last.els.forEach(el => show.add(el));
+    for (let i = turns.length - 2; i >= 0; i--) if (turns[i].me !== last.me) { turns[i].els.forEach(el => show.add(el)); break; }
+  }
+  kids.forEach(el => el.classList.toggle("cur", show.has(el)));
 }
 /** 튜터 페이지에 들어올 때 (core.js goTo) */
 function renderTutorPage() {
@@ -645,11 +663,13 @@ function leaveTutorPage() {
   tutorStopPreview();
   tutorCallActive = false;
   toggleTutorSheet(undefined, false, "leave");
+  tutorTypingHistoryOff(true);
   tutorAudioSession(false);
   tutorVirtualKeyboard(false);
   tutorLockScroll(false);
   const call = tutorEl("tutor-call"); if (call) call.style.top = call.style.height = call.style.bottom = "";   // 키보드용으로 줄였던 크기를 풀어 둔다
-  tutorKbOpen = false;
+  const room = tutorEl("tutor-chat-area"); if (room) room.style.removeProperty("--kb");
+  tutorKbOpen = false; tutorKbPushed = 0;
 }
 
 // ---------- 대화 화면 ----------
@@ -681,6 +701,7 @@ function tutorHandleBack() {
   const keep = () => { try { history.pushState({ page: "tutor" }, "", "#tutor"); } catch (e) {} return true; };   // 뒤로 가기로 빠진 기록을 되돌려 둔다
   if (tutorDialogOpen) { tutorDialogOpen(false); if (!tutorSheetHistory) return keep(); }
   if (tutorSheetHistory) { tutorSheetHistory = false; toggleTutorSheet(undefined, true); return true; }
+  if (tutorTypingHistory) { tutorTypingHistory = false; const inp = tutorEl("tutor-input"); if (inp && document.activeElement === inp) inp.blur(); return true; }   // 키보드를 닫은 뒤 뒤로 가기: 글쓰기만 끝낸다
   return false;
 }
 /** 사용자가 판을 닫을 때 (✕·계속 대화하기·바깥 누르기): 누른 순간에 소리 장치를 깨워 둔다 (돌아와서 바로 말할 수 있게, 아이폰) */
@@ -786,11 +807,11 @@ function tutorCancelListening() {
 function tutorTapTutor(e) {
   if (e && e.target.closest && e.target.closest("button")) return;
   if (tutorSheetOpen()) { tutorCloseSheets(); return; }   // 판이 열려 있으면 닫기만
+  const inp = tutorEl("tutor-input");
+  if (document.activeElement === inp) inp.blur();       // 글 쓰는 중이면 끝낸다 (키보드를 닫아도 알려 주지 않는 브라우저에서 올라간 입력줄을 내리는 길)
   if (!tutorReady() || !tutorCallActive || tutorHelping) return;   // 시작 화면·한국어 표현을 찾는 중에는 반응하지 않는다
   tutorPrimeSpeech();
   if (typeof NeuralTTS !== "undefined") NeuralTTS.unlockAudio();
-  const inp = tutorEl("tutor-input");
-  if (document.activeElement === inp) inp.blur();
   if ((tutorTurn && !tutorTurn.cut) || tutorSpeaking) {  // 말하는 중: 끊고 바로 내 차례
     tutorCutTutor();
     if (tutorMicDenied) { setTutorStatus("아래 입력칸에 적어서 말해 보세요", ""); return; }
@@ -809,21 +830,45 @@ function tutorTapTutor(e) {
   tutorNoMic = false;
   tutorLiveListen();
 }
-/** 입력칸을 누르면 듣기를 멈추고(그림을 줄여 대화가 잘 보이게), 입력을 마치고 나가면 다시 듣는다 */
+/** 입력칸을 누르면 듣기를 멈추고, 입력을 마치고 나가면 다시 듣는다 */
 function tutorInputFocus(on) {
   const room = tutorEl("tutor-chat-area");
   if (room) room.classList.toggle("typing", on);
   // 안드로이드: 누르는 순간 키보드가 올라올 자리를 어림해 미리 맞춘다 (크기를 늦게 알려 주거나 끝내 알려 주지 않는 브라우저가 있다). 실제 크기를 알게 되면 그걸로
   tutorKbGuess = !!on && tutorEnv().android && !!(window.matchMedia && matchMedia("(pointer: coarse)").matches);
   if (on) { tutorKbFocusAt = performance.now(); tutorKbTouched = false; }
+  tutorKbPushed = 0;
   tutorFitViewport();
   tutorLayout();
   tutorRefit();
-  setTimeout(() => { const log = tutorEl("tutor-log"); log.scrollTop = log.scrollHeight; }, 300);   // 그림 크기가 바뀐 뒤 최근 대화가 보이게
-  if (on) { if (tutorListening) tutorCancelListening(); return; }
+  setTimeout(() => { const log = tutorEl("tutor-log"); log.scrollTop = log.scrollHeight; }, 300);   // 자리가 바뀐 뒤 최근 대화가 보이게
+  if (on) {
+    if (tutorListening) tutorCancelListening();
+    setTimeout(() => { if (tutorKbGuess && !tutorKbReal && tutorStageMode() && document.activeElement === tutorEl("tutor-input")) tutorTypingHistoryOn(); }, 800);
+    return;
+  }
+  tutorTypingHistoryOff();
   setTimeout(() => { if (!tutorTypingNow()) tutorAfterSpeak(); }, 300);
 }
-// 휴대폰 키보드가 올라오면 대화 화면을 키보드 위 영역에 맞춘다 (입력칸이 키보드에 가리지 않게)
+// 키보드 크기를 알려 주지 않는 브라우저(삼성 인터넷)는 키보드를 닫아도 알 수 없다 → 글 쓰는 동안 기록을 하나 넣어 둔다:
+// 뒤로 가기 첫 번째는 키보드가 받아 키보드를 닫고(안드로이드), 두 번째는 튜터를 떠나지 않고 글쓰기만 끝낸다 (올라간 입력줄이 내려온다)
+let tutorTypingHistory = false;
+function tutorTypingHistoryOn() {
+  if (tutorTypingHistory || !tutorPageVisible()) return;
+  tutorTypingHistory = true;
+  try { history.pushState({ page: "tutor", modal: "tutor-typing" }, "", "#tutor"); } catch (e) {}
+}
+/** 글쓰기를 끝내면 넣어 둔 기록을 치운다 (다른 화면으로 가는 중이면 보통 기록으로 바꾼다) */
+function tutorTypingHistoryOff(leaving) {
+  if (!tutorTypingHistory) return;
+  tutorTypingHistory = false;
+  if (!history.state || history.state.modal !== "tutor-typing") return;   // 위에 판(설정·피드백) 기록이 쌓였으면 그대로 둔다
+  if (leaving) history.replaceState({ page: "tutor" }, "", "#tutor");
+  else { tutorPopSwallow = true; history.back(); }
+}
+// 휴대폰 키보드가 올라오면 입력칸이 키보드에 가리지 않게 맞춘다
+//  - 휴대폰 세로 화면: 튜터 영상은 그대로 두고 대화·입력줄만 키보드 위로 올린다 (--kb)
+//  - 넓은 화면·시작 화면: 대화 화면 전체를 키보드 위 영역에 맞춘다
 let tutorKbOpen = false, tutorBaseH = 0;
 const tutorPageVisible = () => { const pg = tutorEl("page-tutor"); return !!pg && !pg.classList.contains("hidden"); };
 /** 키보드가 열리고 닫히는 동안 몇 번 더 맞춘다 (화면 크기 알림이 늦거나 빠지는 기기가 있다) */
@@ -834,44 +879,46 @@ function tutorLockScroll(on) {
   if (on) window.scrollTo(0, 0);
 }
 function tutorFitViewport() {
-  const call = tutorEl("tutor-call"), vv = window.visualViewport;
+  const call = tutorEl("tutor-call"), room = tutorEl("tutor-chat-area"), vv = window.visualViewport;
   if (!call || !vv) return;
+  const setKb = px => { if (!room) return; if (px > 0) room.style.setProperty("--kb", Math.round(px) + "px"); else room.style.removeProperty("--kb"); };
   // 다른 화면에서 키보드를 열었을 때는 손대지 않는다 (튜터 화면에 들어왔을 때 줄어든 크기가 남지 않게)
-  if (!tutorPageVisible()) { if (call.style.height) call.style.top = call.style.height = call.style.bottom = ""; tutorKbOpen = false; tutorBaseH = 0; return; }
-  const inp0 = tutorEl("tutor-input");
-  if (!inp0 || document.activeElement !== inp0 || !tutorBaseH) tutorBaseH = window.innerHeight;   // 키보드가 없을 때의 높이 (화면 전체를 줄이는 인앱 브라우저도 알아채게)
+  if (!tutorPageVisible()) { if (call.style.height) call.style.top = call.style.height = call.style.bottom = ""; setKb(0); tutorKbOpen = false; tutorBaseH = 0; return; }
+  const inp0 = tutorEl("tutor-input"), typing = !!inp0 && document.activeElement === inp0;
+  if (!typing || !tutorBaseH) tutorBaseH = window.innerHeight;   // 키보드가 없을 때의 높이 (화면 전체를 줄이는 브라우저도 알아채게)
   // 키보드 크기 알아내기 (먼저 맞는 것으로):
-  // ① 보이는 영역(visualViewport)이 줄었다 — 아이폰·크롬·앱 안 브라우저 대부분 (밀려 올라간 만큼 offsetTop도 따라간다)
+  // ① 보이는 영역(visualViewport)이 줄었다 — 아이폰·크롬 (밀려 올라간 만큼 offsetTop도 따라간다)
   // ② 키보드가 높이를 알려 준다 (VirtualKeyboard API, 안드로이드 크롬)
-  // ③ 아무것도 알려 주지 않는다 — 키보드 높이를 어림해(또는 잰 값으로) 맞춘다
+  // ③ 아무것도 알려 주지 않는다 (삼성 인터넷·앱 안 브라우저) — 키보드 높이를 어림한다 (잰 값이 있으면 그 값)
   const vvOpen = Math.max(window.innerHeight, tutorBaseH) - vv.height > 80, vkOpen = tutorVkOn && tutorVkH > 80;
-  const open = vvOpen || vkOpen;
-  let top = vv.offsetTop, height = vv.height;
-  if (!vvOpen && vkOpen) { height = window.innerHeight - tutorVkH - vv.offsetTop; }
-  if (open && document.activeElement === inp0 && Math.abs((vv.scale || 1) - 1) < 0.01) tutorKbSetMode("report");   // 키보드 크기를 알려 주는 브라우저다 (다음부터 어림은 줄이기로)
-  const guess = !open && tutorKbGuess && document.activeElement === inp0;
-  if (guess) {
-    const k = tutorKbShift();
-    // 삼성 인터넷·앱 안 브라우저는 키보드가 떠도 화면 크기를 알려 주지 않고, 화면 전체를 밀어 올려 가려진 입력칸을 보이는 영역 가운데에 둔다
-    // (밀어 올리는 높이는 키보드 높이까지). 화면을 줄여 입력칸을 위로 올려 두면 덜 밀어 올리거나(가운데 맞춤) 옮기기 전 자리로 다 밀어 올려
-    // 튜터가 위로 사라진다 → 줄이지 않고 키보드 높이만큼 아래로 내려 둔다: 입력칸이 맨 아래 그대로라 언제나 키보드 높이만큼 밀어 올리고,
-    // 튜터가 보이는 영역 맨 위에 온다
-    if (tutorKbPans()) top = vv.offsetTop + k;
-    height = window.innerHeight - k;
-  }
+  const open = vvOpen || vkOpen, guess = !open && tutorKbGuess && typing;
+  let top = 0, height = 0, kb = 0;                   // height 0: 화면 전체 그대로
+  if (tutorStageMode()) {
+    if (vvOpen) { top = vv.offsetTop; height = tutorBaseH; kb = tutorBaseH - vv.height; }   // 화면이 줄거나 밀려도 영상은 키보드 없을 때 크기·자리 그대로
+    else if (vkOpen) kb = tutorVkH;
+    else if (guess) {
+      // 크기를 알려 주지 않는 브라우저는 키보드에 가려진 입력칸을 보여 주려고 화면 전체를 밀어 올린다 (영상도 함께 밀려 튜터가 사라진다).
+      // 입력칸을 미리 키보드 위로 올려 두면 밀어 올리지 않는다. 그래도 밀어 올렸으면(키보드가 어림보다 크다) 그만큼 영상을 내려 제자리에 보이게
+      kb = tutorKbShift();
+      if (tutorKbPushed) { top = tutorKbPushed; height = tutorBaseH; }
+    }
+  } else if (vvOpen) { top = vv.offsetTop; height = vv.height; }
+  else if (vkOpen) { top = vv.offsetTop; height = window.innerHeight - tutorVkH - vv.offsetTop; }
+  else if (guess) height = window.innerHeight - tutorKbShift();
   const log = tutorEl("tutor-log");
   const pinned = log && log.scrollHeight - log.scrollTop - log.clientHeight < 40;   // 맨 아래를 보고 있었으면 크기가 바뀐 뒤에도 맨 아래로
   if (pinned) requestAnimationFrame(() => { log.scrollTop = log.scrollHeight; });
-  // 아이폰은 입력칸을 보여 주려고 넘침을 숨긴 칸까지 밀어 올리기도 한다 → 제자리로 (위쪽 튜터가 잘려 보이지 않게)
-  [call, tutorEl("tutor-chat-area")].forEach(el => { if (el && el.scrollTop) el.scrollTop = 0; });
-  if (open || guess) { call.style.top = top + "px"; call.style.height = height + "px"; call.style.bottom = "auto"; }
+  // 아이폰은 입력칸을 보여 주려고 넘침을 숨긴 칸까지 밀어 올리기도 한다 → 제자리로 (튜터가 잘려 보이지 않게)
+  [call, room].forEach(el => { if (el && el.scrollTop) el.scrollTop = 0; });
+  if (height) { call.style.top = top + "px"; call.style.height = height + "px"; call.style.bottom = "auto"; }
   else {
     call.style.top = call.style.height = call.style.bottom = "";
     // 아이폰은 키보드가 뜰 때 페이지를 위로 밀어 올리고, 닫혀도 그대로 두는 일이 있다 → 제자리로
-    if (tutorPageVisible() && (window.scrollY || document.documentElement.scrollTop)) window.scrollTo(0, 0);
+    if (!open && (window.scrollY || document.documentElement.scrollTop)) window.scrollTo(0, 0);
   }
+  setKb(kb);
   // 안드로이드 뒤로 가기로 키보드만 닫으면 입력칸에 초점이 남아 '글 쓰는 중'으로 멈춰 있게 된다 → 초점을 풀어 다시 듣게
-  if (tutorKbReal && !open) { const inp = tutorEl("tutor-input"); if (inp && document.activeElement === inp) inp.blur(); }
+  if (tutorKbReal && !open && typing) inp0.blur();
   tutorKbReal = open;
   if (open) tutorKbGuess = false;                    // 실제 키보드 크기를 알려 주는 화면이다 (어림은 그만)
   tutorKbOpen = open || guess;
@@ -879,36 +926,28 @@ function tutorFitViewport() {
 let tutorKbGuess = false, tutorKbReal = false;   // 키보드가 뜰 텐데 아직(또는 끝내) 크기를 알려 주지 않는 화면
 /** 안드로이드 앱 안 브라우저(WebView)인지 */
 const tutorInWebView = () => /Android/i.test(navigator.userAgent || "") && /; wv\)/.test(navigator.userAgent || "");
-// 이 브라우저가 키보드 크기를 알려 주는지(report), 알려 주지 않고 화면을 밀어 올리는지(pan)를 기기에 기억한다
-// (처음에는 삼성 인터넷·앱 안 브라우저면 밀어 올린다고 본다)
-let tutorKbModeVal;
-function tutorKbMode() {
-  if (tutorKbModeVal === undefined) { try { tutorKbModeVal = localStorage.getItem("tutorKbMode") || ""; } catch (e) { tutorKbModeVal = ""; } }
-  return tutorKbModeVal;
-}
-function tutorKbSetMode(m) {
-  if (tutorKbMode() === m) return;
-  tutorKbModeVal = m;
-  try { localStorage.setItem("tutorKbMode", m); } catch (e) {}
-}
-const tutorKbPans = () => { const m = tutorKbMode(); return m ? m === "pan" : /SamsungBrowser/i.test(navigator.userAgent || "") || tutorInWebView(); };
-// 밀어 올리는 높이는 화면 크기별로 잰 값을 기억한다 (가로·세로가 다르다)
+// 키보드 높이는 화면 크기별로 잰 값을 기억한다 (가로·세로가 다르다)
 let tutorKbShiftMap = null;
-const tutorKbKey = () => window.innerWidth + "x" + window.innerHeight;
+const tutorKbKey = () => window.innerWidth + "x" + (tutorBaseH || window.innerHeight);
 function tutorKbShifts() {
   if (!tutorKbShiftMap) { try { const o = JSON.parse(localStorage.getItem("tutorKbShift") || "{}"); tutorKbShiftMap = o && typeof o === "object" ? o : {}; } catch (e) { tutorKbShiftMap = {}; } }
   return tutorKbShiftMap;
 }
-/** 키보드가 화면을 밀어 올리는 높이: 잰 값이 있으면 그 값, 없으면 어림 (세로 화면은 41.5% 안팎 · 키보드 위 도구 줄 포함, 가로 화면은 절반쯤) */
+/** 키보드가 덮는 높이: 잰 값이 있으면 그 값, 없으면 어림 (세로 화면은 41.5% · 삼성 키보드 숫자 줄·도구 줄 포함으로 잰 값, 가로 화면은 절반쯤) */
 function tutorKbShift() {
   const saved = +tutorKbShifts()[tutorKbKey()];
   if (saved > 0) return saved;
-  const H = window.innerHeight;
+  const H = tutorBaseH || window.innerHeight;
   return Math.round(window.innerWidth > H ? Math.max(150, Math.min(400, H * 0.52)) : Math.max(240, Math.min(520, H * 0.415)));
 }
-// 키보드 높이 재기: 크기를 알려 주지 않는 브라우저도 화면을 밀어 올리면, 누른 곳의 화면 좌표(screenY)와 페이지 좌표(clientY)의 차이가
-// 밀어 올린 만큼 줄어든다 → 키보드가 없을 때 잰 차이(기준)와 키보드가 떠 있을 때의 차이를 견줘 밀어 올린 높이를 알아낸다
-let tutorKbBase = null, tutorKbBaseY = 0, tutorKbScreenOk = false, tutorKbFocusAt = 0, tutorKbTouched = false, tutorKbLastP = null;
+function tutorKbSave(K) {
+  const map = tutorKbShifts();
+  map[tutorKbKey()] = K;
+  try { localStorage.setItem("tutorKbShift", JSON.stringify(map)); } catch (e) {}
+}
+// 키보드가 어림보다 커서 브라우저가 화면을 밀어 올렸는지 재기: 화면을 밀어 올리면 누른 곳의 화면 좌표(screenY)와 페이지 좌표(clientY)의
+// 차이가 그만큼 줄어든다 → 키보드가 없을 때 잰 차이(기준)와 견줘 밀어 올린 높이 P를 알아낸다
+let tutorKbBase = null, tutorKbBaseY = 0, tutorKbScreenOk = false, tutorKbFocusAt = 0, tutorKbTouched = false, tutorKbLastP = null, tutorKbPushed = 0;
 document.addEventListener("touchstart", e => {
   const t = e.touches && e.touches[0], vv = window.visualViewport;
   if (!t || !isFinite(t.screenY) || !isFinite(t.clientY) || (vv && Math.abs((vv.scale || 1) - 1) > 0.01)) return;   // 확대한 상태에서는 재지 않는다
@@ -920,23 +959,23 @@ document.addEventListener("touchstart", e => {
     tutorKbBase = d; tutorKbBaseY = t.clientY;
     return;
   }
-  if (!tutorKbGuess || tutorKbBase === null || !tutorKbScreenOk || performance.now() - tutorKbFocusAt < 1000) return;   // 키보드가 다 올라온 뒤에
-  const P = Math.round(tutorKbBase - d), H = window.innerHeight;
+  if (!tutorKbGuess || tutorKbBase === null || !tutorKbScreenOk || !tutorStageMode()) return;
+  const P = Math.round(tutorKbBase - d), H = tutorBaseH || window.innerHeight;
   tutorKbLastP = P;
-  if (P > H * 0.25 && P < H * 0.65) { if (!tutorKbTouched) { tutorKbTouched = true; tutorKbLearn(P); } }   // 입력칸을 누른 뒤 처음 누를 때만 (그 뒤로는 손으로 옮겼을 수 있다)
-  else if (Math.abs(P) < 24 && tutorKbPans() && +tutorKbShifts()[tutorKbKey()] > 0) inp.blur();   // 밀어 올린 화면이 내려왔다 = 뒤로 가기로 키보드만 닫았다 → 입력을 끝내고 원래 화면으로
-}, { capture: true, passive: true });
-/** 키보드가 떠 있을 때 잰, 밀어 올린 높이 P를 기억하고 화면을 다시 맞춘다 */
-function tutorKbLearn(P) {
-  const pans = tutorKbPans();
-  tutorKbSetMode("pan");
-  if (!pans) return;   // 줄여 둔 화면에서 잰 값은 키보드 높이가 아니다 (입력칸을 가운데로 맞춘 만큼) → 다음에 입력칸을 누를 때부터 내려 둔다
-  const map = tutorKbShifts(), key = tutorKbKey();
-  if (map[key] === P) return;
-  map[key] = P;
-  try { localStorage.setItem("tutorKbShift", JSON.stringify(map)); } catch (e) {}
+  if (tutorKbPushed) { if (Math.abs(P) < 24) inp.blur(); return; }   // 밀어 올림이 없어졌다 = 뒤로 가기로 키보드만 닫았다 → 입력을 끝내고 원래 화면으로
+  if (tutorKbTouched || performance.now() - tutorKbFocusAt < 1000) return;   // 키보드가 다 올라온 뒤 처음 누를 때만 (그 뒤로는 손으로 화면을 옮겼을 수 있다)
+  tutorKbTouched = true;
+  if (P < 24 || P > H * 0.65) return;               // 밀어 올리지 않았다 (어림이 맞았다)
+  // 입력칸을 보이는 영역 가운데로 맞추느라 P만큼 밀어 올렸다 → 키보드 높이를 거꾸로 계산해 기억하고(다음부터 맞게), 이번에는 영상을 P만큼 내려 제자리에
+  // (올려 두기 전 자리를 보고 끝까지 밀어 올린 거라면 밀어 올린 높이가 곧 키보드 높이다)
+  const r = inp.getBoundingClientRect();
+  let K = Math.round(H - 2 * ((r.top + r.bottom) / 2 - P));
+  if (!(K > tutorKbShift() && K <= H * 0.7 && P < K)) K = P;
+  if (K < H * 0.25 || K > H * 0.7) return;
+  if (K > tutorKbShift() + 2) tutorKbSave(K + 4);
+  tutorKbPushed = P;
   setTimeout(() => { tutorFitViewport(); tutorLayout(); }, 300);   // 누르는 동안에는 화면을 옮기지 않는다 (누른 단추가 비켜 가지 않게)
-}
+}, { capture: true, passive: true });
 if (window.visualViewport) { visualViewport.addEventListener("resize", tutorFitViewport); visualViewport.addEventListener("scroll", tutorFitViewport); window.addEventListener("resize", tutorFitViewport); }
 window.addEventListener("orientationchange", () => { tutorBaseH = 0; });
 // 안드로이드 크롬(홈 화면 앱 포함)은 키보드가 뜨면 화면을 밀어 올려 위쪽 튜터가 화면 밖으로 나가 버린다.
@@ -959,6 +998,8 @@ if (navigator.virtualKeyboard && navigator.virtualKeyboard.addEventListener) {
 // ---------- 키보드 진단 (설정 맨 아래 버전 글자를 5번 누르면 켜고 끈다) ----------
 // 실제 기기에서 키보드가 뜰 때 화면 크기·위치 값이 어떻게 바뀌는지 보여 준다 (원인을 확인하는 용도)
 let tutorKbDiagOn = false, tutorKbDiagTimer = 0;
+/** 앱 버전 (index.html이 붙인 ?v= 숫자) */
+const tutorAppVer = () => (((document.querySelector('script[src*="js/tutor.js"]') || {}).src || "").match(/v=(\d+)/) || [])[1] || "";
 const tutorKbLog = [];
 function tutorKbNote(what) {
   if (!tutorKbDiagOn) return;
@@ -968,13 +1009,13 @@ function tutorKbNote(what) {
 }
 function tutorKbDiag(on) {
   tutorKbDiagOn = !!on;
-  try { if (on) localStorage.setItem("tutorKbDiag", "1"); else localStorage.removeItem("tutorKbDiag"); } catch (e) {}
+  try { if (on) localStorage.setItem("tutorKbDiag", tutorAppVer()); else localStorage.removeItem("tutorKbDiag"); } catch (e) {}   // 켠 버전에서만 (새 버전이 나오면 저절로 꺼진다)
   clearInterval(tutorKbDiagTimer);
   let box = tutorEl("tutor-kb-diag");
   if (!on) { if (box) box.remove(); return; }
   if (!box) {
     box = document.createElement("pre"); box.id = "tutor-kb-diag";
-    box.style.cssText = "position:absolute;left:4px;right:4px;bottom:64px;z-index:50;margin:0;padding:6px 8px;max-height:45%;overflow:hidden;font:10px/1.35 monospace;white-space:pre-wrap;word-break:break-all;color:#0f0;background:rgba(0,0,0,0.78);border-radius:8px;pointer-events:none";
+    box.style.cssText = "position:absolute;left:4px;right:4px;top:calc(58px + env(safe-area-inset-top));z-index:50;margin:0;padding:6px 8px;max-height:40%;overflow:hidden;font:10px/1.35 monospace;white-space:pre-wrap;word-break:break-all;color:#0f0;background:rgba(0,0,0,0.78);border-radius:8px;pointer-events:none";
     const room = tutorEl("tutor-chat-area"); if (room) room.appendChild(box);
   }
   const r = el => { if (!el) return "-"; const b = el.getBoundingClientRect(); return `${Math.round(b.top)}~${Math.round(b.bottom)}`; };
@@ -982,11 +1023,11 @@ function tutorKbDiag(on) {
     const vv = window.visualViewport || {}, vk = navigator.virtualKeyboard, call = tutorEl("tutor-call"), main = document.querySelector("main");
     const ua = navigator.userAgent || "";
     box.textContent = [
-      `v${(((document.querySelector('script[src*="js/tutor.js"]') || {}).src || "").match(/v=(\d+)/) || [])[1]} wv:${tutorInWebView()} dpr:${window.devicePixelRatio} scr:${screen.width}x${screen.height} out:${window.outerWidth}x${window.outerHeight}`,
+      `v${tutorAppVer()} wv:${tutorInWebView()} dpr:${window.devicePixelRatio} scr:${screen.width}x${screen.height} out:${window.outerWidth}x${window.outerHeight}`,
       `inner:${window.innerWidth}x${window.innerHeight} client:${document.documentElement.clientHeight} vv:${Math.round(vv.width || 0)}x${Math.round(vv.height || 0)} off:${Math.round(vv.offsetTop || 0)} pageTop:${Math.round(vv.pageTop || 0)} scale:${(vv.scale || 1).toFixed(2)}`,
       `scrollY:${Math.round(window.scrollY)} html:${document.documentElement.scrollTop} body:${document.body.scrollTop} main:${main ? main.scrollTop : "-"} call:${call ? call.scrollTop : "-"} room:${(tutorEl("tutor-chat-area") || {}).scrollTop}`,
       `vk:${!!vk}${vk ? ` overlay:${vk.overlaysContent} rect:${Math.round((vk.boundingRect || {}).height || 0)}` : ""} vkOn:${tutorVkOn} vkH:${tutorVkH} guess:${tutorKbGuess} real:${tutorKbReal} open:${tutorKbOpen}`,
-      `kb pans:${tutorKbPans()} mode:${tutorKbMode() || "-"} shift:${tutorKbShift()} saved:${tutorKbShifts()[tutorKbKey()] || "-"} base:${tutorKbBase === null ? "-" : Math.round(tutorKbBase)} ok:${tutorKbScreenOk} P:${tutorKbLastP === null ? "-" : tutorKbLastP}`,
+      `kb stage:${tutorStageMode()} --kb:${(tutorEl("tutor-chat-area") || document.body).style.getPropertyValue("--kb") || "-"} est:${tutorKbShift()} saved:${tutorKbShifts()[tutorKbKey()] || "-"} pushed:${tutorKbPushed} base:${tutorKbBase === null ? "-" : Math.round(tutorKbBase)} ok:${tutorKbScreenOk} P:${tutorKbLastP === null ? "-" : tutorKbLastP}`,
       `call top:${call ? call.style.top || "-" : "-"} h:${call ? call.style.height || "-" : "-"} rect:${r(call)} hero:${r(document.querySelector(".talk-hero"))} input:${r(tutorEl("tutor-input"))} focus:${document.activeElement && document.activeElement.id}`,
       `ua:${ua.replace(/^Mozilla\/5\.0 /, "").slice(0, 110)}`,
       ...tutorKbLog
@@ -1005,7 +1046,7 @@ document.addEventListener("pointerdown", e => {
   if (!tutorKbGuess || !inp || document.activeElement !== inp || !call) return;
   if (!call.contains(e.target) || e.target === call) inp.blur();
 }, true);
-try { if (localStorage.getItem("tutorKbDiag") === "1") setTimeout(() => tutorKbDiag(true), 1500); } catch (e) {}
+try { if (localStorage.getItem("tutorKbDiag") === tutorAppVer()) setTimeout(() => tutorKbDiag(true), 1500); } catch (e) {}
 // 튜터 화면에서는 페이지 자체도 스크롤되지 않게 (키보드가 입력칸을 보여 주려고 밀어 올려도 제자리로)
 window.addEventListener("scroll", () => { if (tutorVkOn && tutorPageVisible() && (window.scrollY || document.documentElement.scrollTop)) window.scrollTo(0, 0); }, { passive: true });
 
@@ -1013,6 +1054,14 @@ window.addEventListener("scroll", () => { if (tutorVkOn && tutorPageVisible() &&
 // 상황(보통·힌트·글쓰기·시작 화면)과 지금 보이는 화면 크기(키보드가 올라오면 작아진다)에 맞춰 튜터 영상 칸의 높이를 정하고,
 // 칸이 작아져도 얼굴이 칸 가운데쯤 오게 맞춘다. 넓은 화면(컴퓨터·가로로 돌린 화면)은 튜터를 왼쪽, 대화를 오른쪽에 둔다
 const TUTOR_VIDEO = { w: 720, h: 960 };     // 튜터 영상 크기 (세로 영상)
+/** 휴대폰 세로 화면(영상이 화면 전체 + 대화는 자막)인지: 시작 화면이 아니고 넓은 화면(컴퓨터·가로 화면)이 아닐 때.
+ *  키보드가 올라와 화면이 줄어도 바뀌지 않게 키보드 없을 때의 높이로 판단한다 */
+function tutorStageMode() {
+  const room = tutorEl("tutor-chat-area");
+  if (!room || room.classList.contains("lobby")) return false;
+  const w = window.innerWidth, h = Math.max(window.innerHeight, tutorBaseH || 0);
+  return !(w >= 600 && w > h * 1.15);
+}
 let tutorLayoutRaf = 0;
 function tutorRelayout() { if (!tutorLayoutRaf) tutorLayoutRaf = requestAnimationFrame(() => { tutorLayoutRaf = 0; tutorLayout(); }); }
 function tutorLayout() {
@@ -1022,9 +1071,22 @@ function tutorLayout() {
   if (!CW || !CH) return;
   const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
   const lobby = room.classList.contains("lobby");
-  const wide = CW >= 600 && CW > CH * 1.15;
+  const stage = tutorStageMode();
+  const wide = !stage && CW >= 600 && CW > CH * 1.15;
   room.classList.toggle("wide", wide);
+  room.classList.toggle("stage", stage);
   const W = room.clientWidth, H = room.clientHeight;
+  if (stage) {
+    // 휴대폰 세로 화면: 영상이 화면 전체. 얼굴이 위에서 28% 높이에 오게 영상을 조금 크게 띄운다
+    // (키보드가 올라와도 영상은 그대로 — 아래쪽 자막·입력줄과 키보드에 얼굴이 가리지 않게)
+    room.classList.remove("compact");
+    const f = tutorChar().face || 0.42, T = 0.28;
+    const A = Math.max(H, W * TUTOR_VIDEO.h / TUTOR_VIDEO.w, H * (1 - T) / (1 - f));   // 영상 높이 (화면을 덮으면서 얼굴이 T에 오는 가장 작은 크기)
+    room.style.setProperty("--av-h", Math.round(A) + "px");
+    room.style.setProperty("--av-top", Math.round(T * H - f * A) + "px");
+    room.style.setProperty("--face-y", "50%");
+    return;
+  }
   // 작게: 키보드가 올라왔거나(휴대폰은 입력칸을 누르는 순간부터 — 키보드가 곧 올라온다) 낮은 화면
   const touch = !!(window.matchMedia && matchMedia("(pointer: coarse)").matches);
   const compact = !wide && ((touch && room.classList.contains("typing")) || tutorKbOpen || H < 520);

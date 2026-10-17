@@ -1112,6 +1112,7 @@ body.list-playing .neural-loading { bottom: calc(86px + env(safe-area-inset-bott
 /* 튜터 대화 중: 뒤 페이지를 고정 (키보드가 뜰 때 페이지가 밀려 올라가 원래대로 안 돌아오는 것 방지) */
 html.tutor-lock, html.tutor-lock body { overflow: hidden; overscroll-behavior: none; height: 100%; }
 html.tutor-lock body { position: fixed; inset: 0; width: 100%; }
+html.tutor-lock header { visibility: hidden; }   /* 튜터 화면에 가려진 위쪽 메뉴 (키보드 때문에 튜터 화면이 잠깐 내려가도 비쳐 보이지 않게) */
 .call { position: fixed; inset: 0; z-index: 1100; display: flex; flex-direction: column; overflow: hidden; color: var(--text-main);
   background: radial-gradient(120% 70% at 50% 0%, #1e1b4b 0%, #0b1020 55%, #070a14 100%); }
 .call-setup-card { position: absolute; inset: 0; overflow-y: auto; padding: calc(12px + env(safe-area-inset-top)) 16px calc(24px + env(safe-area-inset-bottom)); max-width: 520px; margin: 0 auto; text-align: center; }
@@ -1173,6 +1174,35 @@ html.tutor-lock body { position: fixed; inset: 0; width: 100%; }
 .talk-room.compact .talk-status { font-size: 0.72rem; padding: 3px 9px; -webkit-line-clamp: 1; }
 .talk-room.compact .talk-log { padding-top: 8px; }
 .talk-room.typing .talk-input { margin-bottom: 8px; }   /* 키보드 바로 위 (아이폰 홈 막대 자리만큼 띄우지 않는다) */
+/* 휴대폰 세로 화면(stage): 튜터 영상이 화면 전체 · 대화는 영상 위에 자막처럼 글자만 (가장 최근에 주고받은 말만)
+   키보드가 올라오면 영상은 그대로 두고 대화·입력줄만 키보드 위로 올라간다 (--kb: 키보드가 덮는 높이, tutorFitViewport가 정한다) */
+.talk-room.stage { justify-content: flex-end; padding-bottom: var(--kb, 0px); }
+.talk-room.stage .talk-hero { position: absolute; inset: 0; flex: none; z-index: 0; }
+.talk-room.stage .talk-hero::after { display: none; }
+.talk-room.stage .talk-avatar.has-clips { top: var(--av-top, 0px); bottom: auto; height: var(--av-h, 100%); }   /* 얼굴이 위쪽에 오게 조금 크게 (tutorLayout) */
+.talk-room.stage .talk-name { top: calc(10px + env(safe-area-inset-top)); bottom: auto; left: 60px; right: 106px; min-height: 40px; }
+.talk-room.stage .talk-name b { font-size: 1.1rem; }
+.talk-room.stage[data-mode="listening"] .talk-hero::before { top: 0; bottom: auto; }
+.talk-room.stage .talk-log { position: relative; z-index: 1; flex: 0 1 auto; min-height: 0; max-height: 46%; padding: 36px 16px 4px; pointer-events: none;
+  background: linear-gradient(to bottom, rgba(3,6,15,0), rgba(3,6,15,0.5) 36px, rgba(3,6,15,0.68)); -webkit-mask-image: none; mask-image: none; }
+.talk-room.stage .talk-log > * { pointer-events: auto; }
+.talk-room.stage .talk-log > :not(.cur) { display: none; }   /* 지난 대화는 숨긴다 (tutorMarkRecent) */
+.talk-room.stage .talk-input { position: relative; z-index: 1; margin: 0; padding: 6px 12px calc(10px + env(safe-area-inset-bottom)); background: rgba(3,6,15,0.68); }
+.talk-room.stage.typing .talk-input { padding-bottom: 8px; }
+/* 글 쓰는 중: 키보드 위 좁은 자리에서 튜터 얼굴을 덜 가리게 자막을 줄인다 (말로 연습하는 단추는 숨기고, 넘치면 최근 말이 보이게 스크롤) */
+.talk-room.stage.typing .talk-log { max-height: 36%; padding-top: 28px; }
+.talk-room.stage.typing .tutor-tip .tutor-practice { display: none; }
+/* 자막: 말풍선 없이 글자만 (밝은 영상 위에서도 읽히게 그림자) */
+.talk-room.stage .tutor-msg, .talk-room.stage .tutor-tip, .talk-room.stage .tutor-ko-card { max-width: 94%; padding: 2px; background: none; border: none; border-radius: 0; text-shadow: 0 1px 2px rgba(0,0,0,0.95), 0 0 10px rgba(0,0,0,0.6); }
+.talk-room.stage .tutor-msg.tutor { color: #fff; font-size: 1.06rem; font-weight: 600; }
+.talk-room.stage .tutor-msg.tutor.tutor-nudge { font-size: 0.95rem; font-weight: 500; }
+.talk-room.stage .tutor-msg.me { color: #ddd6fe; font-size: 0.98rem; text-align: right; }
+.talk-room.stage .tutor-msg.me.practice { background: none; }
+.talk-room.stage .tutor-tip, .talk-room.stage .tutor-ko-card { text-align: right; }
+.talk-room.stage .tutor-tip .tutor-practice, .talk-room.stage .tutor-ko-card .tutor-practice { justify-content: flex-end; }
+.talk-room.stage .tutor-trans { color: #e2e8f0; font-size: 0.9rem; font-weight: 400; border-top-color: rgba(255,255,255,0.22); }
+.talk-room.stage .tutor-err { color: #cbd5e1; }
+.talk-room.stage .tutor-slow-btn { text-shadow: none; font-weight: 400; background: rgba(0,0,0,0.38); border-color: rgba(255,255,255,0.24); color: #e0f2fe; }
 /* 넓은 화면 (컴퓨터·가로로 돌린 화면): 튜터는 왼쪽에 크게, 대화는 오른쪽 */
 .talk-room.wide { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); grid-template-rows: minmax(0, 1fr) auto auto; max-width: 1100px; }
 .talk-room.wide .talk-hero { grid-column: 1; grid-row: 1 / 4; }
