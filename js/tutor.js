@@ -813,9 +813,9 @@ function tutorTapTutor(e) {
 function tutorInputFocus(on) {
   const room = tutorEl("tutor-chat-area");
   if (room) room.classList.toggle("typing", on);
-  // 앱 안 브라우저(안드로이드 WebView)는 키보드가 떠도 화면 크기를 알려 주지 않고 창 전체를 밀어 올린다 →
-  // 누르는 순간 키보드가 올라올 자리만큼 미리 줄여 둔다 (입력칸이 키보드 위에 있으면 밀어 올리지 않는다). 실제 크기를 알게 되면 그걸로
+  // 안드로이드: 누르는 순간 키보드가 올라올 자리를 어림해 미리 맞춘다 (크기를 늦게 알려 주거나 끝내 알려 주지 않는 브라우저가 있다). 실제 크기를 알게 되면 그걸로
   tutorKbGuess = !!on && tutorEnv().android && !!(window.matchMedia && matchMedia("(pointer: coarse)").matches);
+  if (on) { tutorKbFocusAt = performance.now(); tutorKbTouched = false; }
   tutorFitViewport();
   tutorLayout();
   tutorRefit();
@@ -843,18 +843,20 @@ function tutorFitViewport() {
   // 키보드 크기 알아내기 (먼저 맞는 것으로):
   // ① 보이는 영역(visualViewport)이 줄었다 — 아이폰·크롬·앱 안 브라우저 대부분 (밀려 올라간 만큼 offsetTop도 따라간다)
   // ② 키보드가 높이를 알려 준다 (VirtualKeyboard API, 안드로이드 크롬)
-  // ③ 아무것도 알려 주지 않는다 — 어림한 만큼 줄여 둔다 (그래도 밀려 올라가면 offsetTop을 따라간다)
+  // ③ 아무것도 알려 주지 않는다 — 키보드 높이를 어림해(또는 잰 값으로) 맞춘다
   const vvOpen = Math.max(window.innerHeight, tutorBaseH) - vv.height > 80, vkOpen = tutorVkOn && tutorVkH > 80;
   const open = vvOpen || vkOpen;
   let top = vv.offsetTop, height = vv.height;
   if (!vvOpen && vkOpen) { height = window.innerHeight - tutorVkH - vv.offsetTop; }
+  if (open && document.activeElement === inp0 && Math.abs((vv.scale || 1) - 1) < 0.01) tutorKbSetMode("report");   // 키보드 크기를 알려 주는 브라우저다 (다음부터 어림은 줄이기로)
   const guess = !open && tutorKbGuess && document.activeElement === inp0;
   if (guess) {
-    const k = tutorKbEstimate();
-    // 앱 안 브라우저(안드로이드 WebView)는 키보드가 떠도 화면 크기를 알려 주지 않고, 앱 쪽에서 화면 전체를 키보드만큼 밀어 올린다
-    // (입력칸이 어디 있든). 그래서 줄여 두면 줄인 만큼 + 밀린 만큼 두 번 올라가 튜터가 사라진다 →
-    // 크기를 줄이지 않고 키보드 높이만큼 아래로 내려 둔다: 밀려 올라가면 튜터가 보이는 영역 맨 위에 온다
-    if (tutorInWebView()) top = vv.offsetTop + k;
+    const k = tutorKbShift();
+    // 삼성 인터넷·앱 안 브라우저는 키보드가 떠도 화면 크기를 알려 주지 않고, 화면 전체를 밀어 올려 가려진 입력칸을 보이는 영역 가운데에 둔다
+    // (밀어 올리는 높이는 키보드 높이까지). 화면을 줄여 입력칸을 위로 올려 두면 덜 밀어 올리거나(가운데 맞춤) 옮기기 전 자리로 다 밀어 올려
+    // 튜터가 위로 사라진다 → 줄이지 않고 키보드 높이만큼 아래로 내려 둔다: 입력칸이 맨 아래 그대로라 언제나 키보드 높이만큼 밀어 올리고,
+    // 튜터가 보이는 영역 맨 위에 온다
+    if (tutorKbPans()) top = vv.offsetTop + k;
     height = window.innerHeight - k;
   }
   const log = tutorEl("tutor-log");
@@ -874,11 +876,67 @@ function tutorFitViewport() {
   if (open) tutorKbGuess = false;                    // 실제 키보드 크기를 알려 주는 화면이다 (어림은 그만)
   tutorKbOpen = open || guess;
 }
-let tutorKbGuess = false, tutorKbReal = false;   // 키보드가 뜰 텐데 크기를 알려 주지 않는 화면 (앱 안 브라우저)
-/** 휴대폰 키보드 높이 어림 (보통 화면의 40% 안팎 · 위쪽 도구 줄 포함) */
-const tutorKbEstimate = () => Math.round(Math.max(250, Math.min(420, window.innerHeight * 0.40)));
+let tutorKbGuess = false, tutorKbReal = false;   // 키보드가 뜰 텐데 아직(또는 끝내) 크기를 알려 주지 않는 화면
 /** 안드로이드 앱 안 브라우저(WebView)인지 */
 const tutorInWebView = () => /Android/i.test(navigator.userAgent || "") && /; wv\)/.test(navigator.userAgent || "");
+// 이 브라우저가 키보드 크기를 알려 주는지(report), 알려 주지 않고 화면을 밀어 올리는지(pan)를 기기에 기억한다
+// (처음에는 삼성 인터넷·앱 안 브라우저면 밀어 올린다고 본다)
+let tutorKbModeVal;
+function tutorKbMode() {
+  if (tutorKbModeVal === undefined) { try { tutorKbModeVal = localStorage.getItem("tutorKbMode") || ""; } catch (e) { tutorKbModeVal = ""; } }
+  return tutorKbModeVal;
+}
+function tutorKbSetMode(m) {
+  if (tutorKbMode() === m) return;
+  tutorKbModeVal = m;
+  try { localStorage.setItem("tutorKbMode", m); } catch (e) {}
+}
+const tutorKbPans = () => { const m = tutorKbMode(); return m ? m === "pan" : /SamsungBrowser/i.test(navigator.userAgent || "") || tutorInWebView(); };
+// 밀어 올리는 높이는 화면 크기별로 잰 값을 기억한다 (가로·세로가 다르다)
+let tutorKbShiftMap = null;
+const tutorKbKey = () => window.innerWidth + "x" + window.innerHeight;
+function tutorKbShifts() {
+  if (!tutorKbShiftMap) { try { const o = JSON.parse(localStorage.getItem("tutorKbShift") || "{}"); tutorKbShiftMap = o && typeof o === "object" ? o : {}; } catch (e) { tutorKbShiftMap = {}; } }
+  return tutorKbShiftMap;
+}
+/** 키보드가 화면을 밀어 올리는 높이: 잰 값이 있으면 그 값, 없으면 어림 (세로 화면은 41.5% 안팎 · 키보드 위 도구 줄 포함, 가로 화면은 절반쯤) */
+function tutorKbShift() {
+  const saved = +tutorKbShifts()[tutorKbKey()];
+  if (saved > 0) return saved;
+  const H = window.innerHeight;
+  return Math.round(window.innerWidth > H ? Math.max(150, Math.min(400, H * 0.52)) : Math.max(240, Math.min(520, H * 0.415)));
+}
+// 키보드 높이 재기: 크기를 알려 주지 않는 브라우저도 화면을 밀어 올리면, 누른 곳의 화면 좌표(screenY)와 페이지 좌표(clientY)의 차이가
+// 밀어 올린 만큼 줄어든다 → 키보드가 없을 때 잰 차이(기준)와 키보드가 떠 있을 때의 차이를 견줘 밀어 올린 높이를 알아낸다
+let tutorKbBase = null, tutorKbBaseY = 0, tutorKbScreenOk = false, tutorKbFocusAt = 0, tutorKbTouched = false, tutorKbLastP = null;
+document.addEventListener("touchstart", e => {
+  const t = e.touches && e.touches[0], vv = window.visualViewport;
+  if (!t || !isFinite(t.screenY) || !isFinite(t.clientY) || (vv && Math.abs((vv.scale || 1) - 1) > 0.01)) return;   // 확대한 상태에서는 재지 않는다
+  const d = t.screenY - t.clientY, a = document.activeElement, inp = tutorEl("tutor-input");
+  if (!inp || a !== inp) {
+    if (a && (a.isContentEditable || /^(INPUT|TEXTAREA|SELECT)$/.test(a.tagName))) return;   // 다른 입력칸의 키보드가 떠 있을 수 있다
+    // 서로 다른 높이를 눌러도 차이가 같아야 screenY를 믿는다 (화면 좌표를 제대로 주지 않는 브라우저도 있다)
+    if (tutorKbBase !== null && Math.abs(t.clientY - tutorKbBaseY) > 60 && Math.abs(d - tutorKbBase) <= 2) tutorKbScreenOk = true;
+    tutorKbBase = d; tutorKbBaseY = t.clientY;
+    return;
+  }
+  if (!tutorKbGuess || tutorKbBase === null || !tutorKbScreenOk || performance.now() - tutorKbFocusAt < 1000) return;   // 키보드가 다 올라온 뒤에
+  const P = Math.round(tutorKbBase - d), H = window.innerHeight;
+  tutorKbLastP = P;
+  if (P > H * 0.25 && P < H * 0.65) { if (!tutorKbTouched) { tutorKbTouched = true; tutorKbLearn(P); } }   // 입력칸을 누른 뒤 처음 누를 때만 (그 뒤로는 손으로 옮겼을 수 있다)
+  else if (Math.abs(P) < 24 && tutorKbPans() && +tutorKbShifts()[tutorKbKey()] > 0) inp.blur();   // 밀어 올린 화면이 내려왔다 = 뒤로 가기로 키보드만 닫았다 → 입력을 끝내고 원래 화면으로
+}, { capture: true, passive: true });
+/** 키보드가 떠 있을 때 잰, 밀어 올린 높이 P를 기억하고 화면을 다시 맞춘다 */
+function tutorKbLearn(P) {
+  const pans = tutorKbPans();
+  tutorKbSetMode("pan");
+  if (!pans) return;   // 줄여 둔 화면에서 잰 값은 키보드 높이가 아니다 (입력칸을 가운데로 맞춘 만큼) → 다음에 입력칸을 누를 때부터 내려 둔다
+  const map = tutorKbShifts(), key = tutorKbKey();
+  if (map[key] === P) return;
+  map[key] = P;
+  try { localStorage.setItem("tutorKbShift", JSON.stringify(map)); } catch (e) {}
+  setTimeout(() => { tutorFitViewport(); tutorLayout(); }, 300);   // 누르는 동안에는 화면을 옮기지 않는다 (누른 단추가 비켜 가지 않게)
+}
 if (window.visualViewport) { visualViewport.addEventListener("resize", tutorFitViewport); visualViewport.addEventListener("scroll", tutorFitViewport); window.addEventListener("resize", tutorFitViewport); }
 window.addEventListener("orientationchange", () => { tutorBaseH = 0; });
 // 안드로이드 크롬(홈 화면 앱 포함)은 키보드가 뜨면 화면을 밀어 올려 위쪽 튜터가 화면 밖으로 나가 버린다.
@@ -887,7 +945,7 @@ let tutorVkOn = false, tutorVkH = 0;
 function tutorVirtualKeyboard(on) {
   const vk = navigator.virtualKeyboard;
   if (!vk || !("overlaysContent" in vk) || tutorInWebView()) return;
-  try { vk.overlaysContent = !!on; tutorVkOn = !!on; } catch (e) { tutorVkOn = false; }
+  try { vk.overlaysContent = !!on; tutorVkOn = !!on && !!vk.overlaysContent; } catch (e) { tutorVkOn = false; }   // 받아들이지 않는 브라우저도 있다 (삼성 인터넷)
   if (!on) tutorVkH = 0;
 }
 if (navigator.virtualKeyboard && navigator.virtualKeyboard.addEventListener) {
@@ -927,7 +985,8 @@ function tutorKbDiag(on) {
       `v${(((document.querySelector('script[src*="js/tutor.js"]') || {}).src || "").match(/v=(\d+)/) || [])[1]} wv:${tutorInWebView()} dpr:${window.devicePixelRatio} scr:${screen.width}x${screen.height} out:${window.outerWidth}x${window.outerHeight}`,
       `inner:${window.innerWidth}x${window.innerHeight} client:${document.documentElement.clientHeight} vv:${Math.round(vv.width || 0)}x${Math.round(vv.height || 0)} off:${Math.round(vv.offsetTop || 0)} pageTop:${Math.round(vv.pageTop || 0)} scale:${(vv.scale || 1).toFixed(2)}`,
       `scrollY:${Math.round(window.scrollY)} html:${document.documentElement.scrollTop} body:${document.body.scrollTop} main:${main ? main.scrollTop : "-"} call:${call ? call.scrollTop : "-"} room:${(tutorEl("tutor-chat-area") || {}).scrollTop}`,
-      `vk:${!!vk}${vk ? ` overlay:${vk.overlaysContent} rect:${Math.round((vk.boundingRect || {}).height || 0)}` : ""} vkOn:${tutorVkOn} vkH:${tutorVkH} guess:${tutorKbGuess} real:${tutorKbReal} open:${tutorKbOpen} est:${tutorKbEstimate()}`,
+      `vk:${!!vk}${vk ? ` overlay:${vk.overlaysContent} rect:${Math.round((vk.boundingRect || {}).height || 0)}` : ""} vkOn:${tutorVkOn} vkH:${tutorVkH} guess:${tutorKbGuess} real:${tutorKbReal} open:${tutorKbOpen}`,
+      `kb pans:${tutorKbPans()} mode:${tutorKbMode() || "-"} shift:${tutorKbShift()} saved:${tutorKbShifts()[tutorKbKey()] || "-"} base:${tutorKbBase === null ? "-" : Math.round(tutorKbBase)} ok:${tutorKbScreenOk} P:${tutorKbLastP === null ? "-" : tutorKbLastP}`,
       `call top:${call ? call.style.top || "-" : "-"} h:${call ? call.style.height || "-" : "-"} rect:${r(call)} hero:${r(document.querySelector(".talk-hero"))} input:${r(tutorEl("tutor-input"))} focus:${document.activeElement && document.activeElement.id}`,
       `ua:${ua.replace(/^Mozilla\/5\.0 /, "").slice(0, 110)}`,
       ...tutorKbLog
