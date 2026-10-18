@@ -901,7 +901,7 @@ function tutorFitViewport() {
   setKb(kb);
   // 키보드 위 자리가 좁으면 대화를 영상 아래쪽에 겹쳐 올린다 (영상 크기는 그대로, 얼굴은 위쪽이라 가리지 않는다)
   let pull = 0;
-  if (room && kb && tutorStageMode()) {
+  if (room && kb && room.classList.contains("stage")) {
     const vis = (tutorBaseH || window.innerHeight) - kb, hh = parseFloat(room.style.getPropertyValue("--hero-h")) || 0, row = tutorEl("tutor-type-row");
     pull = Math.max(0, Math.round(vis * 0.38) - (vis - hh - (row ? row.offsetHeight : 0)));
   }
@@ -927,7 +927,8 @@ function tutorKbShift() {
   const saved = +tutorKbShifts()[tutorKbKey()];
   if (saved > 0) return saved;
   const H = tutorBaseH || window.innerHeight;
-  return Math.round(window.innerWidth > H ? Math.max(150, Math.min(400, H * 0.52)) : Math.max(240, Math.min(520, H * 0.415)));
+  const W = window.innerWidth;   // 가로 화면은 절반쯤, 펼친 폴더블·태블릿은 키보드가 넓은 만큼 높다 (폴더블에서 잰 값 45%)
+  return Math.round(W > H ? Math.max(150, Math.min(420, H * 0.55)) : W >= 600 ? Math.max(260, Math.min(560, H * 0.48)) : Math.max(240, Math.min(520, H * 0.415)));
 }
 function tutorKbSave(K) {
   const map = tutorKbShifts();
@@ -1047,9 +1048,12 @@ const TUTOR_VIDEO = { w: 720, h: 960 };     // 튜터 영상 크기 (세로 영�
  *  키보드가 올라와 화면이 줄어도 바뀌지 않게 키보드 없을 때의 높이로 판단한다 */
 function tutorStageMode() {
   const room = tutorEl("tutor-chat-area");
-  if (!room || room.classList.contains("lobby")) return false;
+  return !!room && !room.classList.contains("lobby");   // 대화 중이면 (세로 화면·넓은 화면 모두) 키보드가 올라와도 영상은 그대로
+}
+/** 넓은 화면(컴퓨터·가로 화면·펼친 폴더블): 왼쪽 영상 + 오른쪽 대화. 키보드가 올라와도 바뀌지 않게 키보드 없을 때의 높이로 판단한다 */
+function tutorWideMode() {
   const w = window.innerWidth, h = Math.max(window.innerHeight, tutorBaseH || 0);
-  return !(w >= 600 && w > h * 1.15);
+  return w >= 600 && w > h * 0.8;
 }
 let tutorLayoutRaf = 0;
 function tutorRelayout() { if (!tutorLayoutRaf) tutorLayoutRaf = requestAnimationFrame(() => { tutorLayoutRaf = 0; tutorLayout(); }); }
@@ -1060,8 +1064,7 @@ function tutorLayout() {
   if (!CW || !CH) return;
   const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
   const lobby = room.classList.contains("lobby");
-  const stage = tutorStageMode();
-  const wide = !stage && CW >= 600 && CW > CH * 1.15;
+  const wide = !lobby && tutorWideMode(), stage = !lobby && !wide;
   room.classList.toggle("wide", wide);
   room.classList.toggle("stage", stage);
   const W = room.clientWidth, H = room.clientHeight;
@@ -1071,7 +1074,7 @@ function tutorLayout() {
   room.classList.toggle("compact", compact);
   const hero = room.querySelector(".talk-hero");
   let h, anchor;                                   // anchor: 얼굴 가운데가 놓일 칸 안의 높이 비율
-  if (wide) { h = H; anchor = 0.42; }
+  if (wide) { h = H; anchor = 0.42; room.style.setProperty("--wide-hero-h", Math.max(200, H - 32) + "px"); }   // 영상 높이 고정 (키보드가 올라와 오른쪽 대화만 줄어도 그대로)
   // 휴대폰 세로 화면: 위에 영상 통화 화면 (시작 화면과 같은 크기: 키보드가 없을 때 높이의 53% — 키보드가 올라와도 그대로), 아래로 대화
   else if (stage) { h = clamp(H * 0.53, 220, Math.min(640, W * 1.3)); anchor = 0.5; }
   else if (lobby) {
