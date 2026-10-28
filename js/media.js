@@ -556,7 +556,7 @@ let currentTopicIndex = 0;
 function initNewsUpdater() { fetchRealNews(); }
 function refreshNews() { fetchRealNews(); }
 
-/** rss2json 시각은 UTC (시간대 표시 없음) */
+/** rss2json 시각은 UTC (시간대 표시 없음), news.json은 ISO 시각 */
 function newsDate(pub) { pub = String(pub || ""); return new Date(/^\d{4}-\d\d-\d\d \d\d:\d\d:\d\d$/.test(pub) ? pub.replace(" ", "T") + "Z" : pub); }
 /** "&amp;apos;" 같은 두 번 감싼 글자 표시까지 풀어서 글자만 */
 function newsText(html) {
@@ -564,7 +564,24 @@ function newsText(html) {
   for (let i = 0; i < 2 && /&[#a-z0-9]+;|<[a-z/]/i.test(t); i++) t = new DOMParser().parseFromString(t, "text/html").documentElement.textContent || "";
   return t.replace(/\s+/g, " ").trim();
 }
+// 배포 때 받아 둔 같은 사이트의 news.json (rss2json은 2026-10부터 Cloudflare 확인 화면으로 막혀 받지 못한다). 한 번 받아 세 주제가 같이 쓴다
+let newsFilePromise = null, newsFileKey = 0;
+function loadNewsFile() {
+  const key = Math.floor(Date.now() / 600000);   // 10분마다 새로 받는다
+  if (key !== newsFileKey) { newsFilePromise = null; newsFileKey = key; }
+  if (!newsFilePromise) newsFilePromise = fetch('./news.json?t=' + key, { cache: 'no-store' })
+    .then(res => { if (!res.ok) throw new Error("HTTP " + res.status); return res.json(); })
+    .catch(e => { newsFilePromise = null; throw e; });
+  return newsFilePromise;
+}
 async function fetchNewsFeed(url) {
+  try {
+    const items = (await loadNewsFile()).feeds[url];
+    if (Array.isArray(items) && items.length) return items;
+  } catch (e) {}
+  return fetchNewsFeedRemote(url);
+}
+async function fetchNewsFeedRemote(url) {
   const controller = (typeof AbortController !== 'undefined') ? new AbortController() : null;
   const timer = controller ? setTimeout(() => controller.abort(), 8000) : null;   // 응답 없이 멈추면 8초 뒤 다음 소식지로
   try {
@@ -592,7 +609,7 @@ async function fetchRealNews() {
       const title = newsText(item.title), d = newsDate(item.pubDate);
       return { item, title, date: d };
     }).filter(x => x.title && !isNaN(x.date.getTime()) && now - x.date.getTime() <= NEWS_MAX_AGE && now - x.date.getTime() > -3600000
-      && !/^Today in Korean history$/i.test(x.title) && /^https?:\/\//i.test(x.item.link || ""));
+      && !/^Today in Korean history$/i.test(x.title) && !/[\uac00-\ud7a3]/.test(x.title) && /^https?:\/\//i.test(x.item.link || ""));
     for (const x of shuffleArray(fresh)) {
       const key = x.title.toLowerCase().replace(/^\((lead|2nd lead|update)\)\s*/i, "").slice(0, 40);   // 같은 소식의 고친 판(LEAD)은 하나만
       if (seen.has(key)) continue;
