@@ -1,4 +1,4 @@
-// 배포할 때 한국 영자 신문 RSS를 받아 news.json으로 저장 (앱은 같은 사이트의 news.json을 읽는다)
+// 한국 영자 신문 RSS를 받아 news.json으로 저장 (update-news 작업이 4시간마다 돌려 저장소에 올린다. 앱은 같은 사이트의 news.json을 읽는다)
 // rss2json이 Cloudflare 확인 화면으로 막혀(2026-10) 브라우저에서 RSS를 바로 받을 수 없게 됐다
 const fs = require("fs");
 const { execFileSync } = require("child_process");
@@ -26,5 +26,8 @@ async function getFeed(url) {
     catch (e) { console.log(url, "failed:", e.message); }
   }
   if (!Object.keys(out.feeds).length) { console.log("no feeds, news.json not written"); return; }
+  let prev = {}; try { prev = JSON.parse(fs.readFileSync("news.json", "utf8")); } catch (e) {}
+  for (const url of FEEDS) if (!out.feeds[url] && prev.feeds && prev.feeds[url]) out.feeds[url] = prev.feeds[url];   // 못 받은 소식지는 지난 것을 둔다
+  if (JSON.stringify(prev.feeds) === JSON.stringify(out.feeds)) { console.log("no change"); return; }
   fs.writeFileSync("news.json", JSON.stringify(out));
 })();
