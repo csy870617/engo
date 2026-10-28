@@ -21,12 +21,14 @@ const GEMINI_KEY_PAGE = "https://aistudio.google.com/apikey";
 const TUTOR_AVATAR_FRAMES = null;
 // 튜터: 이름 · 기본 목소리(Gemini Live 목소리) · 영상 폴더 (같은 사진에서 만든 반복 영상: idle 듣기 / talk 말하기 / poster 첫 화면)
 // about: 튜터마다 정해 둔 자기 얘기 ("너는?"에 매번 다른 말을 지어내지 않고, 자기 얘기를 조금씩 나누게)
+// 반응 영상 (act-이름.webm/mp4): 듣다가 끄덕이기 · 생각하기 · 웃기 · 놀라기 · 손 흔들기 · 긴 대기 (말하지 않을 때만 잠깐씩)
+const TUTOR_ACTS = ["listen", "think", "laugh", "wow", "wave", "idle2"];
 const TUTORS = {
   // face: 영상(세로 960)에서 얼굴 가운데(눈과 입 사이)의 높이 비율 — 영상 칸 크기가 바뀌어도 얼굴이 가운데쯤 오게 맞춘다
-  emma: { name: "Emma", label: "Emma", gender: "f", voice: "Leda", media: "images/tutor/emma/web/", face: 0.42,
+  emma: { name: "Emma", label: "Emma", gender: "f", voice: "Leda", media: "images/tutor/emma/web/", face: 0.42, acts: TUTOR_ACTS,
     style: "a sweet, bright K-pop idol girl in her early 20s chatting with her fans on a live stream: cheerful, warm and cute, with a light, youthful voice",
     about: "You're in your early 20s. You grew up in Los Angeles, moved to Seoul two years ago, and teach English online. You love iced lattes, spicy rice cakes, K-dramas and dance practice, and you have a lazy cat named Mochi. You're cheerful, a little clumsy, and you laugh easily." },
-  jay: { name: "Jay", label: "Jay", gender: "m", voice: "Puck", media: "images/tutor/jay/web/", face: 0.45,
+  jay: { name: "Jay", label: "Jay", gender: "m", voice: "Puck", media: "images/tutor/jay/web/", face: 0.45, acts: TUTOR_ACTS,
     style: "a gentle, charming K-pop idol boy in his early 20s chatting with his fans on a live stream: soft, warm and sweet, calm and friendly, with a youthful voice",
     about: "You're in your early 20s. You grew up in Seattle, moved to Seoul last year, and teach English online. You love basketball, playing guitar, hiking and late-night ramen, and you have a small dog named Bori. You're calm, kind and a bit shy, with a quiet sense of humor." }
 };
@@ -357,9 +359,17 @@ function setTutorStatus(text, mode) {
   tutorSetMode(mode);
 }
 /** 표시만 바꾼다 (말하는 중·듣는 중·생각 중 색과 막대) */
+let tutorPrevMode = "";
 function tutorSetMode(mode) {
   const av = tutorEl("tutor-avatar"); if (av) av.dataset.mode = mode || "";
   const room = tutorEl("tutor-chat-area"); if (room) { room.dataset.mode = mode || ""; if (mode !== "listening") delete room.dataset.hearing; }
+  // 내 말이 끝나 튜터가 생각하는 동안: 내 말에 반응한다 (웃긴 말엔 웃고, 신나는 말엔 놀라고, 아니면 생각하는 표정) — 대답 목소리가 오면 말하는 얼굴로
+  if (mode === "thinking" && tutorPrevMode === "listening" && typeof TutorAvatar !== "undefined") {
+    const me = Array.from(document.querySelectorAll("#tutor-log .tutor-msg.me")).pop(), t = me ? me.textContent : "";
+    TutorAvatar.act(/\b(ha){2,}|\blol\b|funny|joke|hilarious|ㅋㅋ|ㅎㅎ/i.test(t) ? "laugh"
+      : /\b(wow|amazing|awesome|won|winner|finally|excited|best|first time|passed|promoted|birthday)\b|!/i.test(t) ? "wow" : "think");
+  }
+  tutorPrevMode = mode || "";
 }
 // ---------- 앱 안 알림 창 (브라우저 기본 alert·confirm 대신) ----------
 // 튜터 화면 위에 작은 카드로 띄운다: 확인만 있는 안내 / 확인·취소를 고르는 질문. 고른 값(true/false)을 Promise로 돌려준다
@@ -470,6 +480,7 @@ function showTutorLobby() {
   tutorRelayout();
   const going = tutorLearnerLines.length > 0;   // 하던 대화가 있으면 '이어서 대화하기'가 먼저
   tutorEl("tutor-start-btn").textContent = going ? "이어서 대화하기" : "대화 시작하기";
+  setTimeout(() => { if (tutorLobbyOpen() && typeof TutorAvatar !== "undefined") TutorAvatar.act("wave"); }, 3500);   // 시작 화면에서 손을 흔들어 반긴다 (반응 영상을 받은 뒤)
   tutorEl("tutor-new-btn").classList.toggle("hidden", !going);
   setTutorStatus(`${tutorName()}와 대화할 준비가 됐어요`, "");
 }
@@ -1992,9 +2003,13 @@ function tutorEndWaitId() { let v = null; try { v = localStorage.getItem("tutorE
 const tutorQuietMs = () => tutorPractice ? 15000 : tutorSendManual() ? 120000 : 30000;
 /** 듣는 중에 말소리가 들어오면 듣기 막대가 살짝 반응한다 (내 말을 듣고 있다는 느낌) */
 let tutorHearAt = 0, tutorHearTimer = null;
+let tutorHearSince = 0;
 function tutorHearPulse() {
-  const now = Date.now(); if (now - tutorHearAt < 150) return; tutorHearAt = now;
+  const now = Date.now(); if (now - tutorHearAt < 150) return;
+  if (now - tutorHearAt > 1500) tutorHearSince = now;   // 새로 말하기 시작
+  tutorHearAt = now;
   const room = tutorEl("tutor-chat-area"); if (!room || room.dataset.mode !== "listening") return;
+  if (now - tutorHearSince > 1200 && typeof TutorAvatar !== "undefined") TutorAvatar.act("listen");   // 1초 넘게 말하면 끄덕이며 듣는다
   room.dataset.hearing = "1"; clearTimeout(tutorHearTimer);
   tutorHearTimer = setTimeout(() => { delete room.dataset.hearing; }, 450);
 }
@@ -3001,6 +3016,9 @@ const TutorAvatar = (() => {
   // 말하는 영상을 목소리에 맞춰 '연주'한다: 장면마다 입이 얼마나 벌어졌는지(talk.json)를 알고,
   // 소리가 나면 입이 열리는 장면 쪽으로 (필요하면 빨리) 틀고, 조용하면 입이 닫힌 장면에서 멈춘다. 그림은 모두 실제 영상 그대로
   let talk = null;
+  // 반응 영상: 듣는 영상 위·말하는 영상 아래에 겹쳐 한 번 틀고, 끝나면 듣는 영상 첫 장면(같은 자세)으로 서서히 돌아간다
+  let acts = {}, act = null, actsTimer = 0, busyAt = 0;
+  const actAt = {}, ACT_COOL = { listen: 9000, think: 8000, laugh: 15000, wow: 15000, wave: 60000, idle2: 25000 }, ACT_FADE = 0.45;
   const ctl = { on: false, spk: false, quiet: 0, rate: 1, rateAt: 0, env: 0, peak: 0.05, hist: [], last: 0, prepAt: 0, prepFrame: -1, seeking: false, leaving: false, offAt: 0, plan: null, fixAt: 0 };
   const TALK = { on: 0.16, off: 0.08, gap: 0.06, base: 1.0, gain: 0.6, min: 0.85, max: 1.5, hurryOpen: 1.5, close: 1.3, quietSlow: 0.6, slew: 0.12, longGap: 0.8, holdMax: 2.2 };   // 소리를 미리 모를 때(기기 음성 등): 소리 크기에 맞춰 속도만 (멈추지 않는다)
   // 미리 짜기 (js/talk-plan.js): 문장 소리 전체를 알고 시작할 때, 시작 장면과 장면마다 재생 속도(0.5~1.5배)를 짜 두고 그대로 따라 튼다.
@@ -3048,6 +3066,8 @@ const TutorAvatar = (() => {
       clip = "idle"; clips.idle.classList.add("on");          // 듣는 영상은 늘 아래에 깔려 있고, 말하는 영상만 위에서 나타났다 사라진다
       playClip(clips.idle);
       loadTalkData(media);
+      clearTimeout(actsTimer);
+      actsTimer = setTimeout(() => mountActs(media, tutorChar().acts || []), 2500);   // 첫 화면이 다 뜬 뒤에 받는다
       loop();
       return;
     }
@@ -3063,6 +3083,49 @@ const TutorAvatar = (() => {
     loop();
   }
   function playClip(v) { const p = v.play(); if (p && p.catch) p.catch(() => {}); }
+  function mountActs(media, names) {
+    if (!clips || tutorChar().media !== media) return;
+    const T = clips.talk;
+    names.forEach(k => {
+      if (acts[k]) return;
+      const v = document.createElement("video");
+      v.className = "tutor-clip tutor-act-clip"; v.muted = true; v.defaultMuted = true; v.playsInline = true; v.preload = "auto";
+      ["muted", "playsinline", "disablepictureinpicture"].forEach(a => v.setAttribute(a, ""));
+      v.setAttribute("aria-hidden", "true");
+      v.innerHTML = `<source src="${media}act-${k}.webm" type='video/webm; codecs="vp9"'><source src="${media}act-${k}.mp4" type="video/mp4">`;
+      T.parentNode.insertBefore(v, T);                    // 말하는 영상이 늘 위에 오게
+      acts[k] = v;
+    });
+  }
+  /** 반응 영상 하나를 튼다 (말하는 중·다른 반응 중·받는 중이면 건너뛴다). 틀었으면 true */
+  function playAct(k) {
+    const v = acts[k], now = performance.now();
+    if (!v || !clips || paused || act || ctl.on || ctl.leaving || tutorSpeaking || v.readyState < 3 || now - (actAt[k] || -1e9) < (ACT_COOL[k] || 10000)) return false;
+    actAt[k] = now; act = { k, v, out: false };
+    try { v.currentTime = 0; } catch (e) {}
+    playClip(v); v.classList.add("on");
+    return true;
+  }
+  /** 반응 영상 끝내기: 끝나 갈 때(같은 자세로 돌아온 때) 듣는 영상을 첫 장면부터 다시 틀고 서서히 걷어 낸다 */
+  function endAct(fast) {
+    if (!act) return;
+    const a = act; act = null; busyAt = performance.now();
+    if (!fast && clips) { try { clips.idle.currentTime = 0; } catch (e) {} playClip(clips.idle); }
+    a.v.classList.remove("on");
+    setTimeout(() => { if (!act || act.v !== a.v) a.v.pause(); }, ACT_FADE * 1000 + 100);
+  }
+  function stepAct(now) {
+    const room = document.getElementById("tutor-chat-area"), mode = room ? room.dataset.mode || "" : "";
+    if (ctl.on || tutorSpeaking || (room && room.dataset.hearing)) busyAt = now;
+    if (act) {
+      const v = act.v;
+      if (ctl.on) { endAct(true); return; }              // 말하는 영상이 위에 덮였다
+      if (v.ended || (v.duration && v.duration - v.currentTime < ACT_FADE)) endAct(false);
+      return;
+    }
+    // 아무도 말하지 않는 동안이 길면 가끔 긴 대기 영상 (같은 짧은 영상만 되풀이되지 않게)
+    if ((mode === "" || mode === "listening") && now - busyAt > 7000) { if (playAct("idle2")) busyAt = now; }
+  }
   /** 말하는 영상의 장면별 입 벌림 자료 (없으면 소리가 날 때만 말하는 영상을 보여 주는 예전 방식) */
   function loadTalkData(media) {
     talk = null;
@@ -3278,6 +3341,8 @@ const TutorAvatar = (() => {
   function remount() {
     const box = document.getElementById("tutor-avatar");
     if (clips) Object.values(clips).forEach(v => { try { v.pause(); v.querySelectorAll("source").forEach(s => s.remove()); v.removeAttribute("src"); v.load(); } catch (e) {} });   // 영상 받기를 확실히 멈춘다
+    Object.values(acts).forEach(v => { try { v.pause(); v.querySelectorAll("source").forEach(x => x.remove()); v.removeAttribute("src"); v.load(); } catch (e) {} });
+    acts = {}; act = null; clearTimeout(actsTimer);
     clips = null; frames = null; mouthEls = null; mounted = false; talk = null; prep = null;
     ctl.on = ctl.leaving = ctl.seeking = false; ctl.prepFrame = -1; ctl.plan = null; ctl.hist = []; ctl.env = 0; clip = "idle";
     if (box) box.innerHTML = "";
@@ -3320,13 +3385,14 @@ const TutorAvatar = (() => {
     if (clips) {
       // 화면을 떠나 있으면 영상을 멈춰 배터리를 아낀다
       if (hidden) {
-        if (!paused) { paused = true; resetTalk(); clips.idle.pause(); }   // 돌아오면 듣는 얼굴부터
+        if (!paused) { paused = true; endAct(true); resetTalk(); clips.idle.pause(); }   // 돌아오면 듣는 얼굴부터
         ctl.last = 0;
         return;
       }
       if (paused) { paused = false; playClip(clips.idle); }
       const now = performance.now();
       if (talk) stepTalk(now); else stepGate(now);
+      stepAct(now);
       return;
     }
     if (hidden) return;
@@ -3341,7 +3407,7 @@ const TutorAvatar = (() => {
       setTimeout(() => mouthEls && mouthEls.eyes.classList.remove("blink"), 140);
     }
   }
-  return { mount, remount, apply, prepare, speak, get level() { return level; }, get clip() { return clips ? clip : null; },
+  return { mount, remount, apply, prepare, speak, act: playAct, get acting() { return act ? act.k : ""; }, get level() { return level; }, get clip() { return clips ? clip : null; },
     get mouth() { return talk && ctl.on && clips ? talk.open[frameOf(clips.talk, talk)] : -1; },     // 지금 보이는 말하는 장면의 입 벌림 (0~100, 시험용)
     get rate() { return clips && ctl.on ? (clips.talk.paused ? 0 : clips.talk.playbackRate) : 0; },
     get mode() { return talk ? "warp" : clips ? "gate" : "draw"; },

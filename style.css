@@ -1373,3 +1373,4 @@ html.tutor-lock header { visibility: hidden; }   /* 튜터 화면에 가려진 �
 .talk-room.wide { padding-bottom: calc(16px + var(--kb, 0px)); }
 .talk-room.wide .talk-hero { align-self: start; height: var(--wide-hero-h, auto); }
 .talk-room.lobby, .talk-room.stage { max-width: none; }   /* 펼친 폴더블·태블릿 세로 화면도 가득 (가운데 좁은 칸으로 남지 않게) */
+.talk-avatar .tutor-act-clip { transition: opacity 0.45s ease; }   /* 반응 영상은 천천히 겹쳐 바뀐다 (자세 차이가 보이지 않게) */
